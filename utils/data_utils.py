@@ -1,16 +1,24 @@
 import pickle
 from tqdm import tqdm
 from neural_nlp.stimuli import StimulusSet
+import getpass
+if getpass.getuser()=='eghbalhosseini':
+    UD_PARENT='/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/'
+elif getpass.getuser()=='ehoseini':
+    UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
+
 
 def save_obj(di_, filename_):
     with open(filename_, 'wb') as f:
         pickle.dump(di_, f)
 
-def load_obj( filename_):
-    with open(filename_, 'rb') as f:
-       return  pickle.load(f)
 
-def construct_stimuli_set(stimuli_data,stimuli_data_name):
+def load_obj(filename_):
+    with open(filename_, 'rb') as f:
+        return pickle.load(f)
+
+
+def construct_stimuli_set(stimuli_data, stimuli_data_name):
     sentence_words, word_nums, sentenceID = [], [], []
     for sent_ind, sentence in tqdm(enumerate(stimuli_data)):
         for word_ind, word in enumerate(sentence['word_FORM']):
@@ -27,16 +35,11 @@ def construct_stimuli_set(stimuli_data,stimuli_data_name):
     sentence_set.name = stimuli_data_name
     return sentence_set
 
+BENCHMARK_CONFIG=dict(file_loc='/Users/eghbalhosseini/.result_caching/neural_nlp.score')
 
-UD_SENTENCE_PKL='/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/ud_sentence_data.pkl'
-ud_sentence_data=load_obj(UD_SENTENCE_PKL)
-ud_sentence_set=construct_stimuli_set(ud_sentence_data,'ud_sentences')
-
-
-UD_SENTENCE_FILTER_PKL='/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/ud_sentence_data_filter.pkl'
-filter_sentence_data=load_obj(UD_SENTENCE_FILTER_PKL)
-ud_sentences_filter_set=construct_stimuli_set(filter_sentence_data,'ud_sentences_filter')
-
-UD_SENTENCE_SAMPLE_PKL='/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/ud_sentence_data_filter_sample.pkl'
-sample_filter_sentence_data=load_obj(UD_SENTENCE_SAMPLE_PKL)
-ud_sentences_filter_sample_set=construct_stimuli_set(sample_filter_sentence_data,'ud_sentences_filter_sample')
+SENTENCE_CONFIG = [
+    dict(name='ud_sentences', file_loc=UD_PARENT+'ud_sentence_data.pkl'),
+    dict(name='ud_sentences_filter',file_loc=UD_PARENT+'ud_sentence_data_filter.pkl'),
+    dict(name='ud_sentences_filter_sample',file_loc=UD_PARENT+'ud_sentence_data_filter_sample.pkl'),
+    dict(name='ud_sentences_token_filter',file_loc=UD_PARENT+'ud_sentence_data_token_filter.pkl'),
+    dict(name='ud_sentences_token_filter_sample',file_loc=UD_PARENT+'ud_sentence_data_token_filter_sample.pkl')]

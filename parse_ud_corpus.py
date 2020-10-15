@@ -6,11 +6,11 @@ import xlrd
 import pickle
 import numpy as np
 import copy
-
+from utils.data_utils import UD_PARENT
 # file path constructor
-UD_PARENT = '/Users/eghbalhosseini/MyData/Universal Dependencies 2.6'
-UD_PATH = '/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/ud-treebanks-v2.6/'
-GOOGLE10L_1T = '/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/Google10L-1T/'
+
+UD_PATH = UD_PARENT+'/ud-treebanks-v2.6/'
+GOOGLE10L_1T = UD_PARENT+'/Google10L-1T/'
 
 # reference : https://universaldependencies.org/u/overview/tokenization.html
 # reference : https://universaldependencies.org/format.html
@@ -178,12 +178,47 @@ sentence_data_filter=copy.deepcopy(sentence_data_word_FEAT)
 correct_lengh = [idx for idx, x in enumerate(sentence_data_filter) if x['sentence_length'] > 5 and x['sentence_length'] < 20]
 sentence_data_filter=[sentence_data_filter[x] for x in correct_lengh]
 
+# additional filtering of strange characters
+invalid_char="''"
+valid_idx=[idx for idx, x in enumerate(sentence_data_filter) if not(invalid_char in x['word_FORM'])]
+sentence_data_filter=[sentence_data_filter[x] for x in valid_idx]
+
+# removing the period in the end of the sentence
+# TODO: remove punctuation from inputs to the model, but check it per model basis.
+sent_with_period=[idx for idx, x in enumerate(sentence_data_filter) if (x['word_FORM'][-1]=='.')]
+sentence_data_filter=[sentence_data_filter[x] for x in sent_with_period]
+
 with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter, fout)
 
-sentence_data_sample=sentence_data_filter[:200]
+
+sentence_data_filter_sample=[sentence_data_filter[x] for x in range(200)]
 
 with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_sample.pkl'), 'wb') as fout:
-    pickle.dump(sentence_data_sample, fout)
+    pickle.dump(sentence_data_filter_sample, fout)
+
+# clean the last token
+sentence_data_token=[]
+assert(np.asarray([x['text'][-1]=='.' for x in sentence_data_filter]).sum()==len(sentence_data_filter))
+data_keys=list(sentence_data_filter[1].keys())
+data_keys=list(set(data_keys)-set(['text_key','meta','id','text']))
+sentence_data_token=copy.deepcopy(sentence_data_filter)
+for idx, sentence in tqdm(enumerate(sentence_data_token)):
+    for key in data_keys:
+        if key=='sentence_length':
+            sentence[key] = sentence[key]-1
+        else:
+            sentence[key] = sentence[key][:-1]
+    sentence_data_token[idx]=sentence
+
+with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter.pkl'), 'wb') as fout:
+    pickle.dump(sentence_data_token, fout)
+
+# select a random subset
+s_random_idx=list(np.random.randint(0,len(sentence_data_token),200))
+sentence_data_token_sample=[sentence_data_token[x] for x in s_random_idx]
+
+with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter_sample.pkl'), 'wb') as fout:
+    pickle.dump(sentence_data_token_sample, fout)
 
 # filtering based on Universal features : see https://universaldependencies.org/u/feat/index.html
