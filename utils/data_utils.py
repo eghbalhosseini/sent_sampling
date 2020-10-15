@@ -7,16 +7,13 @@ if getpass.getuser()=='eghbalhosseini':
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
 
-
 def save_obj(di_, filename_):
     with open(filename_, 'wb') as f:
         pickle.dump(di_, f)
 
-
 def load_obj(filename_):
     with open(filename_, 'rb') as f:
         return pickle.load(f)
-
 
 def construct_stimuli_set(stimuli_data, stimuli_data_name):
     sentence_words, word_nums, sentenceID = [], [], []

@@ -1,8 +1,14 @@
 import sys
-
 import numpy as np
 from scipy.stats import entropy
 import logging
+import getpass
+if getpass.getuser()=='eghbalhosseini':
+    OPTIM_PARENT='/Users/eghbalhosseini/MyCodes/opt-exp-design-nlp/'
+elif getpass.getuser()=='ehoseini':
+    OPTIM_PARENT = '/om/user/ehoseini/opt-exp-design-nlp'
+
+
 
 
 LOG_BASE = np.e
@@ -15,7 +21,7 @@ formatter = logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s - %(funcNam
 ch.setFormatter(formatter)
 
 #‌impor functions from Noga's optimization pipeline.
-sys.path.insert(1,'/Users/eghbalhosseini/MyCodes/opt-exp-design-nlp/')
+sys.path.insert(1,OPTIM_PARENT)
 from opt_exp_design import coordinate_ascent, swap
 import tools
 from tools import second_order_rdm, create_rdm, MI
