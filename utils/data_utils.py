@@ -2,14 +2,15 @@ import pickle
 from tqdm import tqdm
 from neural_nlp.stimuli import StimulusSet
 import getpass
+import os
 if getpass.getuser()=='eghbalhosseini':
     UD_PARENT='/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/'
     CACHING_DIR='/Users/eghbalhosseini/.result_caching/neural_nlp.score'
 elif getpass.getuser()=='ehoseini':
-    UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6'
+    UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     CACHING_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score'
 else:
-    UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6'
+    UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
 print(UD_PARENT)
 def save_obj(di_, filename_):
     with open(filename_, 'wb') as f:
@@ -40,8 +41,8 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
 BENCHMARK_CONFIG=dict(file_loc=CACHING_DIR)
 
 SENTENCE_CONFIG = [
-    dict(name='ud_sentences', file_loc=UD_PARENT+'ud_sentence_data.pkl'),
-    dict(name='ud_sentences_filter',file_loc=UD_PARENT+'ud_sentence_data_filter.pkl'),
-    dict(name='ud_sentences_filter_sample',file_loc=UD_PARENT+'ud_sentence_data_filter_sample.pkl'),
-    dict(name='ud_sentences_token_filter',file_loc=UD_PARENT+'ud_sentence_data_token_filter.pkl'),
-    dict(name='ud_sentences_token_filter_sample',file_loc=UD_PARENT+'ud_sentence_data_token_filter_sample.pkl')]
+    dict(name='ud_sentences', file_loc=os.path.join(UD_PARENT,'ud_sentence_data.pkl')),
+    dict(name='ud_sentences_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter.pkl')),
+    dict(name='ud_sentences_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter_sample.pkl')),
+    dict(name='ud_sentences_token_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter.pkl')),
+    dict(name='ud_sentences_token_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample.pkl'))]
