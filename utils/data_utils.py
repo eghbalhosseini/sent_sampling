@@ -17,7 +17,7 @@ def save_obj(di_, filename_):
         pickle.dump(di_, f)
 
 def load_obj(filename_):
-    print(filename_)
+    print('loading '+ filename_)
     with open(filename_, 'rb') as f:
         return pickle.load(f)
 
