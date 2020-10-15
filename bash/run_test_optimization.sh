@@ -10,9 +10,9 @@
 
 module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
-RESULTCACHING_HOME=/om/user/`whoami`/.result_caching
+RESULTCACHING_HOME=/om/user/`whoami`/.result_cachingc
 export RESULTCACHING_HOME
 XDG_CACHE_HOME=/om/user/`whoami`/st
 export XDG_CACHE_HOME
 
-singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp_fz.simg python /om/user/ehoseini/sent_sampling/test_optimization.py
+singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp.simg python /om/user/ehoseini/sent_sampling/test_optimization.py
