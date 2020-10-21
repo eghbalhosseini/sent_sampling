@@ -4,6 +4,7 @@ from utils.data_utils import SENTENCE_CONFIG
 import copy
 from importlib import import_module
 from utils.extract_utils import extractor
+save_dir='/Users/eghbalhosseini/MyData/sent_sampling/'
 model_grps_config = [dict(grp_id= 'test_early_layer', grp_set=('gpt2', 'bert-base-uncased', 'xlm-mlm-en-2048'), layer_set=(1,1,1)),
                      dict(grp_id= 'test_brain_act', grp_set=('distilgpt2', 'gpt2'), layer_set=(1,1)),
                      dict(grp_id= 'set_1', grp_set=('bert-large-uncased', 'xlm-mlm-100-1280','gpt2-large'), layer_set=(22,14,34)),

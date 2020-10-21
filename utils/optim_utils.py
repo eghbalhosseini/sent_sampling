@@ -63,7 +63,7 @@ class optim:
     # add a function for random baseline
 
     def construct_activation_by_split(self):
-        assert(len(self.activations[0])>1)
+        #assert(len(self.activations[0])>1)
         model_grp_activation_by_split=[]
         for k in range(len(self.activations[0])): # going over the splits
             model_grp_activations=[]
