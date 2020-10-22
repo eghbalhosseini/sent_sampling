@@ -7,7 +7,6 @@ for optim_method in coordinate_ascent ; do
       for init in 3 ; do
         optim_id="${optim_method}-obj=D_s-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}"
         optim_list[$i]="$optim_id"
-        echo "optim: ${optim_id}"
         i=$i+1
       done
     done
@@ -27,21 +26,20 @@ for set in set_3 ; do
     for dataset in ud_sentences_filter ; do
       extract_id="group=${set}-dataset=${dataset}-${extract_list[$idx]}-bench=${bench_list[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
-      echo "extract: ${extract_id}"
       i=$i+1
       done
     done
   done
 done
 
-i=0
+run=0
 
 for extract in ${extract_list[@]} ; do
   for optim in ${optim_list[@]} ; do
-    echo "extract ${extract}"
-    echo "optim ${optim}"
-    extract_pool[$i]="$extract"
-    optim_pool[$i]="$optim"
-    i=$i+1
+    extract_pool[$run]="$extract"
+    optim_pool[$run]="$optim"
+    run=$run+1
   done
 done
+
+sbatch --array=0-$(expr ${run} - 1) --mem 64G -p normal extract_and_optimize.sh ${extract_pool[@]} ${optim_pool[@]}
