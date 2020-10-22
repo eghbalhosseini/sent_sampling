@@ -34,8 +34,8 @@ done
 
 i=0
 
-for extract in extract_list ; do
-  for optim in optim_list ; do
+for extract in ${extract_list[@]} ; do
+  for optim in ${optim_list[@]} ; do
     echo "extract ${extract}"
     echo "optim ${optim}"
     extract_pool[$i]="$extract"
