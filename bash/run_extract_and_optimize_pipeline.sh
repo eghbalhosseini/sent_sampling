@@ -16,8 +16,8 @@ done
 i=0
 extract_list="network_act brain_resp"
 bench_list="None Fedorenko2016v3-encoding-weights_v2"
-extract_list=($struct_list)
-bench_list=($hier_list)
+extract_list=($extract_list)
+bench_list=($bench_list)
 
 
 for set in set_3 ; do
