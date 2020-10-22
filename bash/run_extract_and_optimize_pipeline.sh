@@ -1,4 +1,13 @@
-#!/bin/sh
+#!/bin/bash
+
+#SBATCH --job-name=ext_opt
+#SBATCH --array=1-3
+#SBATCH --time=12:00:00
+#SBATCH --ntasks=1
+#SBATCH --mem=64G
+#SBATCH --mail-type=ALL
+#SBATCH --exclude node017,node018
+#SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
 for optim_method in coordinate_ascent ; do
@@ -42,4 +51,4 @@ for extract in ${extract_list[@]} ; do
   done
 done
 
-sbatch --array=0-$(expr ${run} - 1) --mem 64G -p normal extract_and_optimize.sh ${extract_pool[@]} ${optim_pool[@]}
+shell extract_and_optimize.sh ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
