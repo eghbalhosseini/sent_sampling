@@ -16,7 +16,7 @@ activation_extract_config=[dict(type='network_act',benchmark='None'),
 extract_configuration = []
 for model_grp, dataset, extract_type, average in itertools.product(model_grps_config, SENTENCE_CONFIG,
                                                                    activation_extract_config, [True, False]):
-    extract_identifier = f"[group={model_grp['grp_id']}]-[dateset={dataset['name']}]-[{extract_type['type']}]-[bench={extract_type['benchmark']}]-[ave={average}]"
+    extract_identifier = f"[group={model_grp['grp_id']}]-[dataset={dataset['name']}]-[{extract_type['type']}]-[bench={extract_type['benchmark']}]-[ave={average}]"
     extract_identifier = extract_identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
     extract_configuration.append(dict(identifier=extract_identifier,model_set=model_grp['grp_set'],
                                       layer_set=model_grp['layer_set'], dataset=dataset['name'],datafile=dataset['file_loc'],
