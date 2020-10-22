@@ -8,10 +8,12 @@ if getpass.getuser()=='eghbalhosseini':
     UD_PARENT = '/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/'
     CACHING_DIR = '/Users/eghbalhosseini/.result_caching/neural_nlp.score'
     SAVE_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/'
+    RESULTS_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/results/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     CACHING_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score'
     SAVE_DIR = '/om/user/ehoseini/MyData/sent_sampling/'
+    RESULTS_DIR='/om/user/ehoseini/MyData/sent_sampling/results/'
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
 print(UD_PARENT)

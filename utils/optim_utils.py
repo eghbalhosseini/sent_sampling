@@ -3,6 +3,8 @@ import numpy as np
 from scipy.stats import entropy
 import logging
 import getpass
+import itertools
+import copy
 if getpass.getuser()=='eghbalhosseini':
     OPTIM_PARENT='/Users/eghbalhosseini/MyCodes/opt-exp-design-nlp/'
 elif getpass.getuser()=='ehoseini':
@@ -49,13 +51,17 @@ def Mutual_Info_S(s,N_S, pZ_S):
 
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorthim=coordinate_ascent,extractor_obj=None):
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=coordinate_ascent):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
         self.objective_function=objective_function
-        self.optim_algorithm=optim_algorthim
-        self.extract_type=extractor_obj.extract_type
+        self.optim_algorithm=optim_algorithm
+
+    def load_extractor(self,extractor_obj=None):
+        self.extractor_obj=extractor_obj
+        self.N_S=extractor_obj.N_S
+        self.extract_type = extractor_obj.extract_type
         self.activations = extractor_obj.model_group_act
         if self.extract_type == 'brain_resp':
             self.construct_activation_by_split()
@@ -81,13 +87,47 @@ class optim:
         elif self.extract_type=='brain_resp':
             return np.mean([self.objective_function(S,x) for x in self.activations_by_split])
 
-    def __call__(self,extractor_obj ,*args, **kwargs):
+    def __call__(self,*args, **kwargs):
 
-        S_opt_d, DS_opt_d = self.optim_algorithm(extractor_obj.N_S, self.N_s,self.mod_objective_function, self.n_init, self.n_iter)
+        S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s,self.mod_objective_function, self.n_init, self.n_iter)
         self.S_opt_d=S_opt_d
         self.DS_opt_d=DS_opt_d
 
         return S_opt_d, DS_opt_d
+
+
+
+optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent)]
+objective_function=[dict(name='D_s',fun=Distance)]
+n_iters=[100,500,1000]
+N_s=[100,200]
+n_inits=[1,3,5]
+
+
+optim_configuration=[]
+for method , obj,n_iter, n_s, init  in itertools.product(optim_method,objective_function,n_iters,N_s,n_inits):
+    identifier=f"[{method['name']}]-[obj={obj['name']}]-[n_iter={n_iter}]-[n_samples={n_s}]-[n_init={init}]"
+    identifier=identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
+    optim_configuration.append(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init))
+
+
+optim_pool={}
+# create the pool
+for config in optim_configuration:
+    configuration=copy.deepcopy(config)
+    optim_identifier=configuration['identifier']
+    def optim_instantiation(configure=frozenset(configuration.items())):
+        configure = dict(configure)
+        #module = import_module('utils.model_utils')
+        #model=getattr(module,configure['model'])
+        optim_param=optim(optim_algorithm=configure['method'],
+                          objective_function=configure['obj'],
+                                  n_init=configure['n_init'],
+                                  n_iter=configure['n_iter'],
+                                  N_s=configure['n_s'])
+        return optim_param
+
+    optim_pool[optim_identifier] = optim_instantiation
 
 
 
