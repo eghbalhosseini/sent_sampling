@@ -7,6 +7,7 @@ for optim_method in coordinate_ascent ; do
       for init in 3 ; do
         optim_id="${optim_method}-obj=D_s-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}"
         optim_list[$i]="$optim_id"
+        echo "optim: ${optim_id}"
         i=$i+1
       done
     done
@@ -24,8 +25,9 @@ for set in set_3 ; do
   for idx in 0 1 ; do
     for ave in False ; do
     for dataset in ud_sentences_filter ; do
-      extract_id="group=${set}-dataset=${dataset}-${extract_list[$idx]}-${bench_list[$idx]}-ave=${ave}"
+      extract_id="group=${set}-dataset=${dataset}-${extract_list[$idx]}-bench=${bench_list[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
+      echo "extract: ${extract_id}"
       i=$i+1
       done
     done
