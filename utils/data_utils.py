@@ -38,7 +38,6 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
                 if word == '\n':
                     continue
                 if word =='.' and word_ind==len(sentence['word_FORM'])-1:
-                    print('skipping .')
                     continue
 
                 word = word.rstrip('\n')
