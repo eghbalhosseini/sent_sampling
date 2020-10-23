@@ -5,6 +5,7 @@ import logging
 import getpass
 import itertools
 import copy
+import xarray as xr
 if getpass.getuser()=='eghbalhosseini':
     OPTIM_PARENT='/Users/eghbalhosseini/MyCodes/opt-exp-design-nlp/'
 elif getpass.getuser()=='ehoseini':
@@ -33,6 +34,8 @@ LOGGER = tools.get_logger('OPT-EXP-DSGN')
 # this works on a list,
 def Distance(S,group_act, distance='correlation'):
     patterns_list = [[x['activations'][i] for i in S] for x in group_act]
+    patterns_list=[[x.values if isinstance(x, xr.core.dataarray.DataArray) else x for x in pattern] for pattern in patterns_list]
+    #[x.values for x in patterns if type]
     rdm2_vec = second_order_rdm(patterns_list, True, distance)
     return rdm2_vec.mean()
 
