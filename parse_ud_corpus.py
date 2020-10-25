@@ -1,72 +1,17 @@
 import os
 from tqdm import tqdm
 import pyconll
-import pandas as pd
 import xlrd
 import pickle
 import numpy as np
 import copy
-from utils.data_utils import UD_PARENT
+from utils.data_utils import UD_PARENT, LEX_PATH_SET, UD_ENGLISH_PATH_SET, UD_PATH, uppercount
 # file path constructor
 
-UD_PATH = UD_PARENT+'/ud-treebanks-v2.6/'
-GOOGLE10L_1T = UD_PARENT+'/Google10L-1T/'
 
-# reference : https://universaldependencies.org/u/overview/tokenization.html
-# reference : https://universaldependencies.org/format.html
-UD_ENGLISH_PATH_SET = [{'name': 'UD_English-EWT', 'tag': 'en_ewt-ud', 'group': ['train', 'test', 'dev']},
-                       {'name': 'UD_English-ESL', 'tag': 'en_esl-ud', 'group': ['train', 'test', 'dev']},
-                       {'name': 'UD_English-GUM', 'tag': 'en_gum-ud', 'group': ['train', 'test', 'dev']},
-                       {'name': 'UD_English-PUD', 'tag': 'en_pud-ud', 'group': ['test']},
-                       {'name': 'UD_English-LinES', 'tag': 'en_lines-ud', 'group': ['train', 'test', 'dev']},
-                       {'name': 'UD_English-GUMReddit', 'tag': 'en_gumreddit-ud', 'group': ['train', 'test', 'dev']}]
 
 # extract lexical features
 ##TODO: add word form to the set 
-LEX_PATH_SET = [
-    {'name': 'AgeOfAcquisition', 'tag': 'AoA_ratings_Kuperman_et_al_BRM.xlsx', 'word_form': 'word_LEMMA',
-     'word_column': 'Word',
-     'metric_column': 'Rating.Mean',
-     'url': 'http://crr.ugent.be/archives/806',
-     'read_instruction': lambda x: pd.read_excel(x)},
-
-    {'name': 'Concreteness', 'tag': 'Concreteness_ratings_Brysbaert_et_al_BRM.xlsx', 'word_form': 'word_LEMMA',
-     'word_column': 'Word', 'metric_column': 'Conc.M',
-     'url': 'http://crr.ugent.be/archives/1330',
-     'read_instruction': lambda x: pd.read_excel(x)},
-
-    {'name': 'Prevalence', 'tag': 'English_Word_Prevalences.xlsx', 'word_form': 'word_LEMMA', 'word_column': 'Word',
-     'metric_column': 'Prevalence',
-     'url': 'https://osf.io/nbu9e/',
-     'read_instruction': lambda x: pd.read_excel(x)},
-
-    {'name': 'Arousal', 'tag': 'Ratings_Warriner_et_al.csv', 'word_form': 'word_LEMMA', 'word_column': 'Word',
-     'metric_column': 'A.Mean.Sum',
-     'url': 'http://crr.ugent.be/archives/1003',
-     'read_instruction': lambda x: pd.read_csv(x)},
-
-    {'name': 'Valence', 'tag': 'Ratings_Warriner_et_al.csv', 'word_form': 'word_LEMMA', 'word_column': 'Word',
-     'metric_column': 'V.Mean.Sum',
-     'url': 'http://crr.ugent.be/archives/1003',
-     'read_instruction': lambda x: pd.read_csv(x)},
-
-    {'name': 'Ambiguity', 'tag': 'SUBTLEX-US frequency list with PoS and Zipf information.xlsx',
-     'word_form': 'word_LEMMA',
-     'word_column': 'Word', 'metric_column': 'Percentage_dom_PoS',
-     'url': 'https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexus',
-     'read_instruction': lambda x: pd.read_excel(x)},
-
-    {'name': 'LexFreq', 'tag': 'SUBTLEX-US frequency list with PoS and Zipf information.xlsx',
-     'word_form': 'word_LEMMA',
-     'word_column': 'Word', 'metric_column': 'Lg10WF',
-     'url': 'https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexus',
-     'read_instruction': lambda x: pd.read_excel(x)},
-
-    {'name': 'surprisal_3', 'tag': os.path.join(GOOGLE10L_1T, 'surprisal-ENGLISH-3.txt'), 'word_form': 'word_LEMMA',
-     'word_column': 'word', 'metric_column': 'surprisal',
-     'url': 'http://colala.berkeley.edu/data/PiantadosiTilyGibson2011/Google10L-1T/',
-     'read_instruction': lambda x: pd.read_csv(x, sep='\t', skiprows=7)}
-]
 
 file_set = []
 for ud_set in UD_ENGLISH_PATH_SET:
@@ -182,13 +127,17 @@ sentence_data_filter=[sentence_data_filter[x] for x in correct_lengh]
 invalid_char="''"
 valid_idx=[idx for idx, x in enumerate(sentence_data_filter) if not(invalid_char in x['word_FORM'])]
 sentence_data_filter=[sentence_data_filter[x] for x in valid_idx]
+# remove sentences with many uppercases
+upper_case_valid=[idx for idx, sent in enumerate(sentence_data_filter) if np.asarray([np.asarray([y.isupper() for y in x]).sum() for x in sent['word_FORM']]).max()<4]
+#
+sentence_data_filter=[sentence_data_filter[x] for x in upper_case_valid]
 
 # removing the period in the end of the sentence
 # TODO: remove punctuation from inputs to the model, but check it per model basis.
 sent_with_period=[idx for idx, x in enumerate(sentence_data_filter) if (x['word_FORM'][-1]=='.')]
 sentence_data_filter=[sentence_data_filter[x] for x in sent_with_period]
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_v2.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter, fout)
 
 

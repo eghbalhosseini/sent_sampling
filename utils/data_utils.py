@@ -4,6 +4,7 @@ from neural_nlp.stimuli import StimulusSet
 import getpass
 import os
 import numpy as np
+import pandas as pd
 if getpass.getuser()=='eghbalhosseini':
     UD_PARENT = '/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/'
     CACHING_DIR = '/Users/eghbalhosseini/.result_caching/neural_nlp.score'
@@ -16,7 +17,73 @@ elif getpass.getuser()=='ehoseini':
     RESULTS_DIR='/om/user/ehoseini/MyData/sent_sampling/results/'
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
-print(UD_PARENT)
+
+UD_PATH = UD_PARENT+'/ud-treebanks-v2.6/'
+GOOGLE10L_1T = UD_PARENT+'/Google10L-1T/'
+
+
+LEX_PATH_SET = [
+    {'name': 'AgeOfAcquisition', 'tag': 'AoA_ratings_Kuperman_et_al_BRM.xlsx', 'word_form': 'word_LEMMA',
+     'word_column': 'Word',
+     'metric_column': 'Rating.Mean',
+     'url': 'http://crr.ugent.be/archives/806',
+     'read_instruction': lambda x: pd.read_excel(x)},
+
+    {'name': 'Concreteness', 'tag': 'Concreteness_ratings_Brysbaert_et_al_BRM.xlsx', 'word_form': 'word_LEMMA',
+     'word_column': 'Word', 'metric_column': 'Conc.M',
+     'url': 'http://crr.ugent.be/archives/1330',
+     'read_instruction': lambda x: pd.read_excel(x)},
+
+    {'name': 'Prevalence', 'tag': 'English_Word_Prevalences.xlsx', 'word_form': 'word_LEMMA', 'word_column': 'Word',
+     'metric_column': 'Prevalence',
+     'url': 'https://osf.io/nbu9e/',
+     'read_instruction': lambda x: pd.read_excel(x)},
+
+    {'name': 'Arousal', 'tag': 'Ratings_Warriner_et_al.csv', 'word_form': 'word_LEMMA', 'word_column': 'Word',
+     'metric_column': 'A.Mean.Sum',
+     'url': 'http://crr.ugent.be/archives/1003',
+     'read_instruction': lambda x: pd.read_csv(x)},
+
+    {'name': 'Valence', 'tag': 'Ratings_Warriner_et_al.csv', 'word_form': 'word_LEMMA', 'word_column': 'Word',
+     'metric_column': 'V.Mean.Sum',
+     'url': 'http://crr.ugent.be/archives/1003',
+     'read_instruction': lambda x: pd.read_csv(x)},
+
+    {'name': 'Ambiguity', 'tag': 'SUBTLEX-US frequency list with PoS and Zipf information.xlsx',
+     'word_form': 'word_LEMMA',
+     'word_column': 'Word', 'metric_column': 'Percentage_dom_PoS',
+     'url': 'https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexus',
+     'read_instruction': lambda x: pd.read_excel(x)},
+
+    {'name': 'LexFreq', 'tag': 'SUBTLEX-US frequency list with PoS and Zipf information.xlsx',
+     'word_form': 'word_LEMMA',
+     'word_column': 'Word', 'metric_column': 'Lg10WF',
+     'url': 'https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexus',
+     'read_instruction': lambda x: pd.read_excel(x)},
+
+    {'name': 'surprisal_3', 'tag': os.path.join(GOOGLE10L_1T, 'surprisal-ENGLISH-3.txt'), 'word_form': 'word_LEMMA',
+     'word_column': 'word', 'metric_column': 'surprisal',
+     'url': 'http://colala.berkeley.edu/data/PiantadosiTilyGibson2011/Google10L-1T/',
+     'read_instruction': lambda x: pd.read_csv(x, sep='\t', skiprows=7)}
+]
+
+
+# reference : https://universaldependencies.org/u/overview/tokenization.html
+# reference : https://universaldependencies.org/format.html
+
+UD_ENGLISH_PATH_SET = [{'name': 'UD_English-EWT', 'tag': 'en_ewt-ud', 'group': ['train', 'test', 'dev']},
+                       {'name': 'UD_English-ESL', 'tag': 'en_esl-ud', 'group': ['train', 'test', 'dev']},
+                       {'name': 'UD_English-GUM', 'tag': 'en_gum-ud', 'group': ['train', 'test', 'dev']},
+                       {'name': 'UD_English-PUD', 'tag': 'en_pud-ud', 'group': ['test']},
+                       {'name': 'UD_English-LinES', 'tag': 'en_lines-ud', 'group': ['train', 'test', 'dev']},
+                       {'name': 'UD_English-GUMReddit', 'tag': 'en_gumreddit-ud', 'group': ['train', 'test', 'dev']}]
+def uppercount(str_in):
+    count=0
+    for i in str_in:
+        if(i.isupper()):
+            count=count+1
+    return count
+
 def save_obj(di_, filename_):
     with open(filename_, 'wb') as f:
         pickle.dump(di_, f)
@@ -58,6 +125,7 @@ BENCHMARK_CONFIG=dict(file_loc=CACHING_DIR)
 SENTENCE_CONFIG = [
     dict(name='ud_sentences', file_loc=os.path.join(UD_PARENT,'ud_sentence_data.pkl')),
     dict(name='ud_sentences_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter.pkl')),
+    dict(name='ud_sentences_filter_v2',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter_v2.pkl')),
     dict(name='ud_sentences_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter_sample.pkl')),
     dict(name='ud_sentences_token_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter.pkl')),
     dict(name='ud_sentences_token_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample.pkl'))]

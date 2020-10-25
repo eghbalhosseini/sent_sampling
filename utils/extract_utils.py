@@ -25,6 +25,7 @@ class extractor:
 
     def load_dataset(self):
         data_ = load_obj(self.datafile)
+        self.data_=data_
         stimuli_set = construct_stimuli_set(data_, self.dataset)
         self.stimuli_set=stimuli_set
         self.N_S=int(len(data_))

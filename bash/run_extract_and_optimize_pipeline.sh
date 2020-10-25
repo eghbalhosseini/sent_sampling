@@ -2,16 +2,16 @@
 
 #SBATCH --job-name=ext_opt
 #SBATCH --array=0-3
-#SBATCH --time=12:00:00
+#SBATCH --time=16:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=64G
+#SBATCH --mem=120G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
 for optim_method in coordinate_ascent ; do
-  for n_iter in 500 1000 ; do
+  for n_iter in 2000 ; do
     for N_s in  200 ; do
       for init in 3 ; do
         optim_id="${optim_method}-obj=D_s-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}"
@@ -32,7 +32,7 @@ bench_list=($bench_list)
 for set in set_3 ; do
   for idx in 0 1 ; do
     for ave in False ; do
-    for dataset in ud_sentences_filter ; do
+    for dataset in ud_sentences_filter_v2 ; do
       extract_id="group=${set}-dataset=${dataset}-${extract_list[$idx]}-bench=${bench_list[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
       i=$i+1
