@@ -102,7 +102,7 @@ class optim:
 
 optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent)]
 objective_function=[dict(name='D_s',fun=Distance)]
-n_iters=[100,500,1000]
+n_iters=[100,500,1000,2000]
 N_s=[100,200]
 n_inits=[1,3,5]
 
