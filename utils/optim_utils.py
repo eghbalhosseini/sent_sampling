@@ -40,6 +40,7 @@ def Distance(S,group_act, distance='correlation'):
     return rdm2_vec.mean()
 
 
+
 def Variation(s,N_S, pZ_S):
     qS = np.zeros(N_S)
     qS[s] = 1 / len(s)
