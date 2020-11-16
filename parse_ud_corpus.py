@@ -1,6 +1,7 @@
 import os
 from tqdm import tqdm
 import pyconll
+import pandas as pd
 import xlrd
 import pickle
 import numpy as np
@@ -140,7 +141,17 @@ sentence_data_filter=[sentence_data_filter[x] for x in sent_with_period]
 with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_v2.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter, fout)
 
+# remove duplicates from the set
+sentence_text=[x['text'] for x in sentence_data_filter]
+unique_sentences=list(set(sentence_text))
+indexes=[sentence_text.index(x) for x in unique_sentences]
 
+sentence_data_filter_no_dup=[sentence_data_filter[x] for x in indexes]
+with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_v3_no_dup.pkl'), 'wb') as fout:
+    pickle.dump(sentence_data_filter_no_dup, fout)
+
+test=pd.DataFrame(sentence_data_filter)
+test.drop_duplicates(sublist=['text'])
 sentence_data_filter_sample=[sentence_data_filter[x] for x in range(200)]
 
 with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_sample.pkl'), 'wb') as fout:
