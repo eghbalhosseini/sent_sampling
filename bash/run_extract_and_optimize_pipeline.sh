@@ -58,4 +58,4 @@ RESULTCACHING_HOME=/om/user/`whoami`/.result_cachingc
 export RESULTCACHING_HOME
 XDG_CACHE_HOME=/om/user/`whoami`/st
 export XDG_CACHE_HOME
-singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp.simg python /om/user/ehoseini/sent_sampling/extract_and_optimize.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
+singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp_master.simg python /om/user/ehoseini/sent_sampling/extract_and_optimize.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
