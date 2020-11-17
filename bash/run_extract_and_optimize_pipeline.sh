@@ -24,7 +24,7 @@ done
 
 i=0
 extract_list="network_act brain_resp"
-bench_list="None Fedorenko2016v3-encoding-weights_v2"
+bench_list="None Fedorenko2016v3-encoding-weights"
 extract_list=($extract_list)
 bench_list=($bench_list)
 
