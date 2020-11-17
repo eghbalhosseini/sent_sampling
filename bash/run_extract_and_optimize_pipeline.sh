@@ -32,7 +32,7 @@ bench_list=($bench_list)
 for set in set_3 ; do
   for idx in 0 1 ; do
     for ave in False ; do
-    for dataset in ud_sentences_filter_v2 ; do
+    for dataset in ud_sentences_filter_v3 ; do
       extract_id="group=${set}-dataset=${dataset}-${extract_list[$idx]}-bench=${bench_list[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
       i=$i+1

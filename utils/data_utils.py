@@ -126,6 +126,7 @@ SENTENCE_CONFIG = [
     dict(name='ud_sentences', file_loc=os.path.join(UD_PARENT,'ud_sentence_data.pkl')),
     dict(name='ud_sentences_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter.pkl')),
     dict(name='ud_sentences_filter_v2',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter_v2.pkl')),
+    dict(name='ud_sentences_filter_v3',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter_v3_no_dup.pkl')),
     dict(name='ud_sentences_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_filter_sample.pkl')),
     dict(name='ud_sentences_token_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter.pkl')),
     dict(name='ud_sentences_token_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample.pkl'))]
