@@ -1,5 +1,5 @@
 from utils.data_utils import load_obj, construct_stimuli_set, SENTENCE_CONFIG, BENCHMARK_CONFIG, save_obj, SAVE_DIR
-from neural_nlp.benchmarks.neural import read_words
+from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.models import model_pool, model_layers
 from neural_nlp import FixedLayer
 from brainio_base.assemblies import NeuroidAssembly
@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 
 class extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,extract_type='activations',extract_benchmark='',average_sentence=False):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,extract_type='activations',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
         ##### DATA ####
         self.dataset=dataset # name of the dataset
         self.datafile = datafile  # name of the dataset
@@ -21,6 +21,8 @@ class extractor:
         self.extract_type=extract_type # is the extraction based on activations or predicted brain response
         self.extract_benchmark=extract_benchmark
         self.average_sentence=average_sentence # which representation to output, last token, or average of all tokens.
+        self.atlas=atlas
+        self.modality=modality
 
 
     def load_dataset(self):
@@ -65,21 +67,45 @@ class extractor:
             test1 = model_pool[model]
             layers = model_layers[model]
             candidate = FixedLayer(test1, layers[layer], prerun=None)
-            for stim_id, stim in enumerate(self.stimuli_set):
-                model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
+            if not(self.modality=='fMRI'):
+                for stim_id, stim in enumerate(self.stimuli_set):
+                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
                                        average_sentence=self.average_sentence)  #
-                if self.average_sentence:
+                    if self.average_sentence:
+                        model_activations=self.get_mean_activations(model_activations)
+                    else:
+                        model_activations=self.get_last_word_activations(model_activations)
+                    model_activation_set.append(model_activations)
+            elif self.modality=='fMRI':
+                #TODO check if listen_to and read_words perform the same set of computation.
+                for stim_id, stim in enumerate(self.stimuli_set):
+                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
+                                       average_sentence=self.average_sentence)  #
                     model_activations=self.get_mean_activations(model_activations)
-                else:
-                    model_activations=self.get_last_word_activations(model_activations)
-                model_activation_set.append(model_activations)
+                    model_activation_set.append(model_activations)
             model_activation_flat = [item for sublist in model_activation_set for item in sublist]
         brain_response_split=[]
-        model_activation_assembly=xr.DataArray(model_activation_flat,dims=('presentation', 'neuroid')
-                                               ,coords={'neuroid':layer_weights.coords['neuroid']})
-        for split in layer_weights:
-            brain_response=xr.dot(split,model_activation_assembly,dims=['neuroid'])
-            brain_response_split.append(brain_response.transpose())
+        # get dividers based on the weight file, Fedorenko doesnt have an atlas:
+        if self.atlas==None:
+            model_activation_assembly=xr.DataArray(model_activation_flat,dims=('presentation', 'neuroid')
+                                                    ,coords={'neuroid':layer_weights.coords['neuroid']})
+
+            for split in layer_weights:
+                brain_response=xr.dot(split,model_activation_assembly,dims=['neuroid'])+split.attrs['intercept']
+                brain_response_split.append(brain_response.transpose())
+        else:
+            for exp,atlas in self.atlas:
+                atlas_list = [x for x in layer_weights
+                          if x.attrs['divider'][0] == exp and x.attrs['divider'][1] == atlas]
+                if (not atlas_list) == False:
+                    assert(len(atlas_list)==1)
+                    atlas_weight=atlas_list[0]
+                    atlas_activation_assembly = xr.DataArray(model_activation_flat, dims=('presentation', 'neuroid')
+                                                         , coords={'neuroid': atlas_weight.coords['neuroid']})
+
+                    brain_response = xr.dot(atlas_weight, atlas_activation_assembly, dims=['neuroid'])+atlas_weight.attrs['intercept']
+                    brain_response.attrs['divider']=atlas_weight.attrs['divider']
+                    brain_response_split.append(brain_response.transpose())
 
         return brain_response_split
 

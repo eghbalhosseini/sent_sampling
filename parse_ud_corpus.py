@@ -150,9 +150,7 @@ sentence_data_filter_no_dup=[sentence_data_filter[x] for x in indexes]
 with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter_no_dup, fout)
 
-test=pd.DataFrame(sentence_data_filter)
-test.drop_duplicates(sublist=['text'])
-sentence_data_filter_sample=[sentence_data_filter[x] for x in range(200)]
+sentence_data_filter_sample=[sentence_data_filter_no_dup[x] for x in range(200)]
 
 with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_sample.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter_sample, fout)

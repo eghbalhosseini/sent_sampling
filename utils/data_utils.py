@@ -116,6 +116,7 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
         word_number = list(range(len(sentence_words)))
         zipped_lst = list(zip(sentenceID, word_number, sentence_words))
         sentence_set = StimulusSet(zipped_lst, columns=['sentence_id', 'stimulus_id', 'word'])
+
         sentence_set.name = stimuli_data_name+'_group_'+str(row)
         all_sentence_set.append(sentence_set)
     return all_sentence_set

@@ -6,12 +6,12 @@ from utils.optim_utils import optim
 model_grps_config = [dict(grp_id= 'test_early_layer', grp_set=('gpt2', 'bert-base-uncased', 'xlm-mlm-en-2048'), layer_set=(1,1,1)),
                      dict(grp_id= 'test_brain_act', grp_set=('distilgpt2', 'gpt2'), layer_set=(1,1)),
                      dict(grp_id= 'set_1', grp_set=('bert-large-uncased', 'xlm-mlm-100-1280','gpt2-large'), layer_set=(22,14,34)),
-                     dict(grp_id= 'set_2', grp_set=('xlm-mlm-100-1280',), layer_set=(14,)),
+                     dict(grp_id= 'set_2', grp_set=('roberta-base','roberta-base'), layer_set=(2,3)),
                      dict(grp_id= 'set_3', grp_set=('bert-large-uncased', 'xlm-mlm-100-1280','gpt2'), layer_set=(22,14,7)),]
 
-activation_extract_config=[dict(type='network_act',benchmark='None'),
-                           dict(type='brain_resp',benchmark='Fedorenko2016v3-encoding-weights'),
-                           dict(type='brain_resp',benchmark='Fedorenko2016v3-encoding-weights_v2')]
+activation_extract_config=[dict(type='network_act',benchmark='None',atlas=None,modality=None),
+                           dict(type='brain_resp',benchmark='Fedorenko2016v3-encoding-weights',atlas=None,modality='ECoG'),
+                           dict(type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('384sentences', 'language'),('243sentences', 'language')),modality='fMRI')]
 # define extraction configuration
 extract_configuration = []
 for model_grp, dataset, extract_type, average in itertools.product(model_grps_config, SENTENCE_CONFIG,
@@ -20,7 +20,7 @@ for model_grp, dataset, extract_type, average in itertools.product(model_grps_co
     extract_identifier = extract_identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
     extract_configuration.append(dict(identifier=extract_identifier,model_set=model_grp['grp_set'],
                                       layer_set=model_grp['layer_set'], dataset=dataset['name'],datafile=dataset['file_loc'],
-                                      extract_type=extract_type['type'],benchmark=extract_type['benchmark'],average=average))
+                                      extract_type=extract_type['type'],benchmark=extract_type['benchmark'],atlas=extract_type['atlas'],modality=extract_type['modality'],average=average))
 
 
 extract_pool={}
@@ -38,6 +38,8 @@ for config in extract_configuration:
                                   layer_spec=configure['layer_set'],
                                   extract_type=configure['extract_type'],
                                   extract_benchmark=configure['benchmark'],
+                                  atlas=configure['atlas'],
+                                  modality=configure['modality'],
                                   average_sentence=configure['average'],)
         return extractor_param
 
