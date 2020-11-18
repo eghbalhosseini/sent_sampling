@@ -10,6 +10,8 @@ if getpass.getuser()=='eghbalhosseini':
     OPTIM_PARENT='/Users/eghbalhosseini/MyCodes/opt-exp-design-nlp/'
 elif getpass.getuser()=='ehoseini':
     OPTIM_PARENT = '/om/user/ehoseini/opt-exp-design-nlp'
+elif getpass.getuser()=='alexso':
+    OPTIM_PARENT = '/om/user/alexso/opt-exp-design-nlp'
 
 
 

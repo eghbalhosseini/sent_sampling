@@ -15,6 +15,11 @@ elif getpass.getuser()=='ehoseini':
     CACHING_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score'
     SAVE_DIR = '/om/user/ehoseini/MyData/sent_sampling/'
     RESULTS_DIR='/om/user/ehoseini/MyData/sent_sampling/results/'
+elif getpass.getuser() == 'alexso':
+    UD_PARENT = '/om/user/alexso/MyData/Universal Dependencies 2.6/'
+    CACHING_DIR = '/om/user/alexso/.result_caching/neural_nlp.score'
+    SAVE_DIR = '/om/user/alexso/MyData/sent_sampling/'
+    RESULTS_DIR = '/om/user/alexso/MyData/sent_sampling/results/'
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
 
