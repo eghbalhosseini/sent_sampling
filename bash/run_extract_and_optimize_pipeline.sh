@@ -23,14 +23,14 @@ for optim_method in coordinate_ascent ; do
 done
 
 i=0
-extract_list="network_act brain_resp"
-bench_list="None Fedorenko2016v3-encoding-weights"
+extract_list="network_act"
+bench_list="None"
 extract_list=($extract_list)
 bench_list=($bench_list)
 
 
 for set in set_3 ; do
-  for idx in 0 1 ; do
+  for idx in 0 ; do
     for ave in False ; do
     for dataset in ud_sentences_filter_v3 ; do
       extract_id="group=${set}-dataset=${dataset}-${extract_list[$idx]}-bench=${bench_list[$idx]}-ave=${ave}"

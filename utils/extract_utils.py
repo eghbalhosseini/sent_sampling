@@ -12,12 +12,13 @@ from tqdm import tqdm
 
 
 class extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,extract_type='activations',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_type='activations',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
         ##### DATA ####
         self.dataset=dataset # name of the dataset
         self.datafile = datafile  # name of the dataset
         self.model_spec=model_spec # set of models to run plus the layers to extract from
         self.layer_spec=layer_spec
+        self.layer_name=layer_name
         self.extract_type=extract_type # is the extraction based on activations or predicted brain response
         self.extract_benchmark=extract_benchmark
         self.average_sentence=average_sentence # which representation to output, last token, or average of all tokens.
