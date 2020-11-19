@@ -15,7 +15,6 @@ model_grps_config = [dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1
                      dict(grp_id= 'set_4', grp_layer_tuple=(('bert-large-uncased-whole-word-masking','encoder.layer.11.output'),
                                                             ('xlm-mlm-en-2048','encoder.layer_norm2.11'),
                                                             ('gpt2-xl','encoder.h.43'),
-                                                            ('t5-3b','encoder.block.16'),
                                                             ('albert-xxlarge-v2','encoder.albert_layer_groups.4'),
                                                             ('ctrl','h.46')),layer_by_name=True)]
 
