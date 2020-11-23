@@ -7,7 +7,7 @@ from neural_nlp.models import model_pool, model_layers
 model_grps_config = [dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1),
                                                                        ('bert-base-uncased',1),
                                                                         ('xlm-mlm-en-2048',1)),layer_by_name=False),
-                     dict(grp_id='set_2', grp_layer_tuple=(('roberta-base', 2),
+                     dict(grp_id='set_2', grp_layer_tuple=(('xlm-mlm-en-2048', 2),
                                                                       ('roberta-base', 3)), layer_by_name=False),
                      dict(grp_id='set_3', grp_layer_tuple=(('bert-large-uncased', 22),
                                                                       ('xlm-mlm-100-1280', 14),
