@@ -7,17 +7,17 @@ import numpy as np
 import pandas as pd
 if getpass.getuser()=='eghbalhosseini':
     UD_PARENT = '/Users/eghbalhosseini/MyData/Universal Dependencies 2.6/'
-    CACHING_DIR = '/Users/eghbalhosseini/.result_caching/neural_nlp.score'
+    BENCHMARK_DIR = '/Users/eghbalhosseini/.result_caching/neural_nlp.score/'
     SAVE_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/'
     RESULTS_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/results/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
-    CACHING_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score'
+    BENCHMARK_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score/'
     SAVE_DIR = '/om/user/ehoseini/MyData/sent_sampling/'
     RESULTS_DIR='/om/user/ehoseini/MyData/sent_sampling/results/'
 elif getpass.getuser() == 'alexso':
     UD_PARENT = '/om/user/alexso/MyData/Universal Dependencies 2.6/'
-    CACHING_DIR = '/om/user/alexso/.result_caching/neural_nlp.score'
+    BENCHMARK_DIR = '/om/user/alexso/.result_caching/neural_nlp.score'
     SAVE_DIR = '/om/user/alexso/MyData/sent_sampling/'
     RESULTS_DIR = '/om/user/alexso/MyData/sent_sampling/results/'
 else:
@@ -126,7 +126,7 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
         all_sentence_set.append(sentence_set)
     return all_sentence_set
 
-BENCHMARK_CONFIG=dict(file_loc=CACHING_DIR)
+BENCHMARK_CONFIG=dict(file_loc=BENCHMARK_DIR)
 
 SENTENCE_CONFIG = [
     dict(name='ud_sentences', file_loc=os.path.join(UD_PARENT,'ud_sentence_data.pkl')),

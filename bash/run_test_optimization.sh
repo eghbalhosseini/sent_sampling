@@ -10,7 +10,7 @@
 
 module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
-RESULTCACHING_HOME=/om/user/`whoami`/.result_cachingc
+RESULTCACHING_HOME=/om/user/`whoami`/.result_caching
 export RESULTCACHING_HOME
 XDG_CACHE_HOME=/om/user/`whoami`/st
 export XDG_CACHE_HOME

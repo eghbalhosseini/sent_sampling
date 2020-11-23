@@ -2,11 +2,9 @@ from utils.data_utils import load_obj, construct_stimuli_set, SENTENCE_CONFIG, B
 from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.models import model_pool, model_layers
 from neural_nlp import FixedLayer
-from brainio_base.assemblies import NeuroidAssembly
 import os
 import pandas as pd
 import numpy as np
-import copy
 import xarray as xr
 from tqdm import tqdm
 
