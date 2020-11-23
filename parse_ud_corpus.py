@@ -9,8 +9,6 @@ import copy
 from utils.data_utils import UD_PARENT, LEX_PATH_SET, UD_ENGLISH_PATH_SET, UD_PATH, uppercount
 # file path constructor
 
-
-
 # extract lexical features
 ##TODO: add word form to the set 
 
@@ -152,15 +150,14 @@ with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_v3_no_dup.pkl'), 'wb'
 
 sentence_data_filter_sample=[sentence_data_filter_no_dup[x] for x in range(200)]
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_sample.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_sample_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter_sample, fout)
 
 # clean the last token
-sentence_data_token=[]
-assert(np.asarray([x['text'][-1]=='.' for x in sentence_data_filter]).sum()==len(sentence_data_filter))
-data_keys=list(sentence_data_filter[1].keys())
+assert(np.asarray([x['text'][-1]=='.' for x in sentence_data_filter_no_dup]).sum()==len(sentence_data_filter_no_dup))
+data_keys=list(sentence_data_filter_no_dup[1].keys())
 data_keys=list(set(data_keys)-set(['text_key','meta','id','text']))
-sentence_data_token=copy.deepcopy(sentence_data_filter)
+sentence_data_token=copy.deepcopy(sentence_data_filter_no_dup)
 for idx, sentence in tqdm(enumerate(sentence_data_token)):
     for key in data_keys:
         if key=='sentence_length':
@@ -169,14 +166,14 @@ for idx, sentence in tqdm(enumerate(sentence_data_token)):
             sentence[key] = sentence[key][:-1]
     sentence_data_token[idx]=sentence
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_token, fout)
 
 # select a random subset
 s_random_idx=list(np.random.randint(0,len(sentence_data_token),200))
 sentence_data_token_sample=[sentence_data_token[x] for x in s_random_idx]
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter_sample.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter_sample_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_token_sample, fout)
 
 # filtering based on Universal features : see https://universaldependencies.org/u/feat/index.html

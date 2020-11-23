@@ -166,3 +166,32 @@ class extractor:
 
         pass
 
+
+class model_extractor:
+    def __init__(self,dataset=None,datafile=None,model_spec=None,extract_type='activation',atlas=None,average_sentence=False):
+        self.dataset=dataset
+        self.datafile=datafile
+        self.model_spec=model_spec
+        self.extract_type=extract_type
+        self.atlas=atlas
+        self.average_sentence=average_sentence
+        self.extractor=extractor(datafile=self.datafile,dataset=self.dataset,extract_type=self.extract_type,average_sentence=self.average_sentence)
+
+    # delegations from extractor
+    def load_dataset(self):
+        self.extractor.load_dataset()
+
+
+    def __call__(self, *args, **kwargs):
+        # get layers for model
+        layers=model_layers[self.model_spec]
+        for i, layer in enumerate(tqdm(layers, desc='layers')):
+            model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_type}_ave_{self.average_sentence}.pkl"
+            print(f"extracting network activations for {self.model_spec}")
+            if os.path.exists(os.path.join(SAVE_DIR, model_activation_name)):
+                print(f"{model_activation_name} already exists, skipping...")
+                pass
+            else:
+                print(f"{model_activation_name} doesn't exists, creating...")
+                model_activation = self.extractor.extract_representation(self.model_spec, i)
+                save_obj(model_activation, os.path.join(SAVE_DIR, model_activation_name))
