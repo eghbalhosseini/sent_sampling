@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=ext_mdl_act
 #SBATCH --array=0-4
-#SBATCH --time=12:00:00
+#SBATCH --time=96:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=120G
 #SBATCH --mail-type=ALL
@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in ud_sentences_token_filter_v3_sample ; do
+for dataset in ud_sentences_token_filter_v3 ; do
       for model in bert-large-uncased-whole-word-masking \
         xlm-mlm-en-2048 \
         ctrl \
