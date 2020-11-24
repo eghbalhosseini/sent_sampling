@@ -11,7 +11,7 @@
 
 i=0
 for dataset in ud_sentences_token_filter_v3 ; do
-      for model distilgpt2 ; do
+      for model in distilgpt2 ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           i=$i+1
