@@ -52,6 +52,7 @@ for extract in ${extract_list[@]} ; do
 done
 
 
+
 module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
 RESULTCACHING_HOME=/om/user/`whoami`/.result_caching

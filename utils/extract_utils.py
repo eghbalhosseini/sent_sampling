@@ -181,17 +181,28 @@ class model_extractor:
     def load_dataset(self):
         self.extractor.load_dataset()
 
-
     def __call__(self, *args, **kwargs):
         # get layers for model
+        model_impl = model_pool[self.model_spec]
         layers=model_layers[self.model_spec]
+
         for i, layer in enumerate(tqdm(layers, desc='layers')):
             model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_type}_ave_{self.average_sentence}.pkl"
-            print(f"extracting network activations for {self.model_spec}")
+            print(f"\nextracting network activations for {self.model_spec}\n")
             if os.path.exists(os.path.join(SAVE_DIR, model_activation_name)):
-                print(f"{model_activation_name} already exists, skipping...")
+                print(f"\n{model_activation_name} already exists, skipping...\n")
                 pass
             else:
-                print(f"{model_activation_name} doesn't exists, creating...")
-                model_activation = self.extractor.extract_representation(self.model_spec, i)
-                save_obj(model_activation, os.path.join(SAVE_DIR, model_activation_name))
+                print(f"\n{model_activation_name} doesn't exists, creating...\n")
+                #model_activation = self.extractor.extract_representation(self.model_spec, i)
+                model_activation_set = []
+                candidate = FixedLayer(model_impl, layer, prerun=layers if i==0 else None)
+                for stim_id, stim in enumerate(self.extractor.stimuli_set):
+                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=self.average_sentence)  #
+                    if self.average_sentence:
+                        model_activations = self.extractor.get_mean_activations(model_activations)
+                    else:
+                        model_activations = self.extractor.get_last_word_activations(model_activations)
+                    model_activation_set.append(model_activations)
+                model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+                save_obj(model_activation_flat, os.path.join(SAVE_DIR, model_activation_name))

@@ -22,6 +22,9 @@ for dataset in ud_sentences_token_filter_v3 ; do
       done
 done
 
+echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
+echo "Running model ${model_list[$SLURM_ARRAY_TASK_ID]}"
+echo "Running benchmark ${dataset_list[$SLURM_ARRAY_TASK_ID]}"
 
 module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
