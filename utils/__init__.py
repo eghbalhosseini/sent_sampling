@@ -16,7 +16,11 @@ model_grps_config = [dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1
                                                             ('xlm-mlm-en-2048','encoder.layer_norm2.11'),
                                                             ('gpt2-xl','encoder.h.43'),
                                                             ('albert-xxlarge-v2','encoder.albert_layer_groups.4'),
-                                                            ('ctrl','h.46')),layer_by_name=True)]
+                                                            ('ctrl','h.46')),layer_by_name=True),
+                    dict(grp_id= 'set_5', grp_layer_tuple=(('bert-large-uncased-whole-word-masking',1),
+                                                            ('xlm-mlm-en-2048',1),
+                                                            ('gpt2-xl',1),
+                                                            ('ctrl',1)),layer_by_name=False)]
 
 activation_extract_config=[dict(type='network_act',benchmark='None',atlas=None,modality=None),
                            dict(type='brain_resp',benchmark='Fedorenko2016v3-encoding-weights',atlas=None,modality='ECoG'),
