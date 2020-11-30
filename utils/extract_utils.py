@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 
 class extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_type='activations',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_type='activation',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
         ##### DATA ####
         self.dataset=dataset # name of the dataset
         self.datafile = datafile  # name of the dataset
@@ -55,7 +55,7 @@ class extractor:
         layer_weights=results_.attrs['layer_weights'][layer]
         # get layer activations
         # additionally check if the result for network activation exist, that can be used here!
-        model_activation_ver = f"{self.dataset}_{model}_layer_{layer}_network_act_ave_{self.average_sentence}.pkl"
+        model_activation_ver = f"{self.dataset}_{model}_layer_{layer}_activation_ave_{self.average_sentence}.pkl"
         if os.path.exists(os.path.join(SAVE_DIR, model_activation_ver)):
             print(f"{model_activation_ver} can be used for computing brain prediction, loading...")
             model_activation = load_obj(os.path.join(SAVE_DIR, model_activation_ver))
@@ -108,11 +108,12 @@ class extractor:
 
         return brain_response_split
 
-    def extract_representation(self,model,layer):
+    def extract_representation(self,model,layer_id):
         model_activation_set=[]
-        test1 = model_pool[model]
+        model_impl = model_pool[model]
         layers = model_layers[model]
-        candidate = FixedLayer(test1, layers[layer], prerun=None)
+        candidate=FixedLayer(model_impl, layers[layer_id], prerun=layers if layer_id == 0 else None)
+        #candidate = FixedLayer(test1, layers[layer], prerun=None)
         for stim_id, stim in enumerate(self.stimuli_set):
             model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=self.average_sentence)  #
             if self.average_sentence:
@@ -130,7 +131,7 @@ class extractor:
         model_grp_activations=[]
         for idx, model_id in enumerate(self.model_spec):
 
-            if self.extract_type=='network_act':
+            if self.extract_type=='activation':
                 model_activation_name = f"{self.dataset}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_type}_ave_{self.average_sentence}.pkl"
                 print(f"extracting network activations for {self.model_spec[idx]}")
                 # see whether model activation already extracted

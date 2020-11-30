@@ -35,8 +35,10 @@ LOGGER = tools.get_logger('OPT-EXP-DSGN')
 # Objective functions :
 # this works on a list,
 def Distance(S,group_act, distance='correlation'):
-    patterns_list = [[x['activations'][i] for i in S] for x in group_act]
-    patterns_list=[[x.values if isinstance(x, xr.core.dataarray.DataArray) else x for x in pattern] for pattern in patterns_list]
+    if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
+        patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
+    else:
+        patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
     #[x.values for x in patterns if type]
     rdm2_vec = second_order_rdm(patterns_list, True, distance)
     return rdm2_vec.mean()
@@ -88,7 +90,7 @@ class optim:
     # TODO : Do the regression on train on all the data.
     # TODO : verify that Model activation, and Brain response,
     def mod_objective_function(self,S):
-        if self.extract_type=='network_act':
+        if self.extract_type=='activation':
             return self.objective_function(S,self.activations)
         elif self.extract_type=='brain_resp':
             return np.mean([self.objective_function(S,x) for x in self.activations_by_split])

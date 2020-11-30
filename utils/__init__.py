@@ -7,22 +7,30 @@ from neural_nlp.models import model_pool, model_layers
 model_grps_config = [dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1),
                                                                        ('bert-base-uncased',1),
                                                                         ('xlm-mlm-en-2048',1)),layer_by_name=False),
-                     dict(grp_id='set_2', grp_layer_tuple=(('distilgpt2',1),
-                                                                      ('distilgpt2', 3)), layer_by_name=False),
+                     dict(grp_id='set_2', grp_layer_tuple=(('albert-xxlarge-v2',"encoder.albert_layer_groups.2"),
+                                                        ('albert-xxlarge-v2', "encoder.albert_layer_groups.3")), layer_by_name=True),
+                    dict(grp_id='test_pereira', grp_layer_tuple=(('roberta-base',2),
+                                                        ('roberta-base', 3)), layer_by_name=False),
+                    dict(grp_id='test_pereira_full', grp_layer_tuple=(('bert-large-uncased-whole-word-masking', 2),
+                                                                  ('bert-large-uncased-whole-word-masking', 3)), layer_by_name=False),
+
                      dict(grp_id='set_3', grp_layer_tuple=(('bert-large-uncased', 22),
                                                                       ('xlm-mlm-100-1280', 14),
                                                                       ('gpt2', 7)), layer_by_name=False),
-                     dict(grp_id= 'set_4', grp_layer_tuple=(('bert-large-uncased-whole-word-masking','encoder.layer.11.output'),
+                     dict(grp_id= 'best_performing_pereira',description='best layer/Pereira benchmark',
+                          grp_layer_tuple=(('bert-large-uncased-whole-word-masking','encoder.layer.11.output'),
                                                             ('xlm-mlm-en-2048','encoder.layer_norm2.11'),
                                                             ('gpt2-xl','encoder.h.43'),
                                                             ('albert-xxlarge-v2','encoder.albert_layer_groups.4'),
                                                             ('ctrl','h.46')),layer_by_name=True),
-                    dict(grp_id= 'set_5', grp_layer_tuple=(('bert-large-uncased-whole-word-masking',1),
-                                                            ('xlm-mlm-en-2048',1),
-                                                            ('gpt2-xl',1),
-                                                            ('ctrl',1)),layer_by_name=False)]
+                     dict(grp_id='second_best_performing_pereira', description='second best layer/Pereira benchmark',
+                          grp_layer_tuple=(('bert-large-uncased-whole-word-masking', 'encoder.layer.12.output'),
+                                           ('xlm-mlm-en-2048', 'encoder.layer_norm2.6'),
+                                           ('gpt2-xl', 'encoder.h.42'),
+                                           ('albert-xxlarge-v2', 'encoder.albert_layer_groups.2'),
+                                           ('ctrl', 'h.47')), layer_by_name=True)]
 
-activation_extract_config=[dict(type='network_act',benchmark='None',atlas=None,modality=None),
+activation_extract_config=[dict(type='activation',benchmark='None',atlas=None,modality=None),
                            dict(type='brain_resp',benchmark='Fedorenko2016v3-encoding-weights',atlas=None,modality='ECoG'),
                            dict(type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('384sentences', 'language'),('243sentences', 'language')),modality='fMRI')]
 # define extraction configuration
