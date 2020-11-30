@@ -17,7 +17,7 @@ model_grps_config = [dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1
                      dict(grp_id='set_3', grp_layer_tuple=(('bert-large-uncased', 22),
                                                                       ('xlm-mlm-100-1280', 14),
                                                                       ('gpt2', 7)), layer_by_name=False),
-                     dict(grp_id= 'best_performing_pereira',description='best layer/Pereira benchmark',
+                     dict(grp_id='best_performing_pereira',description='best layer/Pereira benchmark',
                           grp_layer_tuple=(('bert-large-uncased-whole-word-masking','encoder.layer.11.output'),
                                                             ('xlm-mlm-en-2048','encoder.layer_norm2.11'),
                                                             ('gpt2-xl','encoder.h.43'),
