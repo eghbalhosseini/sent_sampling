@@ -10,7 +10,7 @@ from utils import extract_pool
 #name='group=set_2-dataset=ud_sentences_token_filter_v3-activation-bench=None-ave=False'
 #name='group=set_2-dataset=ud_sentences_token_filter_v3_sample-brain_resp-bench=Pereira2018-encoding-weights-ave=False'
 #name='group=test_pereira-dataset=ud_sentences_filter_v3_sample-brain_resp-bench=Pereira2018-encoding-weights-ave=False'
-name='group=test_pereira_full-dataset=ud_sentences_token_filter_v3-brain_resp-bench=Pereira2018-encoding-weights-ave=False'
+name='group=test_pereira_full-dataset=ud_sentences_token_filter_v3-brain_resp_Pereira_exp1-bench=Pereira2018-encoding-weights-ave=False'
 #name='group=set_3-dataset=ud_sentences_filter-activation-bench=None-ave=False'
 #name='group=set_1-dateset=ud_sentences_token_filter_sample-activation-bench=None-ave=True'
 #name_brain='group=set_1-dateset=ud_sentences_filter_sample-brain_resp-bench=Fedorenko2016v3-encoding-weights_v2-ave=False'

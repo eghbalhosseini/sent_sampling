@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 
 class extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_type='activation',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
         ##### DATA ####
         self.dataset=dataset # name of the dataset
         self.datafile = datafile  # name of the dataset
@@ -22,6 +22,7 @@ class extractor:
         self.average_sentence=average_sentence # which representation to output, last token, or average of all tokens.
         self.atlas=atlas
         self.modality=modality
+        self.extract_name=extract_name
 
 
     def load_dataset(self):
@@ -132,7 +133,7 @@ class extractor:
         for idx, model_id in enumerate(self.model_spec):
 
             if self.extract_type=='activation':
-                model_activation_name = f"{self.dataset}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_type}_ave_{self.average_sentence}.pkl"
+                model_activation_name = f"{self.dataset}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_name}_ave_{self.average_sentence}.pkl"
                 print(f"extracting network activations for {self.model_spec[idx]}")
                 # see whether model activation already extracted
                 if os.path.exists(os.path.join(SAVE_DIR,model_activation_name)):
@@ -146,7 +147,7 @@ class extractor:
                 activation=dict(model_name=self.model_spec[idx],layer=self.layer_spec[idx],activations=model_activation)
                 model_grp_activations.append(activation)
             elif self.extract_type=='brain_resp':
-                brain_resp_name = f"{self.dataset}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_type}_{self.extract_benchmark}_ave_{self.average_sentence}.pkl"
+                brain_resp_name = f"{self.dataset}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_name}_{self.extract_benchmark}_ave_{self.average_sentence}.pkl"
                 print(f"extracting brain response for {self.model_spec[idx]}")
                 if os.path.exists(os.path.join(SAVE_DIR, brain_resp_name)):
                     print(f"{brain_resp_name} already exists, loading...")
@@ -169,14 +170,15 @@ class extractor:
 
 
 class model_extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,extract_type='activation',atlas=None,average_sentence=False):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,extract_name='activation',extract_type='activation',atlas=None,average_sentence=False):
         self.dataset=dataset
         self.datafile=datafile
         self.model_spec=model_spec
         self.extract_type=extract_type
+        self.extract_name=extract_name
         self.atlas=atlas
         self.average_sentence=average_sentence
-        self.extractor=extractor(datafile=self.datafile,dataset=self.dataset,extract_type=self.extract_type,average_sentence=self.average_sentence)
+        self.extractor=extractor(datafile=self.datafile,dataset=self.dataset,extract_name=self.extract_name,extract_type=self.extract_type,average_sentence=self.average_sentence)
 
     # delegations from extractor
     def load_dataset(self):
@@ -188,7 +190,7 @@ class model_extractor:
         layers=model_layers[self.model_spec]
 
         for i, layer in enumerate(tqdm(layers, desc='layers')):
-            model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_type}_ave_{self.average_sentence}.pkl"
+            model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_ave_{self.average_sentence}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
             if os.path.exists(os.path.join(SAVE_DIR, model_activation_name)):
                 print(f"\n{model_activation_name} already exists, skipping...\n")

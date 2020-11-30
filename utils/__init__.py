@@ -30,14 +30,16 @@ model_grps_config = [dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1
                                            ('albert-xxlarge-v2', 'encoder.albert_layer_groups.2'),
                                            ('ctrl', 'h.47')), layer_by_name=True)]
 
-activation_extract_config=[dict(type='activation',benchmark='None',atlas=None,modality=None),
-                           dict(type='brain_resp',benchmark='Fedorenko2016v3-encoding-weights',atlas=None,modality='ECoG'),
-                           dict(type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('384sentences', 'language'),('243sentences', 'language')),modality='fMRI')]
+activation_extract_config=[dict(name='activation',type='activation',benchmark='None',atlas=None,modality=None),
+                           dict(name='brain_resp',type='brain_resp',benchmark='Fedorenko2016v3-encoding-weights',atlas=None,modality='ECoG'),
+                           dict(name='brain_resp',type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('384sentences', 'language'),('243sentences', 'language')),modality='fMRI'),
+                           dict(name='brain_resp_Pereira_exp1',type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('384sentences', 'language'),),modality='fMRI'),
+                           dict(name='brain_resp_Pereira_exp2',type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('243sentences', 'language'),),modality='fMRI')]
 # define extraction configuration
 extract_configuration = []
 for model_grp, dataset, extract_type, average in itertools.product(model_grps_config, SENTENCE_CONFIG,
                                                                    activation_extract_config, [True, False]):
-    extract_identifier = f"[group={model_grp['grp_id']}]-[dataset={dataset['name']}]-[{extract_type['type']}]-[bench={extract_type['benchmark']}]-[ave={average}]"
+    extract_identifier = f"[group={model_grp['grp_id']}]-[dataset={dataset['name']}]-[{extract_type['name']}]-[bench={extract_type['benchmark']}]-[ave={average}]"
     extract_identifier = extract_identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
     model_set = tuple(x[0] for x in model_grp['grp_layer_tuple'])
     if model_grp['layer_by_name']:
@@ -49,7 +51,7 @@ for model_grp, dataset, extract_type, average in itertools.product(model_grps_co
 
     extract_configuration.append(dict(identifier=extract_identifier,model_set=model_set,
                                       layer_set=layer_set,layer_name=layer_name, dataset=dataset['name'],datafile=dataset['file_loc'],
-                                      extract_type=extract_type['type'],benchmark=extract_type['benchmark'],atlas=extract_type['atlas'],modality=extract_type['modality'],average=average))
+                                      extract_name=extract_type['name'],extract_type=extract_type['type'],benchmark=extract_type['benchmark'],atlas=extract_type['atlas'],modality=extract_type['modality'],average=average))
 
 
 extract_pool={}
@@ -66,6 +68,7 @@ for config in extract_configuration:
                                   model_spec=configure['model_set'],
                                   layer_spec=configure['layer_set'],
                                   layer_name=configure['layer_name'],
+                                  extract_name=configure['extract_name'],
                                   extract_type=configure['extract_type'],
                                   extract_benchmark=configure['benchmark'],
                                   atlas=configure['atlas'],

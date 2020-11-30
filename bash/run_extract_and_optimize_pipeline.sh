@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_opt
-#SBATCH --array=0-5
+#SBATCH --array=0-1
 #SBATCH --time=72:00:00
 #SBATCH --mem=120G
 #SBATCH -c 16
@@ -23,18 +23,17 @@ for optim_method in coordinate_ascent ; do
 done
 
 i=0
-extract_type="activation brain_resp brain_resp"
-bench_type="None Fedorenko2016v3-encoding-weights Pereira2018-encoding-weights"
-extract_type=($extract_type)
+extract_name="brain_resp_Pereira_exp1 brain_resp_Pereira_exp2"
+bench_type="Pereira2018-encoding-weights Pereira2018-encoding-weights"
+extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for set in second_best_performing_pereira \
- best_performing_pereira ; do
-  for idx in 0 1 2 ; do
+for set in best_performing_pereira ; do
+  for idx in 0 1 ; do
     for ave in False ; do
     for dataset in ud_sentences_token_filter_v3 ; do
-      extract_id="group=${set}-dataset=${dataset}-${extract_type[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
+      extract_id="group=${set}-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
       i=$i+1
       done
