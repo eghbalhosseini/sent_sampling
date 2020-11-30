@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_mdl_act
-#SBATCH --array=0-4
+#SBATCH --array=0-3
 #SBATCH --time=96:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=180G
@@ -11,11 +11,10 @@
 
 i=0
 for dataset in ud_sentences_token_filter_v3 ; do
-      for model in bert-large-uncased-whole-word-masking \
-        xlm-mlm-en-2048 \
-        ctrl \
-        albert-xxlarge-v2 \
-        gpt2-xl ; do
+      for model in bert-base-uncased \
+        xlm-mlm-100-1280 \
+        gpt2 \
+        albert-base-v1 ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           i=$i+1
