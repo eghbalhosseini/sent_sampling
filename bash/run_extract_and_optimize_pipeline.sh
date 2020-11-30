@@ -2,18 +2,18 @@
 
 #SBATCH --job-name=ext_opt
 #SBATCH --array=0-5
-#SBATCH --time=96:00:00
-#SBATCH --ntasks=1
+#SBATCH --time=72:00:00
 #SBATCH --mem=120G
+#SBATCH -c 16
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
 for optim_method in coordinate_ascent ; do
-  for n_iter in 2000 ; do
+  for n_iter in 1000 ; do
     for N_s in  300 ; do
-      for init in 3 ; do
+      for init in 1 ; do
         optim_id="${optim_method}-obj=D_s-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}"
         optim_list[$i]="$optim_id"
         i=$i+1
