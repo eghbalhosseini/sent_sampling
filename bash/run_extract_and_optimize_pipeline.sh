@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for optim_method in coordinate_ascent ; do
+for optim_method in coordinate_ascent ; dossh
   for n_iter in 1000 ; do
     for N_s in  300 ; do
       for init in 1 ; do
