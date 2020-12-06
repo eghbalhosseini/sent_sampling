@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_opt
-#SBATCH --array=0-1
-#SBATCH --time=72:00:00
+#SBATCH --array=0-9
+#SBATCH --time=96:00:00
 #SBATCH --mem=120G
 #SBATCH -c 16
 #SBATCH --mail-type=ALL
@@ -10,10 +10,10 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for optim_method in coordinate_ascent ; dossh
-  for n_iter in 1000 ; do
+for optim_method in coordinate_ascent ; do
+  for n_iter in 2000 ; do
     for N_s in  300 ; do
-      for init in 1 ; do
+      for init in 2 ; do
         optim_id="${optim_method}-obj=D_s-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}"
         optim_list[$i]="$optim_id"
         i=$i+1
@@ -23,15 +23,19 @@ for optim_method in coordinate_ascent ; dossh
 done
 
 i=0
-extract_name="brain_resp_Pereira_exp1 brain_resp_Pereira_exp2"
-bench_type="Pereira2018-encoding-weights Pereira2018-encoding-weights"
+extract_name="activation brain_resp_Pereira_exp1 brain_resp_Pereira_exp2"
+bench_type="None Pereira2018-encoding-weights Pereira2018-encoding-weights"
 extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for set in best_performing_pereira ; do
-  for idx in 0 1 ; do
-    for ave in False ; do
+for set in best_performing_pereira_1 \
+ best_performing_pereira_2 \
+ best_performing_pereira_3 \
+ best_performing_pereira_4 \
+ best_performing_pereira_5 ; do
+  for idx in 0 ; do
+    for ave in True False ; do
     for dataset in ud_sentences_token_filter_v3 ; do
       extract_id="group=${set}-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
