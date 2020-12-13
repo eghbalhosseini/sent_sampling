@@ -86,7 +86,7 @@ UPOS_CONFIG={}
 valid_chr_ASCII=[list(range(39,40)),
                  list(range(44,47)),
                  list(range(65,91)),
-                 list(range(97,122)),
+                 list(range(97,123)),
                  list(range(160,161))]
 flat_list = [item for sublist in valid_chr_ASCII for item in sublist]
 valid_chars=set([ chr(x) for x in flat_list])
@@ -136,7 +136,7 @@ sentence_data_filter=[sentence_data_filter[x] for x in upper_case_valid]
 sent_with_period=[idx for idx, x in enumerate(sentence_data_filter) if (x['word_FORM'][-1]=='.')]
 sentence_data_filter=[sentence_data_filter[x] for x in sent_with_period]
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_v2.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentencez_data_filter_v2.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter, fout)
 
 # remove duplicates from the set
@@ -145,12 +145,12 @@ unique_sentences=list(set(sentence_text))
 indexes=[sentence_text.index(x) for x in unique_sentences]
 
 sentence_data_filter_no_dup=[sentence_data_filter[x] for x in indexes]
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_v3_no_dup.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentencez_data_filter_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter_no_dup, fout)
 
 sentence_data_filter_sample=[sentence_data_filter_no_dup[x] for x in range(200)]
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_filter_sample_v3_no_dup.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentencez_data_filter_sample_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_filter_sample, fout)
 
 # clean the last token
@@ -166,14 +166,14 @@ for idx, sentence in tqdm(enumerate(sentence_data_token)):
             sentence[key] = sentence[key][:-1]
     sentence_data_token[idx]=sentence
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter_v3_no_dup.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentencez_data_token_filter_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_token, fout)
 
 # select a random subset
 s_random_idx=list(np.random.randint(0,len(sentence_data_token),200))
 sentence_data_token_sample=[sentence_data_token[x] for x in s_random_idx]
 
-with open(os.path.join(UD_PARENT, 'ud_sentence_data_token_filter_sample_v3_no_dup.pkl'), 'wb') as fout:
+with open(os.path.join(UD_PARENT, 'ud_sentencez_data_token_filter_sample_v3_no_dup.pkl'), 'wb') as fout:
     pickle.dump(sentence_data_token_sample, fout)
 
 # filtering based on Universal features : see https://universaldependencies.org/u/feat/index.html
