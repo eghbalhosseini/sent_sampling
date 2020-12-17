@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_opt
-#SBATCH --array=0-9
-#SBATCH --time=96:00:00
-#SBATCH --mem=120G
+#SBATCH --array=0-4
+#SBATCH --time=12:00:00
+#SBATCH --mem=256G
 #SBATCH -c 16
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
