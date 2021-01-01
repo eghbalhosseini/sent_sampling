@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_opt
-#SBATCH --array=2
+#SBATCH --array=0-4
 #SBATCH --time=36:00:00
 #SBATCH --mem=256G
 #SBATCH -c 16
