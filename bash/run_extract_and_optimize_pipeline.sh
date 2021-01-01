@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=ext_opt
 #SBATCH --array=2
-#SBATCH --time=12:00:00
+#SBATCH --time=36:00:00
 #SBATCH --mem=256G
 #SBATCH -c 16
 #SBATCH --mail-type=ALL
@@ -11,9 +11,9 @@
 
 i=0
 for optim_method in coordinate_ascent ; do
-  for n_iter in 2000 ; do
+  for n_iter in 1000 ; do
     for N_s in  300 ; do
-      for init in 2 ; do
+      for init in 1 ; do
         optim_id="${optim_method}-obj=D_s-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}"
         optim_list[$i]="$optim_id"
         i=$i+1

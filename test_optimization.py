@@ -25,6 +25,6 @@ test=extract_pool[name]()
 test.load_dataset()
 test()
 
-optim_obj=optim(N_s=50,n_iter=200,n_init=2)
+optim_obj=optim(N_s=200,n_iter=200,n_init=1)
 optim_obj.load_extractor(test)
 S_opt_d, DS_opt_d=optim_obj()
