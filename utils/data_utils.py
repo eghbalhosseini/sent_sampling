@@ -10,6 +10,7 @@ if getpass.getuser()=='eghbalhosseini':
     BENCHMARK_DIR = '/Users/eghbalhosseini/.result_caching/neural_nlp.score/'
     SAVE_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/'
     RESULTS_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/results/'
+    COCA_CORPUS_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/parsed/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     BENCHMARK_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score/'
