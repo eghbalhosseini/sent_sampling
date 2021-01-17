@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=ext_opt
 #SBATCH --array=0-4
-#SBATCH --time=36:00:00
+#SBATCH --time=48:00:00
 #SBATCH --mem=256G
 #SBATCH -c 16
 #SBATCH --mail-type=ALL
@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for optim_method in coordinate_ascent ; do
+for optim_method in coordinate_ascent_eh ; do
   for n_iter in 1000 ; do
     for N_s in  300 ; do
       for init in 1 ; do

@@ -27,7 +27,7 @@ ch.setFormatter(formatter)
 
 #‌impor functions from Noga's optimization pipeline.
 sys.path.insert(1,OPTIM_PARENT)
-from opt_exp_design import coordinate_ascent
+from opt_exp_design import coordinate_ascent, coordinate_ascent_eh,coordinate_ascent_parallel_eh
 import tools
 from tools import second_order_rdm, create_rdm, MI
 LOGGER = tools.get_logger('OPT-EXP-DSGN')
@@ -59,7 +59,7 @@ def Mutual_Info_S(s,N_S, pZ_S):
 
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=coordinate_ascent):
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
@@ -105,7 +105,9 @@ class optim:
 
 
 
-optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent)]
+optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
+              dict(name='coordinate_ascent_eh',fun=coordinate_ascent_eh),
+              dict(name='coordinate_ascent_eh',fun=coordinate_ascent_parallel_eh)]
 objective_function=[dict(name='D_s',fun=Distance)]
 n_iters=[100,500,1000,2000]
 N_s=[100,200,300]
