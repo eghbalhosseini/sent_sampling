@@ -24,7 +24,7 @@ test=extract_pool[name]()
 test.load_dataset()
 test()
 
-optim_name='coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=10-n_init=1'
+optim_name='coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=20-n_init=1'
 optim_obj=optim_pool[optim_name]()
 
 optim_obj.load_extractor(test)
