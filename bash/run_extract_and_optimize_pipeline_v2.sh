@@ -3,7 +3,7 @@
 #SBATCH --job-name=ext_opt
 #SBATCH --array=0-4
 #SBATCH --time=48:00:00
-#SBATCH --mem=256G
+#SBATCH --mem=128G
 #SBATCH -c 16
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
@@ -58,10 +58,10 @@ done
 
 
 module add openmind/singularity
-export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
-RESULTCACHING_HOME=/om/user/`whoami`/.result_caching
+export SINGULARITY_CACHEDIR=/om/user/${USER}/st/
+RESULTCACHING_HOME=/om/user/${USER}/.result_caching
 export RESULTCACHING_HOME
-XDG_CACHE_HOME=/om/user/`whoami`/st
+XDG_CACHE_HOME=/om/user/${USER}/st
 export XDG_CACHE_HOME
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
@@ -69,4 +69,4 @@ echo "Running extraction: ${extract_pool[$SLURM_ARRAY_TASK_ID]}"
 echo "Running optimiation: ${optim_pool[$SLURM_ARRAY_TASK_ID]}"
 
 
-singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp_master.simg python /om/user/ehoseini/sent_sampling/extract_and_optimize.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
+singularity exec -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master.simg python /om/user/ehoseini/sent_sampling/extract_and_optimize.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
