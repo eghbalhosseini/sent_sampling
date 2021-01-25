@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=ext_opt
 #SBATCH --array=0-4
-#SBATCH --time=48:00:00
+#SBATCH --time=144:00:00
 #SBATCH --mem=128G
 #SBATCH -c 16
 #SBATCH --mail-type=ALL
