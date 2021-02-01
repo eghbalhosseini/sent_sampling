@@ -12,10 +12,10 @@ import utils.extract_utils
 importlib.reload(utils.extract_utils)
 from utils.extract_utils import model_extractor
 
-dataset='ud_sentences_filter_v3_sample'
+dataset='coca_spok_filter_punct_sample'
 datafile=[x['file_loc'] for x in SENTENCE_CONFIG if x['name']==dataset][0]
-model_name='distilgpt2'
-test=model_extractor(dataset=dataset,datafile=datafile,model_spec=model_name)
+model_name='gpt2'
+test=model_extractor(dataset=dataset,datafile=datafile,model_spec=model_name,average_sentence=True)
 
 test.load_dataset()
 test()
