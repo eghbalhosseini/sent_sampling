@@ -13,6 +13,7 @@ if getpass.getuser()=='eghbalhosseini':
     COCA_CORPUS_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/parsed/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
+    COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
     BENCHMARK_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score/'
     SAVE_DIR = '/om/user/ehoseini/MyData/sent_sampling/'
     RESULTS_DIR='/om/user/ehoseini/MyData/sent_sampling/results/'
@@ -23,6 +24,7 @@ elif getpass.getuser() == 'alexso':
     RESULTS_DIR = '/om/user/alexso/MyData/sent_sampling/results/'
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
+    COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
 
 UD_PATH = UD_PARENT+'/ud-treebanks-v2.6/'
 GOOGLE10L_1T = UD_PARENT+'/Google10L-1T/'
@@ -140,4 +142,11 @@ SENTENCE_CONFIG = [
     dict(name='ud_sentencez_token_filter_v3',file_loc=os.path.join(UD_PARENT,'ud_sentencez_data_token_filter_v3_no_dup.pkl')),
     dict(name='ud_sentences_token_filter_v3_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample_v3_no_dup.pkl')),
     dict(name='ud_sentences_token_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter.pkl')),
-    dict(name='ud_sentences_token_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample.pkl'))]
+    dict(name='ud_sentences_token_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample.pkl')),
+    dict(name='coca_spok_filter_punct_sample',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_sample.pkl')),
+    dict(name='coca_spok_filter_punct_10K_sample_1',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_1.pkl')),
+    dict(name='coca_spok_filter_punct_10K_sample_1',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_1.pkl')),
+    dict(name='coca_spok_filter_punct_10K_sample_2',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_2.pkl')),
+    dict(name='coca_spok_filter_punct_10K_sample_3',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_3.pkl')),
+    dict(name='coca_spok_filter_punct_10K_sample_4',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_4.pkl')),
+    dict(name='coca_spok_filter_punct_10K_sample_5',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_5.pkl'))]
