@@ -1120,3 +1120,6 @@ Running optimiation: coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=300-n_in
 2021-01-25 12:12:52,247 [INFO] [OPT-EXP-DSGN - coordinate_ascent_eh] [1/1] [t = 4] id = 198, 5320 to 3656 after 2 swaps,  f(S) = 1.09015
 2021-01-25 12:44:07,582 [INFO] [OPT-EXP-DSGN - coordinate_ascent_eh] [1/1] [t = 4] id = 199, 7756 to 1646 after 5617 swaps,  f(S) = 1.09015
 2021-01-25 13:29:53,072 [INFO] [OPT-EXP-DSGN - coordinate_ascent_eh] [1/1] [t = 4] id = 200 f(s) 2368 didnt change after all 8109 swaps,  f(S) = 1.09015
+2021-01-25 14:15:57,146 [INFO] [OPT-EXP-DSGN - coordinate_ascent_eh] [1/1] [t = 4] id = 201 f(s) 1931 didnt change after all 8109 swaps,  f(S) = 1.09015
+2021-01-25 15:02:40,810 [INFO] [OPT-EXP-DSGN - coordinate_ascent_eh] [1/1] [t = 4] id = 202 f(s) 3396 didnt change after all 8109 swaps,  f(S) = 1.09015
+slurmstepd: error: *** JOB 19166195 ON node078 CANCELLED AT 2021-01-25T15:27:50 DUE TO TIME LIMIT ***

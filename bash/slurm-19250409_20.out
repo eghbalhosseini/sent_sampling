@@ -1,0 +1,8 @@
+My SLURM_ARRAY_TASK_ID:  20
+Running model t5-3b
+Running dataset coca_spok_filter_punct_10K_sample_3
+whoami: cannot find name for user ID 96633
+whoami: cannot find name for user ID 96633
+whoami: cannot find name for user ID 96633
+whoami: cannot find name for user ID 96633
+[31mFATAL:  [0m Couldn't determine user account information: user: lookup userid 96633: no such file or directory
