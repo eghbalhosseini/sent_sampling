@@ -6,6 +6,14 @@ import getpass
 import itertools
 import copy
 import xarray as xr
+import torch
+device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+torch.cuda.get_device_name(0)
+torch.backends.cudnn.deterministic = True
+torch.set_deterministic(True)
+torch.set_printoptions(precision=10)
+from scipy.spatial.distance import squareform
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 if getpass.getuser()=='eghbalhosseini':
     OPTIM_PARENT='/Users/eghbalhosseini/MyCodes/opt-exp-design-nlp/'
 elif getpass.getuser()=='ehoseini':
@@ -43,7 +51,20 @@ def Distance(S,group_act, distance='correlation'):
     rdm2_vec = second_order_rdm(patterns_list, True, distance)
     return rdm2_vec.mean()
 
-
+@torch.no_grad()
+def pt_create_corr_rdm_short(X,Y=None,vec=False,device=None):
+    X=(X-X.mean(axis=1,keepdim=True))
+    X=torch.nn.functional.normalize(X)
+    if Y is not None:
+            Y=(Y-Y.mean(axis=1,keepdim=True))
+            Y=torch.nn.functional.normalize(Y)
+    else:
+        Y=X
+    XY_corr=torch.tensor(1,device=device,dtype=float)-torch.mm(X,torch.transpose(X,1,0))
+    XY_corr=torch.triu(XY_corr,diagonal=1)
+    if vec:
+        return torch.clamp(torch.reshape(XY_corr,(1,-1)), 0.0, np.inf)
+    return torch.clamp(XY_corr, 0.0, np.inf)
 
 def Variation(s,N_S, pZ_S):
     qS = np.zeros(N_S)
@@ -51,11 +72,7 @@ def Variation(s,N_S, pZ_S):
     qZ = pZ_S.T @ qS
     return entropy(qZ)
 
-def Mutual_Info_S(s,N_S, pZ_S):
-    qS = np.zeros(N_S)
-    qS[s] = 1 / len(s)
-    qSZ = pZ_S * qS[:, None]
-    return MI(qSZ)
+
 
 
 class optim:
@@ -65,6 +82,7 @@ class optim:
         self.N_s=N_s
         self.objective_function=objective_function
         self.optim_algorithm=optim_algorithm
+        self.device=device
 
     def load_extractor(self,extractor_obj=None):
         self.extractor_obj=extractor_obj
@@ -73,6 +91,7 @@ class optim:
         self.activations = extractor_obj.model_group_act
         if self.extract_type == 'brain_resp':
             self.construct_activation_by_split()
+
 
     # add a function for random baseline
 
@@ -89,6 +108,34 @@ class optim:
         pass
     # TODO : Do the regression on train on all the data.
     # TODO : verify that Model activation, and Brain response,
+
+    def precompute_corr_rdm_on_gpu(self):
+        assert(torch.cuda.is_available())
+        activation_list = [torch.tensor(x['activations'], dtype=float, device=self.device, requires_grad=False) for x in
+                           self.activations]
+        X_list = [torch.nn.functional.normalize(x.squeeze()) for x in activation_list]
+        X_list = [(X - X.mean(axis=1, keepdim=True)) for X in X_list]
+        X_list = [torch.nn.functional.normalize(X) for X in X_list]
+        self.XY_corr_list = [torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
+                        X_list]
+        del X_list, activation_list
+        pass
+
+    def gpu_object_function(self,S):
+        samples=torch.tensor(S, dtype = torch.long, device = self.device)
+        pairs = torch.combinations(samples, with_replacement=False)
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample)
+        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
+        d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
+        n1 = d_mat.shape[1]
+        correction = n1 * n1 / (n1 * (n1 - 1) / 2)
+        d_val = correction * d_mat.mean(dim=(0, 1)).unsqueeze(0)
+        return d_val
+
     def mod_objective_function(self,S):
         if self.extract_type=='activation':
             return self.objective_function(S,self.activations)

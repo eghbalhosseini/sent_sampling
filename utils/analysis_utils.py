@@ -1,5 +1,7 @@
 import numpy as np
 import pickle
+import torch
+
 
 
 def flatten_rdm(rdm_mat):
@@ -9,6 +11,8 @@ def flatten_rdm(rdm_mat):
     rdm_tria_up_flat=rdm_tria_up.flatten()
     rdm_tria_up_flat=rdm_tria_up_flat[np.logical_not(np.isnan(rdm_tria_up_flat))]
     return rdm_tria_up_flat
+
+
 
 
 
