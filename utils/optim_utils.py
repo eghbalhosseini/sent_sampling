@@ -53,6 +53,7 @@ def Distance(S,group_act, distance='correlation'):
 
 @torch.no_grad()
 def pt_create_corr_rdm_short(X,Y=None,vec=False,device=None):
+    # note currently it is compeletely ignoring Y
     X=(X-X.mean(axis=1,keepdim=True))
     X=torch.nn.functional.normalize(X)
     if Y is not None:
@@ -60,7 +61,7 @@ def pt_create_corr_rdm_short(X,Y=None,vec=False,device=None):
             Y=torch.nn.functional.normalize(Y)
     else:
         Y=X
-    XY_corr=torch.tensor(1,device=device,dtype=float)-torch.mm(X,torch.transpose(X,1,0))
+    XY_corr=torch.tensor(1,device=device,dtype = float,requires_grad=False)-torch.mm(X,torch.transpose(X,1,0))
     XY_corr=torch.triu(XY_corr,diagonal=1)
     if vec:
         return torch.clamp(torch.reshape(XY_corr,(1,-1)), 0.0, np.inf)
@@ -133,8 +134,8 @@ class optim:
         d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
         n1 = d_mat.shape[1]
         correction = n1 * n1 / (n1 * (n1 - 1) / 2)
-        d_val = correction * d_mat.mean(dim=(0, 1)).unsqueeze(0)
-        return d_val
+        d_val = correction * d_mat.mean(dim=(0, 1))
+        return d_val.cpu().numpy().mean()
 
     def mod_objective_function(self,S):
         if self.extract_type=='activation':
