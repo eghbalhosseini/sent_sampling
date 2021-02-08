@@ -77,13 +77,14 @@ def Variation(s,N_S, pZ_S):
 
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None):
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
         self.objective_function=objective_function
         self.optim_algorithm=optim_algorithm
         self.device=device
+        self.run_gpu=run_gpu
 
     def load_extractor(self,extractor_obj=None):
         self.extractor_obj=extractor_obj
@@ -120,6 +121,8 @@ class optim:
         self.XY_corr_list = [torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
                         X_list]
         del X_list, activation_list
+        if self.run_gpu:
+            del self.activations
         pass
 
     def gpu_object_function(self,S):
@@ -144,8 +147,11 @@ class optim:
             return np.mean([self.objective_function(S,x) for x in self.activations_by_split])
 
     def __call__(self,*args, **kwargs):
-
-        S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s,self.mod_objective_function, self.n_init, self.n_iter)
+        if self.run_gpu:
+            S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, self.gpu_object_function, self.n_init,
+                                                     self.n_iter)
+        else:
+            S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s,self.mod_objective_function, self.n_init, self.n_iter)
         self.S_opt_d=S_opt_d
         self.DS_opt_d=DS_opt_d
 
@@ -157,16 +163,18 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_eh',fun=coordinate_ascent_eh),
               dict(name='coordinate_ascent_parallel_eh',fun=coordinate_ascent_parallel_eh)]
 objective_function=[dict(name='D_s',fun=Distance)]
+
 n_iters=[2,5,100,500,1000,2000,5000,10000]
 N_s=[10,20,100,200,300]
 n_inits=[1,2,3,5]
+run_gpu=[True,False]
 
 
 optim_configuration=[]
-for method , obj,n_iter, n_s, init  in itertools.product(optim_method,objective_function,n_iters,N_s,n_inits):
-    identifier=f"[{method['name']}]-[obj={obj['name']}]-[n_iter={n_iter}]-[n_samples={n_s}]-[n_init={init}]"
+for method , obj,n_iter, n_s, init , gpu in itertools.product(optim_method,objective_function,n_iters,N_s,n_inits,run_gpu):
+    identifier=f"[{method['name']}]-[obj={obj['name']}]-[n_iter={n_iter}]-[n_samples={n_s}]-[n_init={init}]-[run_gpu={gpu}]"
     identifier=identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
-    optim_configuration.append(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init))
+    optim_configuration.append(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init,run_gpu=gpu))
 
 
 optim_pool={}
@@ -182,6 +190,7 @@ for config in optim_configuration:
                           objective_function=configure['obj'],
                                   n_init=configure['n_init'],
                                   n_iter=configure['n_iter'],
+                                run_gpu=configure['run_gpu'],
                                   N_s=configure['n_s'])
         return optim_param
 
