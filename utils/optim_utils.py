@@ -8,9 +8,11 @@ import copy
 import xarray as xr
 import torch
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-torch.cuda.get_device_name(0)
 torch.backends.cudnn.deterministic = True
-torch.set_deterministic(True)
+try :
+    torch.set_deterministic(True)
+except:
+    pass
 torch.set_printoptions(precision=10)
 from scipy.spatial.distance import squareform
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
