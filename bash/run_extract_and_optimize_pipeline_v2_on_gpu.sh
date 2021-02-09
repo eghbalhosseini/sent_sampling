@@ -70,4 +70,4 @@ echo "Running extraction: ${extract_pool[$SLURM_ARRAY_TASK_ID]}"
 echo "Running optimiation: ${optim_pool[$SLURM_ARRAY_TASK_ID]}"
 
 
-singularity exec -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/extract_and_optimize_on_gpu.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
+singularity exec --nv -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/extract_and_optimize_on_gpu.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
