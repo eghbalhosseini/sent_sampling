@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_mdl_act
-#SBATCH --array=0-44
-#SBATCH --time=120:00:00
+#SBATCH --array=0-14
+#SBATCH --time=7-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=150G
 #SBATCH --mail-type=ALL
@@ -15,15 +15,9 @@ for dataset in coca_spok_filter_punct_10K_sample_1 \
                coca_spok_filter_punct_10K_sample_3 \
                coca_spok_filter_punct_10K_sample_4 \
                coca_spok_filter_punct_10K_sample_5 ; do
-                for model in roberta-base \
-                  transfo-xl-wt103 \
-                  t5-3b \
-                  xlnet-large-cased \
-                  bert-large-uncased-whole-word-masking \
+                for model in transfo-xl-wt103 \
                   xlm-mlm-en-2048 \
-                  gpt2-xl \
-                  albert-xxlarge-v2 \
-                  ctrl ; do
+                  albert-xxlarge-v2 ; do
                       model_list[$i]="$model"
                       dataset_list[$i]="$dataset"
                   i=$i+1
