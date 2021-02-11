@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_mdl_act
-#SBATCH --array=0-14
+#SBATCH --array=0-4
 #SBATCH --time=7-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=150G
@@ -15,9 +15,7 @@ for dataset in coca_spok_filter_punct_10K_sample_1 \
                coca_spok_filter_punct_10K_sample_3 \
                coca_spok_filter_punct_10K_sample_4 \
                coca_spok_filter_punct_10K_sample_5 ; do
-                for model in transfo-xl-wt103 \
-                  xlm-mlm-en-2048 \
-                  albert-xxlarge-v2 ; do
+                for model in albert-xxlarge-v2 ; do
                       model_list[$i]="$model"
                       dataset_list[$i]="$dataset"
                   i=$i+1
