@@ -2,9 +2,9 @@
 
 #SBATCH --job-name=ext_mdl_act
 #SBATCH --array=0-4
-#SBATCH --time=7-00:00:00
+#SBATCH --time=167:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=150G
+#SBATCH --mem=120G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
