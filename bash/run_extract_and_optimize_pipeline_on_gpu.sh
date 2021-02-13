@@ -13,7 +13,7 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 1000 ; do
-    for N_s in  250 ; do
+    for N_s in  200 ; do
       for init in 1 ; do
         optim_id="${optim_method}-obj=D_s-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-run_gpu=True"
         optim_list[$i]="$optim_id"
