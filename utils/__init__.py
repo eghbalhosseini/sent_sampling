@@ -4,7 +4,24 @@ import copy
 from utils.extract_utils import extractor
 from utils.optim_utils import optim
 from neural_nlp.models import model_pool, model_layers
-model_grps_config = [dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1),
+from itertools import count
+# add the layerwise model definition
+# gpt2
+modl_name='gpt2'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_grp_config=dict(grp_id= 'gpt2_layers',
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),2)]),
+                    layer_by_name=True)
+
+modl_name='gpt2-xl'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_xl_grp_config=dict(grp_id= 'gpt2_xl_layers',
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),2)]),
+                    layer_by_name=True)
+
+model_grps_config = [gpt2_grp_config,
+                     gpt2_xl_grp_config,
+                     dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1),
                                                                        ('bert-base-uncased',1),
                                                                         ('xlm-mlm-en-2048',1)),layer_by_name=False),
                      dict(grp_id='set_2', grp_layer_tuple=(('albert-xxlarge-v2',"encoder.albert_layer_groups.2"),
