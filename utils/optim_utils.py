@@ -186,7 +186,7 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
 objective_function=[dict(name='D_s',fun=Distance)]
 
 n_iters=[2,5,25,50,100,500,1000,2000,5000,10000]
-N_s=[10,20,100,200,225,250,300]
+N_s=[10,25,50,75,100,125,150,175,200,225,250,275,300]
 n_inits=[1,2,3,5]
 run_gpu=[True,False]
 
