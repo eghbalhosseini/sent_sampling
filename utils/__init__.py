@@ -16,11 +16,54 @@ gpt2_grp_config=dict(grp_id= 'gpt2_layers',
 modl_name='gpt2-xl'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 gpt2_xl_grp_config=dict(grp_id= 'gpt2_xl_layers',
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),4)]),
+                    layer_by_name=True)
+
+modl_name='roberta-base'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+roberta_base_grp_config=dict(grp_id= f"{modl_name}_layers",
                     grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),2)]),
                     layer_by_name=True)
 
+modl_name='xlnet-large-cased'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+xlnet_large_cased_config=dict(grp_id= f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),3)]),
+                    layer_by_name=True)
+
+modl_name='bert-large-uncased-whole-word-masking'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+bert_large_config=dict(grp_id= f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),3)]),
+                    layer_by_name=True)
+
+modl_name='xlm-mlm-en-2048'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+xlm_mlm_config=dict(grp_id= f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),2)]),
+                    layer_by_name=True)
+
+modl_name='albert-xxlarge-v2'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+albert_xxlarge_config=dict(grp_id= f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),2)]),
+                    layer_by_name=True)
+
+modl_name='ctrl'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+ctrl_config=dict(grp_id= f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),4)]),
+                    layer_by_name=True)
+
+
 model_grps_config = [gpt2_grp_config,
                      gpt2_xl_grp_config,
+                     roberta_base_grp_config,
+                     xlnet_large_cased_config,
+                     bert_large_config,
+                     xlm_mlm_config,
+                     albert_xxlarge_config,
+                     ctrl_config,
                      dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1),
                                                                        ('bert-base-uncased',1),
                                                                         ('xlm-mlm-en-2048',1)),layer_by_name=False),
