@@ -16,7 +16,7 @@ gpt2_grp_config=dict(grp_id= 'gpt2_layers',
 modl_name='gpt2-xl'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 gpt2_xl_grp_config=dict(grp_id= 'gpt2_xl_layers',
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),2)]),
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),4)]),
                     layer_by_name=True)
 
 model_grps_config = [gpt2_grp_config,
