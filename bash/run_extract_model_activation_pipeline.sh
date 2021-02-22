@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=ext_mdl_act
-#SBATCH --array=0-8
+#SBATCH --array=0
 #SBATCH --time=96:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=180G
@@ -11,15 +11,7 @@
 
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
-      for model in roberta-base \
-        transfo-xl-wt103 \
-        t5-3b \
-        xlnet-large-cased \
-        bert-large-uncased-whole-word-masking \
-        xlm-mlm-en-2048 \
-        gpt2-xl \
-        albert-xxlarge-v2 \
-        ctrl ; do
+      for model in gpt2-xl ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           i=$i+1
@@ -37,3 +29,13 @@ export RESULTCACHING_HOME
 XDG_CACHE_HOME=/om/user/`whoami`/st
 export XDG_CACHE_HOME
 singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp_master.simg python /om/user/ehoseini/sent_sampling/extract_model_activations.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]}
+
+
+#transfo-xl-wt103 \
+#        t5-3b \
+#        xlnet-large-cased \
+#        bert-large-uncased-whole-word-masking \
+#        xlm-mlm-en-2048 \
+#        gpt2-xl \
+#        albert-xxlarge-v2 \
+#        ctrl

@@ -9,13 +9,13 @@ from itertools import count
 # gpt2
 modl_name='gpt2'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-gpt2_grp_config=dict(grp_id= 'gpt2_layers',
+gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",
                     grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),2)]),
                     layer_by_name=True)
 
 modl_name='gpt2-xl'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-gpt2_xl_grp_config=dict(grp_id= 'gpt2_xl_layers',
+gpt2_xl_grp_config=dict(grp_id=f"{modl_name}_layers",
                     grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple),4)]),
                     layer_by_name=True)
 
