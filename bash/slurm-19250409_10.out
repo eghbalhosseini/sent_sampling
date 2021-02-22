@@ -1,0 +1,1072 @@
+My SLURM_ARRAY_TASK_ID:  10
+Running model transfo-xl-wt103
+Running dataset coca_spok_filter_punct_10K_sample_2
+2021-02-01 14:52:53.171690: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]1111it [00:00, 251776.08it/s]
+0it [00:00, ?it/s]1111it [00:00, 266888.42it/s]
+0it [00:00, ?it/s]1111it [00:00, 245890.55it/s]
+0it [00:00, ?it/s]1111it [00:00, 250140.73it/s]
+0it [00:00, ?it/s]1111it [00:00, 239902.79it/s]
+0it [00:00, ?it/s]1111it [00:00, 249765.33it/s]
+0it [00:00, ?it/s]1111it [00:00, 230743.83it/s]
+0it [00:00, ?it/s]1111it [00:00, 229031.34it/s]
+0it [00:00, ?it/s]1112it [00:00, 226796.31it/s]
+layers:   0%|          | 0/19 [00:00<?, ?it/s]/usr/local/lib/python3.7/site-packages/transformers/configuration_transfo_xl.py:145: FutureWarning: The config parameter `tie_weight` is deprecated. Please use `tie_word_embeddings` instead.
+  FutureWarning,
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/13 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/13 [00:03<00:43,  3.61s/it][A
+token features:  15%|█▌        | 2/13 [00:07<00:39,  3.57s/it][A
+token features:  23%|██▎       | 3/13 [00:10<00:35,  3.53s/it][A
+token features:  31%|███       | 4/13 [00:13<00:31,  3.51s/it][A
+token features:  38%|███▊      | 5/13 [00:17<00:27,  3.50s/it][A
+token features:  46%|████▌     | 6/13 [00:20<00:24,  3.49s/it][A
+token features:  54%|█████▍    | 7/13 [00:24<00:21,  3.50s/it][A
+token features:  62%|██████▏   | 8/13 [00:27<00:17,  3.51s/it][A
+token features:  69%|██████▉   | 9/13 [00:31<00:14,  3.51s/it][A
+token features:  77%|███████▋  | 10/13 [00:35<00:10,  3.52s/it][A
+token features:  85%|████████▍ | 11/13 [00:38<00:07,  3.54s/it][A
+token features: 100%|██████████| 13/13 [00:42<00:00,  3.02s/it][Atoken features: 100%|██████████| 13/13 [00:42<00:00,  3.25s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+
+layer packaging:  68%|██████▊   | 13/19 [00:00<00:00, 127.83it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 129.46it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/16 [00:00<?, ?it/s][A
+token features:   6%|▋         | 1/16 [00:03<00:48,  3.21s/it][A
+token features:  12%|█▎        | 2/16 [00:06<00:45,  3.28s/it][A
+token features:  19%|█▉        | 3/16 [00:10<00:43,  3.33s/it][A
+token features:  31%|███▏      | 5/16 [00:13<00:31,  2.85s/it][A
+token features:  44%|████▍     | 7/16 [00:17<00:22,  2.53s/it][A
+token features:  50%|█████     | 8/16 [00:20<00:22,  2.82s/it][A
+token features:  56%|█████▋    | 9/16 [00:24<00:21,  3.02s/it][A
+token features:  62%|██████▎   | 10/16 [00:27<00:18,  3.15s/it][A
+token features:  75%|███████▌  | 12/16 [00:31<00:10,  2.74s/it][A
+token features:  81%|████████▏ | 13/16 [00:34<00:08,  2.98s/it][A
+token features:  88%|████████▊ | 14/16 [00:38<00:06,  3.17s/it][A
+token features: 100%|██████████| 16/16 [00:41<00:00,  2.77s/it][Atoken features: 100%|██████████| 16/16 [00:41<00:00,  2.62s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  68%|██████▊   | 13/19 [00:00<00:00, 128.41it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 130.89it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.23s/it][A
+token features:  17%|█▋        | 2/12 [00:06<00:32,  3.28s/it][A
+token features:  25%|██▌       | 3/12 [00:10<00:29,  3.33s/it][A
+token features:  33%|███▎      | 4/12 [00:13<00:26,  3.36s/it][A
+token features:  42%|████▏     | 5/12 [00:16<00:23,  3.39s/it][A
+token features:  50%|█████     | 6/12 [00:20<00:20,  3.42s/it][A
+token features:  58%|█████▊    | 7/12 [00:23<00:17,  3.45s/it][A
+token features:  67%|██████▋   | 8/12 [00:27<00:13,  3.47s/it][A
+token features:  75%|███████▌  | 9/12 [00:31<00:10,  3.49s/it][A
+token features:  83%|████████▎ | 10/12 [00:34<00:07,  3.51s/it][A
+token features: 100%|██████████| 12/12 [00:38<00:00,  3.00s/it][Atoken features: 100%|██████████| 12/12 [00:38<00:00,  3.18s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.88it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.18it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/10 [00:00<?, ?it/s][A
+token features:  10%|█         | 1/10 [00:03<00:29,  3.23s/it][A
+token features:  20%|██        | 2/10 [00:06<00:26,  3.28s/it][A
+token features:  30%|███       | 3/10 [00:10<00:23,  3.33s/it][A
+token features:  40%|████      | 4/10 [00:13<00:20,  3.37s/it][A
+token features:  50%|█████     | 5/10 [00:17<00:16,  3.40s/it][A
+token features:  60%|██████    | 6/10 [00:20<00:13,  3.42s/it][A
+token features:  70%|███████   | 7/10 [00:24<00:10,  3.45s/it][A
+token features:  80%|████████  | 8/10 [00:27<00:06,  3.48s/it][A
+token features: 100%|██████████| 10/10 [00:31<00:00,  2.97s/it][Atoken features: 100%|██████████| 10/10 [00:31<00:00,  3.11s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.05it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 131.94it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/7 [00:00<?, ?it/s][A
+token features:  14%|█▍        | 1/7 [00:03<00:19,  3.23s/it][A
+token features:  29%|██▊       | 2/7 [00:06<00:16,  3.28s/it][A
+token features:  43%|████▎     | 3/7 [00:10<00:13,  3.33s/it][A
+token features:  57%|█████▋    | 4/7 [00:13<00:10,  3.37s/it][A
+token features:  71%|███████▏  | 5/7 [00:17<00:06,  3.40s/it][A
+token features: 100%|██████████| 7/7 [00:20<00:00,  2.91s/it][Atoken features: 100%|██████████| 7/7 [00:20<00:00,  2.93s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.10it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 131.80it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/8 [00:00<?, ?it/s][A
+token features:  25%|██▌       | 2/8 [00:03<00:10,  1.71s/it][A
+token features:  38%|███▊      | 3/8 [00:06<00:11,  2.23s/it][A
+token features:  50%|█████     | 4/8 [00:10<00:10,  2.59s/it][A
+token features:  62%|██████▎   | 5/8 [00:13<00:08,  2.86s/it][A
+token features:  75%|███████▌  | 6/8 [00:17<00:06,  3.04s/it][A
+token features: 100%|██████████| 8/8 [00:20<00:00,  2.66s/it][Atoken features: 100%|██████████| 8/8 [00:20<00:00,  2.60s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 136.07it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.09it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:  17%|█▋        | 2/12 [00:03<00:17,  1.71s/it][A
+token features:  25%|██▌       | 3/12 [00:06<00:20,  2.23s/it][A
+token features:  33%|███▎      | 4/12 [00:10<00:20,  2.60s/it][A
+token features:  42%|████▏     | 5/12 [00:13<00:20,  2.86s/it][A
+token features:  50%|█████     | 6/12 [00:17<00:18,  3.05s/it][A
+token features:  58%|█████▊    | 7/12 [00:20<00:15,  3.19s/it][A
+token features:  67%|██████▋   | 8/12 [00:24<00:13,  3.29s/it][A
+token features:  75%|███████▌  | 9/12 [00:27<00:10,  3.36s/it][A
+token features:  83%|████████▎ | 10/12 [00:31<00:06,  3.42s/it][A
+token features: 100%|██████████| 12/12 [00:34<00:00,  2.93s/it][Atoken features: 100%|██████████| 12/12 [00:34<00:00,  2.91s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.44it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.84it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  33%|███▎      | 2/6 [00:03<00:06,  1.70s/it][A
+token features:  50%|█████     | 3/6 [00:06<00:06,  2.22s/it][A
+token features:  67%|██████▋   | 4/6 [00:10<00:05,  2.59s/it][A
+token features: 100%|██████████| 6/6 [00:13<00:00,  2.34s/it][Atoken features: 100%|██████████| 6/6 [00:13<00:00,  2.30s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 139.20it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 139.25it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:  18%|█▊        | 2/11 [00:03<00:15,  1.71s/it][A
+token features:  27%|██▋       | 3/11 [00:06<00:17,  2.23s/it][A
+token features:  36%|███▋      | 4/11 [00:10<00:18,  2.59s/it][A
+token features:  45%|████▌     | 5/11 [00:13<00:17,  2.86s/it][A
+token features:  55%|█████▍    | 6/11 [00:17<00:15,  3.04s/it][A
+token features:  64%|██████▎   | 7/11 [00:20<00:12,  3.19s/it][A
+token features:  73%|███████▎  | 8/11 [00:24<00:09,  3.29s/it][A
+token features:  82%|████████▏ | 9/11 [00:27<00:06,  3.36s/it][A
+token features: 100%|██████████| 11/11 [00:31<00:00,  2.89s/it][Atoken features: 100%|██████████| 11/11 [00:31<00:00,  2.86s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.74it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.31it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/19 [00:00<?, ?it/s][A
+token features:   5%|▌         | 1/19 [00:03<00:57,  3.20s/it][A
+token features:  11%|█         | 2/19 [00:06<00:55,  3.24s/it][A
+token features:  16%|█▌        | 3/19 [00:09<00:52,  3.28s/it][A
+token features:  21%|██        | 4/19 [00:13<00:49,  3.31s/it][A
+token features:  26%|██▋       | 5/19 [00:16<00:46,  3.34s/it][A
+token features:  32%|███▏      | 6/19 [00:20<00:43,  3.38s/it][A
+token features:  37%|███▋      | 7/19 [00:23<00:40,  3.42s/it][A
+token features:  42%|████▏     | 8/19 [00:27<00:37,  3.44s/it][A
+token features:  53%|█████▎    | 10/19 [00:30<00:26,  2.94s/it][A
+token features:  58%|█████▊    | 11/19 [00:34<00:25,  3.13s/it][A
+token features:  63%|██████▎   | 12/19 [00:37<00:22,  3.27s/it][A
+token features:  68%|██████▊   | 13/19 [00:41<00:20,  3.37s/it][A
+token features:  74%|███████▎  | 14/19 [00:45<00:17,  3.45s/it][A
+token features:  79%|███████▉  | 15/19 [00:48<00:14,  3.52s/it][A
+token features:  84%|████████▍ | 16/19 [00:52<00:10,  3.56s/it][A
+token features:  89%|████████▉ | 17/19 [00:56<00:07,  3.60s/it][A
+token features: 100%|██████████| 19/19 [00:59<00:00,  3.08s/it][Atoken features: 100%|██████████| 19/19 [00:59<00:00,  3.15s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.04it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.65it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/13 [00:00<?, ?it/s][A
+token features:  15%|█▌        | 2/13 [00:03<00:18,  1.71s/it][A
+token features:  23%|██▎       | 3/13 [00:06<00:22,  2.23s/it][A
+token features:  31%|███       | 4/13 [00:10<00:23,  2.60s/it][A
+token features:  38%|███▊      | 5/13 [00:13<00:22,  2.86s/it][A
+token features:  46%|████▌     | 6/13 [00:17<00:21,  3.05s/it][A
+token features:  54%|█████▍    | 7/13 [00:20<00:19,  3.19s/it][A
+token features:  62%|██████▏   | 8/13 [00:24<00:16,  3.29s/it][A
+token features:  69%|██████▉   | 9/13 [00:27<00:13,  3.36s/it][A
+token features:  77%|███████▋  | 10/13 [00:31<00:10,  3.41s/it][A
+token features:  85%|████████▍ | 11/13 [00:34<00:06,  3.47s/it][A
+token features: 100%|██████████| 13/13 [00:38<00:00,  2.97s/it][Atoken features: 100%|██████████| 13/13 [00:38<00:00,  2.97s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 136.13it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.84it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/9 [00:00<?, ?it/s][A
+token features:  22%|██▏       | 2/9 [00:03<00:11,  1.71s/it][A
+token features:  33%|███▎      | 3/9 [00:06<00:13,  2.23s/it][A
+token features:  44%|████▍     | 4/9 [00:10<00:12,  2.60s/it][A
+token features:  56%|█████▌    | 5/9 [00:13<00:11,  2.86s/it][A
+token features:  67%|██████▋   | 6/9 [00:17<00:09,  3.05s/it][A
+token features:  78%|███████▊  | 7/9 [00:20<00:06,  3.19s/it][A
+token features: 100%|██████████| 9/9 [00:24<00:00,  2.76s/it][Atoken features: 100%|██████████| 9/9 [00:24<00:00,  2.70s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.95it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.42it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/16 [00:00<?, ?it/s][A
+token features:   6%|▋         | 1/16 [00:03<00:48,  3.22s/it][A
+token features:  12%|█▎        | 2/16 [00:06<00:45,  3.28s/it][A
+token features:  19%|█▉        | 3/16 [00:10<00:43,  3.33s/it][A
+token features:  25%|██▌       | 4/16 [00:13<00:40,  3.36s/it][A
+token features:  38%|███▊      | 6/16 [00:16<00:28,  2.87s/it][A
+token features:  44%|████▍     | 7/16 [00:20<00:27,  3.07s/it][A
+token features:  50%|█████     | 8/16 [00:24<00:25,  3.20s/it][A
+token features:  56%|█████▋    | 9/16 [00:27<00:23,  3.31s/it][A
+token features:  69%|██████▉   | 11/16 [00:31<00:14,  2.85s/it][A
+token features:  75%|███████▌  | 12/16 [00:34<00:12,  3.08s/it][A
+token features:  81%|████████▏ | 13/16 [00:38<00:09,  3.23s/it][A
+token features:  88%|████████▊ | 14/16 [00:41<00:06,  3.35s/it][A
+token features: 100%|██████████| 16/16 [00:45<00:00,  2.90s/it][Atoken features: 100%|██████████| 16/16 [00:45<00:00,  2.85s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 135.00it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.22it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:   9%|▉         | 1/11 [00:03<00:32,  3.22s/it][A
+token features:  18%|█▊        | 2/11 [00:06<00:29,  3.28s/it][A
+token features:  27%|██▋       | 3/11 [00:10<00:26,  3.33s/it][A
+token features:  36%|███▋      | 4/11 [00:13<00:23,  3.37s/it][A
+token features:  45%|████▌     | 5/11 [00:17<00:20,  3.40s/it][A
+token features:  55%|█████▍    | 6/11 [00:20<00:17,  3.43s/it][A
+token features:  64%|██████▎   | 7/11 [00:24<00:13,  3.45s/it][A
+token features:  73%|███████▎  | 8/11 [00:27<00:10,  3.47s/it][A
+token features:  82%|████████▏ | 9/11 [00:31<00:06,  3.49s/it][A
+token features: 100%|██████████| 11/11 [00:34<00:00,  2.98s/it][Atoken features: 100%|██████████| 11/11 [00:34<00:00,  3.15s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.32it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.35it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/14 [00:00<?, ?it/s][A
+token features:   7%|▋         | 1/14 [00:03<00:42,  3.24s/it][A
+token features:  21%|██▏       | 3/14 [00:06<00:30,  2.79s/it][A
+token features:  29%|██▊       | 4/14 [00:10<00:29,  2.98s/it][A
+token features:  36%|███▌      | 5/14 [00:13<00:28,  3.13s/it][A
+token features:  43%|████▎     | 6/14 [00:17<00:25,  3.23s/it][A
+token features:  50%|█████     | 7/14 [00:20<00:23,  3.30s/it][A
+token features:  64%|██████▍   | 9/14 [00:24<00:14,  2.83s/it][A
+token features:  71%|███████▏  | 10/14 [00:27<00:12,  3.02s/it][A
+token features:  79%|███████▊  | 11/14 [00:31<00:09,  3.17s/it][A
+token features:  86%|████████▌ | 12/14 [00:34<00:06,  3.29s/it][A
+token features: 100%|██████████| 14/14 [00:38<00:00,  2.85s/it][Atoken features: 100%|██████████| 14/14 [00:38<00:00,  2.73s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.29it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.55it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  17%|█▋        | 1/6 [00:03<00:16,  3.23s/it][A
+token features:  33%|███▎      | 2/6 [00:06<00:13,  3.28s/it][A
+token features:  67%|██████▋   | 4/6 [00:10<00:05,  2.81s/it][A
+token features: 100%|██████████| 6/6 [00:13<00:00,  2.49s/it][Atoken features: 100%|██████████| 6/6 [00:13<00:00,  2.26s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 135.41it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.14it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  33%|███▎      | 2/6 [00:03<00:06,  1.71s/it][A
+token features:  50%|█████     | 3/6 [00:06<00:06,  2.23s/it][A
+token features:  67%|██████▋   | 4/6 [00:10<00:05,  2.60s/it][A
+token features: 100%|██████████| 6/6 [00:13<00:00,  2.34s/it][Atoken features: 100%|██████████| 6/6 [00:13<00:00,  2.30s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 136.60it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 137.02it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/16 [00:00<?, ?it/s][A
+token features:   6%|▋         | 1/16 [00:03<00:48,  3.22s/it][A
+token features:  19%|█▉        | 3/16 [00:06<00:36,  2.77s/it][A
+token features:  25%|██▌       | 4/16 [00:10<00:35,  2.98s/it][A
+token features:  31%|███▏      | 5/16 [00:13<00:34,  3.13s/it][A
+token features:  38%|███▊      | 6/16 [00:17<00:32,  3.23s/it][A
+token features:  44%|████▍     | 7/16 [00:20<00:29,  3.32s/it][A
+token features:  50%|█████     | 8/16 [00:24<00:27,  3.38s/it][A
+token features:  56%|█████▋    | 9/16 [00:27<00:23,  3.42s/it][A
+token features:  62%|██████▎   | 10/16 [00:31<00:20,  3.46s/it][A
+token features:  69%|██████▉   | 11/16 [00:34<00:17,  3.50s/it][A
+token features:  75%|███████▌  | 12/16 [00:38<00:14,  3.53s/it][A
+token features:  81%|████████▏ | 13/16 [00:41<00:10,  3.55s/it][A
+token features:  88%|████████▊ | 14/16 [00:45<00:07,  3.58s/it][A
+token features: 100%|██████████| 16/16 [00:49<00:00,  3.06s/it][Atoken features: 100%|██████████| 16/16 [00:49<00:00,  3.08s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.24it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.31it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  33%|███▎      | 2/6 [00:03<00:07,  1.77s/it][A
+token features:  50%|█████     | 3/6 [00:06<00:06,  2.27s/it][A
+token features:  67%|██████▋   | 4/6 [00:10<00:05,  2.62s/it][A
+token features: 100%|██████████| 6/6 [00:13<00:00,  2.36s/it][Atoken features: 100%|██████████| 6/6 [00:13<00:00,  2.32s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 138.10it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 137.19it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/13 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/13 [00:03<00:38,  3.23s/it][A
+token features:  15%|█▌        | 2/13 [00:06<00:36,  3.28s/it][A
+token features:  23%|██▎       | 3/13 [00:10<00:33,  3.33s/it][A
+token features:  31%|███       | 4/13 [00:13<00:30,  3.37s/it][A
+token features:  38%|███▊      | 5/13 [00:17<00:27,  3.40s/it][A
+token features:  46%|████▌     | 6/13 [00:20<00:23,  3.42s/it][A
+token features:  54%|█████▍    | 7/13 [00:24<00:20,  3.45s/it][A
+token features:  62%|██████▏   | 8/13 [00:27<00:17,  3.47s/it][A
+token features:  69%|██████▉   | 9/13 [00:31<00:13,  3.49s/it][A
+token features:  77%|███████▋  | 10/13 [00:34<00:10,  3.51s/it][A
+token features:  85%|████████▍ | 11/13 [00:38<00:07,  3.53s/it][A
+token features: 100%|██████████| 13/13 [00:41<00:00,  3.02s/it][Atoken features: 100%|██████████| 13/13 [00:41<00:00,  3.22s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 133.22it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.34it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  17%|█▋        | 1/6 [00:03<00:16,  3.23s/it][A
+token features:  33%|███▎      | 2/6 [00:06<00:13,  3.29s/it][A
+token features:  50%|█████     | 3/6 [00:10<00:10,  3.34s/it][A
+token features:  67%|██████▋   | 4/6 [00:13<00:06,  3.37s/it][A
+token features: 100%|██████████| 6/6 [00:17<00:00,  2.88s/it][Atoken features: 100%|██████████| 6/6 [00:17<00:00,  2.84s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 136.51it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.91it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  17%|█▋        | 1/6 [00:03<00:16,  3.22s/it][A
+token features:  33%|███▎      | 2/6 [00:06<00:13,  3.28s/it][A
+token features:  67%|██████▋   | 4/6 [00:10<00:05,  2.81s/it][A
+token features: 100%|██████████| 6/6 [00:13<00:00,  2.49s/it][Atoken features: 100%|██████████| 6/6 [00:13<00:00,  2.26s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 138.15it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 138.84it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  17%|█▋        | 1/6 [00:03<00:16,  3.22s/it][A
+token features:  33%|███▎      | 2/6 [00:06<00:13,  3.28s/it][A
+token features:  50%|█████     | 3/6 [00:10<00:09,  3.33s/it][A
+token features:  67%|██████▋   | 4/6 [00:13<00:06,  3.36s/it][A
+token features: 100%|██████████| 6/6 [00:16<00:00,  2.88s/it][Atoken features: 100%|██████████| 6/6 [00:16<00:00,  2.83s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 136.90it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 136.42it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/9 [00:00<?, ?it/s][A
+token features:  11%|█         | 1/9 [00:03<00:25,  3.22s/it][A
+token features:  33%|███▎      | 3/9 [00:06<00:16,  2.77s/it][A
+token features:  44%|████▍     | 4/9 [00:10<00:14,  2.97s/it][A
+token features:  56%|█████▌    | 5/9 [00:13<00:12,  3.10s/it][A
+token features:  67%|██████▋   | 6/9 [00:16<00:09,  3.19s/it][A
+token features:  78%|███████▊  | 7/9 [00:20<00:06,  3.27s/it][A
+token features: 100%|██████████| 9/9 [00:23<00:00,  2.81s/it][Atoken features: 100%|██████████| 9/9 [00:23<00:00,  2.65s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  68%|██████▊   | 13/19 [00:00<00:00, 128.78it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 128.47it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/7 [00:00<?, ?it/s][A
+token features:  29%|██▊       | 2/7 [00:03<00:08,  1.71s/it][A
+token features:  57%|█████▋    | 4/7 [00:06<00:05,  1.71s/it][A
+token features:  71%|███████▏  | 5/7 [00:10<00:04,  2.24s/it][A
+token features: 100%|██████████| 7/7 [00:13<00:00,  2.09s/it][Atoken features: 100%|██████████| 7/7 [00:13<00:00,  1.98s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.58it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.62it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/7 [00:00<?, ?it/s][A
+token features:  14%|█▍        | 1/7 [00:03<00:19,  3.22s/it][A
+token features:  29%|██▊       | 2/7 [00:06<00:16,  3.28s/it][A
+token features:  43%|████▎     | 3/7 [00:10<00:13,  3.33s/it][A
+token features:  71%|███████▏  | 5/7 [00:13<00:05,  2.85s/it][A
+token features: 100%|██████████| 7/7 [00:17<00:00,  2.52s/it][Atoken features: 100%|██████████| 7/7 [00:17<00:00,  2.44s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 136.93it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 136.62it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/13 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/13 [00:03<00:38,  3.23s/it][A
+token features:  15%|█▌        | 2/13 [00:06<00:36,  3.28s/it][A
+token features:  23%|██▎       | 3/13 [00:10<00:33,  3.33s/it][A
+token features:  38%|███▊      | 5/13 [00:13<00:22,  2.85s/it][A
+token features:  46%|████▌     | 6/13 [00:17<00:21,  3.04s/it][A
+token features:  54%|█████▍    | 7/13 [00:20<00:19,  3.19s/it][A
+token features:  62%|██████▏   | 8/13 [00:24<00:16,  3.29s/it][A
+token features:  69%|██████▉   | 9/13 [00:27<00:13,  3.36s/it][A
+token features:  77%|███████▋  | 10/13 [00:31<00:10,  3.42s/it][A
+token features:  85%|████████▍ | 11/13 [00:34<00:06,  3.47s/it][A
+token features: 100%|██████████| 13/13 [00:38<00:00,  2.97s/it][Atoken features: 100%|██████████| 13/13 [00:38<00:00,  2.95s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.98it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.32it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/15 [00:00<?, ?it/s][A
+token features:   7%|▋         | 1/15 [00:03<00:45,  3.22s/it][A
+token features:  13%|█▎        | 2/15 [00:06<00:42,  3.28s/it][A
+token features:  20%|██        | 3/15 [00:10<00:39,  3.33s/it][A
+token features:  27%|██▋       | 4/15 [00:13<00:37,  3.37s/it][A
+token features:  33%|███▎      | 5/15 [00:16<00:33,  3.40s/it][A
+token features:  40%|████      | 6/15 [00:20<00:30,  3.42s/it][A
+token features:  47%|████▋     | 7/15 [00:24<00:27,  3.45s/it][A
+token features:  53%|█████▎    | 8/15 [00:27<00:24,  3.48s/it][A
+token features:  60%|██████    | 9/15 [00:31<00:20,  3.49s/it][A
+token features:  73%|███████▎  | 11/15 [00:34<00:11,  2.98s/it][A
+token features:  80%|████████  | 12/15 [00:38<00:09,  3.17s/it][A
+token features:  87%|████████▋ | 13/15 [00:41<00:06,  3.30s/it][A
+token features: 100%|██████████| 15/15 [00:45<00:00,  2.86s/it][Atoken features: 100%|██████████| 15/15 [00:45<00:00,  3.03s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.23it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.75it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/19 [00:00<?, ?it/s][A
+token features:  11%|█         | 2/19 [00:03<00:29,  1.72s/it][A
+token features:  16%|█▌        | 3/19 [00:06<00:35,  2.24s/it][A
+token features:  21%|██        | 4/19 [00:10<00:38,  2.60s/it][A
+token features:  26%|██▋       | 5/19 [00:13<00:39,  2.86s/it][A
+token features:  32%|███▏      | 6/19 [00:17<00:39,  3.04s/it][A
+token features:  37%|███▋      | 7/19 [00:20<00:38,  3.18s/it][A
+token features:  42%|████▏     | 8/19 [00:24<00:36,  3.28s/it][A
+token features:  47%|████▋     | 9/19 [00:27<00:33,  3.36s/it][A
+token features:  53%|█████▎    | 10/19 [00:31<00:30,  3.42s/it][A
+token features:  58%|█████▊    | 11/19 [00:34<00:27,  3.47s/it][A
+token features:  63%|██████▎   | 12/19 [00:38<00:24,  3.51s/it][A
+token features:  68%|██████▊   | 13/19 [00:42<00:21,  3.54s/it][A
+token features:  74%|███████▎  | 14/19 [00:45<00:17,  3.56s/it][A
+token features:  79%|███████▉  | 15/19 [00:49<00:14,  3.59s/it][A
+token features:  84%|████████▍ | 16/19 [00:53<00:10,  3.61s/it][A
+token features:  89%|████████▉ | 17/19 [00:56<00:07,  3.63s/it][A
+token features: 100%|██████████| 19/19 [01:00<00:00,  3.10s/it][Atoken features: 100%|██████████| 19/19 [01:00<00:00,  3.18s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.46it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.07it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.23s/it][A
+token features:  17%|█▋        | 2/12 [00:06<00:32,  3.28s/it][A
+token features:  25%|██▌       | 3/12 [00:10<00:29,  3.33s/it][A
+token features:  33%|███▎      | 4/12 [00:13<00:26,  3.37s/it][A
+token features:  42%|████▏     | 5/12 [00:17<00:23,  3.40s/it][A
+token features:  50%|█████     | 6/12 [00:20<00:20,  3.42s/it][A
+token features:  58%|█████▊    | 7/12 [00:23<00:17,  3.45s/it][A
+token features:  67%|██████▋   | 8/12 [00:27<00:13,  3.45s/it][A
+token features:  75%|███████▌  | 9/12 [00:30<00:10,  3.45s/it][A
+token features:  83%|████████▎ | 10/12 [00:34<00:06,  3.46s/it][A
+token features: 100%|██████████| 12/12 [00:37<00:00,  2.95s/it][Atoken features: 100%|██████████| 12/12 [00:37<00:00,  3.16s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.50it/s][A
+layer packaging:  95%|█████████▍| 18/19 [00:00<00:00, 43.60it/s] [Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 54.40it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/9 [00:00<?, ?it/s][A
+token features:  22%|██▏       | 2/9 [00:03<00:11,  1.70s/it][A
+token features:  33%|███▎      | 3/9 [00:06<00:13,  2.23s/it][A
+token features:  44%|████▍     | 4/9 [00:10<00:12,  2.59s/it][A
+token features:  56%|█████▌    | 5/9 [00:13<00:11,  2.86s/it][A
+token features:  67%|██████▋   | 6/9 [00:17<00:09,  3.04s/it][A
+token features:  78%|███████▊  | 7/9 [00:20<00:06,  3.18s/it][A
+token features: 100%|██████████| 9/9 [00:24<00:00,  2.76s/it][Atoken features: 100%|██████████| 9/9 [00:24<00:00,  2.70s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.51it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.29it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/7 [00:00<?, ?it/s][A
+token features:  14%|█▍        | 1/7 [00:03<00:19,  3.23s/it][A
+token features:  29%|██▊       | 2/7 [00:06<00:16,  3.29s/it][A
+token features:  43%|████▎     | 3/7 [00:10<00:13,  3.33s/it][A
+token features:  57%|█████▋    | 4/7 [00:13<00:10,  3.37s/it][A
+token features:  71%|███████▏  | 5/7 [00:17<00:06,  3.40s/it][A
+token features: 100%|██████████| 7/7 [00:20<00:00,  2.91s/it][Atoken features: 100%|██████████| 7/7 [00:20<00:00,  2.94s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 137.29it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 136.90it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.23s/it][A
+token features:  25%|██▌       | 3/12 [00:06<00:25,  2.78s/it][A
+token features:  33%|███▎      | 4/12 [00:10<00:23,  2.98s/it][A
+token features:  50%|█████     | 6/12 [00:13<00:15,  2.61s/it][A
+token features:  58%|█████▊    | 7/12 [00:17<00:14,  2.89s/it][A
+token features:  67%|██████▋   | 8/12 [00:20<00:12,  3.08s/it][A
+token features:  75%|███████▌  | 9/12 [00:24<00:09,  3.21s/it][A
+token features:  83%|████████▎ | 10/12 [00:27<00:06,  3.31s/it][A
+token features: 100%|██████████| 12/12 [00:31<00:00,  2.86s/it][Atoken features: 100%|██████████| 12/12 [00:31<00:00,  2.61s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.81it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.28it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/14 [00:00<?, ?it/s][A
+token features:   7%|▋         | 1/14 [00:03<00:41,  3.23s/it][A
+token features:  21%|██▏       | 3/14 [00:06<00:30,  2.77s/it][A
+token features:  29%|██▊       | 4/14 [00:10<00:29,  2.98s/it][A
+token features:  36%|███▌      | 5/14 [00:13<00:28,  3.12s/it][A
+token features:  43%|████▎     | 6/14 [00:17<00:25,  3.23s/it][A
+token features:  50%|█████     | 7/14 [00:20<00:23,  3.32s/it][A
+token features:  57%|█████▋    | 8/14 [00:24<00:20,  3.38s/it][A
+token features:  64%|██████▍   | 9/14 [00:27<00:17,  3.43s/it][A
+token features:  71%|███████▏  | 10/14 [00:31<00:13,  3.47s/it][A
+token features:  79%|███████▊  | 11/14 [00:34<00:10,  3.50s/it][A
+token features:  86%|████████▌ | 12/14 [00:38<00:07,  3.53s/it][A
+token features: 100%|██████████| 14/14 [00:42<00:00,  3.02s/it][Atoken features: 100%|██████████| 14/14 [00:42<00:00,  3.00s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.55it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.00it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/6 [00:00<?, ?it/s][A
+token features:  17%|█▋        | 1/6 [00:03<00:16,  3.24s/it][A
+token features:  33%|███▎      | 2/6 [00:06<00:13,  3.29s/it][A
+token features:  50%|█████     | 3/6 [00:10<00:10,  3.34s/it][A
+token features:  67%|██████▋   | 4/6 [00:13<00:06,  3.37s/it][A
+token features: 100%|██████████| 6/6 [00:17<00:00,  2.88s/it][Atoken features: 100%|██████████| 6/6 [00:17<00:00,  2.84s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 137.69it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 136.65it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.23s/it][A
+token features:  17%|█▋        | 2/12 [00:06<00:32,  3.28s/it][A
+token features:  25%|██▌       | 3/12 [00:10<00:29,  3.33s/it][A
+token features:  33%|███▎      | 4/12 [00:13<00:26,  3.37s/it][A
+token features:  42%|████▏     | 5/12 [00:17<00:23,  3.40s/it][A
+token features:  50%|█████     | 6/12 [00:20<00:20,  3.42s/it][A
+token features:  58%|█████▊    | 7/12 [00:24<00:17,  3.45s/it][A
+token features:  67%|██████▋   | 8/12 [00:27<00:13,  3.47s/it][A
+token features:  75%|███████▌  | 9/12 [00:31<00:10,  3.49s/it][A
+token features:  83%|████████▎ | 10/12 [00:34<00:07,  3.51s/it][A
+token features: 100%|██████████| 12/12 [00:38<00:00,  2.99s/it][Atoken features: 100%|██████████| 12/12 [00:38<00:00,  3.18s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 133.21it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.37it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/9 [00:00<?, ?it/s][A
+token features:  11%|█         | 1/9 [00:03<00:25,  3.22s/it][A
+token features:  22%|██▏       | 2/9 [00:06<00:22,  3.28s/it][A
+token features:  33%|███▎      | 3/9 [00:10<00:19,  3.33s/it][A
+token features:  44%|████▍     | 4/9 [00:13<00:16,  3.37s/it][A
+token features:  56%|█████▌    | 5/9 [00:17<00:13,  3.40s/it][A
+token features:  78%|███████▊  | 7/9 [00:20<00:05,  2.91s/it][A
+token features: 100%|██████████| 9/9 [00:24<00:00,  2.57s/it][Atoken features: 100%|██████████| 9/9 [00:24<00:00,  2.68s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.87it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.45it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/9 [00:00<?, ?it/s][A
+token features:  11%|█         | 1/9 [00:03<00:25,  3.16s/it][A
+token features:  22%|██▏       | 2/9 [00:06<00:22,  3.22s/it][A
+token features:  33%|███▎      | 3/9 [00:09<00:19,  3.27s/it][A
+token features:  44%|████▍     | 4/9 [00:13<00:16,  3.30s/it][A
+token features:  56%|█████▌    | 5/9 [00:16<00:13,  3.35s/it][A
+token features:  67%|██████▋   | 6/9 [00:20<00:10,  3.38s/it][A
+token features:  78%|███████▊  | 7/9 [00:23<00:06,  3.42s/it][A
+token features: 100%|██████████| 9/9 [00:27<00:00,  2.92s/it][Atoken features: 100%|██████████| 9/9 [00:27<00:00,  3.03s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.25it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.21it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:  18%|█▊        | 2/11 [00:03<00:15,  1.71s/it][A
+token features:  36%|███▋      | 4/11 [00:06<00:11,  1.71s/it][A
+token features:  45%|████▌     | 5/11 [00:10<00:13,  2.24s/it][A
+token features:  55%|█████▍    | 6/11 [00:13<00:13,  2.61s/it][A
+token features:  73%|███████▎  | 8/11 [00:17<00:07,  2.35s/it][A
+token features:  82%|████████▏ | 9/11 [00:20<00:05,  2.71s/it][A
+token features: 100%|██████████| 11/11 [00:24<00:00,  2.43s/it][Atoken features: 100%|██████████| 11/11 [00:24<00:00,  2.22s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  79%|███████▉  | 15/19 [00:00<00:00, 139.81it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 138.77it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/10 [00:00<?, ?it/s][A
+token features:  10%|█         | 1/10 [00:03<00:29,  3.22s/it][A
+token features:  20%|██        | 2/10 [00:06<00:26,  3.28s/it][A
+token features:  30%|███       | 3/10 [00:10<00:23,  3.33s/it][A
+token features:  40%|████      | 4/10 [00:13<00:20,  3.37s/it][A
+token features:  50%|█████     | 5/10 [00:17<00:16,  3.40s/it][A
+token features:  60%|██████    | 6/10 [00:20<00:13,  3.43s/it][A
+token features:  70%|███████   | 7/10 [00:24<00:10,  3.45s/it][A
+token features:  80%|████████  | 8/10 [00:27<00:06,  3.47s/it][A
+token features: 100%|██████████| 10/10 [00:31<00:00,  2.96s/it][Atoken features: 100%|██████████| 10/10 [00:31<00:00,  3.11s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.27it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 131.85it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/15 [00:00<?, ?it/s][A
+token features:  13%|█▎        | 2/15 [00:03<00:22,  1.71s/it][A
+token features:  20%|██        | 3/15 [00:06<00:26,  2.23s/it][A
+token features:  27%|██▋       | 4/15 [00:10<00:28,  2.59s/it][A
+token features:  33%|███▎      | 5/15 [00:13<00:28,  2.86s/it][A
+token features:  40%|████      | 6/15 [00:17<00:27,  3.04s/it][A
+token features:  47%|████▋     | 7/15 [00:20<00:25,  3.18s/it][A
+token features:  53%|█████▎    | 8/15 [00:24<00:22,  3.28s/it][A
+token features:  60%|██████    | 9/15 [00:27<00:20,  3.36s/it][A
+token features:  67%|██████▋   | 10/15 [00:31<00:17,  3.42s/it][A
+token features:  73%|███████▎  | 11/15 [00:34<00:13,  3.46s/it][A
+token features:  80%|████████  | 12/15 [00:38<00:10,  3.50s/it][A
+token features:  87%|████████▋ | 13/15 [00:42<00:07,  3.53s/it][A
+token features: 100%|██████████| 15/15 [00:45<00:00,  3.02s/it][Atoken features: 100%|██████████| 15/15 [00:45<00:00,  3.05s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.76it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.22it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/19 [00:00<?, ?it/s][A
+token features:  11%|█         | 2/19 [00:03<00:29,  1.71s/it][A
+token features:  16%|█▌        | 3/19 [00:06<00:35,  2.23s/it][A
+token features:  21%|██        | 4/19 [00:10<00:38,  2.60s/it][A
+token features:  26%|██▋       | 5/19 [00:13<00:40,  2.86s/it][A
+token features:  37%|███▋      | 7/19 [00:17<00:30,  2.53s/it][A
+token features:  42%|████▏     | 8/19 [00:20<00:31,  2.82s/it][A
+token features:  47%|████▋     | 9/19 [00:24<00:30,  3.04s/it][A
+token features:  53%|█████▎    | 10/19 [00:27<00:28,  3.19s/it][A
+token features:  58%|█████▊    | 11/19 [00:31<00:26,  3.31s/it][A
+token features:  63%|██████▎   | 12/19 [00:35<00:23,  3.39s/it][A
+token features:  68%|██████▊   | 13/19 [00:38<00:20,  3.46s/it][A
+token features:  74%|███████▎  | 14/19 [00:42<00:17,  3.51s/it][A
+token features:  79%|███████▉  | 15/19 [00:45<00:14,  3.55s/it][A
+token features:  84%|████████▍ | 16/19 [00:49<00:10,  3.59s/it][A
+token features:  89%|████████▉ | 17/19 [00:53<00:07,  3.62s/it][A
+token features: 100%|██████████| 19/19 [00:57<00:00,  3.09s/it][Atoken features: 100%|██████████| 19/19 [00:57<00:00,  3.00s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 133.80it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.90it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:   9%|▉         | 1/11 [00:03<00:32,  3.23s/it][A
+token features:  18%|█▊        | 2/11 [00:06<00:29,  3.28s/it][A
+token features:  27%|██▋       | 3/11 [00:10<00:26,  3.33s/it][A
+token features:  36%|███▋      | 4/11 [00:13<00:23,  3.37s/it][A
+token features:  45%|████▌     | 5/11 [00:17<00:20,  3.40s/it][A
+token features:  55%|█████▍    | 6/11 [00:20<00:17,  3.42s/it][A
+token features:  64%|██████▎   | 7/11 [00:24<00:13,  3.45s/it][A
+token features:  73%|███████▎  | 8/11 [00:27<00:10,  3.47s/it][A
+token features:  82%|████████▏ | 9/11 [00:31<00:06,  3.49s/it][A
+token features: 100%|██████████| 11/11 [00:34<00:00,  2.98s/it][Atoken features: 100%|██████████| 11/11 [00:34<00:00,  3.15s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 138.27it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 137.76it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:   9%|▉         | 1/11 [00:03<00:31,  3.16s/it][A
+token features:  18%|█▊        | 2/11 [00:06<00:28,  3.21s/it][A
+token features:  36%|███▋      | 4/11 [00:09<00:19,  2.76s/it][A
+token features:  45%|████▌     | 5/11 [00:13<00:17,  2.96s/it][A
+token features:  55%|█████▍    | 6/11 [00:16<00:15,  3.11s/it][A
+token features:  64%|██████▎   | 7/11 [00:20<00:12,  3.23s/it][A
+token features:  82%|████████▏ | 9/11 [00:23<00:05,  2.79s/it][A
+token features: 100%|██████████| 11/11 [00:27<00:00,  2.49s/it][Atoken features: 100%|██████████| 11/11 [00:27<00:00,  2.49s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 135.77it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.49it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.24s/it][A
+token features:  17%|█▋        | 2/12 [00:06<00:32,  3.29s/it][A
+token features:  25%|██▌       | 3/12 [00:10<00:30,  3.34s/it][A
+token features:  33%|███▎      | 4/12 [00:13<00:26,  3.37s/it][A
+token features:  42%|████▏     | 5/12 [00:17<00:23,  3.40s/it][A
+token features:  50%|█████     | 6/12 [00:20<00:20,  3.43s/it][A
+token features:  58%|█████▊    | 7/12 [00:24<00:17,  3.46s/it][A
+token features:  67%|██████▋   | 8/12 [00:27<00:13,  3.48s/it][A
+token features:  75%|███████▌  | 9/12 [00:31<00:10,  3.50s/it][A
+token features:  83%|████████▎ | 10/12 [00:34<00:07,  3.51s/it][A
+token features: 100%|██████████| 12/12 [00:38<00:00,  3.00s/it][Atoken features: 100%|██████████| 12/12 [00:38<00:00,  3.19s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.23it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.30it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/17 [00:00<?, ?it/s][A
+token features:   6%|▌         | 1/17 [00:03<00:51,  3.22s/it][A
+token features:  12%|█▏        | 2/17 [00:06<00:49,  3.28s/it][A
+token features:  18%|█▊        | 3/17 [00:10<00:46,  3.33s/it][A
+token features:  24%|██▎       | 4/17 [00:13<00:43,  3.37s/it][A
+token features:  29%|██▉       | 5/17 [00:17<00:40,  3.40s/it][A
+token features:  35%|███▌      | 6/17 [00:20<00:37,  3.42s/it][A
+token features:  47%|████▋     | 8/17 [00:23<00:26,  2.92s/it][A
+token features:  53%|█████▎    | 9/17 [00:27<00:24,  3.11s/it][A
+token features:  59%|█████▉    | 10/17 [00:31<00:22,  3.24s/it][A
+token features:  65%|██████▍   | 11/17 [00:34<00:20,  3.35s/it][A
+token features:  71%|███████   | 12/17 [00:38<00:17,  3.42s/it][A
+token features:  76%|███████▋  | 13/17 [00:41<00:13,  3.48s/it][A
+token features:  82%|████████▏ | 14/17 [00:45<00:10,  3.52s/it][A
+token features:  88%|████████▊ | 15/17 [00:49<00:07,  3.56s/it][A
+token features: 100%|██████████| 17/17 [00:52<00:00,  3.05s/it][Atoken features: 100%|██████████| 17/17 [00:52<00:00,  3.11s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.95it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.13it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/14 [00:00<?, ?it/s][A
+token features:   7%|▋         | 1/14 [00:03<00:41,  3.22s/it][A
+token features:  14%|█▍        | 2/14 [00:06<00:39,  3.28s/it][A
+token features:  21%|██▏       | 3/14 [00:10<00:36,  3.33s/it][A
+token features:  29%|██▊       | 4/14 [00:13<00:33,  3.37s/it][A
+token features:  36%|███▌      | 5/14 [00:17<00:30,  3.40s/it][A
+token features:  43%|████▎     | 6/14 [00:20<00:27,  3.42s/it][A
+token features:  50%|█████     | 7/14 [00:23<00:24,  3.45s/it][A
+token features:  57%|█████▋    | 8/14 [00:27<00:20,  3.47s/it][A
+token features:  64%|██████▍   | 9/14 [00:31<00:17,  3.49s/it][A
+token features:  71%|███████▏  | 10/14 [00:34<00:14,  3.51s/it][A
+token features:  79%|███████▊  | 11/14 [00:38<00:10,  3.53s/it][A
+token features:  86%|████████▌ | 12/14 [00:41<00:07,  3.56s/it][A
+token features: 100%|██████████| 14/14 [00:45<00:00,  3.03s/it][Atoken features: 100%|██████████| 14/14 [00:45<00:00,  3.24s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.17it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.09it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/7 [00:00<?, ?it/s][A
+token features:  14%|█▍        | 1/7 [00:03<00:19,  3.22s/it][A
+token features:  29%|██▊       | 2/7 [00:06<00:16,  3.28s/it][A
+token features:  43%|████▎     | 3/7 [00:10<00:13,  3.33s/it][A
+token features:  57%|█████▋    | 4/7 [00:13<00:10,  3.37s/it][A
+token features:  71%|███████▏  | 5/7 [00:17<00:06,  3.40s/it][A
+token features: 100%|██████████| 7/7 [00:20<00:00,  2.91s/it][Atoken features: 100%|██████████| 7/7 [00:20<00:00,  2.93s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 134.96it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 135.72it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:   9%|▉         | 1/11 [00:03<00:32,  3.22s/it][A
+token features:  27%|██▋       | 3/11 [00:06<00:22,  2.77s/it][A
+token features:  36%|███▋      | 4/11 [00:10<00:20,  2.97s/it][A
+token features:  45%|████▌     | 5/11 [00:13<00:18,  3.12s/it][A
+token features:  55%|█████▍    | 6/11 [00:17<00:16,  3.23s/it][A
+token features:  64%|██████▎   | 7/11 [00:20<00:13,  3.32s/it][A
+token features:  73%|███████▎  | 8/11 [00:24<00:10,  3.38s/it][A
+token features:  82%|████████▏ | 9/11 [00:27<00:06,  3.43s/it][A
+token features: 100%|██████████| 11/11 [00:31<00:00,  2.93s/it][Atoken features: 100%|██████████| 11/11 [00:31<00:00,  2.83s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  79%|███████▉  | 15/19 [00:00<00:00, 140.40it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 139.60it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/13 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/13 [00:03<00:37,  3.16s/it][A
+token features:  23%|██▎       | 3/13 [00:06<00:27,  2.72s/it][A
+token features:  31%|███       | 4/13 [00:09<00:26,  2.92s/it][A
+token features:  38%|███▊      | 5/13 [00:13<00:24,  3.08s/it][A
+token features:  46%|████▌     | 6/13 [00:16<00:22,  3.19s/it][A
+token features:  54%|█████▍    | 7/13 [00:20<00:19,  3.29s/it][A
+token features:  62%|██████▏   | 8/13 [00:23<00:16,  3.36s/it][A
+token features:  69%|██████▉   | 9/13 [00:27<00:13,  3.41s/it][A
+token features:  77%|███████▋  | 10/13 [00:30<00:10,  3.45s/it][A
+token features:  85%|████████▍ | 11/13 [00:34<00:06,  3.49s/it][A
+token features: 100%|██████████| 13/13 [00:38<00:00,  2.98s/it][Atoken features: 100%|██████████| 13/13 [00:38<00:00,  2.93s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 133.88it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 134.80it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.21s/it][A
+token features:  17%|█▋        | 2/12 [00:06<00:32,  3.27s/it][A
+token features:  25%|██▌       | 3/12 [00:10<00:29,  3.32s/it][A
+token features:  33%|███▎      | 4/12 [00:13<00:26,  3.36s/it][A
+token features:  50%|█████     | 6/12 [00:17<00:17,  2.88s/it][A
+token features:  67%|██████▋   | 8/12 [00:20<00:10,  2.54s/it][A
+token features:  75%|███████▌  | 9/12 [00:24<00:08,  2.84s/it][A
+token features:  83%|████████▎ | 10/12 [00:27<00:06,  3.05s/it][A
+token features: 100%|██████████| 12/12 [00:31<00:00,  2.68s/it][Atoken features: 100%|██████████| 12/12 [00:31<00:00,  2.60s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.25it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.88it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:   9%|▉         | 1/11 [00:03<00:32,  3.22s/it][A
+token features:  18%|█▊        | 2/11 [00:06<00:29,  3.28s/it][A
+token features:  27%|██▋       | 3/11 [00:10<00:26,  3.33s/it][A
+token features:  36%|███▋      | 4/11 [00:13<00:23,  3.36s/it][A
+token features:  45%|████▌     | 5/11 [00:16<00:20,  3.39s/it][A
+token features:  55%|█████▍    | 6/11 [00:20<00:17,  3.42s/it][A
+token features:  64%|██████▎   | 7/11 [00:23<00:13,  3.44s/it][A
+token features:  73%|███████▎  | 8/11 [00:27<00:10,  3.47s/it][A
+token features:  82%|████████▏ | 9/11 [00:31<00:06,  3.49s/it][A
+token features: 100%|██████████| 11/11 [00:34<00:00,  2.98s/it][Atoken features: 100%|██████████| 11/11 [00:34<00:00,  3.15s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 137.50it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 137.17it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/15 [00:00<?, ?it/s][A
+token features:   7%|▋         | 1/15 [00:03<00:45,  3.22s/it][A
+token features:  13%|█▎        | 2/15 [00:06<00:42,  3.28s/it][A
+token features:  20%|██        | 3/15 [00:10<00:39,  3.33s/it][A
+token features:  33%|███▎      | 5/15 [00:13<00:28,  2.85s/it][A
+token features:  40%|████      | 6/15 [00:17<00:27,  3.04s/it][A
+token features:  47%|████▋     | 7/15 [00:20<00:25,  3.18s/it][A
+token features:  53%|█████▎    | 8/15 [00:24<00:22,  3.28s/it][A
+token features:  60%|██████    | 9/15 [00:27<00:20,  3.36s/it][A
+token features:  67%|██████▋   | 10/15 [00:31<00:17,  3.42s/it][A
+token features:  73%|███████▎  | 11/15 [00:34<00:13,  3.47s/it][A
+token features:  80%|████████  | 12/15 [00:38<00:10,  3.50s/it][A
+token features:  87%|████████▋ | 13/15 [00:41<00:07,  3.53s/it][A
+token features: 100%|██████████| 15/15 [00:45<00:00,  3.02s/it][Atoken features: 100%|██████████| 15/15 [00:45<00:00,  3.04s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 133.58it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.82it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/14 [00:00<?, ?it/s][A
+token features:   7%|▋         | 1/14 [00:03<00:41,  3.22s/it][A
+token features:  14%|█▍        | 2/14 [00:06<00:39,  3.28s/it][A
+token features:  21%|██▏       | 3/14 [00:10<00:36,  3.33s/it][A
+token features:  29%|██▊       | 4/14 [00:13<00:33,  3.36s/it][A
+token features:  36%|███▌      | 5/14 [00:17<00:30,  3.40s/it][A
+token features:  43%|████▎     | 6/14 [00:20<00:27,  3.42s/it][A
+token features:  50%|█████     | 7/14 [00:24<00:24,  3.45s/it][A
+token features:  57%|█████▋    | 8/14 [00:27<00:20,  3.47s/it][A
+token features:  64%|██████▍   | 9/14 [00:31<00:17,  3.49s/it][A
+token features:  71%|███████▏  | 10/14 [00:34<00:14,  3.51s/it][A
+token features:  79%|███████▊  | 11/14 [00:38<00:10,  3.53s/it][A
+token features:  86%|████████▌ | 12/14 [00:41<00:07,  3.55s/it][A
+token features: 100%|██████████| 14/14 [00:45<00:00,  3.03s/it][Atoken features: 100%|██████████| 14/14 [00:45<00:00,  3.24s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.33it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 131.96it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.23s/it][A
+token features:  25%|██▌       | 3/12 [00:06<00:24,  2.77s/it][A
+token features:  33%|███▎      | 4/12 [00:10<00:23,  2.98s/it][A
+token features:  42%|████▏     | 5/12 [00:13<00:21,  3.13s/it][A
+token features:  50%|█████     | 6/12 [00:17<00:19,  3.24s/it][A
+token features:  58%|█████▊    | 7/12 [00:20<00:16,  3.32s/it][A
+token features:  67%|██████▋   | 8/12 [00:24<00:13,  3.36s/it][A
+token features:  75%|███████▌  | 9/12 [00:27<00:10,  3.39s/it][A
+token features:  83%|████████▎ | 10/12 [00:30<00:06,  3.42s/it][A
+token features: 100%|██████████| 12/12 [00:34<00:00,  2.92s/it][Atoken features: 100%|██████████| 12/12 [00:34<00:00,  2.88s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  68%|██████▊   | 13/19 [00:00<00:00, 125.47it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 125.94it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/12 [00:00<?, ?it/s][A
+token features:   8%|▊         | 1/12 [00:03<00:35,  3.21s/it][A
+token features:  25%|██▌       | 3/12 [00:06<00:24,  2.77s/it][A
+token features:  33%|███▎      | 4/12 [00:10<00:23,  2.97s/it][A
+token features:  42%|████▏     | 5/12 [00:13<00:21,  3.12s/it][A
+token features:  50%|█████     | 6/12 [00:17<00:19,  3.23s/it][A
+token features:  58%|█████▊    | 7/12 [00:20<00:16,  3.31s/it][A
+token features:  67%|██████▋   | 8/12 [00:24<00:13,  3.37s/it][A
+token features:  75%|███████▌  | 9/12 [00:27<00:10,  3.42s/it][A
+token features:  83%|████████▎ | 10/12 [00:31<00:06,  3.46s/it][A
+token features: 100%|██████████| 12/12 [00:34<00:00,  2.96s/it][Atoken features: 100%|██████████| 12/12 [00:34<00:00,  2.90s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 136.05it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 136.22it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:  18%|█▊        | 2/11 [00:03<00:15,  1.71s/it][A
+token features:  27%|██▋       | 3/11 [00:06<00:17,  2.23s/it][A
+token features:  36%|███▋      | 4/11 [00:10<00:18,  2.60s/it][A
+token features:  45%|████▌     | 5/11 [00:13<00:17,  2.86s/it][A
+token features:  55%|█████▍    | 6/11 [00:17<00:15,  3.05s/it][A
+token features:  64%|██████▎   | 7/11 [00:20<00:12,  3.19s/it][A
+token features:  73%|███████▎  | 8/11 [00:24<00:09,  3.29s/it][A
+token features:  82%|████████▏ | 9/11 [00:27<00:06,  3.36s/it][A
+token features: 100%|██████████| 11/11 [00:31<00:00,  2.89s/it][Atoken features: 100%|██████████| 11/11 [00:31<00:00,  2.86s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.44it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.21it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/17 [00:00<?, ?it/s][A
+token features:   6%|▌         | 1/17 [00:03<00:51,  3.22s/it][A
+token features:  18%|█▊        | 3/17 [00:06<00:38,  2.77s/it][A
+token features:  24%|██▎       | 4/17 [00:10<00:38,  2.98s/it][A
+token features:  29%|██▉       | 5/17 [00:13<00:37,  3.12s/it][A
+token features:  35%|███▌      | 6/17 [00:17<00:35,  3.23s/it][A
+token features:  41%|████      | 7/17 [00:20<00:33,  3.33s/it][A
+token features:  47%|████▋     | 8/17 [00:24<00:30,  3.38s/it][A
+token features:  53%|█████▎    | 9/17 [00:27<00:27,  3.43s/it][A
+token features:  59%|█████▉    | 10/17 [00:31<00:24,  3.47s/it][A
+token features:  65%|██████▍   | 11/17 [00:34<00:21,  3.50s/it][A
+token features:  71%|███████   | 12/17 [00:38<00:17,  3.53s/it][A
+token features:  76%|███████▋  | 13/17 [00:42<00:14,  3.55s/it][A
+token features:  82%|████████▏ | 14/17 [00:45<00:10,  3.57s/it][A
+token features:  88%|████████▊ | 15/17 [00:49<00:07,  3.60s/it][A
+token features: 100%|██████████| 17/17 [00:52<00:00,  3.07s/it][Atoken features: 100%|██████████| 17/17 [00:52<00:00,  3.11s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.77it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.90it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/18 [00:00<?, ?it/s][A
+token features:   6%|▌         | 1/18 [00:03<00:55,  3.24s/it][A
+token features:  11%|█         | 2/18 [00:06<00:52,  3.29s/it][A
+token features:  22%|██▏       | 4/18 [00:10<00:39,  2.82s/it][A
+token features:  28%|██▊       | 5/18 [00:13<00:39,  3.02s/it][A
+token features:  39%|███▉      | 7/18 [00:17<00:29,  2.64s/it][A
+token features:  44%|████▍     | 8/18 [00:20<00:29,  2.91s/it][A
+token features:  50%|█████     | 9/18 [00:24<00:27,  3.10s/it][A
+token features:  56%|█████▌    | 10/18 [00:27<00:25,  3.24s/it][A
+token features:  61%|██████    | 11/18 [00:31<00:23,  3.35s/it][A
+token features:  67%|██████▋   | 12/18 [00:34<00:20,  3.42s/it][A
+token features:  72%|███████▏  | 13/18 [00:38<00:17,  3.48s/it][A
+token features:  78%|███████▊  | 14/18 [00:42<00:14,  3.53s/it][A
+token features:  83%|████████▎ | 15/18 [00:45<00:10,  3.57s/it][A
+token features:  89%|████████▉ | 16/18 [00:49<00:07,  3.60s/it][A
+token features: 100%|██████████| 18/18 [00:53<00:00,  3.07s/it][Atoken features: 100%|██████████| 18/18 [00:53<00:00,  2.96s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.44it/s][A
+layer packaging:  95%|█████████▍| 18/19 [00:00<00:00, 36.54it/s] [Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 46.55it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/18 [00:00<?, ?it/s][A
+token features:   6%|▌         | 1/18 [00:03<00:54,  3.24s/it][A
+token features:  11%|█         | 2/18 [00:06<00:52,  3.29s/it][A
+token features:  17%|█▋        | 3/18 [00:10<00:50,  3.34s/it][A
+token features:  22%|██▏       | 4/18 [00:13<00:47,  3.37s/it][A
+token features:  28%|██▊       | 5/18 [00:17<00:44,  3.40s/it][A
+token features:  33%|███▎      | 6/18 [00:20<00:41,  3.43s/it][A
+token features:  39%|███▉      | 7/18 [00:24<00:38,  3.46s/it][A
+token features:  44%|████▍     | 8/18 [00:27<00:34,  3.47s/it][A
+token features:  50%|█████     | 9/18 [00:31<00:31,  3.49s/it][A
+token features:  56%|█████▌    | 10/18 [00:34<00:27,  3.49s/it][A
+token features:  61%|██████    | 11/18 [00:38<00:24,  3.50s/it][A
+token features:  67%|██████▋   | 12/18 [00:41<00:21,  3.50s/it][A
+token features:  72%|███████▏  | 13/18 [00:45<00:17,  3.51s/it][A
+token features:  78%|███████▊  | 14/18 [00:48<00:14,  3.54s/it][A
+token features:  83%|████████▎ | 15/18 [00:52<00:10,  3.57s/it][A
+token features:  89%|████████▉ | 16/18 [00:56<00:07,  3.60s/it][A
+token features: 100%|██████████| 18/18 [00:59<00:00,  3.07s/it][Atoken features: 100%|██████████| 18/18 [00:59<00:00,  3.32s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.35it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.32it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/11 [00:00<?, ?it/s][A
+token features:   9%|▉         | 1/11 [00:03<00:32,  3.22s/it][A
+token features:  18%|█▊        | 2/11 [00:06<00:29,  3.29s/it][A
+token features:  27%|██▋       | 3/11 [00:10<00:26,  3.34s/it][A
+token features:  36%|███▋      | 4/11 [00:13<00:23,  3.38s/it][A
+token features:  45%|████▌     | 5/11 [00:17<00:20,  3.41s/it][A
+token features:  55%|█████▍    | 6/11 [00:20<00:17,  3.43s/it][A
+token features:  64%|██████▎   | 7/11 [00:24<00:13,  3.46s/it][A
+token features:  73%|███████▎  | 8/11 [00:27<00:10,  3.48s/it][A
+token features:  82%|████████▏ | 9/11 [00:31<00:06,  3.50s/it][A
+token features: 100%|██████████| 11/11 [00:34<00:00,  2.99s/it][Atoken features: 100%|██████████| 11/11 [00:34<00:00,  3.16s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.88it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 133.26it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/14 [00:00<?, ?it/s][A
+token features:  14%|█▍        | 2/14 [00:03<00:20,  1.71s/it][A
+token features:  21%|██▏       | 3/14 [00:06<00:24,  2.23s/it][A
+token features:  29%|██▊       | 4/14 [00:10<00:25,  2.60s/it][A
+token features:  36%|███▌      | 5/14 [00:13<00:25,  2.86s/it][A
+token features:  43%|████▎     | 6/14 [00:17<00:24,  3.05s/it][A
+token features:  50%|█████     | 7/14 [00:20<00:22,  3.19s/it][A
+token features:  57%|█████▋    | 8/14 [00:24<00:19,  3.29s/it][A
+token features:  64%|██████▍   | 9/14 [00:27<00:16,  3.36s/it][A
+token features:  71%|███████▏  | 10/14 [00:31<00:13,  3.42s/it][A
+token features:  79%|███████▊  | 11/14 [00:34<00:10,  3.47s/it][A
+token features:  86%|████████▌ | 12/14 [00:38<00:07,  3.51s/it][A
+token features: 100%|██████████| 14/14 [00:42<00:00,  3.00s/it][Atoken features: 100%|██████████| 14/14 [00:42<00:00,  3.01s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 132.32it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 131.94it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/19 [00:00<?, ?it/s][A
+token features:   5%|▌         | 1/19 [00:03<00:58,  3.23s/it][A
+token features:  16%|█▌        | 3/19 [00:06<00:44,  2.78s/it][A
+token features:  21%|██        | 4/19 [00:10<00:44,  2.98s/it][A
+token features:  26%|██▋       | 5/19 [00:13<00:43,  3.13s/it][A
+token features:  32%|███▏      | 6/19 [00:17<00:41,  3.23s/it][A
+token features:  37%|███▋      | 7/19 [00:20<00:39,  3.31s/it][A
+token features:  47%|████▋     | 9/19 [00:24<00:28,  2.85s/it][A
+token features:  53%|█████▎    | 10/19 [00:27<00:27,  3.06s/it][A
+token features:  58%|█████▊    | 11/19 [00:31<00:25,  3.22s/it][A
+token features:  63%|██████▎   | 12/19 [00:34<00:23,  3.33s/it][A
+token features:  68%|██████▊   | 13/19 [00:38<00:20,  3.42s/it][A
+token features:  74%|███████▎  | 14/19 [00:42<00:17,  3.48s/it][A
+token features:  79%|███████▉  | 15/19 [00:45<00:14,  3.54s/it][A
+token features:  84%|████████▍ | 16/19 [00:49<00:10,  3.57s/it][A
+token features:  89%|████████▉ | 17/19 [00:53<00:07,  3.60s/it][A
+token features: 100%|██████████| 19/19 [00:56<00:00,  3.08s/it][Atoken features: 100%|██████████| 19/19 [00:56<00:00,  2.99s/it]
+
+layer packaging:   0%|          | 0/19 [00:00<?, ?it/s][A
+layer packaging:  74%|███████▎  | 14/19 [00:00<00:00, 131.65it/s][Alayer packaging: 100%|██████████| 19/19 [00:00<00:00, 132.17it/s]
+Using cls_token, but it is not set yet.
+
+token features:   0%|          | 0/7 [00:00<?, ?it/s][A
+token features:  14%|█▍        | 1/7 [00:03<00:19,  3.25s/it][A
+token features:  29%|██▊       | 2/7 [00:06<00:16,  3.30s/it][A
+token features:  43%|████▎     | 3/7 [00:10<00:13,  3.34s/it][A
+token features:  57%|█████▋    | 4/7 [00:13<00:10,  3.38s/it][A
+token features:  71%|███████▏  | 5/7 [00:17<00:06,  3.41s/it][Atoken features: 100%|██████████| 7/7 [00:17<00:00,  2.44s/it]
+layers:   0%|          | 0/19 [37:47<?, ?it/s]
+Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+transfo-xl-wt103
+
+coca_spok_filter_punct_10K_sample_2
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_2.pkl
+
+extracting network activations for transfo-xl-wt103
+
+
+coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation_ave_False.pkl doesn't exists, creating...
+
+Traceback (most recent call last):
+  File "/om/user/ehoseini/sent_sampling/extract_model_activations.py", line 24, in <module>
+    extractor_obj()
+  File "/om/user/ehoseini/sent_sampling/utils/extract_utils.py", line 204, in __call__
+    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=self.average_sentence)  #
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/benchmarks/neural.py", line 627, in read_words
+    sentence_activations = candidate(stimuli=sentence_stimuli, average_sentence=average_sentence)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/__init__.py", line 57, in __call__
+    self._model(*args, **kwargs, layers=self._prerun)
+  File "/usr/local/lib/python3.7/site-packages/brainscore/utils/__init__.py", line 80, in __call__
+    return self.content(*args, **kwargs)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/implementations.py", line 560, in __call__
+    sentence_averaging=self._sentence_average, **kwargs)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/implementations.py", line 930, in _call_conditional_average
+    result = extractor(*args, **kwargs)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 34, in __call__
+    return self.from_stimulus_set(stimulus_set=stimuli, layers=layers, stimuli_identifier=stimuli_identifier)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 49, in from_stimulus_set
+    stimuli_identifier=stimuli_identifier)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 62, in from_sentences
+    return fnc(layers=layers, sentences=sentences)
+  File "/usr/local/lib/python3.7/site-packages/result_caching/__init__.py", line 311, in wrapper
+    result = function(**reduced_call_args)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 66, in _from_sentences_stored
+    return self._from_sentences(layers=layers, sentences=sentences)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 71, in _from_sentences
+    layer_activations = self.get_activations(sentences, layers=layers)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/implementations.py", line 735, in __call__
+    assert all(layer_encoding.shape[1] == sum(num_words) for layer_encoding in encoded_layers)
+AssertionError

@@ -1,0 +1,87 @@
+My SLURM_ARRAY_TASK_ID:  1
+Running extraction: group=best_performing_pereira_2-dataset=ud_sentencez_token_filter_v3-activation-bench=None-ave=False
+Running optimiation: coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=300-n_init=1
+2021-01-17 17:24:16.715440: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]934it [00:00, 139382.34it/s]
+0it [00:00, ?it/s]934it [00:00, 150031.78it/s]
+0it [00:00, ?it/s]935it [00:00, 154250.87it/s]
+0it [00:00, ?it/s]934it [00:00, 155733.65it/s]
+0it [00:00, ?it/s]934it [00:00, 154274.01it/s]
+0it [00:00, ?it/s]935it [00:00, 153274.22it/s]
+0it [00:00, ?it/s]934it [00:00, 153272.03it/s]
+0it [00:00, ?it/s]934it [00:00, 152454.85it/s]
+0it [00:00, ?it/s]935it [00:00, 154408.78it/s]Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+group=best_performing_pereira_2-dataset=ud_sentencez_token_filter_v3-activation-bench=None-ave=False
+
+coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=300-n_init=1
+
+loading /om/user/ehoseini/MyData/Universal Dependencies 2.6/ud_sentencez_data_token_filter_v3_no_dup.pkl
+extracting network activations for roberta-base
+ud_sentencez_token_filter_v3_roberta-base_layer_2_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/ud_sentencez_token_filter_v3_roberta-base_layer_2_activation_ave_False.pkl
+adding activations to set
+extracting network activations for xlnet-large-cased
+ud_sentencez_token_filter_v3_xlnet-large-cased_layer_24_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/ud_sentencez_token_filter_v3_xlnet-large-cased_layer_24_activation_ave_False.pkl
+adding activations to set
+extracting network activations for bert-large-uncased-whole-word-masking
+ud_sentencez_token_filter_v3_bert-large-uncased-whole-word-masking_layer_12_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/ud_sentencez_token_filter_v3_bert-large-uncased-whole-word-masking_layer_12_activation_ave_False.pkl
+adding activations to set
+extracting network activations for xlm-mlm-en-2048
+ud_sentencez_token_filter_v3_xlm-mlm-en-2048_layer_12_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/ud_sentencez_token_filter_v3_xlm-mlm-en-2048_layer_12_activation_ave_False.pkl
+adding activations to set
+extracting network activations for gpt2-xl
+ud_sentencez_token_filter_v3_gpt2-xl_layer_44_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/ud_sentencez_token_filter_v3_gpt2-xl_layer_44_activation_ave_False.pkl
+adding activations to set
+extracting network activations for albert-xxlarge-v2
+ud_sentencez_token_filter_v3_albert-xxlarge-v2_layer_5_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/ud_sentencez_token_filter_v3_albert-xxlarge-v2_layer_5_activation_ave_False.pkl
+adding activations to set
+extracting network activations for ctrl
+ud_sentencez_token_filter_v3_ctrl_layer_47_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/ud_sentencez_token_filter_v3_ctrl_layer_47_activation_ave_False.pkl
+adding activations to set
+
+2021-01-17 17:24:26,542 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] ===> Starting init 0, initial f(S) = 0.90585
+2021-01-17 17:26:35,249 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 0, 453 to 860 after 1 swaps,  f(S) = 0.90642
+2021-01-17 17:28:34,545 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 1, 6026 to 7749 after 1 swaps,  f(S) = 0.90687
+2021-01-17 17:30:27,474 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 2, 2188 to 5198 after 1 swaps,  f(S) = 0.90695
+2021-01-17 17:32:23,349 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 3, 1736 to 2233 after 1 swaps,  f(S) = 0.90750
+2021-01-17 17:34:15,049 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 4, 4073 to 5391 after 1 swaps,  f(S) = 0.90778
+2021-01-17 17:36:06,392 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 5, 4763 to 3699 after 1 swaps,  f(S) = 0.90866
+2021-01-17 17:37:57,584 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 6, 3395 to 6616 after 1 swaps,  f(S) = 0.91014
+2021-01-17 17:39:48,107 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 7, 762 to 3257 after 1 swaps,  f(S) = 0.91015
+2021-01-17 17:41:39,297 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 8, 3786 to 6814 after 1 swaps,  f(S) = 0.91048
+2021-01-17 17:43:30,305 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 9, 5194 to 994 after 1 swaps,  f(S) = 0.91115
+2021-01-17 17:45:21,013 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 10, 3405 to 6789 after 1 swaps,  f(S) = 0.91222
+2021-01-17 17:47:11,237 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 11, 4280 to 710 after 1 swaps,  f(S) = 0.91328
+2021-01-17 17:49:02,189 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 12, 4132 to 969 after 1 swaps,  f(S) = 0.91539
+2021-01-17 17:50:53,241 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 13, 6440 to 8131 after 1 swaps,  f(S) = 0.91619
+2021-01-17 17:52:43,879 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 14, 5072 to 1895 after 1 swaps,  f(S) = 0.91679
+2021-01-17 17:54:37,598 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 15, 6008 to 477 after 1 swaps,  f(S) = 0.91769
+2021-01-17 17:56:31,083 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 16, 7782 to 6189 after 1 swaps,  f(S) = 0.91815
+2021-01-17 17:58:25,936 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 17, 4933 to 1860 after 1 swaps,  f(S) = 0.92043
+2021-01-17 18:00:19,685 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 18, 4286 to 1475 after 1 swaps,  f(S) = 0.92099
+2021-01-17 18:02:13,109 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 19, 6451 to 7524 after 1 swaps,  f(S) = 0.92139
+2021-01-17 18:04:04,220 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 20, 6279 to 786 after 1 swaps,  f(S) = 0.92266
+2021-01-17 18:05:54,926 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 21, 7739 to 5855 after 1 swaps,  f(S) = 0.92293
+2021-01-17 18:07:45,635 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 22, 4468 to 3088 after 1 swaps,  f(S) = 0.92393
+2021-01-17 18:09:37,507 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 23, 6164 to 7050 after 1 swaps,  f(S) = 0.92525
+2021-01-17 18:11:29,196 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 24, 795 to 8360 after 1 swaps,  f(S) = 0.92527
+2021-01-17 18:13:23,428 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 25, 1032 to 2054 after 1 swaps,  f(S) = 0.92568
+2021-01-17 18:15:17,811 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 26, 7823 to 4069 after 1 swaps,  f(S) = 0.92719
+2021-01-17 18:17:11,428 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 27, 3384 to 5252 after 1 swaps,  f(S) = 0.92752
+2021-01-17 18:19:05,036 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 28, 1378 to 3434 after 1 swaps,  f(S) = 0.92795
+2021-01-17 18:20:57,722 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 29, 6524 to 1931 after 1 swaps,  f(S) = 0.92882
+2021-01-17 18:22:52,346 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 30, 6335 to 6904 after 1 swaps,  f(S) = 0.92904
+2021-01-17 18:24:47,565 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 31, 5753 to 5643 after 1 swaps,  f(S) = 0.93082
+2021-01-17 18:26:40,866 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 32, 6805 to 7740 after 1 swaps,  f(S) = 0.94123
+2021-01-17 18:28:32,569 [INFO] [OPT-EXP-DSGN - coordinate_ascent_parallel_eh] [1/1] [t = 1] id = 33, 2629 to 1967 after 1 swaps,  f(S) = 0.94153
+slurmstepd: error: *** JOB 19118825 ON node087 CANCELLED AT 2021-01-17T19:54:15 ***

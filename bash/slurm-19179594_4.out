@@ -1,0 +1,5 @@
+My SLURM_ARRAY_TASK_ID:  4
+Running extraction: group=best_performing_pereira_5-dataset=ud_sentencez_token_filter_v3-activation-bench=None-ave=False
+Running optimiation: coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=300-n_init=1
+/var/slurm/slurmd/job19179594/slurm_script: line 72: syntax error near unexpected token `<<<'
+/var/slurm/slurmd/job19179594/slurm_script: line 72: `<<<<<<< HEAD'

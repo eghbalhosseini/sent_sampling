@@ -1,0 +1,8 @@
+whoami: cannot find name for user ID 96633
+whoami: cannot find name for user ID 96633
+whoami: cannot find name for user ID 96633
+My SLURM_ARRAY_TASK_ID:  1
+Running extraction: group=best_performing_pereira_2-dataset=ud_sentencez_token_filter_v3-activation-bench=None-ave=False
+Running optimiation: coordinate_ascent-obj=D_s-n_iter=10000-n_samples=300-n_init=1
+whoami: cannot find name for user ID 96633
+[31mFATAL:  [0m Couldn't determine user account information: user: lookup userid 96633: no such file or directory
