@@ -63,7 +63,7 @@ def pt_create_corr_rdm_short(X,Y=None,vec=False,device=None):
             Y=torch.nn.functional.normalize(Y)
     else:
         Y=X
-    XY_corr=torch.tensor(1,device=device,dtype = float,requires_grad=False)-torch.mm(X,torch.transpose(X,1,0))
+    XY_corr=torch.tensor(1,device=device,dtype = float,requires_grad=False)-torch.mm(X,torch.transpose(Y,1,0))
     XY_corr=torch.triu(XY_corr,diagonal=1)
     if vec:
         return torch.clamp(torch.reshape(XY_corr,(1,-1)), 0.0, np.inf)
