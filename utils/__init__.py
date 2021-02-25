@@ -19,6 +19,8 @@ gpt2_xl_grp_config=dict(grp_id=f"{modl_name}_layers",
                     grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
                     layer_by_name=True)
 
+
+
 modl_name='roberta-base'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 roberta_base_grp_config=dict(grp_id= f"{modl_name}_layers",
@@ -64,6 +66,14 @@ model_grps_config = [gpt2_grp_config,
                      xlm_mlm_config,
                      albert_xxlarge_config,
                      ctrl_config,
+                    dict(grp_id='gpt2-xl_layer_compare',description='best layer/Pereira benchmark',
+                          grp_layer_tuple=(('gpt2-xl','encoder.h.0'),
+                                           ('gpt2-xl','encoder.h.28'),
+                                           ('gpt2-xl','encoder.h.20'),
+                                           ('gpt2-xl','encoder.h.33'),
+                                           ('gpt2-xl','encoder.h.43'),
+                                           ('gpt2-xl','encoder.h.47')),layer_by_name=True),
+
                      dict(grp_id= 'test_early_layer', grp_layer_tuple=(('gpt2',1),
                                                                        ('bert-base-uncased',1),
                                                                         ('xlm-mlm-en-2048',1)),layer_by_name=False),

@@ -1,167 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  2
-Running extraction: group=best_performing_pereira_3-dataset=ud_sentencez_token_filter_v3-activation-bench=None-ave=False
-Running optimiation: coordinate_ascent-obj=D_s-n_iter=10000-n_samples=300-n_init=1
-2021-01-17 21:35:45.083387: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
-/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
-  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
-/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
-  xr_data.set_index(append=True, inplace=True, **coords_d)
-0it [00:00, ?it/s]934it [00:00, 221226.56it/s]
-0it [00:00, ?it/s]934it [00:00, 226916.12it/s]
-0it [00:00, ?it/s]935it [00:00, 226463.84it/s]
-0it [00:00, ?it/s]934it [00:00, 229065.60it/s]
-0it [00:00, ?it/s]934it [00:00, 224677.67it/s]
-0it [00:00, ?it/s]935it [00:00, 224262.27it/s]
-0it [00:00, ?it/s]934it [00:00, 230888.19it/s]
-0it [00:00, ?it/s]934it [00:00, 218731.43it/s]
-0it [00:00, ?it/s]935it [00:00, 219087.95it/s]
-2021-01-17 21:35:50,747 [INFO] [OPT-EXP-DSGN - coordinate_ascent] ===> Starting init 0, initial f(S) = 0.89119
-2021-01-17 21:35:51,083 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 1] swapped,  f(S) = 0.89138
-2021-01-17 21:35:51,423 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 2] swapped,  f(S) = 0.89252
-2021-01-17 21:35:51,758 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 3] swapped,  f(S) = 0.89271
-2021-01-17 21:35:52,093 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 4] swapped,  f(S) = 0.89347
-2021-01-17 21:35:53,885 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 5] swapped,  f(S) = 0.89352
-2021-01-17 21:35:56,387 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 6] swapped,  f(S) = 0.89417
-2021-01-17 21:35:57,093 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 7] swapped,  f(S) = 0.89476
-2021-01-17 21:36:13,022 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 8] swapped,  f(S) = 0.89501
-2021-01-17 21:36:13,370 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 9] swapped,  f(S) = 0.89551
-2021-01-17 21:36:24,925 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 10] swapped,  f(S) = 0.89557
-2021-01-17 21:36:27,016 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 11] swapped,  f(S) = 0.89598
-2021-01-17 21:36:30,805 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 12] swapped,  f(S) = 0.89646
-2021-01-17 21:36:31,143 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 13] swapped,  f(S) = 0.89730
-2021-01-17 21:36:31,485 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 14] swapped,  f(S) = 0.89743
-2021-01-17 21:36:32,205 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 15] swapped,  f(S) = 0.89796
-2021-01-17 21:36:36,720 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 16] swapped,  f(S) = 0.89805
-2021-01-17 21:36:37,075 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 17] swapped,  f(S) = 0.89869
-2021-01-17 21:36:37,433 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 18] swapped,  f(S) = 0.90054
-2021-01-17 21:36:37,788 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 19] swapped,  f(S) = 0.90057
-2021-01-17 21:36:38,474 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 20] swapped,  f(S) = 0.90088
-2021-01-17 21:36:39,159 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 21] swapped,  f(S) = 0.90097
-2021-01-17 21:36:39,501 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 22] swapped,  f(S) = 0.90110
-2021-01-17 21:36:40,191 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 23] swapped,  f(S) = 0.90128
-2021-01-17 21:36:40,535 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 24] swapped,  f(S) = 0.90227
-2021-01-17 21:36:41,230 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 25] swapped,  f(S) = 0.90255
-2021-01-17 21:36:42,259 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 26] swapped,  f(S) = 0.90268
-2021-01-17 21:36:42,988 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 27] swapped,  f(S) = 0.90278
-2021-01-17 21:36:43,341 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 28] swapped,  f(S) = 0.90331
-2021-01-17 21:36:43,693 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 29] swapped,  f(S) = 0.90355
-2021-01-17 21:36:45,082 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 30] swapped,  f(S) = 0.90360
-2021-01-17 21:36:45,795 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 31] swapped,  f(S) = 0.90392
-2021-01-17 21:36:46,150 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 32] swapped,  f(S) = 0.90443
-2021-01-17 21:36:46,494 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 33] swapped,  f(S) = 0.90468
-2021-01-17 21:36:48,537 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 34] swapped,  f(S) = 0.90490
-2021-01-17 21:36:48,874 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 35] swapped,  f(S) = 0.90825
-2021-01-17 21:36:49,923 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 36] swapped,  f(S) = 0.90835
-2021-01-17 21:36:50,270 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 37] swapped,  f(S) = 0.90872
-2021-01-17 21:36:50,606 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 38] swapped,  f(S) = 0.90894
-2021-01-17 22:23:15,939 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 39] swapped,  f(S) = 0.90916
-2021-01-17 22:23:23,458 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 40] swapped,  f(S) = 0.91025
-2021-01-17 22:23:23,798 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 41] swapped,  f(S) = 0.91137
-2021-01-17 22:23:24,809 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 42] swapped,  f(S) = 0.91153
-2021-01-17 22:23:25,146 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 43] swapped,  f(S) = 0.91187
-2021-01-17 22:23:31,635 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 44] swapped,  f(S) = 0.91229
-2021-01-17 22:23:31,974 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 45] swapped,  f(S) = 0.91289
-2021-01-17 22:23:33,701 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 46] swapped,  f(S) = 0.91310
-2021-01-17 22:23:34,714 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 47] swapped,  f(S) = 0.91419
-2021-01-17 22:23:37,096 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 48] swapped,  f(S) = 0.91450
-2021-01-17 22:24:00,137 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 49] swapped,  f(S) = 0.91454
-2021-01-17 22:24:00,478 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 50] swapped,  f(S) = 0.91510
-2021-01-17 22:24:00,817 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 51] swapped,  f(S) = 0.91584
-2021-01-17 22:24:01,158 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 52] swapped,  f(S) = 0.91587
-2021-01-17 22:24:02,870 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 53] swapped,  f(S) = 0.91609
-2021-01-17 22:24:03,898 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 54] swapped,  f(S) = 0.91612
-2021-01-17 22:24:04,237 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 55] swapped,  f(S) = 0.91690
-2021-01-17 22:24:04,574 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 56] swapped,  f(S) = 0.91724
-2021-01-17 22:24:04,912 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 57] swapped,  f(S) = 0.91799
-2021-01-17 22:24:05,249 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 58] swapped,  f(S) = 0.91830
-2021-01-17 22:24:05,589 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 59] swapped,  f(S) = 0.91835
-2021-01-17 22:24:05,927 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 60] swapped,  f(S) = 0.92023
-2021-01-17 22:24:32,832 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 61] swapped,  f(S) = 0.92081
-2021-01-17 22:24:36,199 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 62] swapped,  f(S) = 0.92159
-2021-01-17 22:24:36,536 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 63] swapped,  f(S) = 0.92196
-2021-01-17 22:24:36,874 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 64] swapped,  f(S) = 0.92201
-2021-01-17 22:24:37,884 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 65] swapped,  f(S) = 0.92338
-2021-01-17 22:24:38,223 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 66] swapped,  f(S) = 0.92413
-2021-01-17 22:24:38,896 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 67] swapped,  f(S) = 0.92422
-2021-01-17 22:24:43,314 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 68] swapped,  f(S) = 0.92464
-2021-01-17 22:24:43,653 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 69] swapped,  f(S) = 0.92511
-2021-01-17 22:24:43,990 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 70] swapped,  f(S) = 0.92621
-2021-01-17 22:24:44,329 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 71] swapped,  f(S) = 0.92639
-2021-01-17 22:24:45,007 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 72] swapped,  f(S) = 0.92667
-2021-01-17 22:24:47,363 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 73] swapped,  f(S) = 0.92685
-2021-01-17 22:24:47,702 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 74] swapped,  f(S) = 0.92739
-2021-01-17 22:24:49,734 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 75] swapped,  f(S) = 0.92745
-2021-01-17 22:24:50,072 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 76] swapped,  f(S) = 0.92911
-2021-01-17 22:24:50,746 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 77] swapped,  f(S) = 0.92912
-2021-01-17 22:24:51,083 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 78] swapped,  f(S) = 0.93140
-2021-01-17 22:24:51,421 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 79] swapped,  f(S) = 0.93142
-2021-01-17 22:24:51,759 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 80] swapped,  f(S) = 0.93235
-2021-01-17 22:24:52,770 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 81] swapped,  f(S) = 0.93265
-2021-01-17 22:24:53,108 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 82] swapped,  f(S) = 0.93348
-2021-01-17 22:24:53,445 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 83] swapped,  f(S) = 0.93381
-2021-01-17 22:24:53,782 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 84] swapped,  f(S) = 0.93432
-2021-01-17 22:24:54,119 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 85] swapped,  f(S) = 0.93437
-2021-01-17 22:24:54,456 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 86] swapped,  f(S) = 0.93547
-2021-01-17 22:24:54,795 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 87] swapped,  f(S) = 0.93572
-2021-01-17 22:24:58,166 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 88] swapped,  f(S) = 0.93608
-2021-01-17 22:25:14,425 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 89] swapped,  f(S) = 0.93635
-2021-01-17 22:25:14,782 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 90] swapped,  f(S) = 0.93650
-2021-01-17 22:25:15,458 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 91] swapped,  f(S) = 0.93689
-2021-01-17 22:25:15,799 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 92] swapped,  f(S) = 0.93764
-2021-01-17 22:25:16,485 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 93] swapped,  f(S) = 0.93794
-2021-01-17 22:25:16,822 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 94] swapped,  f(S) = 0.93878
-2021-01-17 22:25:17,159 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 95] swapped,  f(S) = 0.93959
-2021-01-17 22:25:18,171 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 96] swapped,  f(S) = 0.93967
-2021-01-17 22:25:19,193 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 97] swapped,  f(S) = 0.93972
-2021-01-17 22:25:19,532 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 98] swapped,  f(S) = 0.93973
-2021-01-17 22:25:19,868 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 99] swapped,  f(S) = 0.94059
-2021-01-17 22:25:20,544 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 100] swapped,  f(S) = 0.94094
-2021-01-17 22:25:23,283 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 101] swapped,  f(S) = 0.94105
-2021-01-17 22:25:24,642 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 102] swapped,  f(S) = 0.94177
-2021-01-17 22:25:26,668 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 103] swapped,  f(S) = 0.94196
-2021-01-17 22:25:27,007 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 104] swapped,  f(S) = 0.94202
-2021-01-17 22:25:27,683 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 105] swapped,  f(S) = 0.94203
-2021-01-17 22:25:28,381 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 106] swapped,  f(S) = 0.94221
-2021-01-17 22:25:29,056 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 107] swapped,  f(S) = 0.94226
-2021-01-17 22:25:29,395 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 108] swapped,  f(S) = 0.94273
-2021-01-17 22:25:29,743 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 109] swapped,  f(S) = 0.94324
-2021-01-17 22:31:22,434 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 110] swapped,  f(S) = 0.94368
-2021-01-17 22:31:22,774 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 111] swapped,  f(S) = 0.94371
-2021-01-17 22:31:27,206 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 112] swapped,  f(S) = 0.94376
-2021-01-17 22:31:27,545 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 113] swapped,  f(S) = 0.94449
-2021-01-17 22:31:28,234 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 114] swapped,  f(S) = 0.94499
-2021-01-17 22:31:29,597 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 115] swapped,  f(S) = 0.94537
-2021-01-17 22:31:29,936 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 116] swapped,  f(S) = 0.94583
-2021-01-17 22:31:30,275 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 117] swapped,  f(S) = 0.94722
-2021-01-17 22:31:30,625 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 118] swapped,  f(S) = 0.94771
-2021-01-17 22:31:31,663 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 119] swapped,  f(S) = 0.94785
-2021-01-17 22:31:33,387 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 120] swapped,  f(S) = 0.94843
-2021-01-17 22:31:34,087 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 121] swapped,  f(S) = 0.94844
-2021-01-17 22:31:35,493 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 122] swapped,  f(S) = 0.94872
-2021-01-17 22:31:36,853 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 123] swapped,  f(S) = 0.94897
-2021-01-17 22:31:37,193 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 124] swapped,  f(S) = 0.94912
-2021-01-17 22:31:39,229 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 125] swapped,  f(S) = 0.94942
-2021-01-17 22:31:39,566 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 126] swapped,  f(S) = 0.94960
-2021-01-17 22:31:41,252 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 127] swapped,  f(S) = 0.95029
-2021-01-17 22:31:41,604 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 128] swapped,  f(S) = 0.95204
-2021-01-17 22:31:41,959 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 129] swapped,  f(S) = 0.95219
-2021-01-17 22:31:42,681 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 130] swapped,  f(S) = 0.95240
-2021-01-17 22:31:43,047 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 131] swapped,  f(S) = 0.95265
-2021-01-17 22:31:43,725 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 132] swapped,  f(S) = 0.95279
-2021-01-17 22:31:46,817 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 133] swapped,  f(S) = 0.95288
-2021-01-17 22:31:55,743 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 134] swapped,  f(S) = 0.95306
-2021-01-17 22:32:36,488 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 135] swapped,  f(S) = 0.95324
-2021-01-17 22:32:36,844 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 136] swapped,  f(S) = 0.95339
-2021-01-17 22:32:39,241 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 137] swapped,  f(S) = 0.95360
-2021-01-17 22:32:39,595 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 138] swapped,  f(S) = 0.95376
-2021-01-17 22:32:56,643 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 139] swapped,  f(S) = 0.95414
-2021-01-17 22:32:57,661 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 140] swapped,  f(S) = 0.95422
-2021-01-17 22:32:59,384 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 141] swapped,  f(S) = 0.95534
-2021-01-17 22:32:59,719 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 142] swapped,  f(S) = 0.95570
-2021-01-17 22:33:04,128 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 143] swapped,  f(S) = 0.95592
-2021-01-17 22:33:04,820 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 144] swapped,  f(S) = 0.95605
-2021-01-17 22:33:16,028 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 145] swapped,  f(S) = 0.95611
-2021-01-17 22:33:16,383 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 146] swapped,  f(S) = 0.95643
-2021-01-17 22:33:20,436 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 147] swapped,  f(S) = 0.95649
-2021-01-17 22:33:32,236 [INFO] [OPT-EXP-DSGN - coordinate_ascent] [1/1] [t = 148] swapped,  f(S) = 0.95669
-slurmstepd: error: *** JOB 19129219 ON node083 CANCELLED AT 2021-01-17T22:37:37 ***
