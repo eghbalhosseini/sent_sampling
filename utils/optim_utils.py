@@ -140,7 +140,12 @@ class optim:
         n1 = d_mat.shape[1]
         correction = n1 * n1 / (n1 * (n1 - 1) / 2)
         d_val = correction * d_mat.mean(dim=(0, 1))
-        return d_val.cpu().numpy().mean()
+        d_val_mean=d_val.cpu().numpy().mean()
+        # do a version with std reductions too
+        mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
+        d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
+        d_optim=d_val_mean-.2*d_val_std
+        return d_optim
 
     def gpu_object_function_debug(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
@@ -184,6 +189,7 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_eh',fun=coordinate_ascent_eh),
               dict(name='coordinate_ascent_parallel_eh',fun=coordinate_ascent_parallel_eh)]
 objective_function=[dict(name='D_s',fun=Distance)]
+objective_function=[dict(name='D_s_var',fun=Distance)]
 
 n_iters=[2,5,25,50,100,500,1000,2000,5000,10000]
 N_s=[10,25,50,75,100,125,150,175,200,225,250,275,300]
