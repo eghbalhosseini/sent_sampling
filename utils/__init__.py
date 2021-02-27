@@ -71,7 +71,7 @@ dict(grp_id='roberta-base_layer_compare',description='best layer/Pereira benchma
                                            ('roberta-base','encoder.layer.1'),
                                            ('roberta-base','encoder.layer.4'),
                                            ('roberta-base','encoder.layer.5'),
-                                           ('roberta-base','encoder.layer.12')),layer_by_name=True),
+                                           ('roberta-base','encoder.layer.11')),layer_by_name=True),
                     dict(grp_id='gpt2-xl_layer_compare',description='best layer/Pereira benchmark',
                           grp_layer_tuple=(('gpt2-xl','encoder.h.0'),
                                            ('gpt2-xl','encoder.h.20'),
