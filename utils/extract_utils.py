@@ -253,7 +253,5 @@ class model_extractor_parallel:
                     model_activations = self.extractor.get_mean_activations(model_activations)
                 else:
                     model_activations = self.extractor.get_last_word_activations(model_activations)
-
-
                 save_obj(model_activations, os.path.join(SAVE_DIR, model_activation_name))
 

@@ -141,7 +141,7 @@ SENTENCE_CONFIG = [
     dict(name='ud_sentences_filter_sample', file_loc=os.path.join(UD_PARENT, 'ud_sentence_data_filter_sample.pkl')),
     dict(name='ud_sentences_token_filter_v3',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_v3_no_dup.pkl')),
     dict(name='ud_sentencez_token_filter_v3',file_loc=os.path.join(UD_PARENT,'ud_sentencez_data_token_filter_v3_no_dup.pkl')),
-    dict(name='ud_sentences_token_filter_v3_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample_v3_no_dup.pkl')),
+    dict(name='ud_sentencez_token_filter_v3_sample',file_loc=os.path.join(UD_PARENT,'ud_sentencez_data_token_filter_sample_v3_no_dup.pkl')),
     dict(name='ud_sentences_token_filter',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter.pkl')),
     dict(name='ud_sentences_token_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample.pkl')),
     dict(name='coca_spok_filter_punct_sample',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_sample.pkl')),
