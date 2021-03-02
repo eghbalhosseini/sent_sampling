@@ -12,7 +12,7 @@
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 9 ; do
-      for model in  distilgpt2 ; do
+      for model in  gpt2 ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
@@ -26,12 +26,10 @@ echo "Running model ${model_list[$SLURM_ARRAY_TASK_ID]}"
 echo "Running dataset ${dataset_list[$SLURM_ARRAY_TASK_ID]}"
 echo "Running group ${group_id_list[$SLURM_ARRAY_TASK_ID]}"
 
-module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
 RESULTCACHING_HOME=/om/user/`whoami`/.result_caching
 export RESULTCACHING_HOME
-XDG_CACHE_HOME=/om/user/`whoami`/st
-export XDG_CACHE_HOME
+
 singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp_master.simg /usr/local/bin/python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
 
 

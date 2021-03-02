@@ -248,7 +248,7 @@ class model_extractor_parallel:
                 stim_id=group_id
 
                 model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
-                                                   average_sentence=self.average_sentence)  #
+                                                   average_sentence=False)  #
                 if self.average_sentence:
                     model_activations = self.extractor.get_mean_activations(model_activations)
                 else:

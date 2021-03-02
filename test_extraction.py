@@ -14,4 +14,4 @@ model_name='gpt2'
 test=model_extractor_parallel(dataset=dataset,datafile=datafile,model_spec=model_name,average_sentence=False)
 
 test.load_dataset()
-test(group_id=4)
+test(group_id=3)
