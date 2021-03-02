@@ -22,6 +22,6 @@ if __name__ == '__main__':
     print(str(group_id) + '\n')
     # extract data
     datafile=[x['file_loc'] for x in SENTENCE_CONFIG if x['name']==dataset_id][0]
-    extractor_obj = model_extractor_parallel(dataset=dataset_id, datafile=datafile, model_spec=model_id,average_sentence=True)
+    extractor_obj = model_extractor_parallel(dataset=dataset_id, datafile=datafile, model_spec=model_id,average_sentence=False)
     extractor_obj.load_dataset()
     extractor_obj(group_id=group_id)
