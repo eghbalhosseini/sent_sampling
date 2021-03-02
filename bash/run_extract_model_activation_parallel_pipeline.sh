@@ -18,6 +18,7 @@ for dataset in ud_sentencez_token_filter_v3 ; do
           group_id_list[$i]=$group_id
           i=$i+1
       done
+      done
 done
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
