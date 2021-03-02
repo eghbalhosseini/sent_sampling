@@ -234,7 +234,7 @@ class model_extractor_parallel:
         layers = model_layers[self.model_spec]
 
         for i, layer in enumerate(tqdm(layers, desc='layers')):
-            model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_ave_{self.average_sentence}_group_{group_id}.pkl"
+            model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_group_{group_id}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
             if os.path.exists(os.path.join(SAVE_DIR, model_activation_name)):
                 print(f"\n{model_activation_name} already exists, skipping...\n")
@@ -249,9 +249,9 @@ class model_extractor_parallel:
 
                 model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
                                                    average_sentence=False)  #
-                if self.average_sentence:
-                    model_activations = self.extractor.get_mean_activations(model_activations)
-                else:
-                    model_activations = self.extractor.get_last_word_activations(model_activations)
+                #if self.average_sentence:
+                #    model_activations = self.extractor.get_mean_activations(model_activations)
+                #else:
+                #    model_activations = self.extractor.get_last_word_activations(model_activations)
                 save_obj(model_activations, os.path.join(SAVE_DIR, model_activation_name))
 
