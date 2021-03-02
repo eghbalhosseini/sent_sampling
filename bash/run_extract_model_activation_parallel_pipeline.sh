@@ -15,7 +15,7 @@ for dataset in ud_sentencez_token_filter_v3 ; do
       for model in  distilgpt2 ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
-          group_id_list[$i]=$group_id
+          group_id_list[$i]=$group_ids
           i=$i+1
       done
       done
