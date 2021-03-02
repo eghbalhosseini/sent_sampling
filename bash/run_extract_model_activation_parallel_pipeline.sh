@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in ud_sentencez_token_filter_v3 ; do
+for dataset in ud_sentencez_token_filter_v3_sample ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 9 ; do
       for model in  gpt2 ; do
           model_list[$i]="$model"
