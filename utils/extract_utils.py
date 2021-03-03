@@ -8,7 +8,6 @@ import numpy as np
 import xarray as xr
 from tqdm import tqdm
 
-
 class extractor:
     def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
         ##### DATA ####
@@ -124,8 +123,6 @@ class extractor:
             model_activation_set.append(model_activations)
         model_activation_flat=[item for sublist in model_activation_set for item in sublist]
         return model_activation_flat
-    # TODO : for fMRI do average,
-    # TODO : settle on how to get sentence representation for ECOG --> Concatenate, average --> ask Ev
 
 
     def __call__(self, *args, **kwargs):
@@ -232,11 +229,17 @@ class model_extractor_parallel:
         # get layers for model
         model_impl = model_pool[self.model_spec]
         layers = model_layers[self.model_spec]
+        # make a directory for groups data
+        model_save_path=os.path.join(SAVE_DIR,self.model_spec)
+        if os.path.exists(model_save_path):
+            pass
+        else:
+            os.mkdir(model_save_path)
 
         for i, layer in enumerate(tqdm(layers, desc='layers')):
             model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_group_{group_id}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
-            if os.path.exists(os.path.join(SAVE_DIR, model_activation_name)):
+            if os.path.exists(os.path.join(model_save_path, model_activation_name)):
                 print(f"\n{model_activation_name} already exists, skipping...\n")
                 pass
             else:
@@ -253,5 +256,5 @@ class model_extractor_parallel:
                 #    model_activations = self.extractor.get_mean_activations(model_activations)
                 #else:
                 #    model_activations = self.extractor.get_last_word_activations(model_activations)
-                save_obj(model_activations, os.path.join(SAVE_DIR, model_activation_name))
+                save_obj(model_activations, os.path.join(model_save_path, model_activation_name))
 
