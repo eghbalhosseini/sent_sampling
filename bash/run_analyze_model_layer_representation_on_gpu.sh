@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=0
-#SBATCH --time=12:00:00
+#SBATCH --array=0-7
+#SBATCH --time=3:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
@@ -30,7 +30,14 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for mdl in roberta-base gpt2 ; do
+for mdl in roberta-base \
+ gpt2 \
+ bert-large-uncased-whole-word-masking \
+ xlm-mlm-en-2048 \
+ gpt2-xl \
+ albert-xxlarge-v2 \
+ ctrl \
+ xlnet-large-cased ; do
   for idx in 0 ; do
     for ave in False ; do
     for dataset in ud_sentencez_token_filter_v3 ; do
