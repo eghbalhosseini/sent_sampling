@@ -86,9 +86,9 @@ if __name__ == '__main__':
     act_list_norm = [(X - X.mean(axis=1, keepdim=True)) for X in activation_list]
     act_list_norm = [torch.nn.functional.normalize(X) for X in act_list_norm]
     #
-    num_iter = 3
+    num_iter = 100
     total_sent = activation_list[0].shape[0]
-    num_samples = 100
+    num_samples = 50
     layer_dist = []
     for idx in tqdm(range(len(activation_list))):
         pair_dist = []
