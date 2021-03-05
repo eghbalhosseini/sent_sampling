@@ -79,7 +79,7 @@ if __name__ == '__main__':
     ax.set_ylabel('var explained')
     ax.set_title(f"{mdl_name}", fontsize=16)
     # save results
-    plt.savefig(os.path.join(ANALYZE_DIR,f"{mdl_name}_layer_var_explained.png"), dpi=None, facecolor='w', edgecolor='w',
+    plt.savefig(os.path.join(ANALYZE_DIR,f"{mdl_name}_layer_var_explained_v2.png"), dpi=None, facecolor='w', edgecolor='w',
                orientation='landscape',transparent=True, bbox_inches=None, pad_inches=0.1,frameon=False)
 
     #
@@ -164,5 +164,5 @@ if __name__ == '__main__':
     ax.set_xticklabels([model_layers[int(x)] for x in dist_idx.cpu().numpy()], rotation=90)
     [ax.plot([x.cpu().numpy(), x.cpu().numpy()], plt.ylim(), 'k-') for x in closest_points]
     ax.set_xlim((0 - .5, len(dist_idx) - .5))
-    plt.savefig(os.path.join(ANALYZE_DIR,f"{mdl_name}_layerwise_similiarty_dist_vs_score.png"), dpi=None, facecolor='w', edgecolor='w',
+    plt.savefig(os.path.join(ANALYZE_DIR,f"{mdl_name}_layerwise_similiarty_dist_vs_score_v2.png"), dpi=None, facecolor='w', edgecolor='w',
        orientation='portrait',transparent=True, bbox_inches=None, pad_inches=0.1,frameon=False)
