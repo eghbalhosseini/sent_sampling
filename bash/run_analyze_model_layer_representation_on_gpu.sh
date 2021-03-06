@@ -30,26 +30,22 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for mdl in roberta-base \
-    gpt2 \
-    bert-large-uncased-whole-word-masking \
-    xlm-mlm-en-2048 \
-    gpt2-xl \
-    albert-xxlarge-v2 \
-    ctrl \
-    xlnet-large-cased ; do
-      for idx in 0 ; do
-        for ave in False ; do
-          for pca in fixed equal_var ; do
-            for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
+for mdl in roberta-base bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl xlnet-large-cased ; do
+    for idx in 0 ; do
+      for ave in False ; do
+        for pca in fixed equal_var ; do
+          for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
+            echo $dataset
+            echo $mdl
+            echo $pca
               extract_id="group=${mdl}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
               extract_list[$i]="$extract_id"
               pca_list[$i]="$pca"
               i=$i+1
-            done
           done
         done
       done
+    done
 done
 
 run=0
