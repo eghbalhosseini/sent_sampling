@@ -137,7 +137,8 @@ if __name__ == '__main__':
     Pereira_dist = torch.mean(torch.stack(layer_dist[pereira_layer_id]), dim=1)
     dist_val, dist_idx = torch.sort(Pereira_dist)
     assert (dist_idx[0] == pereira_layer_id)
-    cuts = np.linspace(dist_val.cpu().numpy().min(), dist_val.cpu().numpy().max(), 4, endpoint=False)
+    num_cuts=3
+    cuts = np.linspace(dist_val.cpu().numpy().min(), dist_val.cpu().numpy().max(), num_cuts, endpoint=False)
 
     # plot and save the results
     fig = plt.figure(figsize=(10, 15))
@@ -171,5 +172,5 @@ if __name__ == '__main__':
     ax.set_xticklabels([model_layers[int(x)] for x in dist_idx.cpu().numpy()], rotation=90)
     [ax.plot([x.cpu().numpy(), x.cpu().numpy()], plt.ylim(), 'k-') for x in closest_points]
     ax.set_xlim((0 - .5, len(dist_idx) - .5))
-    plt.savefig(os.path.join(ANALYZE_DIR,f"{extractor_id}_num_samples_{num_samples}_num_iter_{num_iter}_pca_type_{pca_type}_layerwise_similiarty_dist_vs_score.png"),
+    plt.savefig(os.path.join(ANALYZE_DIR,f"{extractor_id}_num_samples_{num_samples}_num_iter_{num_iter}_pca_type_{pca_type}_cuts_{num_cuts}_layerwise_similiarty_dist_vs_score.png"),
                 dpi=None, facecolor='w', edgecolor='w',orientation='portrait',transparent=True, bbox_inches=None, pad_inches=0.1,frameon=False)

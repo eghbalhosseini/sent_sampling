@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=layer_analyze
-#SBATCH --array=0-41
+#SBATCH --array=0-13
 #SBATCH --time=2:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
@@ -43,7 +43,7 @@ for set in roberta-base bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gp
 done
 
 i=0
-for pca in fixed equal_var none ; do
+for pca in equal_var ; do
       pca_list[$i]="$pca"
       i=$i+1
 done
