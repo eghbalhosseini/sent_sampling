@@ -188,8 +188,8 @@ class optim:
 optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_eh',fun=coordinate_ascent_eh),
               dict(name='coordinate_ascent_parallel_eh',fun=coordinate_ascent_parallel_eh)]
-objective_function=[dict(name='D_s',fun=Distance)]
-objective_function=[dict(name='D_s_var',fun=Distance)]
+
+objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance)]
 
 n_iters=[2,5,25,50,100,500,1000,2000,5000,10000]
 N_s=[10,25,50,75,100,125,150,175,200,225,250,275,300]

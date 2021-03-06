@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=opt_eh
-#SBATCH --array=0-7
-#SBATCH --time=3:00:00
+#SBATCH --job-name=layer_analyze
+#SBATCH --array=0-27
+#SBATCH --time=4:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
@@ -31,31 +31,37 @@ bench_type=($bench_type)
 
 
 for mdl in roberta-base \
- gpt2 \
- bert-large-uncased-whole-word-masking \
- xlm-mlm-en-2048 \
- gpt2-xl \
- albert-xxlarge-v2 \
- ctrl \
- xlnet-large-cased ; do
-  for idx in 0 ; do
-    for ave in False ; do
-    for dataset in ud_sentencez_token_filter_v3 ; do
-      extract_id="group=${mdl}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
-      extract_list[$i]="$extract_id"
-      i=$i+1
+    gpt2 \
+    bert-large-uncased-whole-word-masking \
+    xlm-mlm-en-2048 \
+    gpt2-xl \
+    albert-xxlarge-v2 \
+    ctrl \
+    xlnet-large-cased ; do
+    for idx in 0 ; do
+      for ave in False ; do
+        for pca_type in fixed equal_var ; do
+          for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
+            extract_id="group=${mdl}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
+            extract_list[$i]="$extract_id"
+            pca_type_list[$i]="$pca_type"
+            i=$i+1
+          done
+        done
       done
     done
-  done
 done
 
 run=0
 
 for extract in ${extract_list[@]} ; do
   for optim in ${optim_list[@]} ; do
-    extract_pool[$run]="$extract"
-    optim_pool[$run]="$optim"
-    run=$run+1
+    for pca_type in ${pca_type_list[@]} ; do
+      extract_pool[$run]="$extract"
+      optim_pool[$run]="$optim"
+      pca_pool[$run]="$pca_type"
+      run=$run+1
+    done
   done
 done
 
@@ -67,6 +73,7 @@ export RESULTCACHING_HOME
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running extraction: ${extract_pool[$SLURM_ARRAY_TASK_ID]}"
 echo "Running optimiation: ${optim_pool[$SLURM_ARRAY_TASK_ID]}"
+echo "Running pca type: ${pca_pool[$SLURM_ARRAY_TASK_ID]}"
 
 
-singularity exec --nv -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/analyze_model_layer_representations_gpu.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
+singularity exec --nv -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/analyze_model_layer_representations_gpu.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]} ${pca_pool[$SLURM_ARRAY_TASK_ID]}
