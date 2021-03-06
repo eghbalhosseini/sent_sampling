@@ -44,7 +44,7 @@ for set in roberta-base bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gp
 done
 
 i=0
-for pca in fix equal_var ; do
+for pca in fixed equal_var ; do
       pca_list[$i]="$pca"
       i=$i+1
 done
