@@ -33,26 +33,31 @@ bench_type=($bench_type)
 for set in roberta-base bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl xlnet-large-cased ; do
     for idx in 0 ; do
       for ave in False ; do
-        for pca in fixed equal_var ; do
-          for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
-              extract_id="group=${set}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
-
-              extract_list[$i]="$extract_id"
-              pca_list[$i]="$pca"
-              i=$i+1
-          done
-        done
+        for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
+            extract_id="group=${set}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
+            extract_list[$i]="$extract_id"
+            i=$i+1
       done
     done
+  done
+done
+
+i=0
+for pca in fix equal_var ; do
+      pca_list[$i]="$pca"
+      i=$i+1
 done
 
 run=0
 for extract in ${extract_list[@]} ; do
   for optim in ${optim_list[@]} ; do
+    for pca in ${pca_list[@]} ; do
     echo $extract
     extract_pool[$run]="$extract"
     optim_pool[$run]="$optim"
+    pca_pool[$run]="$pca"
     run=$run+1
+  done
   done
 done
 
