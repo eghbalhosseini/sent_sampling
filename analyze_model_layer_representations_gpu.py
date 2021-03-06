@@ -60,6 +60,8 @@ if __name__ == '__main__':
             act_pca = torch.matmul(act, v[:, :300])
         elif pca_type=='equal_var':
             act_pca = torch.matmul(act, v[:, cols])
+        elif pca_type=='none':
+            act_pca=act
         activation_list.append(act_pca)
         var_explained.append(
             torch.cumsum(torch.cat((torch.tensor([0], device=optimizer_obj.device), s ** 2)), dim=0) / torch.sum(s ** 2))
@@ -91,7 +93,7 @@ if __name__ == '__main__':
     act_list_norm = [(X - X.mean(axis=1, keepdim=True)) for X in activation_list]
     act_list_norm = [torch.nn.functional.normalize(X) for X in act_list_norm]
     #
-    num_iter = 100
+    num_iter = 200
     total_sent = activation_list[0].shape[0]
     num_samples = 50
     layer_dist = []
