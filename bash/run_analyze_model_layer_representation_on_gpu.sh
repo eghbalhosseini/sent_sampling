@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=layer_analyze
-#SBATCH --array=0-27
-#SBATCH --time=4:00:00
+#SBATCH --array=0-47
+#SBATCH --time=2:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
@@ -33,7 +33,8 @@ bench_type=($bench_type)
 for set in roberta-base bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl xlnet-large-cased ; do
     for idx in 0 ; do
       for ave in False ; do
-        for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
+        for dataset in coca_spok_filter_punct_10K_sample_2 coca_spok_filter_punct_10K_sample_3 \
+          coca_spok_filter_punct_10K_sample_4 coca_spok_filter_punct_10K_sample_5 ; do
             extract_id="group=${set}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
             extract_list[$i]="$extract_id"
             i=$i+1
