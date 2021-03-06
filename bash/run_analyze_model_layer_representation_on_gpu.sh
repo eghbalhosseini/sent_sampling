@@ -38,28 +38,28 @@ for mdl in roberta-base \
     albert-xxlarge-v2 \
     ctrl \
     xlnet-large-cased ; do
-    for idx in 0 ; do
-      for ave in False ; do
-        for pca_type in fixed equal_var ; do
-          for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
-            extract_id="group=${mdl}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
-            extract_list[$i]="$extract_id"
-            pca_type_list[$i]="$pca_type"
-            i=$i+1
+      for idx in 0 ; do
+        for ave in False ; do
+          for pca in fixed equal_var ; do
+            for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
+              extract_id="group=${mdl}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
+              extract_list[$i]="$extract_id"
+              pca_list[$i]="$pca"
+              i=$i+1
+            done
           done
         done
       done
-    done
 done
 
 run=0
 
 for extract in ${extract_list[@]} ; do
   for optim in ${optim_list[@]} ; do
-    for pca_type in ${pca_type_list[@]} ; do
+    for pca in ${pca_list[@]} ; do
       extract_pool[$run]="$extract"
       optim_pool[$run]="$optim"
-      pca_pool[$run]="$pca_type"
+      pca_pool[$run]="$pca"
       run=$run+1
     done
   done

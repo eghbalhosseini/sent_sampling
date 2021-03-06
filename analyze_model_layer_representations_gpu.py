@@ -25,6 +25,7 @@ if __name__ == '__main__':
     pca_type = args.pca_type
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
+    print(pca_type + '\n')
     # extract data
     extractor_obj = extract_pool[extractor_id]()
     extractor_obj.load_dataset()
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     ax.set_ylabel('var explained')
     ax.set_title(f"{mdl_name}", fontsize=16)
     # save results
-    plt.savefig(os.path.join(ANALYZE_DIR,f"{extractor_id}_pca_type{pca_type}_layer_var_explained_v2.png"), dpi=None, facecolor='w', edgecolor='w',
+    plt.savefig(os.path.join(ANALYZE_DIR,f"{extractor_id}_pca_type_{pca_type}_layer_var_explained_v2.png"), dpi=None, facecolor='w', edgecolor='w',
                orientation='landscape',transparent=True, bbox_inches=None, pad_inches=0.1,frameon=False)
 
     #
