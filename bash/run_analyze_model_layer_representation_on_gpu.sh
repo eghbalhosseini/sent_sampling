@@ -30,12 +30,13 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for mdl in roberta-base bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl xlnet-large-cased ; do
+for set in roberta-base bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl xlnet-large-cased ; do
     for idx in 0 ; do
       for ave in False ; do
         for pca in fixed equal_var ; do
           for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
-              extract_id="group=${mdl}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
+              extract_id="group=${set}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
+              echo $extract_id
               extract_list[$i]="$extract_id"
               pca_list[$i]="$pca"
               i=$i+1
@@ -47,12 +48,12 @@ done
 
 run=0
 
+
+
+
 for extract in ${extract_list[@]} ; do
   for optim in ${optim_list[@]} ; do
     for pca in ${pca_list[@]} ; do
-      echo $extract
-      echo $pca
-
       extract_pool[$run]="$extract"
       optim_pool[$run]="$optim"
       pca_pool[$run]="$pca"
@@ -72,4 +73,4 @@ echo "Running optimiation: ${optim_pool[$SLURM_ARRAY_TASK_ID]}"
 echo "Running pca type: ${pca_pool[$SLURM_ARRAY_TASK_ID]}"
 
 
-singularity exec --nv -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/analyze_model_layer_representations_gpu.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]} ${pca_pool[$SLURM_ARRAY_TASK_ID]}
+#singularity exec --nv -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/analyze_model_layer_representations_gpu.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]} ${pca_pool[$SLURM_ARRAY_TASK_ID]}

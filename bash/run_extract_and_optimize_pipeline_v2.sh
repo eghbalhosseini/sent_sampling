@@ -46,6 +46,9 @@ done
 
 run=0
 
+
+
+
 for extract in ${extract_list[@]} ; do
   for optim in ${optim_list[@]} ; do
     extract_pool[$run]="$extract"
