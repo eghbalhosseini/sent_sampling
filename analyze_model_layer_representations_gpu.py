@@ -15,12 +15,14 @@ parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('extractor_id', type=str,
                     default='group=set_3-dateset=ud_sentences_filter-network_act-bench=None-ave=False')
 parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s-n_iter=100-n_samples=100-n_init=1')
+parser.add_argument('pca_type', type=str, default='fixed')
 
 args = parser.parse_args()
 
 if __name__ == '__main__':
     extractor_id = args.extractor_id
     optimizer_id = args.optimizer_id
+    pca_type = args.pca_type
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
     # extract data
@@ -53,9 +55,11 @@ if __name__ == '__main__':
         # keep 85% variance explained ,
         idx_85 = torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2) < .85
         cols = list(torch.where(idx_85)[0].cpu().numpy())
-        act_50 = torch.matmul(act, v[:, :300])
-        act_85 = torch.matmul(act, v[:, cols])
-        activation_list.append(act_50)
+        if pca_type=='fixed':
+            act_pca = torch.matmul(act, v[:, :300])
+        elif pca_type=='equal_var':
+            act_pca = torch.matmul(act, v[:, cols])
+        activation_list.append(act_pca)
         var_explained.append(
             torch.cumsum(torch.cat((torch.tensor([0], device=optimizer_obj.device), s ** 2)), dim=0) / torch.sum(s ** 2))
         # var_explained.append(torch.cumsum(s**2,dim=0)/torch.sum(s**2))
@@ -79,7 +83,7 @@ if __name__ == '__main__':
     ax.set_ylabel('var explained')
     ax.set_title(f"{mdl_name}", fontsize=16)
     # save results
-    plt.savefig(os.path.join(ANALYZE_DIR,f"{mdl_name}_layer_var_explained_v2.png"), dpi=None, facecolor='w', edgecolor='w',
+    plt.savefig(os.path.join(ANALYZE_DIR,f"{extractor_id}_pca_type{pca_type}_layer_var_explained_v2.png"), dpi=None, facecolor='w', edgecolor='w',
                orientation='landscape',transparent=True, bbox_inches=None, pad_inches=0.1,frameon=False)
 
     #
@@ -151,7 +155,7 @@ if __name__ == '__main__':
     ax.set_ylabel('score')
     ax.set_xticks([])
 
-    ax = fig.add_axes((.1, .05, .5 * 1.37, .22))
+    ax = fig.add_axes((.1,.1,.5*1.37,.18))
     ax.scatter(np.arange(dist_val.cpu().shape[0]), dist_val.cpu())
     ax.set_xlim((-1, dist_val.cpu().shape[0] + 1))
     ax.set_ylim((0 - .05, np.max(dist_val.cpu().numpy()) + .05))
@@ -164,5 +168,5 @@ if __name__ == '__main__':
     ax.set_xticklabels([model_layers[int(x)] for x in dist_idx.cpu().numpy()], rotation=90)
     [ax.plot([x.cpu().numpy(), x.cpu().numpy()], plt.ylim(), 'k-') for x in closest_points]
     ax.set_xlim((0 - .5, len(dist_idx) - .5))
-    plt.savefig(os.path.join(ANALYZE_DIR,f"{mdl_name}_layerwise_similiarty_dist_vs_score_v2.png"), dpi=None, facecolor='w', edgecolor='w',
-       orientation='portrait',transparent=True, bbox_inches=None, pad_inches=0.1,frameon=False)
+    plt.savefig(os.path.join(ANALYZE_DIR,f"{extractor_id}_num_samples_{num_samples}_num_iter_{num_iter}_pca_type_{pca_type}_layerwise_similiarty_dist_vs_score.png"),
+                dpi=None, facecolor='w', edgecolor='w',orientation='portrait',transparent=True, bbox_inches=None, pad_inches=0.1,frameon=False)
