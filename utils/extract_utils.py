@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import xarray as xr
 from tqdm import tqdm
+import fnmatch
+import re
 
 class extractor:
     def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
@@ -34,7 +36,7 @@ class extractor:
     def get_last_word_activations(self,activations):
         sentence_id=np.unique(np.asarray(activations.sentence_id))
         last_word_activations=[]
-        for idx, id in tqdm(enumerate(sentence_id)):
+        for idx, id in enumerate(sentence_id):
             sentence_activation=activations.where(activations.sentence_id == id, drop=True)
             last_word_activations.append(sentence_activation.values[-1,:])
         return last_word_activations
@@ -210,7 +212,7 @@ class model_extractor:
 
 class model_extractor_parallel:
     def __init__(self, dataset=None, datafile=None, model_spec=None, extract_name='activation',
-                 extract_type='activation', atlas=None, average_sentence=False):
+                 extract_type='activation', atlas=None, average_sentence=False,total_runs=0):
         self.dataset = dataset
         self.datafile = datafile
         self.model_spec = model_spec
@@ -218,13 +220,50 @@ class model_extractor_parallel:
         self.extract_name = extract_name
         self.atlas = atlas
         self.average_sentence = average_sentence
+        self.total_runs = total_runs
         self.extractor = extractor(datafile=self.datafile, dataset=self.dataset, extract_name=self.extract_name,
                                    extract_type=self.extract_type, average_sentence=self.average_sentence)
 
     # delegations from extractor
     def load_dataset(self):
         self.extractor.load_dataset()
+        self.total_runs=len(self.extractor.stimuli_set)
+    def combine_runs(self):
+        if type(self.model_spec)==str:
+            model_set=[self.model_spec]
+        else:
+            model_set=self.model_spec
+        for i, mdl_name in enumerate(model_set):
+            model_save_path = os.path.join(SAVE_DIR, mdl_name)
+            layers= model_layers[mdl_name]
+            for k, layer in enumerate(tqdm(layers, desc='layers')):
+                model_activation_name = f"{self.dataset}_{mdl_name}_layer_{i}_{self.extract_name}_group_*.pkl"
+                new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_ave_{self.average_sentence}.pkl"
+                activation_files=[]
+                for file in os.listdir(model_save_path):
+                    if fnmatch.fnmatch(file,model_activation_name):
+                        activation_files.append(os.path.join(model_save_path, file))
+                # sort files:
+                sorted_files=[]
+                s = [re.findall('group_\d+', x) for x in activation_files]
+                s = [item for sublist in s for item in sublist]
+                file_id = [int(x.split('group_')[1]) for x in s]
+                sorted_files = [activation_files[x] for x in np.argsort(file_id)]
+                model_activation_set = []
+                if len(sorted_files)==self.total_runs:
+                    for file in sorted_files:
+                        model_activations = load_obj(os.path.join(SAVE_DIR, file))
+                        if self.average_sentence:
+                            model_activations = self.extractor.get_mean_activations(model_activations)
+                        else:
+                            model_activations = self.extractor.get_last_word_activations(model_activations)
+                        model_activation_set.append(model_activations)
 
+                    model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+                    save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
+                else:
+                    print(f'{self.dataset}_{mdl_name}_layer_{i}_{self.extract_name} is missing groups!')
+        pass
     def __call__(self,group_id, *args, **kwargs):
         # get layers for model
         model_impl = model_pool[self.model_spec]
