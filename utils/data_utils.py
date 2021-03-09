@@ -97,8 +97,9 @@ def save_obj(di_, filename_):
     with open(filename_, 'wb') as f:
         pickle.dump(di_, f)
 
-def load_obj(filename_):
-    print('loading '+ filename_)
+def load_obj(filename_,silent=False):
+    if not silent:
+        print('loading '+ filename_)
     with open(filename_, 'rb') as f:
         return pickle.load(f)
 
