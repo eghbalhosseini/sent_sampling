@@ -13,6 +13,12 @@ gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",
                     grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
                     layer_by_name=True)
 
+modl_name='openaigpt'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+openaigpt_grp_config=dict(grp_id=f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
+                    layer_by_name=True)
+
 modl_name='gpt2-xl'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 gpt2_xl_grp_config=dict(grp_id=f"{modl_name}_layers",
@@ -58,7 +64,8 @@ ctrl_config=dict(grp_id= f"{modl_name}_layers",
                     layer_by_name=True)
 
 
-model_grps_config = [gpt2_grp_config,
+model_grps_config = [openaigpt_grp_config,
+                     gpt2_grp_config,
                      gpt2_xl_grp_config,
                      roberta_base_grp_config,
                      xlnet_large_cased_config,
