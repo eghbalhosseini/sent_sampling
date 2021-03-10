@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-
-#SBATCH --time=144:00:00
+#SBATCH --array=0
+#SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=80G
 #SBATCH --mail-type=ALL
@@ -11,7 +11,7 @@
 
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
-      for model in openaigpt ; do
+      for model in gpt2 ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           i=$i+1
