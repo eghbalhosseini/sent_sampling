@@ -252,7 +252,7 @@ class model_extractor_parallel:
                 model_activation_set = []
                 if len(sorted_files)==self.total_runs:
                     for file in sorted_files:
-                        model_activations = load_obj(os.path.join(SAVE_DIR, file))
+                        model_activations = load_obj(os.path.join(SAVE_DIR, file),silent=True)
                         if self.average_sentence:
                             model_activations = self.extractor.get_mean_activations(model_activations)
                         else:
