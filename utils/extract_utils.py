@@ -237,8 +237,8 @@ class model_extractor_parallel:
             model_save_path = os.path.join(SAVE_DIR, mdl_name)
             layers= model_layers[mdl_name]
             for k, layer in enumerate(tqdm(layers, desc='layers')):
-                model_activation_name = f"{self.dataset}_{mdl_name}_layer_{i}_{self.extract_name}_group_*.pkl"
-                new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_ave_{self.average_sentence}.pkl"
+                model_activation_name = f"{self.dataset}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
+                new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
                 activation_files=[]
                 for file in os.listdir(model_save_path):
                     if fnmatch.fnmatch(file,model_activation_name):
