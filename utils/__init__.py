@@ -13,9 +13,21 @@ gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",
                     grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
                     layer_by_name=True)
 
+modl_name='gpt2-untrained'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
+                    layer_by_name=True)
+
 modl_name='openaigpt'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 openaigpt_grp_config=dict(grp_id=f"{modl_name}_layers",
+                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
+                    layer_by_name=True)
+
+modl_name='openaigpt-untrained'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+openaigpt_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",
                     grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
                     layer_by_name=True)
 
@@ -73,6 +85,8 @@ model_grps_config = [openaigpt_grp_config,
                      xlm_mlm_config,
                      albert_xxlarge_config,
                      ctrl_config,
+                     gpt2_untrained_grp_config,
+                    openaigpt_untrained_grp_config,
                      dict(grp_id='roberta-base_layer_compare', description='best layer/Pereira benchmark',
                           grp_layer_tuple=(('roberta-base', 'encoder.layer.0'),
                                            ('roberta-base', 'encoder.layer.1'),
