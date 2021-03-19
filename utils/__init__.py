@@ -9,71 +9,47 @@ from itertools import count
 # gpt2
 modl_name='gpt2'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='gpt2-untrained'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-gpt2_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+gpt2_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='openaigpt'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-openaigpt_grp_config=dict(grp_id=f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+openaigpt_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='openaigpt-untrained'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-openaigpt_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+openaigpt_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='gpt2-xl'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-gpt2_xl_grp_config=dict(grp_id=f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
-
-
+gpt2_xl_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='roberta-base'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-roberta_base_grp_config=dict(grp_id= f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+roberta_base_grp_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='xlnet-large-cased'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-xlnet_large_cased_config=dict(grp_id= f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+xlnet_large_cased_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='bert-large-uncased-whole-word-masking'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-bert_large_config=dict(grp_id= f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+bert_large_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='xlm-mlm-en-2048'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-xlm_mlm_config=dict(grp_id= f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+xlm_mlm_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='albert-xxlarge-v2'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-albert_xxlarge_config=dict(grp_id= f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+albert_xxlarge_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 modl_name='ctrl'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-ctrl_config=dict(grp_id= f"{modl_name}_layers",
-                    grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),
-                    layer_by_name=True)
+ctrl_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 
 model_grps_config = [openaigpt_grp_config,
@@ -245,8 +221,9 @@ activation_extract_config=[dict(name='activation',type='activation',benchmark='N
                            dict(name='brain_resp_Pereira_exp2',type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('243sentences', 'language'),),modality='fMRI')]
 # define extraction configuration
 extract_configuration = []
+average_style=['True','False','None']
 for model_grp, dataset, extract_type, average in itertools.product(model_grps_config, SENTENCE_CONFIG,
-                                                                   activation_extract_config, [True, False]):
+                                                                   activation_extract_config, average_style):
     extract_identifier = f"[group={model_grp['grp_id']}]-[dataset={dataset['name']}]-[{extract_type['name']}]-[bench={extract_type['benchmark']}]-[ave={average}]"
     extract_identifier = extract_identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
     model_set = tuple(x[0] for x in model_grp['grp_layer_tuple'])

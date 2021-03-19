@@ -11,7 +11,7 @@
 
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
-      for model in openaigpt-untrained gpt2-untrained ; do
+      for model in openaigpt gpt2 gpt2-xl ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           i=$i+1

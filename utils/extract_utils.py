@@ -1,6 +1,7 @@
 from utils.data_utils import load_obj, construct_stimuli_set, SENTENCE_CONFIG, BENCHMARK_CONFIG, save_obj, SAVE_DIR
 from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.models import model_pool, model_layers
+from brainio_base.assemblies import DataAssembly, walk_coords, merge_data_arrays, array_is_element
 from neural_nlp import FixedLayer
 import os
 import pandas as pd
@@ -11,7 +12,7 @@ import fnmatch
 import re
 
 class extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence=False,modality=None):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence='False',modality=None):
         ##### DATA ####
         self.dataset=dataset # name of the dataset
         self.datafile = datafile  # name of the dataset
@@ -49,6 +50,15 @@ class extractor:
             mean_activations.append(sentence_activation.mean(dim='presentation').values)
         return mean_activations
 
+    def get_all_activations(self,activations):
+        sentence_id=np.unique(np.asarray(activations.sentence_id))
+        all_activations=[]
+        for idx, id in tqdm(enumerate(sentence_id)):
+            sentence_activation=activations.where(activations.sentence_id == id, drop=True)
+            sent_string=list(set(sentence_activation.stimulus_sentence.values))[0]
+            all_activations.append([sentence_activation.values,sent_string,id])
+        return all_activations
+
     def extract_brain_response(self,model,layer):
         results_file = 'benchmark=' + self.extract_benchmark + ',model=' + model + ',subsample=None.pkl'
         results_ = pd.read_pickle(os.path.join(BENCHMARK_CONFIG['file_loc'], results_file))
@@ -71,20 +81,25 @@ class extractor:
             if not(self.modality=='fMRI'):
                 for stim_id, stim in enumerate(self.stimuli_set):
                     model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
-                                       average_sentence=self.average_sentence)  #
-                    if self.average_sentence:
-                        model_activations=self.get_mean_activations(model_activations)
-                    else:
-                        model_activations=self.get_last_word_activations(model_activations)
+                                       average_sentence=False)  #
+                    if self.average_sentence == 'True':
+                        model_activations = self.get_mean_activations(model_activations)
+                    elif self.average_sentence == 'False':
+                        model_activations = self.get_last_word_activations(model_activations)
+                    elif self.average_sentence == 'None':
+                        model_activations = self.get_all_activations(model_activations)
                     model_activation_set.append(model_activations)
             elif self.modality=='fMRI':
                 #TODO check if listen_to and read_words perform the same set of computation.
                 for stim_id, stim in enumerate(self.stimuli_set):
                     model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
-                                       average_sentence=self.average_sentence)  #
+                                       average_sentence=False)  #
                     model_activations=self.get_mean_activations(model_activations)
                     model_activation_set.append(model_activations)
+
+
             model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+
         brain_response_split=[]
         # get dividers based on the weight file, Fedorenko doesnt have an atlas:
         if self.atlas==None:
@@ -117,15 +132,17 @@ class extractor:
         candidate=FixedLayer(model_impl, layers[layer_id], prerun=layers if layer_id == 0 else None)
         #candidate = FixedLayer(test1, layers[layer], prerun=None)
         for stim_id, stim in enumerate(self.stimuli_set):
-            model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=self.average_sentence)  #
-            if self.average_sentence:
-                model_activations=self.get_mean_activations(model_activations)
-            else:
-                model_activations=self.get_last_word_activations(model_activations)
+            model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)#
+            if self.average_sentence == 'True':
+                model_activations = self.get_mean_activations(model_activations)
+            elif self.average_sentence == 'False':
+                model_activations = self.get_last_word_activations(model_activations)
+            elif self.average_sentence == 'None':
+                model_activations = self.get_all_activations(model_activations)
             model_activation_set.append(model_activations)
-        model_activation_flat=[item for sublist in model_activation_set for item in sublist]
-        return model_activation_flat
 
+        model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+        return model_activation_flat
 
     def __call__(self, *args, **kwargs):
         model_grp_activations=[]
@@ -167,9 +184,8 @@ class extractor:
 
         pass
 
-
 class model_extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,extract_name='activation',extract_type='activation',atlas=None,average_sentence=False):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,extract_name='activation',extract_type='activation',atlas=None,average_sentence='False'):
         self.dataset=dataset
         self.datafile=datafile
         self.model_spec=model_spec
@@ -200,19 +216,24 @@ class model_extractor:
                 model_activation_set = []
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i==0 else None)
                 for stim_id, stim in enumerate(self.extractor.stimuli_set):
-                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=self.average_sentence)  #
-                    if self.average_sentence:
+                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)  #
+                    if self.average_sentence=='True':
                         model_activations = self.extractor.get_mean_activations(model_activations)
-                    else:
+                    elif self.average_sentence=='False':
                         model_activations = self.extractor.get_last_word_activations(model_activations)
+                    elif self.average_sentence=='None':
+                        model_activations = self.extractor.get_all_activations(model_activations)
                     model_activation_set.append(model_activations)
-                model_activation_flat = [item for sublist in model_activation_set for item in sublist]
-                save_obj(model_activation_flat, os.path.join(SAVE_DIR, model_activation_name))
 
+
+                model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+
+                #model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+                save_obj(model_activation_flat, os.path.join(SAVE_DIR, model_activation_name))
 
 class model_extractor_parallel:
     def __init__(self, dataset=None, datafile=None, model_spec=None, extract_name='activation',
-                 extract_type='activation', atlas=None, average_sentence=False,total_runs=0):
+                 extract_type='activation', atlas=None, average_sentence='False',total_runs=0):
         self.dataset = dataset
         self.datafile = datafile
         self.model_spec = model_spec
@@ -253,12 +274,14 @@ class model_extractor_parallel:
                 if len(sorted_files)==self.total_runs:
                     for file in sorted_files:
                         model_activations = load_obj(os.path.join(SAVE_DIR, file),silent=True)
-                        if self.average_sentence:
+                        if self.average_sentence=='True':
                             model_activations = self.extractor.get_mean_activations(model_activations)
-                        else:
+                        elif self.average_sentence=='False':
                             model_activations = self.extractor.get_last_word_activations(model_activations)
+                        elif self.average_sentence=='None':
+                            model_activations = self.extractor.get_all_activations(model_activations)
                         model_activation_set.append(model_activations)
-
+                    # save the dataset
                     model_activation_flat = [item for sublist in model_activation_set for item in sublist]
                     save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
                 else:
