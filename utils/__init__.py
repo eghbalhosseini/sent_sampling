@@ -60,8 +60,18 @@ modl_name='ctrl'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 ctrl_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
+modl_name='t5-large'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+t5_large_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
-model_grps_config = [openaigpt_grp_config,
+modl_name='distilgpt2'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+distilgpt2_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+
+model_grps_config = [distilgpt2_config,
+    t5_large_config,
+    openaigpt_grp_config,
                      gpt2_grp_config,
                      gpt2_medium_config,
                      gpt2_large_config,
