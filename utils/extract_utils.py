@@ -27,8 +27,8 @@ class extractor:
         self.extract_name=extract_name
 
 
-    def load_dataset(self):
-        data_ = load_obj(self.datafile)
+    def load_dataset(self,silent=True):
+        data_ = load_obj(self.datafile,silent=silent)
         self.data_=data_
         stimuli_set = construct_stimuli_set(data_, self.dataset)
         self.stimuli_set=stimuli_set
