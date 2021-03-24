@@ -1,0 +1,27 @@
+My SLURM_ARRAY_TASK_ID:  199
+Running model ctrl
+Running dataset coca_spok_filter_punct_10K_sample_4
+Running average_mode False
+2021-03-22 08:56:49.383691: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]1111it [00:00, 226537.27it/s]
+0it [00:00, ?it/s]1111it [00:00, 223817.09it/s]
+0it [00:00, ?it/s]1111it [00:00, 225605.02it/s]
+0it [00:00, ?it/s]1111it [00:00, 213912.58it/s]
+0it [00:00, ?it/s]1111it [00:00, 213149.38it/s]
+0it [00:00, ?it/s]1111it [00:00, 210064.99it/s]
+0it [00:00, ?it/s]1111it [00:00, 217030.96it/s]
+0it [00:00, ?it/s]1111it [00:00, 205888.38it/s]
+0it [00:00, ?it/s]1112it [00:00, 207679.49it/s]
+layers:   0%|          | 0/49 [00:00<?, ?it/s]layers:   2%|▏         | 1/49 [05:25<4:20:18, 325.39s/it]layers:   4%|▍         | 2/49 [11:10<4:19:31, 331.32s/it]layers:   6%|▌         | 3/49 [16:52<4:16:30, 334.58s/it]layers:   8%|▊         | 4/49 [22:38<4:13:21, 337.81s/it]layers:  10%|█         | 5/49 [28:24<4:09:31, 340.25s/it]layers:  12%|█▏        | 6/49 [33:56<4:02:14, 338.00s/it]layers:  14%|█▍        | 7/49 [39:34<3:56:38, 338.06s/it]layers:  16%|█▋        | 8/49 [45:07<3:49:54, 336.46s/it]layers:  18%|█▊        | 9/49 [50:39<3:43:20, 335.00s/it]layers:  20%|██        | 10/49 [56:07<3:36:22, 332.88s/it]layers:  22%|██▏       | 11/49 [1:01:34<3:29:49, 331.30s/it]layers:  24%|██▍       | 12/49 [1:07:04<3:23:55, 330.69s/it]layers:  27%|██▋       | 13/49 [1:12:35<3:18:36, 331.02s/it]layers:  29%|██▊       | 14/49 [1:18:08<3:13:26, 331.60s/it]layers:  31%|███       | 15/49 [1:23:36<3:07:12, 330.38s/it]layers:  33%|███▎      | 16/49 [1:29:08<3:02:04, 331.04s/it]layers:  35%|███▍      | 17/49 [1:34:45<2:57:26, 332.71s/it]layers:  37%|███▋      | 18/49 [1:40:15<2:51:27, 331.85s/it]layers:  39%|███▉      | 19/49 [1:45:48<2:46:04, 332.17s/it]layers:  41%|████      | 20/49 [1:51:21<2:40:43, 332.55s/it]layers:  43%|████▎     | 21/49 [1:56:55<2:35:24, 333.02s/it]layers:  45%|████▍     | 22/49 [2:02:36<2:30:55, 335.40s/it]layers:  47%|████▋     | 23/49 [2:08:15<2:25:46, 336.41s/it]layers:  49%|████▉     | 24/49 [2:13:34<2:17:59, 331.20s/it]layers:  51%|█████     | 25/49 [2:18:40<2:09:28, 323.70s/it]layers:  53%|█████▎    | 26/49 [2:23:49<2:02:18, 319.07s/it]layers:  55%|█████▌    | 27/49 [2:28:58<1:55:58, 316.31s/it]layers:  57%|█████▋    | 28/49 [2:34:12<1:50:22, 315.38s/it]layers:  59%|█████▉    | 29/49 [2:39:29<1:45:19, 315.98s/it]layers:  61%|██████    | 30/49 [2:44:38<1:39:23, 313.86s/it]layers:  63%|██████▎   | 31/49 [2:49:51<1:34:06, 313.69s/it]layers:  65%|██████▌   | 32/49 [2:55:15<1:29:43, 316.70s/it]layers:  67%|██████▋   | 33/49 [3:00:45<1:25:31, 320.69s/it]layers:  69%|██████▉   | 34/49 [3:06:04<1:20:04, 320.31s/it]layers:  71%|███████▏  | 35/49 [3:11:12<1:13:51, 316.53s/it]layers:  73%|███████▎  | 36/49 [3:16:17<1:07:50, 313.13s/it]layers:  76%|███████▌  | 37/49 [3:21:24<1:02:14, 311.17s/it]layers:  78%|███████▊  | 38/49 [3:26:32<56:53, 310.34s/it]  layers:  80%|███████▉  | 39/49 [3:31:42<51:40, 310.03s/it]layers:  82%|████████▏ | 40/49 [3:36:58<46:48, 312.06s/it]layers:  84%|████████▎ | 41/49 [3:42:15<41:46, 313.36s/it]layers:  86%|████████▌ | 42/49 [3:47:35<36:47, 315.41s/it]layers:  88%|████████▊ | 43/49 [3:52:50<31:32, 315.36s/it]layers:  90%|████████▉ | 44/49 [3:57:32<25:26, 305.32s/it]layers:  92%|█████████▏| 45/49 [4:02:15<19:54, 298.55s/it]layers:  94%|█████████▍| 46/49 [4:06:57<14:40, 293.53s/it]layers:  96%|█████████▌| 47/49 [4:11:38<09:39, 289.91s/it]layers:  98%|█████████▊| 48/49 [4:16:22<04:47, 287.94s/it]layers: 100%|██████████| 49/49 [4:21:05<00:00, 286.48s/it]layers: 100%|██████████| 49/49 [4:21:05<00:00, 319.70s/it]
+Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+ctrl
+
+coca_spok_filter_punct_10K_sample_4
+
+False
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_4.pkl

@@ -1,0 +1,27 @@
+My SLURM_ARRAY_TASK_ID:  52
+Running model roberta-base
+Running dataset coca_spok_filter_punct_10K_sample_1
+Running average_mode False
+2021-03-22 08:18:50.278736: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]1111it [00:00, 223024.40it/s]
+0it [00:00, ?it/s]1111it [00:00, 213003.23it/s]
+0it [00:00, ?it/s]1111it [00:00, 212043.67it/s]
+0it [00:00, ?it/s]1111it [00:00, 210549.06it/s]
+0it [00:00, ?it/s]1111it [00:00, 205833.82it/s]
+0it [00:00, ?it/s]1111it [00:00, 208262.42it/s]
+0it [00:00, ?it/s]1111it [00:00, 205190.30it/s]
+0it [00:00, ?it/s]1111it [00:00, 206097.82it/s]
+0it [00:00, ?it/s]1112it [00:00, 197738.84it/s]
+layers:   0%|          | 0/13 [00:00<?, ?it/s]layers:   8%|▊         | 1/13 [02:28<29:40, 148.35s/it]layers:  15%|█▌        | 2/13 [04:58<27:17, 148.87s/it]layers:  23%|██▎       | 3/13 [07:26<24:47, 148.78s/it]layers:  31%|███       | 4/13 [09:55<22:17, 148.62s/it]layers:  38%|███▊      | 5/13 [12:23<19:47, 148.50s/it]layers:  46%|████▌     | 6/13 [14:51<17:18, 148.35s/it]layers:  54%|█████▍    | 7/13 [17:20<14:51, 148.60s/it]layers:  62%|██████▏   | 8/13 [19:49<12:23, 148.80s/it]layers:  69%|██████▉   | 9/13 [22:20<09:57, 149.30s/it]layers:  77%|███████▋  | 10/13 [24:49<07:27, 149.32s/it]layers:  85%|████████▍ | 11/13 [27:17<04:57, 148.85s/it]layers:  92%|█████████▏| 12/13 [29:46<02:28, 148.88s/it]layers: 100%|██████████| 13/13 [32:14<00:00, 148.71s/it]layers: 100%|██████████| 13/13 [32:14<00:00, 148.83s/it]
+Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+roberta-base
+
+coca_spok_filter_punct_10K_sample_1
+
+False
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_1.pkl
