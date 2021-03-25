@@ -1,0 +1,52 @@
+My SLURM_ARRAY_TASK_ID:  184
+Running model albert-xlarge-v2
+Running dataset coca_spok_filter_punct_10K_sample_4
+Running average_mode False
+2021-03-22 08:52:46.027021: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]1111it [00:00, 213051.93it/s]
+0it [00:00, ?it/s]1111it [00:00, 201927.10it/s]
+0it [00:00, ?it/s]1111it [00:00, 198376.83it/s]
+0it [00:00, ?it/s]1111it [00:00, 191441.26it/s]
+0it [00:00, ?it/s]1111it [00:00, 189533.55it/s]
+0it [00:00, ?it/s]1111it [00:00, 192612.40it/s]
+0it [00:00, ?it/s]1111it [00:00, 197293.35it/s]
+0it [00:00, ?it/s]1111it [00:00, 192405.62it/s]
+0it [00:00, ?it/s]1112it [00:00, 192380.22it/s]
+layers:   0%|          | 0/25 [00:00<?, ?it/s]layers: 100%|██████████| 25/25 [00:00<00:00, 2174.34it/s]
+Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+albert-xlarge-v2
+
+coca_spok_filter_punct_10K_sample_4
+
+False
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_4.pkl
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_albert-xlarge-v2_layer_0_activation is missing groups!

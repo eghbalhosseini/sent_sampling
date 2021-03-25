@@ -1,0 +1,27 @@
+My SLURM_ARRAY_TASK_ID:  172
+Running model gpt2
+Running dataset coca_spok_filter_punct_10K_sample_4
+Running average_mode False
+2021-03-22 08:46:45.167324: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]1111it [00:00, 262276.79it/s]
+0it [00:00, ?it/s]1111it [00:00, 247168.71it/s]
+0it [00:00, ?it/s]1111it [00:00, 249071.13it/s]
+0it [00:00, ?it/s]1111it [00:00, 235918.98it/s]
+0it [00:00, ?it/s]1111it [00:00, 233378.66it/s]
+0it [00:00, ?it/s]1111it [00:00, 233835.39it/s]
+0it [00:00, ?it/s]1111it [00:00, 246697.64it/s]
+0it [00:00, ?it/s]1111it [00:00, 233390.35it/s]
+0it [00:00, ?it/s]1112it [00:00, 234906.37it/s]
+layers:   0%|          | 0/13 [00:00<?, ?it/s]layers:   8%|▊         | 1/13 [02:04<24:57, 124.76s/it]layers:  15%|█▌        | 2/13 [04:09<22:51, 124.69s/it]layers:  23%|██▎       | 3/13 [06:12<20:42, 124.20s/it]layers:  31%|███       | 4/13 [08:16<18:38, 124.29s/it]layers:  38%|███▊      | 5/13 [10:20<16:33, 124.16s/it]layers:  46%|████▌     | 6/13 [12:25<14:31, 124.46s/it]layers:  54%|█████▍    | 7/13 [14:30<12:26, 124.44s/it]layers:  62%|██████▏   | 8/13 [16:35<10:23, 124.76s/it]layers:  69%|██████▉   | 9/13 [18:40<08:19, 124.80s/it]layers:  77%|███████▋  | 10/13 [20:45<06:14, 124.70s/it]layers:  85%|████████▍ | 11/13 [22:51<04:10, 125.20s/it]layers:  92%|█████████▏| 12/13 [24:58<02:05, 125.76s/it]layers: 100%|██████████| 13/13 [27:04<00:00, 125.70s/it]layers: 100%|██████████| 13/13 [27:04<00:00, 124.93s/it]
+Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+gpt2
+
+coca_spok_filter_punct_10K_sample_4
+
+False
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_4.pkl

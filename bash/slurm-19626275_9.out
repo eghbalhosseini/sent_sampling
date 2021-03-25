@@ -1,0 +1,66 @@
+My SLURM_ARRAY_TASK_ID:  9
+Running extraction: group=gpt2-xl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_4-activation-bench=None-ave=False
+Running optimiation: coordinate_ascent_eh-obj=D_s_var-n_iter=1000-n_samples=50-n_init=2-run_gpu=True
+[33mWARNING:[0m underlay of /usr/bin/nvidia-smi required more than 50 (445) bind mounts
+running
+running
+2021-03-22 12:31:06.602378: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /.singularity.d/libs
+2021-03-22 12:31:06.602482: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+[W Context.cpp:69] Warning: torch.set_deterministic is in beta, and its design and  functionality may change in the future. (function operator())
+/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/brainscore/metrics/__init__.py:37: FutureWarning: xarray subclass Score should explicitly define __slots__
+  class Score(DataAssembly):
+0it [00:00, ?it/s]1111it [00:00, 144250.61it/s]
+0it [00:00, ?it/s]1111it [00:00, 149613.81it/s]
+0it [00:00, ?it/s]1111it [00:00, 167248.29it/s]
+0it [00:00, ?it/s]1111it [00:00, 170167.68it/s]
+0it [00:00, ?it/s]1111it [00:00, 184010.10it/s]
+0it [00:00, ?it/s]1111it [00:00, 194461.12it/s]
+0it [00:00, ?it/s]1111it [00:00, 209451.27it/s]
+0it [00:00, ?it/s]1111it [00:00, 213471.61it/s]
+0it [00:00, ?it/s]1112it [00:00, 222066.66it/s]
+Some weights of GPT2Model were not initialized from the model checkpoint at gpt2-xl and are newly initialized: ['h.0.attn.masked_bias', 'h.1.attn.masked_bias', 'h.2.attn.masked_bias', 'h.3.attn.masked_bias', 'h.4.attn.masked_bias', 'h.5.attn.masked_bias', 'h.6.attn.masked_bias', 'h.7.attn.masked_bias', 'h.8.attn.masked_bias', 'h.9.attn.masked_bias', 'h.10.attn.masked_bias', 'h.11.attn.masked_bias', 'h.12.attn.masked_bias', 'h.13.attn.masked_bias', 'h.14.attn.masked_bias', 'h.15.attn.masked_bias', 'h.16.attn.masked_bias', 'h.17.attn.masked_bias', 'h.18.attn.masked_bias', 'h.19.attn.masked_bias', 'h.20.attn.masked_bias', 'h.21.attn.masked_bias', 'h.22.attn.masked_bias', 'h.23.attn.masked_bias', 'h.24.attn.masked_bias', 'h.25.attn.masked_bias', 'h.26.attn.masked_bias', 'h.27.attn.masked_bias', 'h.28.attn.masked_bias', 'h.29.attn.masked_bias', 'h.30.attn.masked_bias', 'h.31.attn.masked_bias', 'h.32.attn.masked_bias', 'h.33.attn.masked_bias', 'h.34.attn.masked_bias', 'h.35.attn.masked_bias', 'h.36.attn.masked_bias', 'h.37.attn.masked_bias', 'h.38.attn.masked_bias', 'h.39.attn.masked_bias', 'h.40.attn.masked_bias', 'h.41.attn.masked_bias', 'h.42.attn.masked_bias', 'h.43.attn.masked_bias', 'h.44.attn.masked_bias', 'h.45.attn.masked_bias', 'h.46.attn.masked_bias', 'h.47.attn.masked_bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Loading lookup from /om/user/ehoseini/miniconda3/lib/python3.7/site-packages/brainio_collection/lookup.csv
+group=gpt2-xl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_4-activation-bench=None-ave=False
+
+coordinate_ascent_eh-obj=D_s_var-n_iter=1000-n_samples=50-n_init=2-run_gpu=True
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_4.pkl
+extracting network activations for gpt2-xl
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_1_activation_ave_False.pkl already exists, loading...
+loading /om/user/ehoseini/MyData/sent_sampling/coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_1_activation_ave_False.pkl
+adding activations to set
+extracting network activations for gpt2-xl
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_26_activation_ave_False.pkl doesn't exists, creating...
+running coca_spok_filter_punct_10K_sample_4_group_0-0 : The great thing about America is that you should be allowed to worship any way you want.
+
+Traceback (most recent call last):
+  File "/om/user/ehoseini/sent_sampling/extract_and_optimize_on_gpu.py", line 21, in <module>
+    extractor_obj()
+  File "/om/user/ehoseini/sent_sampling/utils/extract_utils.py", line 160, in __call__
+    model_activation=self.extract_representation(self.model_spec[idx],self.layer_spec[idx])
+  File "/om/user/ehoseini/sent_sampling/utils/extract_utils.py", line 135, in extract_representation
+    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)#
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/benchmarks/neural.py", line 628, in read_words
+    sentence_activations = candidate(stimuli=sentence_stimuli, average_sentence=average_sentence)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/__init__.py", line 58, in __call__
+    return self._model(*args, **kwargs, layers=[self._layer])
+  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/brainscore/utils/__init__.py", line 80, in __call__
+    return self.content(*args, **kwargs)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/implementations.py", line 560, in __call__
+    sentence_averaging=self._sentence_average, **kwargs)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/implementations.py", line 930, in _call_conditional_average
+    result = extractor(*args, **kwargs)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 34, in __call__
+    return self.from_stimulus_set(stimulus_set=stimuli, layers=layers, stimuli_identifier=stimuli_identifier)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 49, in from_stimulus_set
+    stimuli_identifier=stimuli_identifier)
+  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 62, in from_sentences
+    return fnc(layers=layers, sentences=sentences)
+  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/result_caching/__init__.py", line 290, in wrapper
+    stored_result = self.load(function_identifier)
+  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/result_caching/__init__.py", line 137, in load
+    return self.load_file(path)
+  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/result_caching/__init__.py", line 141, in load_file
+    return pickle.load(f)['data']
+AttributeError: 'Variable' object has no attribute '__dict__'

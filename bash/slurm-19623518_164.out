@@ -1,0 +1,76 @@
+My SLURM_ARRAY_TASK_ID:  164
+Running model gpt2-xl
+Running dataset coca_spok_filter_punct_10K_sample_4
+Running average_mode None
+2021-03-22 08:38:23.159278: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]1111it [00:00, 211389.57it/s]
+0it [00:00, ?it/s]1111it [00:00, 200020.25it/s]
+0it [00:00, ?it/s]1111it [00:00, 197602.91it/s]
+0it [00:00, ?it/s]1111it [00:00, 194591.04it/s]
+0it [00:00, ?it/s]1111it [00:00, 194599.17it/s]
+0it [00:00, ?it/s]1111it [00:00, 196959.79it/s]
+0it [00:00, ?it/s]1111it [00:00, 198664.38it/s]
+0it [00:00, ?it/s]1111it [00:00, 195760.03it/s]
+0it [00:00, ?it/s]1112it [00:00, 197303.86it/s]
+layers:   0%|          | 0/49 [00:00<?, ?it/s]layers: 100%|██████████| 49/49 [00:00<00:00, 2267.04it/s]
+Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+gpt2-xl
+
+coca_spok_filter_punct_10K_sample_4
+
+None
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_4.pkl
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-xl_layer_0_activation is missing groups!

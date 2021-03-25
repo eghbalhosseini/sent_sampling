@@ -1,0 +1,39 @@
+My SLURM_ARRAY_TASK_ID:  166
+Running model gpt2-large
+Running dataset coca_spok_filter_punct_10K_sample_4
+Running average_mode False
+2021-03-22 08:38:33.166437: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
+  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
+/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
+  xr_data.set_index(append=True, inplace=True, **coords_d)
+0it [00:00, ?it/s]1111it [00:00, 208831.75it/s]
+0it [00:00, ?it/s]1111it [00:00, 195982.33it/s]
+0it [00:00, ?it/s]1111it [00:00, 196494.70it/s]
+0it [00:00, ?it/s]1111it [00:00, 194088.54it/s]
+0it [00:00, ?it/s]1111it [00:00, 195760.03it/s]
+0it [00:00, ?it/s]1111it [00:00, 200709.47it/s]
+0it [00:00, ?it/s]1111it [00:00, 203212.76it/s]
+0it [00:00, ?it/s]1111it [00:00, 194469.23it/s]
+0it [00:00, ?it/s]1112it [00:00, 196191.73it/s]
+layers:   0%|          | 0/37 [00:00<?, ?it/s]layers:   3%|▎         | 1/37 [05:25<3:15:29, 325.82s/it]layers:   5%|▌         | 2/37 [10:51<3:10:04, 325.83s/it]layers:   8%|▊         | 3/37 [16:16<3:04:30, 325.59s/it]layers:  11%|█         | 4/37 [20:36<2:48:16, 305.96s/it]layers:  14%|█▎        | 5/37 [25:59<2:45:54, 311.09s/it]layers:  16%|█▌        | 6/37 [31:18<2:41:51, 313.28s/it]layers:  19%|█▉        | 7/37 [36:36<2:37:18, 314.61s/it]layers:  22%|██▏       | 8/37 [41:53<2:32:27, 315.44s/it]layers:  24%|██▍       | 9/37 [47:11<2:27:31, 316.14s/it]layers:  27%|██▋       | 10/37 [52:29<2:22:32, 316.76s/it]layers:  30%|██▉       | 11/37 [57:44<2:17:01, 316.20s/it]layers:  32%|███▏      | 12/37 [1:03:00<2:11:47, 316.32s/it]layers:  35%|███▌      | 13/37 [1:08:18<2:06:39, 316.63s/it]layers:  38%|███▊      | 14/37 [1:13:36<2:01:31, 317.03s/it]layers:  41%|████      | 15/37 [1:18:54<1:56:20, 317.30s/it]layers:  43%|████▎     | 16/37 [1:24:13<1:51:14, 317.82s/it]layers:  46%|████▌     | 17/37 [1:29:29<1:45:49, 317.46s/it]layers:  49%|████▊     | 18/37 [1:34:47<1:40:33, 317.56s/it]layers:  51%|█████▏    | 19/37 [1:40:05<1:35:17, 317.63s/it]layers:  54%|█████▍    | 20/37 [1:45:22<1:29:59, 317.61s/it]layers:  57%|█████▋    | 21/37 [1:50:41<1:24:48, 318.04s/it]layers:  59%|█████▉    | 22/37 [1:55:58<1:19:24, 317.62s/it]layers:  62%|██████▏   | 23/37 [2:01:14<1:13:58, 317.05s/it]layers:  65%|██████▍   | 24/37 [2:06:32<1:08:45, 317.34s/it]layers:  68%|██████▊   | 25/37 [2:11:54<1:03:46, 318.90s/it]layers: 100%|██████████| 37/37 [2:11:54<00:00, 213.92s/it]  
+Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
+gpt2-large
+
+coca_spok_filter_punct_10K_sample_4
+
+False
+
+loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_4.pkl
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
+coca_spok_filter_punct_10K_sample_4_gpt2-large_layer_0_activation is missing groups!
