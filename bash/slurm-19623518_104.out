@@ -1,46 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  104
-Running model transfo-xl-wt103
-Running dataset coca_spok_filter_punct_10K_sample_2
-Running average_mode None
-2021-03-22 08:19:33.856097: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
-/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
-  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
-/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
-  xr_data.set_index(append=True, inplace=True, **coords_d)
-0it [00:00, ?it/s]1111it [00:00, 211322.47it/s]
-0it [00:00, ?it/s]1111it [00:00, 215884.72it/s]
-0it [00:00, ?it/s]1111it [00:00, 213344.55it/s]
-0it [00:00, ?it/s]1111it [00:00, 210606.15it/s]
-0it [00:00, ?it/s]1111it [00:00, 205371.17it/s]
-0it [00:00, ?it/s]1111it [00:00, 206325.96it/s]
-0it [00:00, ?it/s]1111it [00:00, 209084.75it/s]
-0it [00:00, ?it/s]1111it [00:00, 204138.60it/s]
-0it [00:00, ?it/s]1112it [00:00, 203537.68it/s]
-layers:   0%|          | 0/19 [00:00<?, ?it/s]layers: 100%|██████████| 19/19 [00:00<00:00, 475.78it/s]
-Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
-transfo-xl-wt103
-
-coca_spok_filter_punct_10K_sample_2
-
-None
-
-loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_2.pkl
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_2_transfo-xl-wt103_layer_0_activation is missing groups!

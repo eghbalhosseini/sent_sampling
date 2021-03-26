@@ -1,40 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  263
-Running model xlm-mlm-en-2048
-Running dataset coca_spok_filter_punct_10K_sample_5
-Running average_mode None
-2021-03-22 09:14:15.632092: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
-/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
-  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
-/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
-  xr_data.set_index(append=True, inplace=True, **coords_d)
-0it [00:00, ?it/s]1111it [00:00, 264299.91it/s]
-0it [00:00, ?it/s]1111it [00:00, 261101.12it/s]
-0it [00:00, ?it/s]1111it [00:00, 250382.66it/s]
-0it [00:00, ?it/s]1111it [00:00, 249845.68it/s]
-0it [00:00, ?it/s]1111it [00:00, 255797.98it/s]
-0it [00:00, ?it/s]1111it [00:00, 245166.08it/s]
-0it [00:00, ?it/s]1111it [00:00, 255854.16it/s]
-0it [00:00, ?it/s]1111it [00:00, 247707.41it/s]
-0it [00:00, ?it/s]1112it [00:00, 244794.31it/s]
-layers:   0%|          | 0/13 [00:00<?, ?it/s]layers: 100%|██████████| 13/13 [00:00<00:00, 2360.43it/s]
-Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
-xlm-mlm-en-2048
-
-coca_spok_filter_punct_10K_sample_5
-
-None
-
-loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_5.pkl
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_xlm-mlm-en-2048_layer_0_activation is missing groups!

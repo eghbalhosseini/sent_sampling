@@ -1,40 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  267
-Running model roberta-base
-Running dataset coca_spok_filter_punct_10K_sample_5
-Running average_mode True
-2021-03-22 09:14:24.238386: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
-/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
-  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
-/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
-  xr_data.set_index(append=True, inplace=True, **coords_d)
-0it [00:00, ?it/s]1111it [00:00, 213393.40it/s]
-0it [00:00, ?it/s]1111it [00:00, 205788.37it/s]
-0it [00:00, ?it/s]1111it [00:00, 202611.93it/s]
-0it [00:00, ?it/s]1111it [00:00, 197854.61it/s]
-0it [00:00, ?it/s]1111it [00:00, 196710.36it/s]
-0it [00:00, ?it/s]1111it [00:00, 196726.97it/s]
-0it [00:00, ?it/s]1111it [00:00, 197259.95it/s]
-0it [00:00, ?it/s]1111it [00:00, 187996.60it/s]
-0it [00:00, ?it/s]1112it [00:00, 193385.27it/s]
-layers:   0%|          | 0/13 [00:00<?, ?it/s]layers: 100%|██████████| 13/13 [00:00<00:00, 439.80it/s]
-Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
-roberta-base
-
-coca_spok_filter_punct_10K_sample_5
-
-True
-
-loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_5.pkl
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_roberta-base_layer_0_activation is missing groups!

@@ -1,64 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  221
-Running model gpt2-large
-Running dataset coca_spok_filter_punct_10K_sample_5
-Running average_mode None
-2021-03-22 09:11:13.833310: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
-/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
-  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
-/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
-  xr_data.set_index(append=True, inplace=True, **coords_d)
-0it [00:00, ?it/s]1111it [00:00, 259501.68it/s]
-0it [00:00, ?it/s]1111it [00:00, 249698.41it/s]
-0it [00:00, ?it/s]1111it [00:00, 245011.40it/s]
-0it [00:00, ?it/s]1111it [00:00, 246985.30it/s]
-0it [00:00, ?it/s]1111it [00:00, 247181.82it/s]
-0it [00:00, ?it/s]1111it [00:00, 243806.40it/s]
-0it [00:00, ?it/s]1111it [00:00, 243513.36it/s]
-0it [00:00, ?it/s]1111it [00:00, 236782.10it/s]
-0it [00:00, ?it/s]1112it [00:00, 235392.45it/s]
-layers:   0%|          | 0/37 [00:00<?, ?it/s]layers:  65%|██████▍   | 24/37 [00:00<00:00, 235.10it/s]layers: 100%|██████████| 37/37 [00:00<00:00, 235.20it/s]
-Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
-gpt2-large
-
-coca_spok_filter_punct_10K_sample_5
-
-None
-
-loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_5.pkl
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!
-coca_spok_filter_punct_10K_sample_5_gpt2-large_layer_0_activation is missing groups!

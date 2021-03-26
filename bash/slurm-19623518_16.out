@@ -1,27 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  16
-Running model openaigpt
-Running dataset coca_spok_filter_punct_10K_sample_1
-Running average_mode False
-2021-03-22 08:18:50.423781: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
-/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
-  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
-/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
-  xr_data.set_index(append=True, inplace=True, **coords_d)
-0it [00:00, ?it/s]1111it [00:00, 213834.06it/s]
-0it [00:00, ?it/s]1111it [00:00, 207151.44it/s]
-0it [00:00, ?it/s]1111it [00:00, 207965.00it/s]
-0it [00:00, ?it/s]1111it [00:00, 207465.02it/s]
-0it [00:00, ?it/s]1111it [00:00, 200917.16it/s]
-0it [00:00, ?it/s]1111it [00:00, 202128.56it/s]
-0it [00:00, ?it/s]1111it [00:00, 198376.83it/s]
-0it [00:00, ?it/s]1111it [00:00, 200865.20it/s]
-0it [00:00, ?it/s]1112it [00:00, 195993.87it/s]
-layers:   0%|          | 0/13 [00:00<?, ?it/s]layers:   8%|▊         | 1/13 [02:31<30:22, 151.85s/it]layers:  15%|█▌        | 2/13 [05:02<27:46, 151.53s/it]layers:  23%|██▎       | 3/13 [07:32<25:11, 151.13s/it]layers:  31%|███       | 4/13 [10:03<22:39, 151.05s/it]layers:  38%|███▊      | 5/13 [12:34<20:07, 150.94s/it]layers:  46%|████▌     | 6/13 [15:06<17:38, 151.25s/it]layers:  54%|█████▍    | 7/13 [17:39<15:10, 151.67s/it]layers:  62%|██████▏   | 8/13 [20:12<12:40, 152.15s/it]layers:  69%|██████▉   | 9/13 [22:44<10:08, 152.21s/it]layers:  77%|███████▋  | 10/13 [25:15<07:35, 151.92s/it]layers:  85%|████████▍ | 11/13 [27:46<05:02, 151.45s/it]layers:  92%|█████████▏| 12/13 [30:15<02:30, 150.70s/it]layers: 100%|██████████| 13/13 [32:45<00:00, 150.65s/it]layers: 100%|██████████| 13/13 [32:45<00:00, 151.21s/it]
-Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
-openaigpt
-
-coca_spok_filter_punct_10K_sample_1
-
-False
-
-loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_1.pkl

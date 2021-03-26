@@ -1,27 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  112
-Running model gpt2-large
-Running dataset coca_spok_filter_punct_10K_sample_3
-Running average_mode False
-2021-03-22 08:19:35.458027: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
-/usr/local/lib/python3.7/site-packages/xarray/core/merge.py:16: FutureWarning: The Panel class is removed from pandas. Accessing it from the top-level namespace will also be removed in the next version
-  PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel)
-/usr/local/lib/python3.7/site-packages/brainio_base/assemblies.py:224: FutureWarning: The inplace argument has been deprecated and will be removed in a future version of xarray.
-  xr_data.set_index(append=True, inplace=True, **coords_d)
-0it [00:00, ?it/s]1111it [00:00, 220731.93it/s]
-0it [00:00, ?it/s]1111it [00:00, 215196.81it/s]
-0it [00:00, ?it/s]1111it [00:00, 208990.97it/s]
-0it [00:00, ?it/s]1111it [00:00, 206627.87it/s]
-0it [00:00, ?it/s]1111it [00:00, 200631.69it/s]
-0it [00:00, ?it/s]1111it [00:00, 202956.09it/s]
-0it [00:00, ?it/s]1111it [00:00, 204739.53it/s]
-0it [00:00, ?it/s]1111it [00:00, 202700.06it/s]
-0it [00:00, ?it/s]1112it [00:00, 200372.30it/s]
-layers:   0%|          | 0/37 [00:00<?, ?it/s]layers:   3%|▎         | 1/37 [05:22<3:13:25, 322.38s/it]layers:   5%|▌         | 2/37 [10:46<3:08:22, 322.92s/it]layers:   8%|▊         | 3/37 [16:09<3:02:56, 322.84s/it]layers:  11%|█         | 4/37 [21:29<2:57:07, 322.04s/it]layers:  14%|█▎        | 5/37 [26:49<2:51:26, 321.46s/it]layers:  16%|█▌        | 6/37 [32:11<2:46:07, 321.52s/it]layers:  19%|█▉        | 7/37 [37:33<2:40:55, 321.84s/it]layers:  22%|██▏       | 8/37 [42:58<2:36:01, 322.82s/it]layers:  24%|██▍       | 9/37 [48:18<2:30:12, 321.88s/it]layers:  27%|██▋       | 10/37 [53:38<2:24:33, 321.25s/it]layers:  30%|██▉       | 11/37 [58:58<2:19:01, 320.82s/it]layers:  32%|███▏      | 12/37 [1:04:19<2:13:46, 321.05s/it]layers:  35%|███▌      | 13/37 [1:09:43<2:08:44, 321.85s/it]layers:  38%|███▊      | 14/37 [1:15:05<2:03:22, 321.84s/it]layers:  41%|████      | 15/37 [1:20:24<1:57:43, 321.08s/it]layers:  43%|████▎     | 16/37 [1:25:45<1:52:20, 320.99s/it]layers:  46%|████▌     | 17/37 [1:31:06<1:46:58, 320.92s/it]layers:  49%|████▊     | 18/37 [1:36:28<1:41:44, 321.30s/it]layers:  51%|█████▏    | 19/37 [1:41:50<1:36:28, 321.56s/it]layers:  54%|█████▍    | 20/37 [1:47:09<1:30:55, 320.89s/it]layers:  57%|█████▋    | 21/37 [1:52:29<1:25:27, 320.49s/it]layers:  59%|█████▉    | 22/37 [1:57:49<1:20:06, 320.41s/it]layers:  62%|██████▏   | 23/37 [2:03:10<1:14:48, 320.61s/it]layers:  65%|██████▍   | 24/37 [2:08:34<1:09:39, 321.53s/it]layers:  68%|██████▊   | 25/37 [2:13:58<1:04:26, 322.23s/it]layers:  70%|███████   | 26/37 [2:19:18<58:57, 321.56s/it]  layers:  73%|███████▎  | 27/37 [2:24:37<53:29, 320.97s/it]layers:  76%|███████▌  | 28/37 [2:29:57<48:04, 320.53s/it]layers:  78%|███████▊  | 29/37 [2:35:17<42:44, 320.55s/it]layers:  81%|████████  | 30/37 [2:40:41<37:30, 321.54s/it]layers:  84%|████████▍ | 31/37 [2:46:02<32:07, 321.23s/it]layers:  86%|████████▋ | 32/37 [2:51:22<26:44, 320.83s/it]layers:  89%|████████▉ | 33/37 [2:56:41<21:22, 320.52s/it]layers:  92%|█████████▏| 34/37 [3:02:02<16:01, 320.61s/it]layers:  95%|█████████▍| 35/37 [3:07:25<10:42, 321.31s/it]layers:  97%|█████████▋| 36/37 [3:12:48<05:21, 321.78s/it]layers: 100%|██████████| 37/37 [3:18:07<00:00, 320.97s/it]layers: 100%|██████████| 37/37 [3:18:07<00:00, 321.29s/it]
-Loading lookup from /usr/local/lib/python3.7/site-packages/brainio_collection/lookup.csv
-gpt2-large
-
-coca_spok_filter_punct_10K_sample_3
-
-False
-
-loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_3.pkl

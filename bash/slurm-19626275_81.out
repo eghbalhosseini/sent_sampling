@@ -1,60 +1,0 @@
-My SLURM_ARRAY_TASK_ID:  81
-Running extraction: group=xlm-mlm-en-2048_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_2-activation-bench=None-ave=False
-Running optimiation: coordinate_ascent_eh-obj=D_s_var-n_iter=1000-n_samples=50-n_init=2-run_gpu=True
-[33mWARNING:[0m underlay of /usr/bin/nvidia-smi required more than 50 (445) bind mounts
-running
-running
-2021-03-23 01:46:18.901985: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /.singularity.d/libs
-2021-03-23 01:46:18.902056: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
-[W Context.cpp:69] Warning: torch.set_deterministic is in beta, and its design and  functionality may change in the future. (function operator())
-/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/brainscore/metrics/__init__.py:37: FutureWarning: xarray subclass Score should explicitly define __slots__
-  class Score(DataAssembly):
-0it [00:00, ?it/s]1111it [00:00, 219505.00it/s]
-0it [00:00, ?it/s]1111it [00:00, 219877.87it/s]
-0it [00:00, ?it/s]1111it [00:00, 214938.73it/s]
-0it [00:00, ?it/s]1111it [00:00, 211389.57it/s]
-0it [00:00, ?it/s]1111it [00:00, 209159.83it/s]
-0it [00:00, ?it/s]1111it [00:00, 203986.68it/s]
-0it [00:00, ?it/s]1111it [00:00, 209470.10it/s]
-0it [00:00, ?it/s]1111it [00:00, 201568.98it/s]
-0it [00:00, ?it/s]1112it [00:00, 204161.35it/s]
-Loading lookup from /om/user/ehoseini/miniconda3/lib/python3.7/site-packages/brainio_collection/lookup.csv
-group=xlm-mlm-en-2048_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_2-activation-bench=None-ave=False
-
-coordinate_ascent_eh-obj=D_s_var-n_iter=1000-n_samples=50-n_init=2-run_gpu=True
-
-loading /om/user/ehoseini/MyData/COCA_corpus/parsed/coca_spok_data_filter_ngram_punct_10K_sample_2.pkl
-extracting network activations for xlm-mlm-en-2048
-coca_spok_filter_punct_10K_sample_2_xlm-mlm-en-2048_layer_1_activation_ave_False.pkl doesn't exists, creating...
-running coca_spok_filter_punct_10K_sample_2_group_0-0 : He says he was wearing a ski mask hiding behind the furnace.
-
-Traceback (most recent call last):
-  File "/om/user/ehoseini/sent_sampling/extract_and_optimize_on_gpu.py", line 21, in <module>
-    extractor_obj()
-  File "/om/user/ehoseini/sent_sampling/utils/extract_utils.py", line 160, in __call__
-    model_activation=self.extract_representation(self.model_spec[idx],self.layer_spec[idx])
-  File "/om/user/ehoseini/sent_sampling/utils/extract_utils.py", line 135, in extract_representation
-    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)#
-  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/benchmarks/neural.py", line 628, in read_words
-    sentence_activations = candidate(stimuli=sentence_stimuli, average_sentence=average_sentence)
-  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/__init__.py", line 58, in __call__
-    return self._model(*args, **kwargs, layers=[self._layer])
-  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/brainscore/utils/__init__.py", line 80, in __call__
-    return self.content(*args, **kwargs)
-  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/implementations.py", line 560, in __call__
-    sentence_averaging=self._sentence_average, **kwargs)
-  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/implementations.py", line 930, in _call_conditional_average
-    result = extractor(*args, **kwargs)
-  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 34, in __call__
-    return self.from_stimulus_set(stimulus_set=stimuli, layers=layers, stimuli_identifier=stimuli_identifier)
-  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 49, in from_stimulus_set
-    stimuli_identifier=stimuli_identifier)
-  File "/home/ehoseini/neural-nlp-master/neural-nlp/neural_nlp/models/wrapper/core.py", line 62, in from_sentences
-    return fnc(layers=layers, sentences=sentences)
-  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/result_caching/__init__.py", line 290, in wrapper
-    stored_result = self.load(function_identifier)
-  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/result_caching/__init__.py", line 137, in load
-    return self.load_file(path)
-  File "/om/user/ehoseini/miniconda3/lib/python3.7/site-packages/result_caching/__init__.py", line 141, in load_file
-    return pickle.load(f)['data']
-AttributeError: 'Variable' object has no attribute '__dict__'
