@@ -113,13 +113,14 @@ class optim:
     # TODO : Do the regression on train on all the data.
     # TODO : verify that Model activation, and Brain response,
 
-    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300):
+    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300,low_resolution=False):
         assert(torch.cuda.is_available())
         if low_dim:
             activation_list = []
             var_explained = []
             pca_type = 'fixed'
             for idx, act_dict in (enumerate(self.activations)):
+
                 act = torch.tensor(act_dict['activations'], dtype=float, device=self.device,requires_grad=False)
                 # act must be in m sample * n feature shape ,
                 u, s, v = torch.pca_lowrank(act, q=500)
@@ -142,7 +143,12 @@ class optim:
         X_list = [torch.nn.functional.normalize(x.squeeze()) for x in activation_list]
         X_list = [(X - X.mean(axis=1, keepdim=True)) for X in X_list]
         X_list = [torch.nn.functional.normalize(X) for X in X_list]
-        self.XY_corr_list = [torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
+        if low_resolution==True:
+            self.XY_corr_list = [
+                torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
+                X_list]
+        else:
+            self.XY_corr_list = [torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
                         X_list]
         del X_list, activation_list
         if self.run_gpu:
