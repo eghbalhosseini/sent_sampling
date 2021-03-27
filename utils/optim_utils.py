@@ -113,9 +113,31 @@ class optim:
     # TODO : Do the regression on train on all the data.
     # TODO : verify that Model activation, and Brain response,
 
-    def precompute_corr_rdm_on_gpu(self):
+    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300):
         assert(torch.cuda.is_available())
-        activation_list = [torch.tensor(x['activations'], dtype=float, device=self.device, requires_grad=False) for x in
+        if low_dim:
+            activation_list = []
+            var_explained = []
+            pca_type = 'fixed'
+            for idx, act_dict in (enumerate(self.activations)):
+                act = torch.tensor(act_dict['activations'], dtype=float, device=self.device,requires_grad=False)
+                # act must be in m sample * n feature shape ,
+                u, s, v = torch.pca_lowrank(act, q=500)
+                # keep 85% variance explained ,
+                idx_85 = torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2) < .85
+                cols = list(torch.where(idx_85)[0].cpu().numpy())
+                if pca_type == 'fixed':
+                    act_pca = torch.matmul(act, v[:, :low_dim_num])
+                elif pca_type == 'equal_var':
+                    act_pca = torch.matmul(act, v[:, cols])
+
+                activation_list.append(act_pca)
+                var_explained.append(torch.cumsum(torch.cat((torch.tensor([0], device=self.device), s ** 2)),
+                                                  dim=0) / torch.sum(s ** 2))
+
+            self.var_explained=var_explained
+        else:
+            activation_list = [torch.tensor(x['activations'], dtype=float, device=self.device, requires_grad=False) for x in
                            self.activations]
         X_list = [torch.nn.functional.normalize(x.squeeze()) for x in activation_list]
         X_list = [(X - X.mean(axis=1, keepdim=True)) for X in X_list]
