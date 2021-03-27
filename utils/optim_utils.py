@@ -145,7 +145,7 @@ class optim:
         X_list = [torch.nn.functional.normalize(X) for X in X_list]
         if low_resolution==True:
             self.XY_corr_list = [
-                torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
+                torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)).half() for X in
                 X_list]
         else:
             self.XY_corr_list = [torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
