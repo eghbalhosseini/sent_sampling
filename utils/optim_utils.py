@@ -113,6 +113,33 @@ class optim:
     # TODO : Do the regression on train on all the data.
     # TODO : verify that Model activation, and Brain response,
 
+    def compute_activation_in_low_dim(self,low_dim_num=300,low_resolution=False):
+        assert (torch.cuda.is_available())
+        activation_list = []
+        var_explained = []
+        pca_type = 'fixed'
+        for idx, act_dict in (enumerate(self.activations)):
+
+            act = torch.tensor(act_dict['activations'], dtype=float, device=self.device, requires_grad=False)
+            # act must be in m sample * n feature shape ,
+            u, s, v = torch.pca_lowrank(act, q=500)
+            # keep 85% variance explained ,
+            idx_85 = torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2) < .85
+            cols = list(torch.where(idx_85)[0].cpu().numpy())
+            if pca_type == 'fixed':
+                act_pca = torch.matmul(act, v[:, :low_dim_num])
+            elif pca_type == 'equal_var':
+                act_pca = torch.matmul(act, v[:, cols])
+
+            activation_list.append(act_pca)
+            var_explained.append(torch.cumsum(torch.cat((torch.tensor([0], device=self.device), s ** 2)),
+                                              dim=0) / torch.sum(s ** 2))
+        self.var_explained = var_explained
+        if low_resolution == True:
+            self.activation_list = [x.half() for x in activation_list]
+        else:
+            self.activation_list = activation_list
+
     def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300,low_resolution=False):
         assert(torch.cuda.is_available())
         if low_dim:
