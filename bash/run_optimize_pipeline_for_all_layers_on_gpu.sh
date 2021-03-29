@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=0-13
+#SBATCH --array=0-35
 #SBATCH --time=24:00:00
 #SBATCH --mem=80G
 #SBATCH --gres=gpu:1
@@ -13,8 +13,8 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 1000 ; do
-    for N_s in  50 ; do
-      for init in 1 ; do
+    for N_s in  50 75 ; do
+      for init in 2 ; do
         for opt in D_s ; do
         optim_id="${optim_method}-obj=${opt}-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-run_gpu=True"
         optim_list[$i]="$optim_id"
@@ -32,10 +32,10 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for set in ctrl gpt2-xl bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 xlnet-large-cased roberta-base ; do
+for set in openaigpt gpt2 ctrl gpt2-xl bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 xlnet-large-cased roberta-base ; do
   for idx in 0 ; do
     for ave in False ; do
-    for dataset in coca_spok_filter_punct_10K_sample_1 ud_sentencez_token_filter_v3 ; do
+    for dataset in coca_spok_filter_punct_10K_sample_1 coca_spok_filter_punct_10K_sample_2 ; do
       extract_id="group=${set}_layers-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
       i=$i+1
