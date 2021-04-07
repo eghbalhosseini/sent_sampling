@@ -305,6 +305,7 @@ class optim_group:
             self.optim_obj = optim(optim_algorithm=self.optim_algorithm, objective_function=self.objective_function,
                                    n_init=self.n_init, n_iter=self.n_iter, run_gpu=self.run_gpu, N_s=self.N_s)
             self.optim_obj.load_extractor(ext_obj)
+            self.N_S=self.optim_obj.N_S
             self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution)
             self.grp_XY_corr_list.append(self.optim_obj.XY_corr_list)
             del self.optim_obj
@@ -336,6 +337,7 @@ class optim_group:
             self.d_optim_list.append(self.XY_corr_obj_func(S,XY_corr_list=XY_corr_list))
 
         self.d_optim=np.mean(self.d_optim_list)
+        return self.d_optim
 
     def __call__(self, *args, **kwargs):
 
