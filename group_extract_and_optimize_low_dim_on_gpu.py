@@ -1,32 +1,36 @@
 from utils import extract_pool
-from utils.optim_utils import optim_pool
+from utils.optim_utils import optim_pool, optim_group
 import argparse
 from utils.data_utils import RESULTS_DIR, save_obj
 import os
+parser = argparse.ArgumentParser(description='extract activations and optimize')
+parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s-n_iter=100-n_samples=100-n_init=1')
+args = parser.parse_args()
 
 if __name__ == '__main__':
-    extractor_ids = ['group=gpt2-xl_layer_compare_v1-dataset=ud_sentencez_token_filter_v3-activation-bench=None-ave=False',
-                     'group=ctrl_layer_compare_v1-dataset=ud_sentencez_token_filter_v3-activation-bench=None-ave=False']
-    optimizer_id = 'coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=50-n_init=2-run_gpu=True'
-
+    extract_name='albert_roberta_layer_compare_v1'
+    extract_id = ['group=albert-xxlarge-v2_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+        'group=roberta-base_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False']
+    optim_id = args.optimizer_id
+    print(optim_id + '\n')
+    #optim_id = 'coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=50-n_init=2-run_gpu=True'
     # extract data
-    extractor_obj = extract_pool[extractor_id]()
-    extractor_obj.load_dataset()
-    extractor_obj()
+    optimizer_obj = optim_pool[optim_id]()
+    optim_group_obj = optim_group(n_init=optimizer_obj.n_init,
+                                  ext_group_ids=extract_id,
+                                  n_iter=optimizer_obj.n_iter,
+                                  N_s=optimizer_obj.N_s,
+                                  objective_function=optimizer_obj.objective_function,
+                                  optim_algorithm=optimizer_obj.optim_algorithm,
+                                  run_gpu=optimizer_obj.run_gpu)
+    # extract and constrcut low dim reprensetation
+    optim_group_obj.load_extr_grp_and_corr_rdm_in_low_dim()
     # optimize
-    optimizer_obj = optim_pool[optimizer_id]()
-    optimizer_obj.load_extractor(extractor_obj)
-    optimizer_obj.precompute_corr_rdm_on_gpu(low_dim=True,low_resolution=True)
-    S_opt_d, DS_opt_d = optimizer_obj()
+    S_opt_d, DS_opt_d = optim_group_obj()
     # save results
-    optim_results = dict(extractor_name=extractor_id,
-                         model_spec=extractor_obj.model_spec,
-                         layer_spec=extractor_obj.layer_spec,
-                         data_type=extractor_obj.extract_type,
-                         benchmark=extractor_obj.extract_benchmark,
-                         average=extractor_obj.average_sentence,
-                         optimizatin_name=optimizer_id,
+    optim_results = dict(extractor_grp_name=extract_id,
+                         optimizatin_name=optim_id,
                          optimized_S=S_opt_d,
                          optimized_d=DS_opt_d)
-    optim_file=os.path.join(RESULTS_DIR,f"results_{extractor_id}_{optimizer_id}_low_dim.pkl")
+    optim_file=os.path.join(RESULTS_DIR,f"results_{extract_name}_{optim_id}_low_dim.pkl")
     save_obj(optim_results, optim_file)
