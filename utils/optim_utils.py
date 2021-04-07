@@ -8,7 +8,6 @@ import copy
 import xarray as xr
 import torch
 from tqdm import tqdm
-import utils.extract_utils as ext_utils
 from utils import extract_pool
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
