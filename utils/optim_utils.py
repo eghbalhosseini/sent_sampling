@@ -7,6 +7,9 @@ import itertools
 import copy
 import xarray as xr
 import torch
+from tqdm import tqdm
+import utils.extract_utils as ext_utils
+from utils import extract_pool
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
 try :
@@ -277,6 +280,77 @@ for config in optim_configuration:
         return optim_param
 
     optim_pool[optim_identifier] = optim_instantiation
+
+
+class optim_group:
+    def __init__(self,n_init=3,ext_group_ids=[], n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False):
+        self.n_iter = n_iter
+        self.n_init = n_init
+        self.N_s = N_s
+        self.objective_function = objective_function
+        self.optim_algorithm = optim_algorithm
+        self.device = device
+        self.run_gpu = run_gpu
+        self.ext_group_ids=ext_group_ids
+        self.optim_obj=optim(optim_algorithm=self.optim_algorithm,objective_function=self.objective_function,n_init=self.n_init,n_iter=self.n_iter,run_gpu=self.run_gpu,N_s=self.N_s)
+
+    def load_extr_grp_and_corr_rdm_in_low_dim(self,low_dim_num=200,low_resolution=True):
+        self.grp_XY_corr_list=[]
+        for id_,ext_id in tqdm(enumerate(self.ext_group_ids)):
+            # load extractor
+            ext_obj=extract_pool[ext_id]()
+            ext_obj.load_dataset()
+            ext_obj()
+            # load optim
+            self.optim_obj = optim(optim_algorithm=self.optim_algorithm, objective_function=self.objective_function,
+                                   n_init=self.n_init, n_iter=self.n_iter, run_gpu=self.run_gpu, N_s=self.N_s)
+            self.optim_obj.load_extractor(ext_obj)
+            self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution)
+            self.grp_XY_corr_list.append(self.optim_obj.XY_corr_list)
+            del self.optim_obj
+        pass
+
+    def XY_corr_obj_func(self,S,XY_corr_list):
+        samples = torch.tensor(S, dtype=torch.long, device=self.device)
+        pairs = torch.combinations(samples, with_replacement=False)
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample)
+        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
+        d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
+        n1 = d_mat.shape[1]
+        correction = n1 * n1 / (n1 * (n1 - 1) / 2)
+        d_val = correction * d_mat.mean(dim=(0, 1))
+        d_val_mean = d_val.cpu().numpy().mean()
+        # do a version with std reductions too
+        mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
+        d_val_std = torch.std(d_mat[mdl_pairs[:, 0], mdl_pairs[:, 1]]).cpu().numpy()
+        d_optim = d_val_mean - .2 * d_val_std
+        return d_optim
+
+    def gpu_obj_function(self,S):
+        self.d_optim_list=[]
+        for XY_corr_list in self.grp_XY_corr_list:
+            self.d_optim_list.append(self.XY_corr_obj_func(S,XY_corr_list=XY_corr_list))
+
+        self.d_optim=np.mean(self.d_optim_list)
+
+    def __call__(self, *args, **kwargs):
+
+        if self.run_gpu:
+            S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, self.gpu_obj_function, self.n_init,
+                                                     self.n_iter)
+        else :
+            print(f"class is not defined for non gpu operations")
+            S_opt_d=[]
+            DS_opt_d=0
+
+        self.S_opt_d=S_opt_d
+        self.DS_opt_d=DS_opt_d
+        return S_opt_d, DS_opt_d
+
 
 
 
