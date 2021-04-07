@@ -1,4 +1,3 @@
-from utils import extract_pool
 from utils.optim_utils import optim_pool, optim_group
 import argparse
 from utils.data_utils import RESULTS_DIR, save_obj
