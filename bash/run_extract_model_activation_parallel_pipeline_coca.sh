@@ -16,7 +16,7 @@ for dataset in  coca_spok_filter_punct_10K_sample_1 \
                 coca_spok_filter_punct_10K_sample_4 \
                 coca_spok_filter_punct_10K_sample_5 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
-      for model in lm-1b ; do
+      for model in lm_1b ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
