@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from scipy.stats import entropy
 import logging
-import getpassss
+import getpass
 import itertools
 import copy
 import xarray as xr
