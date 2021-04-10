@@ -37,4 +37,4 @@ export XDG_CACHE_HOME
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running optimiation: ${optim_list[$SLURM_ARRAY_TASK_ID]}"
 
-singularity exec --nv -B /om:/om /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/group_extract_and_optimize_low_dim_on_gpu.py ${optim_list[$SLURM_ARRAY_TASK_ID]}
+singularity exec --nv -B /om:/om,/om2:/om2 /om/user/${USER}/simg_images/neural_nlp_master_cuda.simg python /om/user/ehoseini/sent_sampling/group_extract_and_optimize_low_dim_on_gpu.py ${optim_list[$SLURM_ARRAY_TASK_ID]}
