@@ -202,7 +202,7 @@ class optim:
         # do a version with std reductions too
         mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
         d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
-        d_optim=d_val_mean-.2*d_val_std
+        d_optim=d_val_mean #-.2*d_val_std
         return d_optim
 
     def gpu_object_function_debug(self,S):
@@ -328,7 +328,7 @@ class optim_group:
         # do a version with std reductions too
         mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
         d_val_std = torch.std(d_mat[mdl_pairs[:, 0], mdl_pairs[:, 1]]).cpu().numpy()
-        d_optim = d_val_mean - .2 * d_val_std
+        d_optim = d_val_mean # - .2 * d_val_std
         return d_optim
 
     def gpu_obj_function(self,S):
