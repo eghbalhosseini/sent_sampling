@@ -10,9 +10,13 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in ud_sentencez_token_filter_v3 ; do
-      for model in gpt2-untrained openaigpt-untrained ; do
-              for average_mode in None ; do
+for dataset in coca_spok_filter_punct_10K_sample_1 \
+                coca_spok_filter_punct_10K_sample_2 \
+                coca_spok_filter_punct_10K_sample_3 \
+                coca_spok_filter_punct_10K_sample_4 \
+                coca_spok_filter_punct_10K_sample_5 ; do
+      for model in lm_1b ; do
+              for average_mode in False, True ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
                   average_list[$i]="$average_mode"
@@ -32,7 +36,6 @@ RESULTCACHING_HOME=/om/user/`whoami`/.result_caching
 export RESULTCACHING_HOME
 
 singularity exec -B /om:/om /om/user/`whoami`/simg_images/neural_nlp_master.simg /usr/local/bin/python /om/user/ehoseini/sent_sampling/combine_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${average_list[$SLURM_ARRAY_TASK_ID]}
-
 
 #for dataset in coca_spok_filter_punct_10K_sample_1 \
 # coca_spok_filter_punct_10K_sample_2 \
