@@ -13,7 +13,7 @@ if __name__ == '__main__':
     extract_name='gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layer_compare_v1'
     extract_id = ['group=gpt2-xl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
                  'group=ctrl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=bert-large-uncased-whole-word-masking_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False'
+                  'group=bert-large-uncased-whole-word-masking_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
                   'group=gpt2_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
                   'group=openaigpt_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
                   'group=lm_1b_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False']
