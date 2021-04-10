@@ -16,7 +16,7 @@ for dataset in coca_spok_filter_punct_10K_sample_1 \
                 coca_spok_filter_punct_10K_sample_4 \
                 coca_spok_filter_punct_10K_sample_5 ; do
       for model in lm_1b ; do
-              for average_mode in False, True ; do
+              for average_mode in False True ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
                   average_list[$i]="$average_mode"
