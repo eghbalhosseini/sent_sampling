@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=0-1
-#SBATCH --time=48:00:00
+#SBATCH --array=0-2
+#SBATCH --time=72:00:00
 #SBATCH --mem=80G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint="pascal|turing|volta"
@@ -13,7 +13,7 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 1000 ; do
-    for N_s in  50 200 ; do
+    for N_s in  50 200 250 ; do
       for init in 1 ; do
         for opt in D_s ; do
         optim_id="${optim_method}-obj=${opt}-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-run_gpu=True"

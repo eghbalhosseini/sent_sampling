@@ -10,6 +10,10 @@ modl_name='gpt2'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
+modl_name='lm_1b'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+lm_1b_grp_config=dict(grp_id=f"{modl_name}_layer_compare_v1",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
 modl_name='gpt2-untrained'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 gpt2_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
@@ -69,11 +73,12 @@ distilgpt2_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([laye
 
 
 model_grps_config = [distilgpt2_config,
-    t5_large_config,
-    openaigpt_grp_config,
-                     gpt2_grp_config,
-                     gpt2_medium_config,
-                     gpt2_large_config,
+                    lm_1b_grp_config,
+                    t5_large_config,
+                    openaigpt_grp_config,
+                    gpt2_grp_config,
+                    gpt2_medium_config,
+                    gpt2_large_config,
                      gpt2_xl_grp_config,
                      roberta_base_grp_config,
                      xlnet_large_cased_config,
