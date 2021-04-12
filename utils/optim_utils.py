@@ -143,8 +143,13 @@ class optim:
         else:
             self.activation_list = activation_list
 
-    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300,low_resolution=False):
+    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300,low_resolution=False,cpu_dump=False):
         assert(torch.cuda.is_available())
+        if not cpu_dump:
+            target_device=self.device
+        else:
+            target_device=torch.device('cpu')
+
         if low_dim:
             activation_list = []
             var_explained = []
@@ -181,6 +186,7 @@ class optim:
             self.XY_corr_list = [torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
                         X_list]
         del X_list, activation_list
+        self.XY_corr_list=[x.to(target_device) for x in self.XY_corr_list]
         if self.run_gpu:
             del self.activations
         pass
