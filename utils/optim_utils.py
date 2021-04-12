@@ -312,7 +312,7 @@ class optim_group:
                                    n_init=self.n_init, n_iter=self.n_iter, run_gpu=self.run_gpu, N_s=self.N_s)
             self.optim_obj.load_extractor(ext_obj)
             self.N_S=self.optim_obj.N_S
-            self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution)
+            self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution,cpu_dump=True)
             self.grp_XY_corr_list.append(self.optim_obj.XY_corr_list)
             del self.optim_obj
         pass
