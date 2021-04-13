@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=0-111%20
-#SBATCH --time=24:00:00
+#SBATCH --array=0-5
+#SBATCH --time=48:00:00
 #SBATCH --mem=80G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
@@ -13,8 +13,8 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 1000 ; do
-    for N_s in  50 75 ; do
-      for init in 2 ; do
+    for N_s in  200 ; do
+      for init in 1 ; do
         for opt in D_s D_s_var ; do
         optim_id="${optim_method}-obj=${opt}-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-run_gpu=True"
         optim_list[$i]="$optim_id"
@@ -33,16 +33,14 @@ bench_type=($bench_type)
 
 
 for set in gpt2-xl_layer_compare_v1 \
- ctrl_layer_compare_v1 \
- bert-large-uncased-whole-word-masking_layer_compare_v1 \
- albert-xxlarge-v2_layer_compare_v1 \
- roberta-base_layer_compare_v1 \
- xlm-mlm-en-2048_layer_compare_v1 \
- xlnet-large-cased_layer_compare_v1 ; do
+           ctrl_layer_compare_v1 \
+           bert-large-uncased-whole-word-masking_layer_compare_v1 \
+           gpt2_layer_compare_v1 \
+           openaigpt_layer_compare_v1 \
+            lm_1b_layer_compare_v1 ; do
   for idx in 0 ; do
     for ave in False ; do
-    for dataset in coca_spok_filter_punct_10K_sample_2 coca_spok_filter_punct_10K_sample_3 \
-     coca_spok_filter_punct_10K_sample_4 coca_spok_filter_punct_10K_sample_5 ; do
+    for dataset in coca_spok_filter_punct_10K_sample_1 ; do
       extract_id="group=${set}-dataset=${dataset}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
       extract_list[$i]="$extract_id"
       i=$i+1
