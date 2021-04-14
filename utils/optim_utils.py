@@ -305,7 +305,7 @@ class optim_group:
         self.ext_group_ids=ext_group_ids
         self.optim_obj=optim(optim_algorithm=self.optim_algorithm,objective_function=self.objective_function,n_init=self.n_init,n_iter=self.n_iter,run_gpu=self.run_gpu,N_s=self.N_s)
 
-    def load_extr_grp_and_corr_rdm_in_low_dim(self,low_dim_num=200,low_resolution=True):
+    def load_extr_grp_and_corr_rdm_in_low_dim(self,low_dim_num=200,low_resolution=True,cpu_dump=True):
         self.grp_XY_corr_list=[]
         for id_,ext_id in tqdm(enumerate(self.ext_group_ids)):
             # load extractor
@@ -317,7 +317,7 @@ class optim_group:
                                    n_init=self.n_init, n_iter=self.n_iter, run_gpu=self.run_gpu, N_s=self.N_s)
             self.optim_obj.load_extractor(ext_obj)
             self.N_S=self.optim_obj.N_S
-            self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution,cpu_dump=True)
+            self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution,cpu_dump=cpu_dump)
             self.grp_XY_corr_list.append(self.optim_obj.XY_corr_list)
             del self.optim_obj
         pass

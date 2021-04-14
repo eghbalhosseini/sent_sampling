@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH --job-name=opt_eh
+#SBATCH --job-name=opt_max
 #SBATCH --array=0-2
-#SBATCH --time=72:00:00
-#SBATCH --mem=120G
+#SBATCH --time=5-12:00:00
+#SBATCH --mem=256G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint="pascal|turing|volta"
 #SBATCH --mail-type=ALL

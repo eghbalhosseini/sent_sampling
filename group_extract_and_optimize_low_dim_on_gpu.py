@@ -10,13 +10,20 @@ parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    extract_name='gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layer_compare_v1'
-    extract_id = ['group=gpt2-xl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                 'group=ctrl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=bert-large-uncased-whole-word-masking_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=gpt2_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=openaigpt_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=lm_1b_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False']
+    #extract_name='gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layer_compare_v1'
+    extract_name = 'gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layers'
+    # extract_id = ['group=gpt2-xl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+    #              'group=ctrl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+    #               'group=bert-large-uncased-whole-word-masking_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+    #               'group=gpt2_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+    #               'group=openaigpt_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+    #               'group=lm_1b_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False']
+    extract_id = ['group=gpt2-xl_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+                  'group=ctrl_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+                  'group=bert-large-uncased-whole-word-masking_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+                  'group=gpt2_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+                  'group=openaigpt_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
+                  'group=lm_1b_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False']
     optim_id = args.optimizer_id
     print(optim_id + '\n')
     #optim_id = 'coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=50-n_init=2-run_gpu=True'
