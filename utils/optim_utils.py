@@ -143,17 +143,15 @@ class optim:
         else:
             self.activation_list = activation_list
 
-    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300,low_resolution=False,cpu_dump=False):
+    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300,pca_type='fixed',low_resolution=False,cpu_dump=False):
         assert(torch.cuda.is_available())
+        self.XY_corr_list=[]
         if not cpu_dump:
             target_device=self.device
         else:
             target_device=torch.device('cpu')
-
         if low_dim:
-            activation_list = []
             var_explained = []
-            pca_type = 'fixed'
             for idx, act_dict in (enumerate(self.activations)):
 
                 act = torch.tensor(act_dict['activations'], dtype=float, device=self.device,requires_grad=False)
@@ -167,25 +165,32 @@ class optim:
                 elif pca_type == 'equal_var':
                     act_pca = torch.matmul(act, v[:, cols])
 
-                activation_list.append(act_pca)
+                #activation_list.append(act_pca)
                 var_explained.append(torch.cumsum(torch.cat((torch.tensor([0], device=self.device), s ** 2)),
                                                   dim=0) / torch.sum(s ** 2))
+                # just in time computation:
+                X=torch.nn.functional.normalize(act_pca.squeeze())
+                X=X - X.mean(axis=1, keepdim=True)
+                X =torch.nn.functional.normalize(X)
+                if low_resolution==True:
+                    XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1, 0)).half()
+                else:
+                    XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X,torch.transpose(X, 1,0))
 
+                self.XY_corr_list.append(XY_corr)
             self.var_explained=var_explained
         else:
-            activation_list = [torch.tensor(x['activations'], dtype=float, device=self.device, requires_grad=False) for x in
-                           self.activations]
-        X_list = [torch.nn.functional.normalize(x.squeeze()) for x in activation_list]
-        X_list = [(X - X.mean(axis=1, keepdim=True)) for X in X_list]
-        X_list = [torch.nn.functional.normalize(X) for X in X_list]
-        if low_resolution==True:
-            self.XY_corr_list = [
-                torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)).half() for X in
-                X_list]
-        else:
-            self.XY_corr_list = [torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0)) for X in
-                        X_list]
-        del X_list, activation_list
+            for idx, act_dict in (enumerate(self.activations)):
+                act = torch.tensor(act_dict['activations'], dtype=float, device=self.device,requires_grad=False)
+                X = torch.nn.functional.normalize(act.squeeze())
+                X = X - X.mean(axis=1, keepdim=True)
+                X = torch.nn.functional.normalize(X)
+                if low_resolution == True:
+                    XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X,torch.transpose(X, 1,0)).half()
+                else:
+                    XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0))
+
+                self.XY_corr_list.append(XY_corr)
         self.XY_corr_list=[x.to(target_device) for x in self.XY_corr_list]
         if self.run_gpu:
             del self.activations
