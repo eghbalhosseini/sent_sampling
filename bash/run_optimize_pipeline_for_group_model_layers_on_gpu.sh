@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_max
-#SBATCH --array=0-2
+#SBATCH --array=1-2
 #SBATCH --time=5-12:00:00
 #SBATCH --mem=256G
 #SBATCH --gres=gpu:1
-#SBATCH --constraint="pascal|turing|volta"
+#SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
