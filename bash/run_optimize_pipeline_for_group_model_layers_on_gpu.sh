@@ -3,7 +3,7 @@
 #SBATCH --job-name=opt_eh
 #SBATCH --array=0-2
 #SBATCH --time=72:00:00
-#SBATCH --mem=80G
+#SBATCH --mem=120G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint="pascal|turing|volta"
 #SBATCH --mail-type=ALL

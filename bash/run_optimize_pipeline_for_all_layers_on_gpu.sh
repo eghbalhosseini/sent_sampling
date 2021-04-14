@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=0-5
+#SBATCH --array=0-1
 #SBATCH --time=48:00:00
 #SBATCH --mem=80G
 #SBATCH --gres=gpu:1
@@ -32,7 +32,11 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for set in openaigpt gpt2 ctrl gpt2-xl bert-large-uncased-whole-word-masking lm_1b ; do
+for set in ctrl \
+            gpt2-xl \
+            openaigpt \
+            gpt2 \
+            bert-large-uncased-whole-word-masking lm_1b ; do
   for idx in 0 ; do
     for ave in False ; do
     for dataset in coca_spok_filter_punct_10K_sample_1 ; do
