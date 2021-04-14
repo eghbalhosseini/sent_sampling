@@ -152,7 +152,7 @@ class optim:
             target_device=torch.device('cpu')
         if low_dim:
             var_explained = []
-            for idx, act_dict in (enumerate(self.activations)):
+            for idx, act_dict in tqdm(enumerate(self.activations)):
 
                 act = torch.tensor(act_dict['activations'], dtype=float, device=self.device,requires_grad=False)
                 # act must be in m sample * n feature shape ,
