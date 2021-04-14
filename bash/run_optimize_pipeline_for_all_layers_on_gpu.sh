@@ -5,7 +5,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --mem=80G
 #SBATCH --gres=gpu:1
-#SBATCH --constraint="pascal|turing|volta"
+#SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
