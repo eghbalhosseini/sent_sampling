@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=0-1
+#SBATCH --array=0
 #SBATCH --time=72:00:00
 #SBATCH --mem=120G
 #SBATCH --gres=gpu:1
