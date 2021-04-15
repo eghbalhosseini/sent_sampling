@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=4
+#SBATCH --array=0
 #SBATCH --time=48:00:00
 #SBATCH --mem=80G
 #SBATCH --gres=gpu:1
@@ -32,12 +32,7 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for set in gpt2-xl_layer_compare_v1 \
-           ctrl_layer_compare_v1 \
-           bert-large-uncased-whole-word-masking_layer_compare_v1 \
-           gpt2_layer_compare_v1 \
-           openaigpt_layer_compare_v1 \
-            lm_1b_layer_compare_v1 ; do
+for set in gpt2_layer_compare_v1 ; do
   for idx in 0 ; do
     for ave in False ; do
     for dataset in coca_spok_filter_punct_10K_sample_1 ; do
