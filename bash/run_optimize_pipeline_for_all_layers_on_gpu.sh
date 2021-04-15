@@ -2,8 +2,8 @@
 
 #SBATCH --job-name=opt_eh
 #SBATCH --array=0-1
-#SBATCH --time=48:00:00
-#SBATCH --mem=80G
+#SBATCH --time=72:00:00
+#SBATCH --mem=120G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
