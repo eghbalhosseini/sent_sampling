@@ -200,7 +200,7 @@ class optim:
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         pairs = torch.combinations(samples, with_replacement=False)
         XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
-        XY_corr_sample_tensor = torch.stack(XY_corr_sample)
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
             XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
