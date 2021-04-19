@@ -12,6 +12,8 @@ import utils
 from utils import extract_pool
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
+import os
+from utils.data_utils import save_obj, SAVE_DIR
 try :
     torch.set_deterministic(True)
 except:
@@ -258,7 +260,7 @@ class optim:
 
 
 class optim_group:
-    def __init__(self,n_init=3,ext_group_ids=[], n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False):
+    def __init__(self,n_init=3,extract_group_name=None,ext_group_ids=[], n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False):
         self.n_iter = n_iter
         self.n_init = n_init
         self.N_s = N_s
@@ -267,9 +269,10 @@ class optim_group:
         self.device = device
         self.run_gpu = run_gpu
         self.ext_group_ids=ext_group_ids
+        self.extract_group_name=extract_group_name
         self.optim_obj=optim(optim_algorithm=self.optim_algorithm,objective_function=self.objective_function,n_init=self.n_init,n_iter=self.n_iter,run_gpu=self.run_gpu,N_s=self.N_s)
 
-    def load_extr_grp_and_corr_rdm_in_low_dim(self,low_dim_num=200,low_resolution=True,cpu_dump=True):
+    def load_extr_grp_and_corr_rdm_in_low_dim(self,low_dim_num=200,low_resolution=True,cpu_dump=True,save_results=True):
         self.grp_XY_corr_list=[]
         for id_,ext_id in tqdm(enumerate(self.ext_group_ids)):
             # load extractor
@@ -285,11 +288,18 @@ class optim_group:
             self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution,cpu_dump=cpu_dump)
             self.grp_XY_corr_list.append(self.optim_obj.XY_corr_list)
             del self.optim_obj
+        if save_results:
+            D_precompute=dict(N_s=self.N_s,grp_XY_corr_list=self.grp_XY_corr_list)
+            save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extract_group_name}_XY_corr_list.pkl"))
+
         pass
 
-    def XY_corr_obj_func(self,S,XY_corr_list):
+
+    def XY_corr_obj_func(self,S,XY_corr_list,gpu_dump=False):
         samples = torch.tensor(S, dtype=torch.long, device=self.device)
-        XY_corr_list = [x.to(device) for x in XY_corr_list]
+        if gpu_dump:
+            XY_corr_list = [x.to(device) for x in XY_corr_list]
+
         pairs = torch.combinations(samples, with_replacement=False)
         XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in XY_corr_list]
         XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
@@ -329,9 +339,6 @@ class optim_group:
         self.S_opt_d=S_opt_d
         self.DS_opt_d=DS_opt_d
         return S_opt_d, DS_opt_d
-
-
-
 
 optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_eh',fun=coordinate_ascent_eh),

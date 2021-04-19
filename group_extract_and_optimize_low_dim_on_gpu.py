@@ -3,7 +3,7 @@ from utils import extract_pool,model_grps_config
 from utils.optim_utils import optim_pool, optim_group
 from utils.data_utils import RESULTS_DIR, save_obj
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj
+from utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj
 import os
 parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s-n_iter=100-n_samples=100-n_init=1')
@@ -30,6 +30,7 @@ if __name__ == '__main__':
     # extract data
     optimizer_obj = optim_pool[optim_id]()
     optim_group_obj = optim_group(n_init=optimizer_obj.n_init,
+                                  extract_group_name=extract_name,
                                   ext_group_ids=extract_id,
                                   n_iter=optimizer_obj.n_iter,
                                   N_s=optimizer_obj.N_s,
@@ -37,7 +38,12 @@ if __name__ == '__main__':
                                   optim_algorithm=optimizer_obj.optim_algorithm,
                                   run_gpu=optimizer_obj.run_gpu)
     # extract and constrcut low dim reprensetation
-    optim_group_obj.load_extr_grp_and_corr_rdm_in_low_dim()
+    if os.path.exists(os.path.join(SAVE_DIR,f"{optim_group_obj.extract_group_name}_XY_corr_list.pkl")):
+        D_precompute=load_obj(os.path.join(SAVE_DIR, f"{optim_group_obj.extract_group_name}_XY_corr_list.pkl"))
+        optim_group_obj.grp_XY_corr_list=D_precompute['grp_XY_corr_list']
+        optim_group_obj.N_S=D_precompute['N_S']
+    else:
+        optim_group_obj.load_extr_grp_and_corr_rdm_in_low_dim()
     # optimize
     S_opt_d, DS_opt_d = optim_group_obj()
     # save results
