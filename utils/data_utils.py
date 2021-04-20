@@ -95,7 +95,7 @@ def uppercount(str_in):
 
 def save_obj(di_, filename_):
     with open(filename_, 'wb') as f:
-        pickle.dump(di_, f)
+        pickle.dump(di_, f, protocol=4)
 
 def load_obj(filename_,silent=False):
     if not silent:
