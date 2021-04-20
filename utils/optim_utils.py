@@ -329,7 +329,7 @@ class optim_group:
 
         if self.run_gpu:
             # push the data into gpu device
-            self.grp_XY_corr_list=[x.to(device) for x in self.grp_XY_corr_lis]
+            self.grp_XY_corr_list=[x.to(device) for x in self.grp_XY_corr_list]
             [f"{x.device}" for x in self.grp_XY_corr_list]
             S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, self.gpu_obj_function, self.n_init,
                                                      self.n_iter)
