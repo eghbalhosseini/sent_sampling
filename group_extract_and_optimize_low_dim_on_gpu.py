@@ -5,6 +5,7 @@ from utils.data_utils import RESULTS_DIR, save_obj
 import argparse
 from utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj
 import os
+import torch
 parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s-n_iter=100-n_samples=100-n_init=1')
 args = parser.parse_args()
@@ -38,18 +39,18 @@ if __name__ == '__main__':
                                   optim_algorithm=optimizer_obj.optim_algorithm,
                                   run_gpu=optimizer_obj.run_gpu)
     # extract and constrcut low dim reprensetation
-    #if os.path.exists(os.path.join(SAVE_DIR,f"{optim_group_obj.extract_group_name}_XY_corr_list.pkl")):
-    #    D_precompute=load_obj(os.path.join(SAVE_DIR, f"{optim_group_obj.extract_group_name}_XY_corr_list.pkl"))
-    #    optim_group_obj.grp_XY_corr_list=D_precompute['grp_XY_corr_list']
-    #    optim_group_obj.N_S=D_precompute['N_S']
-    #else:
-    optim_group_obj.load_extr_grp_and_corr_rdm_in_low_dim()
+    if os.path.exists(os.path.join(SAVE_DIR,f"{optim_group_obj.extract_group_name}_XY_corr_list.pkl")):
+        D_precompute=load_obj(os.path.join(SAVE_DIR, f"{optim_group_obj.extract_group_name}_XY_corr_list.pkl"))
+        optim_group_obj.grp_XY_corr_list=D_precompute['grp_XY_corr_list']
+        optim_group_obj.N_S=D_precompute['N_S']
+    else:
+        optim_group_obj.load_extr_grp_and_corr_rdm_in_low_dim()
     # optimize
-    #S_opt_d, DS_opt_d = optim_group_obj()
+    S_opt_d, DS_opt_d = optim_group_obj()
     # save results
-    #optim_results = dict(extractor_grp_name=extract_id,
-    #                     optimizatin_name=optim_id,
-    #                     optimized_S=S_opt_d,
-    #                     optimized_d=DS_opt_d)
-    #optim_file=os.path.join(RESULTS_DIR,f"results_{extract_name}_{optim_id}_low_dim.pkl")
-    #save_obj(optim_results, optim_file)
+    optim_results = dict(extractor_grp_name=extract_id,
+                        optimizatin_name=optim_id,
+                        optimized_S=S_opt_d,
+                        optimized_d=DS_opt_d)
+    optim_file=os.path.join(RESULTS_DIR,f"results_{extract_name}_{optim_id}_low_dim_gpu.pkl")
+    save_obj(optim_results, optim_file)
