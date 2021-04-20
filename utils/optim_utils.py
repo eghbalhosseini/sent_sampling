@@ -286,10 +286,10 @@ class optim_group:
             del ext_obj
             self.N_S=self.optim_obj.N_S
             self.optim_obj.precompute_corr_rdm_on_gpu(low_dim=low_dim_num,low_resolution=low_resolution,cpu_dump=cpu_dump)
-            self.grp_XY_corr_list.append(self.optim_obj.XY_corr_list)
+            self.grp_XY_corr_list.append(torch.stack(self.optim_obj.XY_corr_list))
             del self.optim_obj
         if save_results:
-            D_precompute=dict(N_s=self.N_s,grp_XY_corr_list=self.grp_XY_corr_list)
+            D_precompute=dict(N_S=self.N_S,grp_XY_corr_list=self.grp_XY_corr_list)
             save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extract_group_name}_XY_corr_list.pkl"))
 
         pass
@@ -297,15 +297,12 @@ class optim_group:
 
     def XY_corr_obj_func(self,S,XY_corr_list,gpu_dump=False):
         samples = torch.tensor(S, dtype=torch.long, device=self.device)
-        if gpu_dump:
-            XY_corr_list = [x.to(device) for x in XY_corr_list]
-
         pairs = torch.combinations(samples, with_replacement=False)
         XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in XY_corr_list]
-        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
-        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
-        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
-            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).float()
+        #XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        #if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+        #    XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
         d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
         n1 = d_mat.shape[1]
@@ -325,6 +322,8 @@ class optim_group:
             self.d_optim_list.append(self.XY_corr_obj_func(S,XY_corr_list=XY_corr_list))
         self.d_optim=np.mean(self.d_optim_list)
         return self.d_optim
+
+
 
     def __call__(self, *args, **kwargs):
 
