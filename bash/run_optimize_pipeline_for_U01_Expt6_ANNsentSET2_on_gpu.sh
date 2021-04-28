@@ -32,7 +32,7 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for set in gpt2_layer_compare_v1 ; do
+for set in ctrl_layers ; do
   for idx in 0 ; do
     for ave in False ; do
     for dataset in coca_spok_filter_punct_10K_sample_1 ; do
