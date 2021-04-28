@@ -84,7 +84,7 @@ def Variation(s,N_S, pZ_S):
 
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False):
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False,early_stopping=True,stop_threshold=1e-4):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
@@ -92,6 +92,8 @@ class optim:
         self.optim_algorithm=optim_algorithm
         self.device=device
         self.run_gpu=run_gpu
+        self.early_stopping=early_stopping
+        self.stop_threshold=stop_threshold
 
     def load_extractor(self,extractor_obj=None):
         self.extractor_obj=extractor_obj
@@ -248,10 +250,24 @@ class optim:
 
     def __call__(self,*args, **kwargs):
         if self.run_gpu:
-            S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, self.gpu_object_function, self.n_init,
+            if self.early_stopping:
+                S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s, objective_function=self.gpu_object_function, n_init=self.n_init,
+                                                         n_iter=self.n_iter,early_stopping=self.early_stopping,stop_threshold=self.stop_threshold)
+            else:
+                S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, self.gpu_object_function, self.n_init,
                                                      self.n_iter)
         else:
-            S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s,self.mod_objective_function, self.n_init, self.n_iter)
+            if self.early_stopping:
+
+                S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s,
+                                                             objective_function=self.mod_object_function,
+                                                             n_init=self.n_init,
+                                                             n_iter=self.n_iter, early_stopping=self.early_stopping,
+                                                             stop_threshold=self.stop_threshold)
+            else:
+                S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s,
+                                                         objective_function=self.mod_objective_function,
+                                                         n_init=self.n_init, n_iter=self.n_iter)
         self.S_opt_d=S_opt_d
         self.DS_opt_d=DS_opt_d
 
@@ -358,7 +374,7 @@ optim_configuration=[]
 for method , obj,n_iter, n_s, init , gpu in itertools.product(optim_method,objective_function,n_iters,N_s,n_inits,run_gpu):
     identifier=f"[{method['name']}]-[obj={obj['name']}]-[n_iter={n_iter}]-[n_samples={n_s}]-[n_init={init}]-[run_gpu={gpu}]"
     identifier=identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
-    optim_configuration.append(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init,run_gpu=gpu))
+    optim_configuration.appenddd(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init,run_gpu=gpu))
 
 
 optim_pool={}
