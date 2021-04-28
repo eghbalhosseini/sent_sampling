@@ -374,7 +374,7 @@ optim_configuration=[]
 for method , obj,n_iter, n_s, init , gpu in itertools.product(optim_method,objective_function,n_iters,N_s,n_inits,run_gpu):
     identifier=f"[{method['name']}]-[obj={obj['name']}]-[n_iter={n_iter}]-[n_samples={n_s}]-[n_init={init}]-[run_gpu={gpu}]"
     identifier=identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
-    optim_configuration.appenddd(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init,run_gpu=gpu))
+    optim_configuration.append(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init,run_gpu=gpu))
 
 
 optim_pool={}
