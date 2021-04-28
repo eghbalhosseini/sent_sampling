@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=opt_eh
 #SBATCH --array=0
-#SBATCH --time=18:00:00
+#SBATCH --time=12:00:00
 #SBATCH --mem=80G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
