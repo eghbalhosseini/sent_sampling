@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-23
+#SBATCH --array=0-53
 #SBATCH --time=144:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=80G
@@ -12,14 +12,11 @@
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
-    for model in distilgpt2  ; do
-      for average in True False None ; do
+    for model in gpt2-medium gpt2-large gpt2-xl openaigpt gpt2 distilgpt2 ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
-          average_list[$i]=$average
           i=$i+1
-      done
     done
   done
 done
@@ -28,12 +25,12 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running model ${model_list[$SLURM_ARRAY_TASK_ID]}"
 echo "Running dataset ${dataset_list[$SLURM_ARRAY_TASK_ID]}"
 echo "Running group ${group_id_list[$SLURM_ARRAY_TASK_ID]}"
-echo "Running average ${average_list[$SLURM_ARRAY_TASK_ID]}"
+
 
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
 RESULTCACHING_HOME=/om/user/`whoami`/.result_caching
 export RESULTCACHING_HOME
-singularity exec -B /om:/om,/om2:/om2 /om/user/`whoami`/simg_images/neural_nlp_master.simg /usr/local/bin/python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]} ${average_list[$SLURM_ARRAY_TASK_ID]}
+singularity exec -B /om:/om,/om2:/om2 /om/user/`whoami`/simg_images/neural_nlp_master.simg /usr/local/bin/python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
 
 
 #transfo-xl-wt103 \

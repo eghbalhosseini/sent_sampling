@@ -1,7 +1,6 @@
-from utils.data_utils import load_obj, construct_stimuli_set, SENTENCE_CONFIG, BENCHMARK_CONFIG, save_obj, SAVE_DIR
+from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR
 from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.models import model_pool, model_layers
-from brainio_base.assemblies import DataAssembly, walk_coords, merge_data_arrays, array_is_element
 from neural_nlp import FixedLayer
 import os
 import pandas as pd
@@ -297,7 +296,6 @@ class model_extractor_parallel:
             pass
         else:
             os.mkdir(model_save_path)
-
         for i, layer in enumerate(tqdm(layers, desc='layers')):
             model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_group_{group_id}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
@@ -306,17 +304,7 @@ class model_extractor_parallel:
                 pass
             else:
                 print(f"\n{model_activation_name} doesn't exists, creating...\n")
-                # model_activation = self.extractor.extract_representation(self.model_spec, i)
-
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i == 0 else None)
                 stim=self.extractor.stimuli_set[group_id]
-                stim_id=group_id
-
-                model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
-                                                   average_sentence=False)  #
-                #if self.average_sentence:
-                #    model_activations = self.extractor.get_mean_activations(model_activations)
-                #else:
-                #    model_activations = self.extractor.get_last_word_activations(model_activations)
+                model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False)  #
                 save_obj(model_activations, os.path.join(model_save_path, model_activation_name))
-
