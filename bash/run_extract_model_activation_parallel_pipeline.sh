@@ -12,17 +12,16 @@
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
-      for model in distilgpt2  ; do
-        for average in True False None ; do
+    for model in distilgpt2  ; do
+      for average in True False None ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
-          average_list[$i]=average
+          average_list[$i]=$average
           i=$i+1
-
-          done
       done
-      done
+    done
+  done
 done
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
