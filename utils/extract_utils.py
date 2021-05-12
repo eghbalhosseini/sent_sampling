@@ -38,7 +38,9 @@ class extractor:
         last_word_activations=[]
         for idx, id in enumerate(sentence_id):
             sentence_activation=activations.where(activations.sentence_id == id, drop=True)
-            last_word_activations.append(sentence_activation.values[-1,:])
+            sent_string = list(set(sentence_activation.stimulus_sentence.values))[0]
+            last_word_activations.append([sentence_activation.values[-1,:], sent_string, id])
+            #last_word_activations.append(sentence_activation.values[-1,:])
         return last_word_activations
 
     def get_mean_activations(self,activations):
@@ -46,7 +48,9 @@ class extractor:
         mean_activations=[]
         for idx, id in tqdm(enumerate(sentence_id)):
             sentence_activation=activations.where(activations.sentence_id == id, drop=True)
-            mean_activations.append(sentence_activation.mean(dim='presentation').values)
+            sent_string = list(set(sentence_activation.stimulus_sentence.values))[0]
+            mean_activations.append([sentence_activation.mean(dim='presentation').values,sent_string,id])
+            #mean_activations.append(sentence_activation.mean(dim='presentation').values)
         return mean_activations
 
     def get_all_activations(self,activations):

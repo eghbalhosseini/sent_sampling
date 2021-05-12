@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-9
+#SBATCH --array=0-18
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=80G
@@ -10,13 +10,9 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in coca_spok_filter_punct_10K_sample_1 \
-                coca_spok_filter_punct_10K_sample_2 \
-                coca_spok_filter_punct_10K_sample_3 \
-                coca_spok_filter_punct_10K_sample_4 \
-                coca_spok_filter_punct_10K_sample_5 ; do
-      for model in lm_1b ; do
-              for average_mode in False True ; do
+for dataset in ud_sentencez_token_filter_v3 ; do
+      for model in gpt2-medium gpt2-large gpt2-xl openaigpt gpt2 distilgpt2 ; do
+              for average_mode in False True None ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
                   average_list[$i]="$average_mode"
