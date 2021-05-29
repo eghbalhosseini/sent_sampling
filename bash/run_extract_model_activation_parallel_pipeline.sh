@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-53
+#SBATCH --array=0-9
 #SBATCH --time=144:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=80G
@@ -12,7 +12,7 @@
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
-    for model in gpt2-medium gpt2-large gpt2-xl openaigpt gpt2 distilgpt2 ; do
+    for model in  gpt2-xl ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
