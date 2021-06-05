@@ -11,7 +11,7 @@
 
 i=0
 for dataset in ud_sentencez_token_filter_v3 coca_spok_filter_punct_10K_sample_1 ; do
-      for model in gpt2-xl ; do
+      for model in gpt2-xl-untrained ; do
               for average_mode in False True None ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
