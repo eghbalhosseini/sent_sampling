@@ -8,26 +8,28 @@ import os
 import torch
 parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s-n_iter=100-n_samples=100-n_init=1')
+parser.add_argument('dataset', type=str, default='ud_sentences_filter_v3_sample')
 args = parser.parse_args()
 
 if __name__ == '__main__':
     #extract_name='gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layer_compare_v1'
-    extract_name = 'gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layers'
-    # extract_id = ['group=gpt2-xl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-    #              'group=ctrl_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-    #               'group=bert-large-uncased-whole-word-masking_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-    #               'group=gpt2_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-    #               'group=openaigpt_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-    #               'group=lm_1b_layer_compare_v1-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False']
-    extract_id = ['group=gpt2-xl_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=ctrl_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=bert-large-uncased-whole-word-masking_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=gpt2_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=openaigpt_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False',
-                  'group=lm_1b_layers-dataset=coca_spok_filter_punct_10K_sample_1-activation-bench=None-ave=False']
+
     optim_id = args.optimizer_id
     print(optim_id + '\n')
-    #optim_id = 'coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=50-n_init=2-run_gpu=True'
+    dataset_id = args.dataset
+    print(dataset_id + '\n')
+
+
+    extract_name = 'gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layers'
+
+    extract_id = [f'group=gpt2-xl_layers-dataset={dataset_id}-activation-bench=None-ave=False',
+                  f'group=ctrl_layers-dataset={dataset_id}-activation-bench=None-ave=False',
+                  f'group=bert-large-uncased-whole-word-masking_layers-dataset={dataset_id}-activation-bench=None-ave=False',
+                  f'group=gpt2_layers-dataset={dataset_id}-activation-bench=None-ave=False',
+                  f'group=openaigpt_layers-dataset={dataset_id}-activation-bench=None-ave=False',
+                 f'group=lm_1b_layers-dataset={dataset_id}-activation-bench=None-ave=False']
+
+
     # extract data
     optimizer_obj = optim_pool[optim_id]()
     optim_group_obj = optim_group(n_init=optimizer_obj.n_init,
