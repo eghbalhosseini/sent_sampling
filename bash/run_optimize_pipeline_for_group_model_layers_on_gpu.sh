@@ -6,6 +6,7 @@
 #SBATCH --mem=256G
 #SBATCH --gres=gpu:RTXA6000:1
 #SBATCH --partition=evlab
+#SBATCH --nodelist=node094
 #SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
