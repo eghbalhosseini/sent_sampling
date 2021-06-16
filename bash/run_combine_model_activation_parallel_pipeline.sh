@@ -12,7 +12,6 @@
 i=0
 for dataset in coca_spok_filter_punct_10K_sample_1 \
                 coca_spok_filter_punct_10K_sample_2 \
-               # coca_spok_filter_punct_10K_sample_3 \
                 coca_spok_filter_punct_10K_sample_4 \
                 coca_spok_filter_punct_10K_sample_5 ; do
       for model in ctrl gpt2-xl lm_1b gpt2 openaigpt bert-large-uncased-whole-word-masking  ; do
