@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_max
-#SBATCH --array=1-4
+#SBATCH --array=1
 #SBATCH --time=3-12:00:00
 #SBATCH --mem=128G
 #SBATCH --gres=gpu:RTXA6000:1
@@ -14,10 +14,7 @@
 
 i=0
 for optim_method in coordinate_ascent_eh ; do
-  for dataset in coca_spok_filter_punct_10K_sample_1 \
-                coca_spok_filter_punct_10K_sample_2 \
-                coca_spok_filter_punct_10K_sample_4 \
-                coca_spok_filter_punct_10K_sample_5 ; do
+  for dataset in coca_spok_filter_punct_10K_sample_3 ; do
                 for n_iter in 1000 ; do
                   for N_s in 250 ; do
       for init in 2 ; do
