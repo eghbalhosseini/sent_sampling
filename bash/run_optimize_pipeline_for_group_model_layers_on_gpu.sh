@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_max
-#SBATCH --array=0-4
-#SBATCH --time=3-12:00:00
+#SBATCH --array=0-4%3
+#SBATCH --time=5-12:00:00
 #SBATCH --mem=128G
 #SBATCH --gres=gpu:RTXA6000:1
 #SBATCH --partition=evlab
