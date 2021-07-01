@@ -15,9 +15,10 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for dataset in coca_spok_filter_punct_10K_sample_1 \
-  coca_spok_filter_punct_10K_sample_2 \
-  coca_spok_filter_punct_10K_sample_3 \
-    coca_spok_filter_punct_10K_sample_4 coca_spok_filter_punct_10K_sample_5 ; do
+    coca_spok_filter_punct_10K_sample_2 \
+    coca_spok_filter_punct_10K_sample_3 \
+    coca_spok_filter_punct_10K_sample_4 \
+    coca_spok_filter_punct_10K_sample_5 ; do
     for n_iter in 1000 ; do
       for N_s in 250 ; do
         for init in 1 ; do

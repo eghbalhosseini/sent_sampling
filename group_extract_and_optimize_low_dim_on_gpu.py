@@ -54,5 +54,5 @@ if __name__ == '__main__':
                         optimizatin_name=optim_id,
                         optimized_S=S_opt_d,
                         optimized_d=DS_opt_d)
-    optim_file=os.path.join(RESULTS_DIR,f"results_{extract_name}_{optim_id}_low_dim_gpu.pkl")
+    optim_file=os.path.join(RESULTS_DIR,f"results_{extract_name}_{dataset_id}_{optim_id}_low_dim_gpu.pkl")
     save_obj(optim_results, optim_file)
