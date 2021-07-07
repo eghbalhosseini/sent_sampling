@@ -126,8 +126,9 @@ class optim:
         var_explained = []
         pca_type = 'fixed'
         for idx, act_dict in (enumerate(self.activations)):
-
-            act = torch.tensor(act_dict['activations'], dtype=float, device=self.device, requires_grad=False)
+            # backward compatibility
+            act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+            act = torch.tensor(act_, dtype=float, device=self.device, requires_grad=False)
             # act must be in m sample * n feature shape ,
             u, s, v = torch.pca_lowrank(act, q=500)
             # keep 85% variance explained ,
@@ -158,8 +159,9 @@ class optim:
         if low_dim:
             var_explained = []
             for idx, act_dict in tqdm(enumerate(self.activations)):
-
-                act = torch.tensor(act_dict['activations'], dtype=float, device=self.device,requires_grad=False)
+                # backward compatibility
+                act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+                act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
                 # act must be in m sample * n feature shape ,
                 u, s, v = torch.pca_lowrank(act, q=500)
                 # keep 85% variance explained ,
@@ -186,7 +188,9 @@ class optim:
             self.var_explained=var_explained
         else:
             for idx, act_dict in (enumerate(self.activations)):
-                act = torch.tensor(act_dict['activations'], dtype=float, device=self.device,requires_grad=False)
+                # backward compatiblity
+                act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+                act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
                 X = torch.nn.functional.normalize(act.squeeze())
                 X = X - X.mean(axis=1, keepdim=True)
                 X = torch.nn.functional.normalize(X)
