@@ -20,7 +20,7 @@ if __name__ == '__main__':
     print(dataset_id + '\n')
 
 
-    extract_name = 'gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layers'
+    extract_name = f'gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layers-dataset={dataset_id}-activation-bench=None-ave=False'
 
     extract_id = [f'group=gpt2-xl_layers-dataset={dataset_id}-activation-bench=None-ave=False',
                   f'group=ctrl_layers-dataset={dataset_id}-activation-bench=None-ave=False',
@@ -28,7 +28,6 @@ if __name__ == '__main__':
                   f'group=gpt2_layers-dataset={dataset_id}-activation-bench=None-ave=False',
                   f'group=openaigpt_layers-dataset={dataset_id}-activation-bench=None-ave=False',
                  f'group=lm_1b_layers-dataset={dataset_id}-activation-bench=None-ave=False']
-
 
     # extract data
     optimizer_obj = optim_pool[optim_id]()
