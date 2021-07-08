@@ -263,32 +263,36 @@ class model_extractor_parallel:
             for k, layer in enumerate(tqdm(layers, desc='layers')):
                 model_activation_name = f"{self.dataset}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
                 new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
-                activation_files=[]
-                for file in os.listdir(model_save_path):
-                    if fnmatch.fnmatch(file,model_activation_name):
-                        activation_files.append(os.path.join(model_save_path, file))
-                # sort files:
-                sorted_files=[]
-                s = [re.findall('group_\d+', x) for x in activation_files]
-                s = [item for sublist in s for item in sublist]
-                file_id = [int(x.split('group_')[1]) for x in s]
-                sorted_files = [activation_files[x] for x in np.argsort(file_id)]
-                model_activation_set = []
-                if len(sorted_files)==self.total_runs:
-                    for file in sorted_files:
-                        model_activations = load_obj(os.path.join(SAVE_DIR, file),silent=True)
-                        if self.average_sentence=='True':
-                            model_activations = self.extractor.get_mean_activations(model_activations)
-                        elif self.average_sentence=='False':
-                            model_activations = self.extractor.get_last_word_activations(model_activations)
-                        elif self.average_sentence=='None':
-                            model_activations = self.extractor.get_all_activations(model_activations)
-                        model_activation_set.append(model_activations)
-                    # save the dataset
-                    model_activation_flat = [item for sublist in model_activation_set for item in sublist]
-                    save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
+                if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)):
+                    print(f'{new_model_activation_name} already exists\n')
                 else:
-                    print(f'{self.dataset}_{mdl_name}_layer_{i}_{self.extract_name} is missing groups!')
+                    activation_files=[]
+                    for file in os.listdir(model_save_path):
+                        if fnmatch.fnmatch(file,model_activation_name):
+                            activation_files.append(os.path.join(model_save_path, file))
+                    # sort files:
+                    sorted_files=[]
+                    s = [re.findall('group_\d+', x) for x in activation_files]
+                    s = [item for sublist in s for item in sublist]
+                    file_id = [int(x.split('group_')[1]) for x in s]
+                    sorted_files = [activation_files[x] for x in np.argsort(file_id)]
+                    model_activation_set = []
+                    if len(sorted_files)==self.total_runs:
+                        for file in sorted_files:
+                            model_activations = load_obj(os.path.join(SAVE_DIR, file),silent=True)
+                            if self.average_sentence=='True':
+                                model_activations = self.extractor.get_mean_activations(model_activations)
+                            elif self.average_sentence=='False':
+                                model_activations = self.extractor.get_last_word_activations(model_activations)
+                            elif self.average_sentence=='None':
+                                model_activations = self.extractor.get_all_activations(model_activations)
+                            model_activation_set.append(model_activations)
+                        # save the dataset
+                        model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+                        save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
+                        print(f'saved {new_model_activation_name}\n')
+                    else:
+                        print(f'{self.dataset}_{mdl_name}_layer_{i}_{self.extract_name} is missing groups!\n')
         pass
     def __call__(self,group_id, *args, **kwargs):
         # get layers for model
