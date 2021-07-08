@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-269%50
+#SBATCH --array=0-45
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=80G
@@ -16,8 +16,7 @@ for dataset in  coca_spok_filter_punct_10K_sample_1 \
                 coca_spok_filter_punct_10K_sample_4 \
                 coca_spok_filter_punct_10K_sample_5 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
-      for model in ctrl gpt2-xl lm_1b \
-      gpt2 openaigpt bert-large-uncased-whole-word-masking distilbert-base-uncased  ; do
+      for model in gpt2-xl ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
