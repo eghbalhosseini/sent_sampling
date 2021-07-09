@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-45
+#SBATCH --array=0-35
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=180G
@@ -10,13 +10,10 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in  coca_spok_filter_punct_10K_sample_1 \
-                coca_spok_filter_punct_10K_sample_2 \
-                coca_spok_filter_punct_10K_sample_3 \
-                coca_spok_filter_punct_10K_sample_4 \
-                coca_spok_filter_punct_10K_sample_5 ; do
+for dataset in  coca_spok_filter_punct_10K_sample_5 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
-      for model in gpt2-xl ; do
+      for model in bert-large-uncased-whole-word-masking distilbert-base-uncased \
+       ctrl gpt2 openaigpt ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
@@ -46,3 +43,10 @@ singularity exec -B /om:/om,/om2:/om2 /om/user/`whoami`/simg_images/neural_nlp_m
 #      xlm-mlm-en-2048 \
 #      transfo-xl-wt103 \
 #      roberta-base; do
+
+#
+#
+# coca_spok_filter_punct_10K_sample_1 \
+#                coca_spok_filter_punct_10K_sample_2 \
+#                coca_spok_filter_punct_10K_sample_3 \
+#                coca_spok_filter_punct_10K_sample_4 \
