@@ -10,7 +10,11 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in  coca_spok_filter_punct_10K_sample_5 ; do
+for dataset in  coca_spok_filter_punct_10K_sample_1 \
+                coca_spok_filter_punct_10K_sample_2 \
+                coca_spok_filter_punct_10K_sample_3 \
+                coca_spok_filter_punct_10K_sample_4 \
+                coca_spok_filter_punct_10K_sample_5 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
       for model in ctrl gpt2 openaigpt ; do
           model_list[$i]="$model"

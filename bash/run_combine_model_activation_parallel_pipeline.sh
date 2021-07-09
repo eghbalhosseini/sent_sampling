@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-14
+#SBATCH --array=0-74
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=120G
@@ -14,8 +14,8 @@ for dataset in coca_spok_filter_punct_10K_sample_1 \
                 coca_spok_filter_punct_10K_sample_2 \
                 coca_spok_filter_punct_10K_sample_3 \
                 coca_spok_filter_punct_10K_sample_4 \
-                coca_spok_filter_punct_10K_sample_5 ; do
-      for model in gpt2-xl ; do
+                 coca_spok_filter_punct_10K_sample_5 ; do
+      for model in gpt2-xl gpt2 openaigpt bert-large-uncased-whole-word-masking ctrl ; do
               for average_mode in False True None ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
