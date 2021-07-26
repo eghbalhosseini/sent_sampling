@@ -47,11 +47,11 @@ if __name__ == '__main__':
     else:
         optim_group_obj.load_extr_grp_and_corr_rdm_in_low_dim()
     # optimize
-    S_opt_d, DS_opt_d = optim_group_obj()
+    #S_opt_d, DS_opt_d = optim_group_obj()
     # save results
-    optim_results = dict(extractor_grp_name=extract_id,
-                        optimizatin_name=optim_id,
-                        optimized_S=S_opt_d,
-                        optimized_d=DS_opt_d)
-    optim_file=os.path.join(RESULTS_DIR,f"results_{extract_name}_{optim_id}_low_dim_gpu.pkl")
-    save_obj(optim_results, optim_file)
+    #optim_results = dict(extractor_grp_name=extract_id,
+    #                    optimizatin_name=optim_id,
+    #                    optimized_S=S_opt_d,
+    #                    optimized_d=DS_opt_d)
+    #optim_file=os.path.join(RESULTS_DIR,f"results_{extract_name}_{optim_id}_low_dim_gpu.pkl")
+    #save_obj(optim_results, optim_file)
