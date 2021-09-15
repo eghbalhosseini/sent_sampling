@@ -26,7 +26,7 @@ if __name__ == '__main__':
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
     print(pca_type + '\n')
-    # extract data
+    # extract data9
     extractor_obj = extract_pool[extractor_id]()
     extractor_obj.load_dataset()
     model_layers = extractor_obj.layer_name

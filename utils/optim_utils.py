@@ -73,15 +73,11 @@ def pt_create_corr_rdm_short(X,Y=None,vec=False,device=None):
     if vec:
         return torch.clamp(torch.reshape(XY_corr,(1,-1)), 0.0, np.inf)
     return torch.clamp(XY_corr, 0.0, np.inf)
-
 def Variation(s,N_S, pZ_S):
     qS = np.zeros(N_S)
     qS[s] = 1 / len(s)
     qZ = pZ_S.T @ qS
     return entropy(qZ)
-
-
-
 
 class optim:
     def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False,early_stopping=True,stop_threshold=1e-4):
