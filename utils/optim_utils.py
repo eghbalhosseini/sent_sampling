@@ -12,6 +12,7 @@ import utils
 from utils import extract_pool
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
+import warnings
 import os
 from utils.data_utils import save_obj, SAVE_DIR
 try :
@@ -117,7 +118,7 @@ class optim:
     # TODO : verify that Model activation, and Brain response,
 
     def compute_activation_in_low_dim(self,low_dim_num=300,low_resolution=False):
-        assert (torch.cuda.is_available())
+        #assert (torch.cuda.is_available())
         activation_list = []
         var_explained = []
         pca_type = 'fixed'
@@ -144,9 +145,9 @@ class optim:
         else:
             self.activation_list = activation_list
 
-    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=300,pca_type='fixed',low_resolution=False,cpu_dump=False):
-        assert(torch.cuda.is_available())
-        torch.cuda.empty_cache()
+    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=200,pca_type='fixed',low_resolution=False,cpu_dump=False):
+        #assert(torch.cuda.is_available())
+        #torch.cuda.empty_cache()
         self.XY_corr_list=[]
         if not cpu_dump:
             target_device=self.device
@@ -159,7 +160,8 @@ class optim:
                 act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
                 act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
                 # act must be in m sample * n feature shape ,
-                u, s, v = torch.pca_lowrank(act, q=500)
+                q=min(500,min(act.shape))
+                u, s, v = torch.pca_lowrank(act, q=q)
                 # keep 85% variance explained ,
                 idx_85 = torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2) < .85
                 cols = list(torch.where(idx_85)[0].cpu().numpy())
