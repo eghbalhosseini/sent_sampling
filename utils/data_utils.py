@@ -147,9 +147,9 @@ SENTENCE_CONFIG = [
     dict(name='ud_sentences_token_filter_sample',file_loc=os.path.join(UD_PARENT,'ud_sentence_data_token_filter_sample.pkl')),
     dict(name='coca_spok_filter_punct_sample',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_sample.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_1',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_1.pkl')),
-    dict(name='coca_spok_filter_punct_10K_sample_1',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_1.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_2',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_2.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_3',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_3.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_4',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_4.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_5',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_5.pkl')),
-    dict(name='coca_spok_filter_punct_10K_sample_ev_editsSep12',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsSep12.pkl')]
+    dict(name='coca_spok_filter_punct_10K_sample_ev_editsSep12',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsSep12.pkl'),
+    dict(name='coca_spok_filter_punct_10K_sample_ev_editsOct16',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsOct16.pkl')]
