@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     corres = [all_sentences.index(x) for x in sent_str_filtered_from_ev]
     data_ev = [data_[x] for x in corres]
-    sentence_grp = 'coca_spok_filter_punct_10K_sample_ev_editsOct16'
+    sentence_grp = 'coca_spok_filter_punct_10K_sample_ev_editsOct16.pkl'
     # save the data
     ev_data_file = f'{RESULTS_DIR}/{sentence_grp}'
     with open(ev_data_file, 'wb') as fout:

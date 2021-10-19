@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in coca_spok_filter_punct_10K_sample_ev_editsSep12 ; do
+for dataset in coca_spok_filter_punct_10K_sample_ev_editsOct16 ; do
       for model in bert-large-uncased-whole-word-masking \
        gpt2-xl \
        ctrl \
