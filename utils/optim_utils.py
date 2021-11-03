@@ -226,15 +226,11 @@ class optim:
         return d_optim
 
     def gpu_object_function_debug(self,S):
-        samples=torch.tensor(S, dtype = torch.long, device = self.device)
+        samples = torch.tensor(S, dtype=torch.long, device=self.device)
         pairs = torch.combinations(samples, with_replacement=False)
         XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
-        XY_corr_sample_tensor = torch.stack(XY_corr_sample)
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
-
-        XY_sample = [torch.index_select(XY_corr, 0, samples) for XY_corr in self.XY_corr_list]
-        XY_sample = [torch.index_select(XY_s, 1, samples) for XY_s in XY_sample]
-
         if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
             XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
@@ -242,7 +238,9 @@ class optim:
         n1 = d_mat.shape[1]
         correction = n1 * n1 / (n1 * (n1 - 1) / 2)
         d_val = correction * d_mat.mean(dim=(0, 1))
-        return d_val.cpu().numpy().mean(),XY_corr_sample_tensor, XY_sample
+        d_val_mean = d_val.cpu().numpy().mean()
+
+        return d_val_mean,d_val.cpu().numpy().mean(),XY_corr_sample_tensor
 
     def mod_objective_function(self,S):
         if self.extract_type=='activation':
