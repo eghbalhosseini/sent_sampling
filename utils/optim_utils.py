@@ -240,7 +240,7 @@ class optim:
         d_val = correction * d_mat.mean(dim=(0, 1))
         d_val_mean = d_val.cpu().numpy().mean()
 
-        return d_val_mean,d_val.cpu().numpy().mean(),XY_corr_sample_tensor
+        return d_val_mean,d_mat
 
     def mod_objective_function(self,S):
         if self.extract_type=='activation':
