@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-62
+#SBATCH --array=0-8
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=180G
@@ -10,13 +10,7 @@
 i=0
 for dataset in  ud_sentences_U01_SET1_paraphrase ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 ; do
-      for model in bert-large-uncased-whole-word-masking \
-          gpt2-xl \
-          xlm-mlm-en-2048 \
-          xlnet-large-cased \
-          roberta-base \
-          ctrl \
-          albert-xxlarge-v2 ; do
+      for model in xlm-mlm-en-2048  ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
