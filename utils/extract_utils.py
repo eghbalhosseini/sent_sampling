@@ -294,7 +294,7 @@ class model_extractor_parallel:
                     else:
                         print(f'{self.dataset}_{mdl_name}_layer_{i}_{self.extract_name} is missing groups!\n')
         pass
-    def __call__(self,group_id, *args, **kwargs):
+    def __call__(self,group_id,overwrite=False, *args, **kwargs):
         # get layers for model
         model_impl = model_pool[self.model_spec]
         layers = model_layers[self.model_spec]
@@ -307,11 +307,14 @@ class model_extractor_parallel:
         for i, layer in enumerate(tqdm(layers, desc='layers')):
             model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_group_{group_id}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
-            if os.path.exists(os.path.join(model_save_path, model_activation_name)):
+            if os.path.exists(os.path.join(model_save_path, model_activation_name)) and overwrite==False:
                 print(f"\n{model_activation_name} already exists, skipping...\n")
                 pass
             else:
-                print(f"\n{model_activation_name} doesn't exists, creating...\n")
+                if overwrite==True:
+                    print(f"\n{model_activation_name} exists but overwriting...\n")
+                else:
+                    print(f"\n{model_activation_name} doesn't exists, creating...\n")
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i == 0 else None)
                 stim=self.extractor.stimuli_set[group_id]
                 model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False)  #
