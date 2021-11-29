@@ -19,4 +19,4 @@ if __name__ == '__main__':
     datafile = [x['file_loc'] for x in SENTENCE_CONFIG if x['name'] == dataset_id][0]
     extractor_obj = model_extractor_parallel(dataset=dataset_id, datafile=datafile, model_spec=model_id)
     extractor_obj.load_dataset()
-    extractor_obj(group_id=group_id)
+    extractor_obj(group_id=group_id,overwrite=True)
