@@ -252,7 +252,7 @@ class model_extractor_parallel:
     def load_dataset(self):
         self.extractor.load_dataset()
         self.total_runs=len(self.extractor.stimuli_set)
-    def combine_runs(self):
+    def combine_runs(self,overwrite=False):
         if type(self.model_spec)==str:
             model_set=[self.model_spec]
         else:
@@ -263,9 +263,13 @@ class model_extractor_parallel:
             for k, layer in enumerate(tqdm(layers, desc='layers')):
                 model_activation_name = f"{self.dataset}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
                 new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
-                if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)):
+                if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) & overwrite==False:
                     print(f'{new_model_activation_name} already exists\n')
                 else:
+                    if overwrite==True:
+                        print(f'{new_model_activation_name} already exists, but overwriting\n')
+                    else:
+                        print(f'{new_model_activation_name} doesnt exist, creating\n')
                     activation_files=[]
                     for file in os.listdir(model_save_path):
                         if fnmatch.fnmatch(file,model_activation_name):
