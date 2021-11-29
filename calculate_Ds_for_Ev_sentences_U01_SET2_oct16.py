@@ -23,11 +23,14 @@ import importlib
 import matplotlib
 import os
 import warnings
+import torch
+# make sure non determism is not happening
+torch.use_deterministic_algorithms(True)
+
+os.getenv('CUBLAS_WORKSPACE_CONFIG')
 
 #
 if __name__ == '__main__':
-
-
 
     extract_name = 'gpt2-xl_ctrl_bert_gpt2_openaigpt_lm_1b_layers-dataset=coca_spok_filter_punct_10K_sample_ev_editsOct16-activation-bench=None-ave=False'
     optim_id='coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=200-n_init=1-run_gpu=True'
@@ -51,13 +54,16 @@ if __name__ == '__main__':
 
 
     select_sent = []
-    values = []
+
     for name in extract_id:
         ext_obj = extract_pool[name]()
         ext_obj.load_dataset()
-        [values.append([id, ext_obj.data_[id]['text']]) for id in np.sort(optim_result['optimized_S'])]
+        values = []
+        for id in np.sort(optim_result['optimized_S']):
+            values.append([id, ext_obj.data_[id]['text']])
         with open(os.path.join(RESULTS_DIR, f"sentences_{name}_{optim_id}.txt"), 'w') as f:
             for item in values:
+                #f.write(f'{item[0]} , {item[1]} \n')
                 f.write("%d, %s\n" % (item[0], item[1]))
 
     D_precompute_path=os.path.join(SAVE_DIR,f'{extract_name}_XY_corr_list.pkl')
@@ -222,3 +228,77 @@ if __name__ == '__main__':
                 orientation='landscape',
                 transparent=True, bbox_inches=None, pad_inches=0.1,
                 frameon=False)
+
+    '''replace a single sentence given that it is inappropiate
+     this section is 
+     
+     
+     
+     '''
+    bad_sent_ids=[179,288]
+    remaining_sent=list(set(range(optim_group_obj.N_S))-set(sent_optim))
+    # get the results for a random set wtithin selected sentencse:
+    new_set_optim=sent_optim
+    for bad_sent_id in bad_sent_ids:
+        ds_replace_oct16 = []
+        for k,sent_id in tqdm(enumerate(remaining_sent)):
+            new_set=[sent_id if x==bad_sent_id else x for x in new_set_optim]
+            ds_replace_oct16.append(optim_group_obj.gpu_obj_function(new_set))
+        # find and replace
+        ds_replace_sort = np.sort(ds_replace_oct16)
+        ds_replace_sort_id = np.argsort(ds_replace_oct16)
+        ds_replace_sort = ds_replace_sort[::-1]
+        ds_replace_sort_id = ds_replace_sort_id[::-1]
+        better_sent=ds_replace_sort_id[0]
+        new_set_optim = [better_sent if x == bad_sent_id else x for x in new_set_optim]
+        # get the last sentence
+
+
+
+
+    # get corresponding sentence:
+    new_set_optim_sort=np.sort(new_set_optim)
+    replacement_candidates=[ext_obj.data_[id]['text'] for id in new_set_optim_sort]
+    replacement_candidates=[]
+    for id in new_set_optim_sort:
+        replacement_candidates.append([id, ext_obj.data_[id]['text']])
+
+    with open(os.path.join(RESULTS_DIR, f"replacement_sentences_{name}_{optim_id}.txt"), 'w') as f:
+        for item in replacement_candidates:
+            # f.write(f'{item[0]} , {item[1]} \n')
+            f.write("%d, %s\n" % (item[0], item[1]))
+    f.close()
+
+    ds_rand_oct16 = []
+    for k in tqdm(enumerate(range(250))):
+        sent_random = list(np.random.choice(optim_group_obj.N_S, optim_group_obj.N_s))
+        ds_rand_oct16.append(optim_group_obj.gpu_obj_function(sent_random))
+    # plot the results
+    matplotlib.rcParams['font.size'] = 16
+    matplotlib.rcParams['pdf.fonttype'] = 42
+    matplotlib.rcParams['ps.fonttype'] = 42
+    fig = plt.figure(figsize=(26, 14), dpi=100, frameon=False)
+    ax = plt.axes((.1, .1, .1, .45))
+    ax.scatter(0,optim_score_oct16,color=(1, 0, 0), s=80,edgecolor=(.2,.2,.2), label=f'optimized',zorder=4)
+    ax.scatter(.01* np.random.normal(size=(np.asarray(ds_rand_oct16).shape)) , np.asarray(ds_rand_oct16), color=(.6, .6, .6),
+               s=10, alpha=.2)
+    ax.scatter(0, np.asarray(ds_rand_oct16).mean(), color=(.1, .1, .1), s=30, label=f'random')
+
+    ax.scatter(0, optim_group_obj.gpu_obj_function(new_set_optim), color=(1, .5, 0),edgecolor=(.2,.2,.2), s=80, label=f'replacement',zorder=5)
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_visible(True)
+    ax.spines['left'].set_linewidth(2)
+    ax.set_xlim((-.1,.1))
+    ax.set_xlabel('replaced sentence (ordered)', rotation=0)
+
+    ax.legend(bbox_to_anchor=(2.1, .85), frameon=True)
+    ax.set_ylabel(r'$D_s$')
+    fig.show()
+    fig.savefig(os.path.join(ANALYZE_DIR, f'replacement_ev_oct16_{extract_name}_{optim_id}_low_dim_gpu.pkl'.replace('.pkl','.pdf')), dpi=None, facecolor='w',
+                edgecolor='w',
+                orientation='landscape',
+                transparent=True, bbox_inches=None, pad_inches=0.1,
+                frameon=False)
+

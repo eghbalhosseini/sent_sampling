@@ -2,7 +2,7 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Remote Python 3.7.11 (sftp://ehoseini@node094:22/om/user/ehoseini/miniconda3/envs/neural_nlp_cuda/bin/python)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.7.10 (sftp://ehoseini@evnode.mit.edu:22/om/user/ehoseini/miniconda3/envs/neural_nlp/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
