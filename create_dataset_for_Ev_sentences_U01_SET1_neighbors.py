@@ -31,7 +31,8 @@ if __name__ == '__main__':
     # drop '. '
     sent_txt_paraphrase=[x.split(' ') for x in sent_str_paraphrase ]
     for idx,x in tqdm(enumerate(sent_txt_paraphrase)):
-        if '' in x: x.remove('')
+        if '' in x:
+            x=[value for value in x if value != '']
         sent_txt_paraphrase[idx]=x
     # drop . in the end
     for idx,x in tqdm(enumerate(sent_txt_paraphrase)):
@@ -58,6 +59,7 @@ if __name__ == '__main__':
             'word_string': []}
         sentence_data.append(dat_)
 
+    [x['text'] for x in sentence_data]
     with open(os.path.join(RESULTS_DIR, f"ud_sentences_U01_SET1_paraphrase.pkl"),
               'wb') as fout:
         pickle.dump(sentence_data, fout)
