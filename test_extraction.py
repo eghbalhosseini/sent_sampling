@@ -1,6 +1,6 @@
 import importlib
-#import utils
-#importlib.reload(utils)
+import utils
+importlib.reload(utils)
 from utils.data_utils import SENTENCE_CONFIG
 from neural_nlp.models import model_pool
 

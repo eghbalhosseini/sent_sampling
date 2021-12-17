@@ -40,7 +40,6 @@ if __name__ == '__main__':
     # first load ev sentenes:
     # first find ev sentences
     file_name = 'U01_sentselection_Dec18-2020_updDec23.xlsx'
-
     d_metric = 'correlation'
     ave_flag='False'
     ##
@@ -67,6 +66,52 @@ if __name__ == '__main__':
     all_modl_act = [torch.Tensor(x).to(device) for x in all_modl_dat]
     [x.shape for x in all_modl_act]
     del all_modl_dat
+    '''second approach 
+    do an optimization, for each sentence find a sentence that minimize the distance '''
+    '''first apprach 
+    find a set of neighbors for each sentence in each model and take the intersection of sentence sets,
+    say for M1 , M2 if there is a sentence that is a neightbor to S1 in both models then take it  
+    '''
+    optim_ids = 'coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=200-n_init=1-run_gpu=True'
+    optimizer_obj = optim_pool[optim_ids]()
+    optimizer_obj.load_extractor(extractor_obj)
+    optimizer_obj.precompute_corr_rdm_on_gpu(low_dim=True, low_resolution=False, cpu_dump=False)
+    # find the subset of distance specific to ev sentences
+    ev_select_XY_corr_list=[x[ev_selected_idx,:] for x in optimizer_obj.XY_corr_list]
+    # drop ev sentences from the set of candidates too
+    remained_set=list(np.arange(optimizer_obj.N_S))
+    [remained_set.remove(x) for x in ev_selected_idx]
+    ev_select_XY_corr_list=[x[:,remained_set] for x in ev_select_XY_corr_list]
+    ev_select_xy_corr=torch.stack(ev_select_XY_corr_list)
+    ev_select_xy_corr_ave=torch.mean(ev_select_xy_corr[1,:,:],dim=0)
+    ev_select_xy_corr_ave = ev_select_xy_corr[6, :, :]
+    # for each row now find the sentence with smallest value
+    mins,mins_idx=torch.min(ev_select_xy_corr_ave,dim=1)
+    ev_close_neighbors=list(mins_idx.cpu().numpy())
+    ev_close_Ds, ev_close_ds_all = optimizer_obj.gpu_object_function_debug(ev_close_neighbors)
+    ev_close_Ds
+    '''
+    n_neighbors=np.floor(np.linspace(50,1000,15)).astype(int)
+    for n_neigh in n_neighbors:
+        all_modl_neigh = []
+        for id, x in tqdm(enumerate(all_modl_act)):
+            knn_mdl = NearestNeighbors(n_neighbors=n_neigh, two_pass_precision=True, metric=d_metric)
+            knn_mdl.fit(x)
+            distances, indices = knn_mdl.kneighbors(x)
+        # ev sentences
+            ev_neighbors=indices[ev_selected_idx,1:]
+            all_modl_neigh.append(ev_neighbors)
+        al_c=[]
+        for x in range(len(ev_neighbors)):
+            a=np.stack(all_modl_neigh)[:,x,:]
+            u, c = np.unique(a, return_counts=True)
+            al_c.append(max(c))
+        print(f"neightbors {n_neigh}, crosses: {np.sum(np.asarray(al_c)>=7)}")
+    didnt quite worked     
+    '''
+
+
+
     var_explained=[]
     all_modl_act_ld=[]
     for id, x in tqdm(enumerate(all_modl_act)):
@@ -75,6 +120,7 @@ if __name__ == '__main__':
         var_explained.append(pca_.explained_variance_ratio_)
         x_ld = pca_.fit_transform(x)
         all_modl_act_ld.append(x_ld)
+
 
     for id, x in enumerate(var_explained):
         plt.plot(np.cumsum(x.get()[:600]),label=model_names[id])
