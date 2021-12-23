@@ -11,6 +11,7 @@ if getpass.getuser()=='eghbalhosseini':
     SAVE_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/'
     RESULTS_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/results/'
     COCA_CORPUS_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/parsed/'
+    COCA_PREPROCESSED_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/preprocessed/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
@@ -131,6 +132,29 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
         sentence_set.name = stimuli_data_name+'_group_'+str(row)
         all_sentence_set.append(sentence_set)
     return all_sentence_set
+
+def construct_stimuli_set_from_pd(stimuli_pd, stimuli_data_name='null',splits=200):
+    all_sentence_set=[]
+    stimuli_pd.sent_id.max()
+    seq = np.floor(np.linspace(0, stimuli_pd.sent_id.max()+1, num=splits))
+    seq_pair=np.vstack((seq[0:-1], seq[1:]))
+    seq_pair=seq_pair.astype(np.int).transpose()
+    num_row=seq_pair.shape[0]
+    for row in tqdm(range(num_row)):
+        sentence_words, word_nums, sentenceID = [], [], []
+        stimuli_chunck=stimuli_pd[np.logical_and(np.asarray(stimuli_pd.sent_id>=seq_pair[row,0]),
+                                  np.asarray(stimuli_pd.sent_id< seq_pair[row,1]))]
+
+        sentenceID=list(stimuli_chunck.sent_id)
+        sentence_words = list(stimuli_chunck.word_form)
+        word_number=list(range(len(stimuli_chunck)))
+        zipped_lst = list(zip(sentenceID, word_number, sentence_words))
+        sentence_set = StimulusSet(zipped_lst, columns=['sentence_id', 'stimulus_id', 'word'])
+
+        sentence_set.name = stimuli_data_name+'_group_'+str(row)
+        all_sentence_set.append(sentence_set)
+    return all_sentence_set
+
 
 BENCHMARK_CONFIG=dict(file_loc=BENCHMARK_DIR)
 
