@@ -69,7 +69,7 @@ model='albert-xxlarge-v2'
 model_activation_set=[]
 model_impl = model_pool[model]
 layers = model_layers[model]
-layer_id=3
+layer_id=0
 candidate=FixedLayer(model_impl, layers[layer_id], prerun=layers if layer_id == 0 else None)
 stimuli_pd=pd.read_pickle(str(Path(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1.pkl')))
 ordered_sets=construct_stimuli_set_from_pd(stimuli_pd)
@@ -89,7 +89,7 @@ for id in tqdm(range(len(ordered_sets)),desc='set:',leave=True):
         tokenized_sentences = np.array(tokenized_sentences)
         aligned_tokens_debug=align_tokens_debug(tokenized_sentences=tokenized_sentences,additional_tokens=[],sentences=[sentence],max_num_words=512,use_special_tokens=False,special_tokens=candidate._model._model_container.tokenizer_special_tokens)
         num_words_aligned.append(len(aligned_tokens_debug))
-
+        assert(len(aligned_tokens_debug)==len(sentence.split()))
         sentence_set=stimulus_set[stimulus_set.sentence_id==all_sentences.index[idx]]
         model_activations = read_words(candidate, sentence_set, copy_columns=['stimulus_id'], average_sentence=False)
 

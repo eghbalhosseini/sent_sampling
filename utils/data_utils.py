@@ -179,5 +179,10 @@ SENTENCE_CONFIG = [
     dict(name='coca_spok_filter_punct_10K_sample_ev_editsSep12',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsSep12.pkl'),
     dict(name='coca_spok_filter_punct_10K_sample_ev_editsOct16',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsOct16.pkl'),
     dict(name='ud_sentences_U01_SET1_paraphrase',file_loc=os.path.join(RESULTS_DIR,'ud_sentences_U01_SET1_paraphrase.pkl')),
-    dict(name='coca_preprocessed_all',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all.pkl'))]
+    dict(name='coca_preprocessed_all',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all.pkl')),
+    dict(name='coca_preprocessed_all_clean_100K_sample_1',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1.pkl')),
+    dict(name='coca_preprocessed_all_clean_100K_sample_2',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_2.pkl')),
+    dict(name='coca_preprocessed_all_clean_100K_sample_3',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_3.pkl')),
+    dict(name='coca_preprocessed_all_clean_100K_sample_4',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_4.pkl')),
+    dict(name='coca_preprocessed_all_clean_100K_sample_5',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_5.pkl'))]
 
