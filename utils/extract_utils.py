@@ -1,4 +1,4 @@
-from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR
+from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd
 from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.models import model_pool, model_layers
 from neural_nlp import FixedLayer
@@ -29,7 +29,10 @@ class extractor:
     def load_dataset(self,silent=True):
         data_ = load_obj(self.datafile,silent=silent)
         self.data_=data_
-        stimuli_set = construct_stimuli_set(data_, self.dataset)
+        if isinstance(data_, pd.DataFrame):
+            stimuli_set=construct_stimuli_set_from_pd(data_, self.dataset)
+        else:
+            stimuli_set = construct_stimuli_set(data_, self.dataset)
         self.stimuli_set=stimuli_set
         self.N_S=int(len(data_))
 
