@@ -29,12 +29,15 @@ class extractor:
     def load_dataset(self,silent=True):
         data_ = load_obj(self.datafile,silent=silent)
         self.data_=data_
-        if isinstance(data_, pd.DataFrame):
+        if isinstance(self.data_, pd.DataFrame):
             stimuli_set=construct_stimuli_set_from_pd(data_, self.dataset)
+            self.stimuli_set = stimuli_set
+            self.N_S=int(len(data_.groupby('sent_id')))
+            assert(hasattr(self, 'stimuli_set'))
         else:
             stimuli_set = construct_stimuli_set(data_, self.dataset)
-        self.stimuli_set=stimuli_set
-        self.N_S=int(len(data_))
+            self.stimuli_set = stimuli_set
+            self.N_S=int(len(data_))
 
     def get_last_word_activations(self,activations):
         sentence_id=np.unique(np.asarray(activations.sentence_id))
