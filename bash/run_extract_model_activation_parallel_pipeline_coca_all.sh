@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-199
+#SBATCH --array=0-2
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=180G
@@ -11,7 +11,7 @@
 
 i=0
 for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
-  for group_ids in `seq 0 1 199` ; do
+  for group_ids in `seq 0 1 2` ; do
       for model in xlnet-large-cased ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
