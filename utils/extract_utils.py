@@ -1,14 +1,47 @@
 from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd
 from neural_nlp.benchmarks.neural import read_words, listen_to
+from neural_nlp.stimuli import load_stimuli, StimulusSet
 from neural_nlp.models import model_pool, model_layers
+from neural_nlp.utils import ordered_set
 from neural_nlp import FixedLayer
-import os
+import os , itertools , fnmatch , re
 import pandas as pd
 import numpy as np
 import xarray as xr
 from tqdm import tqdm
-import fnmatch
-import re
+
+
+
+
+# modified read_words
+def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_columns=(), average_sentence=False):
+    """
+    Pass a `stimulus_set` through a model `candidate`.
+    In contrast to the `listen_to` function, this function operates on a word-based `stimulus_set`.
+    modified be eh to work with xarray 0.16+ and pandas 1.2.4
+    """
+    # Input: stimulus_set = pandas df, col 1 with sentence ID and 2nd col as word.
+    activations = []
+    for i, reset_id in enumerate(ordered_set(stimulus_set[reset_column].values)):
+        part_stimuli = stimulus_set[stimulus_set[reset_column] == reset_id]
+        # stimulus_ids = part_stimuli['stimulus_id']
+        sentence_stimuli = StimulusSet({'sentence': ' '.join(part_stimuli['word']),
+                                        reset_column: list(set(part_stimuli[reset_column]))})
+        sentence_stimuli.name = f"{stimulus_set.name}-{reset_id}"
+        print(f"running {sentence_stimuli.name} : {' '.join(part_stimuli['word'])}\n")
+        sentence_activations = candidate(stimuli=sentence_stimuli, average_sentence=average_sentence)
+        for column in copy_columns:
+            sentence_activations[column] = ('presentation', part_stimuli[column])
+        activations.append(sentence_activations)
+    model_activations = xr.concat(activations,dim='presentation')
+    # merging does not maintain stimulus order. the following orders again
+    idx = [model_activations['stimulus_id'].values.tolist().index(stimulus_id) for stimulus_id in
+           itertools.chain.from_iterable(s['stimulus_id'].values for s in activations)]
+    assert len(set(idx)) == len(idx), "Found duplicate indices to order activations"
+    model_activations = model_activations[{'presentation': idx}]
+
+    return model_activations
+
 
 class extractor:
     def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence='False',modality=None):
@@ -89,7 +122,7 @@ class extractor:
             candidate = FixedLayer(test1, layers[layer], prerun=None)
             if not(self.modality=='fMRI'):
                 for stim_id, stim in enumerate(self.stimuli_set):
-                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
+                    model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'],
                                        average_sentence=False)  #
                     if self.average_sentence == 'True':
                         model_activations = self.get_mean_activations(model_activations)
@@ -99,9 +132,9 @@ class extractor:
                         model_activations = self.get_all_activations(model_activations)
                     model_activation_set.append(model_activations)
             elif self.modality=='fMRI':
-                #TODO check if listen_to and read_words perform the same set of computation.
+                #TODO check if listen_to and read_words_eh perform the same set of computation.
                 for stim_id, stim in enumerate(self.stimuli_set):
-                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],
+                    model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'],
                                        average_sentence=False)  #
                     model_activations=self.get_mean_activations(model_activations)
                     model_activation_set.append(model_activations)
@@ -141,7 +174,7 @@ class extractor:
         candidate=FixedLayer(model_impl, layers[layer_id], prerun=layers if layer_id == 0 else None)
         #candidate = FixedLayer(test1, layers[layer], prerun=None)
         for stim_id, stim in enumerate(self.stimuli_set):
-            model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)#
+            model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)#
             if self.average_sentence == 'True':
                 model_activations = self.get_mean_activations(model_activations)
             elif self.average_sentence == 'False':
@@ -225,7 +258,7 @@ class model_extractor:
                 model_activation_set = []
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i==0 else None)
                 for stim_id, stim in enumerate(self.extractor.stimuli_set):
-                    model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)  #
+                    model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)  #
                     if self.average_sentence=='True':
                         model_activations = self.extractor.get_mean_activations(model_activations)
                     elif self.average_sentence=='False':
@@ -327,5 +360,5 @@ class model_extractor_parallel:
                     print(f"\n{model_activation_name} doesn't exists, creating...\n")
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i == 0 else None)
                 stim=self.extractor.stimuli_set[group_id]
-                model_activations = read_words(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False)  #
+                model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False)  #
                 save_obj(model_activations, os.path.join(model_save_path, model_activation_name))
