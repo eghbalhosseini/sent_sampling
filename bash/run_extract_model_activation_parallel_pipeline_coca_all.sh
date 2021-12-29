@@ -11,7 +11,7 @@
 
 i=0
 for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
-  for group_ids in `seq 0 1 2` ; do
+  for group_ids in `seq 0 1 199` ; do
       for model in xlnet-large-cased ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
