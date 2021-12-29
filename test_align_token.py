@@ -25,6 +25,7 @@ from neural_nlp.utils import ordered_set
 from neural_nlp.utils import ordered_set
 import utils.extract_utils
 importlib.reload(utils.extract_utils)
+from utils.extract_utils import read_words_eh
 import glob
 import xarray as xr
 import itertools
@@ -68,76 +69,6 @@ def align_tokens_debug(tokenized_sentences, sentences, max_num_words, additional
         #yield context
     return all_context
 
-def auto_merge(datasets):
-    """
-    Automatically merge a split xarray Dataset. This is designed to behave like
-    `xarray.open_mfdataset`, except it supports concatenation along multiple
-    dimensions.
-    Parameters
-    ----------
-    datasets : str or list of str or list of xarray.Dataset
-        Either a glob expression or list of paths as you would pass to
-        xarray.open_mfdataset, or a list of xarray datasets. If a list of
-        datasets is passed, you should make sure that they are represented
-        as dask arrays to avoid reading the whole dataset into memory.
-    Returns
-    -------
-    xarray.Dataset
-        The merged dataset.
-    """
-    # Treat `datasets` as a glob expression
-    if isinstance(datasets, str):
-        datasets = glob.glob(datasets)
-
-    # Treat `datasets` as a list of file paths
-    if isinstance(datasets[0], str):
-        # Pass chunks={} to ensure the dataset is read as a dask array
-        datasets = [xr.open_dataset(path, chunks={}) for path in datasets]
-
-    def _combine_along_last_dim(datasets):
-        merged = []
-
-        # Determine the dimension along which the dataset is split
-        split_dims = [d for d in datasets[0].dims if
-                      len(np.unique([ds[d].values[0] for ds in datasets])) > 1]
-
-        # Concatenate along one of the split dimensions
-        concat_dim = split_dims[-1]
-
-        # Group along the remaining dimensions and concatenate within each
-        # group.
-        sorted_ds = sorted(datasets, key=lambda ds: tuple(ds[d].values[0]
-                                                          for d in split_dims))
-        for _, group in itertools.groupby(
-                sorted_ds,
-                key=lambda ds: tuple(ds[d].values[0] for d in split_dims[:-1])
-                ):
-            merged.append(xr.auto_combine(group, concat_dim=concat_dim))
-
-        return merged
-
-    merged = datasets
-    while len(merged) > 1:
-        merged = _combine_along_last_dim(merged)
-
-    return merged[0]
-
-from xarray import concat
-import numpy as np
-
-def _concat_dicts(dict_objs, dim, data_vars, **kwargs):
-    objs = [dict_obj['key'] for dict_obj in dict_objs]
-    return {'key': concat(objs, dim, data_vars, **kwargs)}
-
-def _concat_nd(obj_grid, concat_dims=None, data_vars=None, **kwargs):
-    # Combine datasets along one dimension at a time,
-    # Have to start with last axis and finish with axis=0 otherwise axes will disappear before the loop reaches them
-    for axis in reversed(range(obj_grid.ndim)):
-        obj_grid = np.apply_along_axis(_concat_dicts, axis, arr=obj_grid,
-                                       dim=concat_dims[axis], data_vars=data_vars[axis], **kwargs)
-
-    # Grid should now only contain one dict which contains the concatenated xarray object
-    return obj_grid.item()['key']
 
 model='xlnet-large-cased'
 model_activation_set=[]
@@ -174,12 +105,13 @@ np.sum(np.asarray(flat_list))/len(flat_list)
 # kk=0
 
 idx=0
-stimulus_set = ordered_sets[id]
+stimulus_set = ordered_sets[idx]
 all_sentences = stimulus_set.groupby('sentence_id').apply(lambda x: ' '.join(x.word))
 
 sentence_set=stimulus_set[stimulus_set.sentence_id<all_sentences.index[4]]
-model_activations = read_words(candidate, sentence_set, copy_columns=['stimulus_id'], average_sentence=False)
+model_activations = read_words_eh(candidate, sentence_set, copy_columns=['stimulus_id'], average_sentence=False)
 
+model_activations.values
 
 reset_column='sentence_id'
 copy_columns=['stimulus_id']
