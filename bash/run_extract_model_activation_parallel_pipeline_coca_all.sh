@@ -4,7 +4,7 @@
 #SBATCH --array=0-199
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=180G
+#SBATCH --mem=32G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
@@ -12,7 +12,7 @@
 i=0
 for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
   for group_ids in `seq 0 1 199` ; do
-      for model in xlnet-large-cased ; do
+      for model in gpt2-xl ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
