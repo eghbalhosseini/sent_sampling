@@ -17,7 +17,7 @@ for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
           look_up_pattern="${dataset}_${model}_*_group_${group_ids}*"
           folder_to_look=${DATA_DIR}/${model}
 
-          lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*" | wc -l)
+          lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           if [ $lines -eq 0 ]; then
               echo "${dataset}_${model}_group_${group_ids} dosent exists, adding it"
               LINE_COUNT=$(expr ${LINE_COUNT} + 1)
