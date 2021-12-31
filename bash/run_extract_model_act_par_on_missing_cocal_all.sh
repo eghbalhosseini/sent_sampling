@@ -14,10 +14,12 @@ layers="49" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
+
+len=${#layer_arr[@]}
 #
 for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
   for group_ids in `seq 0 1 199` ; do
-      for idx_model in seq 0 1 ${#layer_arr[@]} ; do
+      for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
           model_list[$i]="${model_arr[$idx_model]}"
           layer_list[$i]="${layer_arr[$idx_model]}"
           dataset_list[$i]="$dataset"
