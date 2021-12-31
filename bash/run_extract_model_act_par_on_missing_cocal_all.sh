@@ -16,15 +16,15 @@ for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
 
           look_up_pattern="${dataset}_${model}_*_group_${group_ids}*"
           folder_to_look=${DATA_DIR}/${model}
-          printf "finding pattern ${look_up_pattern}"
+          printf "finding pattern ${look_up_pattern} \n"
           #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
           if [ $lines -eq 0 ]; then
-              echo "${dataset}_${model}_group_${group_ids} dosent exists, adding it"
+              echo "${dataset}_${model}_group_${group_ids} dosent exists, adding it \n"
               LINE_COUNT=$(expr ${LINE_COUNT} + 1)
               printf "%d,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$group_ids" >> $GRAND_PIPE_FILE
-          el
-              printf "found  ${lines} files"
+          else
+              printf "found  ${lines} files \n"
           fi
       done
       done
