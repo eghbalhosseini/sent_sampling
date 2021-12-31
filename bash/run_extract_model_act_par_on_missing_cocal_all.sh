@@ -27,7 +27,7 @@ for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
           folder_to_look=${DATA_DIR}/${model}
           #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
-          if [ "$lines" = "${layer_arr[$idx_model]}" ]; then
+          if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
               echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${model}_group_${group_ids} dosent exists, adding it \n"
               LINE_COUNT=$(expr ${LINE_COUNT} + 1)
               printf "%d,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$group_ids" >> $GRAND_PIPE_FILE
