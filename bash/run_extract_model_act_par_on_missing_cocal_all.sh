@@ -17,8 +17,8 @@ layer_arr=($layers)
 
 len=${#layer_arr[@]}
 #
-for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
-  for group_ids in `seq 0 1 199` ; do
+for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
+  for group_ids in `seq 0 1 198` ; do
       for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
           model_list[$i]="${model_arr[$idx_model]}"
           layer_list[$i]="${layer_arr[$idx_model]}"
@@ -38,3 +38,12 @@ for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
       done
 done
 
+echo $LINE_COUNT
+run_val=0
+if [ "$LINE_COUNT" -gt "$run_val" ]; then
+  echo "running  ${LINE_COUNT} "
+   #nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT 150 200 50 manifold_capacity_script.sh $GRAND_MFTMA_FILE &
+   nohup /cm/shared/admin/bin/submit-many-jobs 20 15 20 5 extract_model_act_for_group.sh $GRAND_PIPE_FILE &
+  else
+    echo $LINE_COUNT
+fi
