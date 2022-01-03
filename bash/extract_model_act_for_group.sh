@@ -46,4 +46,4 @@ export RESULTCACHING_HOME
 . ~/.bash_profile
 conda activate neural_nlp
 echo $(which python)
-python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py "${run_model}" "${run_dataset}" "${run_group_id}"
+#python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py "${run_model}" "${run_dataset}" "${run_group_id}"
