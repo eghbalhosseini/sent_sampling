@@ -1,8 +1,10 @@
 #!/bin/bash
 #
-#SBATCH -c 8
+#SBATCH --job-name=EX_PA
 #SBATCH --exclude node[017-018]
-#SBATCH -t 5:00:00
+#SBATCH --time=168:00:00
+#SBATCH --mem=32G
+#SBATCH --ntasks=1
 
 GRAND_FILE=$1
 OVERWRITE='false' # or 'true'
@@ -46,4 +48,4 @@ export RESULTCACHING_HOME
 . ~/.bash_profile
 conda activate neural_nlp
 echo $(which python)
-#python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py "${run_model}" "${run_dataset}" "${run_group_id}"
+python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py "${run_model}" "${run_dataset}" "${run_group_id}"
