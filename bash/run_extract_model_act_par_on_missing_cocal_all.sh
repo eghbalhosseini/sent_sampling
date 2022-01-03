@@ -9,8 +9,8 @@ touch $GRAND_PIPE_FILE
 
 #models="gpt2-xl xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 ctrl"
 #layers="49 25 25 13 13 49" # adding the embedding layer so its layer plus 1
-models="gpt2-xl"
-layers="49" # adding the embedding layer so its layer plus 1
+models="gpt2-xl xlnet-large-cased"
+layers="49 25" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
@@ -20,6 +20,7 @@ len=${#layer_arr[@]}
 for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
   for group_ids in `seq 0 1 198` ; do
       for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
+          model="${model_arr[$idx_model]}"
           model_list[$i]="${model_arr[$idx_model]}"
           layer_list[$i]="${layer_arr[$idx_model]}"
           dataset_list[$i]="$dataset"
