@@ -3,7 +3,7 @@
 #SBATCH --job-name=EX_PA
 #SBATCH --exclude node[017-018]
 #SBATCH --time=168:00:00
-#SBATCH --mem=32G
+#SBATCH --mem=16G
 #SBATCH --ntasks=1
 
 GRAND_FILE=$1
