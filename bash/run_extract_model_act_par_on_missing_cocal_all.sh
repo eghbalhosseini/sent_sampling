@@ -17,6 +17,7 @@ layer_arr=($layers)
 
 len=${#layer_arr[@]}
 #
+printf "%s,%s,%s,%s\n" "row" "model" "dataset" "group_id"  >> $GRAND_PIPE_FILE
 for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
     for group_ids in `seq 0 1 198` ; do
