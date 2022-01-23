@@ -7,10 +7,10 @@ GRAND_PIPE_FILE="${DATA_DIR}/Grand_extraction_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
 
-models="gpt2-xl xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 ctrl roberta-base"
-layers="49 25 25 13 13 49 13" # adding the embedding layer so its layer plus 1
-#models="gpt2-xl xlnet-large-cased"
-#layers="49 25" # adding the embedding layer so its layer plus 1
+#models="gpt2-xl xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 ctrl roberta-base"
+#layers="49 25 25 13 13 49 13" # adding the embedding layer so its layer plus 1
+models="gpt2-xl"
+layers="49" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
@@ -44,8 +44,8 @@ echo $LINE_COUNT
 run_val=0
 if [ "$LINE_COUNT" -gt "$run_val" ]; then
   echo "running  ${LINE_COUNT} "
-   #nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT 150 200 50 manifold_capacity_script.sh $GRAND_MFTMA_FILE &
-   nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT  250 300 50 extract_model_act_for_group.sh $GRAND_PIPE_FILE
+   #nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT 20 25 5 extract_model_act_for_group.sh $GRAND_PIPE_FILE
+   #nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT  250 300 50 extract_model_act_for_group.sh $GRAND_PIPE_FILE
 
 
   else

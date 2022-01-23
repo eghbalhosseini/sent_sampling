@@ -46,6 +46,6 @@ RESULTCACHING_HOME=/om2/user/`whoami`/.result_caching
 export RESULTCACHING_HOME
 #
 . ~/.bash_profile
-conda activate neural_nlp
+conda activate neural_nlp_1
 echo $(which python)
 python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py "${run_model}" "${run_dataset}" "${run_group_id}"
