@@ -302,10 +302,10 @@ class model_extractor_parallel:
             for k, layer in enumerate(tqdm(layers, desc='layers')):
                 model_activation_name = f"{self.dataset}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
                 new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
-                if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) & overwrite==False:
+                if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == False:
                     print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
                 else:
-                    if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) & overwrite==True:
+                    if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == True:
                         print(f'{new_model_activation_name} already exists, but overwriting\n')
                     else:
                         print(f'{new_model_activation_name} doesnt exist, creating\n')
