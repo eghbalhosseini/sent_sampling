@@ -27,7 +27,8 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
           i=$i+1
-          look_up_pattern="${dataset}_${model}_*_group_${group_ids}.pkl"
+          look_up_pattern="${dataset}_${model}_layer_${layer_arr[$idx_model]}_*_group_${group_ids}.pkl"
+          echo $look_up_pattern
           folder_to_look=${DATA_DIR}/${model}
           #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
