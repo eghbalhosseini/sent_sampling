@@ -303,7 +303,7 @@ class model_extractor_parallel:
                 model_activation_name = f"{self.dataset}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
                 new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
                 if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) & overwrite==False:
-                    print(f'{new_model_activation_name} already exists\n')
+                    print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
                 else:
                     if overwrite==True:
                         print(f'{new_model_activation_name} already exists, but overwriting\n')
