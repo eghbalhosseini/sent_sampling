@@ -305,7 +305,7 @@ class model_extractor_parallel:
                 if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) & overwrite==False:
                     print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
                 else:
-                    if overwrite==True:
+                    if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) & overwrite==True:
                         print(f'{new_model_activation_name} already exists, but overwriting\n')
                     else:
                         print(f'{new_model_activation_name} doesnt exist, creating\n')
