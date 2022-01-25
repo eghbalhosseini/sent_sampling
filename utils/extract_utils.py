@@ -9,12 +9,17 @@ import pandas as pd
 import numpy as np
 import xarray as xr
 from tqdm import tqdm
-
-
+from result_caching import store
+from pathlib import Path
+temp_store = store()
+temp_store._storage_directory
+# relative path to neural_nlp storage
+neural_nlp_stor_rel='neural_nlp.models.wrapper.core.ActivationsExtractorHelper._from_sentences_stored'
+neural_nlp_store_abs=os.path.join(temp_store._storage_directory,neural_nlp_stor_rel)
 
 
 # modified read_words
-def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_columns=(), average_sentence=False):
+def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_columns=(), average_sentence=False,overwrite=False):
     """
     Pass a `stimulus_set` through a model `candidate`.
     In contrast to the `listen_to` function, this function operates on a word-based `stimulus_set`.
@@ -22,6 +27,19 @@ def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_colu
     """
     # Input: stimulus_set = pandas df, col 1 with sentence ID and 2nd col as word.
     activations = []
+    # remove previous saved activation
+    if overwrite:
+        print('removing previous run\n')
+        for i, reset_id in tqdm(enumerate(ordered_set(stimulus_set[reset_column].values))):
+            part_stimuli = stimulus_set[stimulus_set[reset_column] == reset_id]
+            # stimulus_ids = part_stimuli['stimulus_id']
+            sentence_stimuli = StimulusSet({'sentence': ' '.join(part_stimuli['word']),
+                                            reset_column: list(set(part_stimuli[reset_column]))})
+            sentence_stimuli.name = f"{stimulus_set.name}-{reset_id}"
+            name_format = f'identifier={candidate._model.identifier},stimuli_identifier={sentence_stimuli.name}.pkl'
+            file_loc = Path(os.path.join(neural_nlp_store_abs, name_format))
+            if file_loc.exists() : file_loc.unlink()
+    # run sentences
     for i, reset_id in enumerate(ordered_set(stimulus_set[reset_column].values)):
         part_stimuli = stimulus_set[stimulus_set[reset_column] == reset_id]
         # stimulus_ids = part_stimuli['stimulus_id']
@@ -29,6 +47,15 @@ def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_colu
                                         reset_column: list(set(part_stimuli[reset_column]))})
         sentence_stimuli.name = f"{stimulus_set.name}-{reset_id}"
         print(f"running {sentence_stimuli.name} : {' '.join(part_stimuli['word'])}\n")
+
+        # if overwrite:
+        #     name_format = f'identifier={candidate._model.identifier},stimuli_identifier={sentence_stimuli.name}.pkl'
+        #     file_loc=Path(os.path.join(neural_nlp_store_abs,name_format))
+        #     if file_loc.exists():
+        #         print(f"removing and rerunning {sentence_stimuli.name} : {' '.join(part_stimuli['word'])}\n")
+        #         file_loc.unlink()
+        # else:
+        #     pass
         sentence_activations = candidate(stimuli=sentence_stimuli, average_sentence=average_sentence)
         for column in copy_columns:
             sentence_activations[column] = ('presentation', part_stimuli[column])
@@ -241,7 +268,7 @@ class model_extractor:
     def load_dataset(self):
         self.extractor.load_dataset()
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self,overwrite=False, *args, **kwargs):
         # get layers for model
         model_impl = model_pool[self.model_spec]
         layers=model_layers[self.model_spec]
@@ -258,7 +285,7 @@ class model_extractor:
                 model_activation_set = []
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i==0 else None)
                 for stim_id, stim in enumerate(self.extractor.stimuli_set):
-                    model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False)  #
+                    model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'],average_sentence=False,overwrite=overwrite)  #
                     if self.average_sentence=='True':
                         model_activations = self.extractor.get_mean_activations(model_activations)
                     elif self.average_sentence=='False':
@@ -360,5 +387,5 @@ class model_extractor_parallel:
                     print(f"\n{model_activation_name} doesn't exists, creating...\n")
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i == 0 else None)
                 stim=self.extractor.stimuli_set[group_id]
-                model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False)  #
+                model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False,overwrite=overwrite)  #
                 save_obj(model_activations, os.path.join(model_save_path, model_activation_name))
