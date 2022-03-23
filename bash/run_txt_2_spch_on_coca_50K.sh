@@ -1,19 +1,22 @@
 #!/bin/bash
 DATA_DIR=/om/user/ehoseini/MyData/sent_sampling/
+i=0
 LINE_COUNT=0
 GRAND_PIPE_FILE="${DATA_DIR}/Grand_coca_txt_2_spch_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
 printf "%s,%s,%s,%s\n" "row" "id" "sentence" "file"  >> $GRAND_PIPE_FILE
-while IFS=, read -r line_id string; do
-      possible_file="/om/user/ehoseini/MyData/sent_sampling/coca_spok_filter_punct_50K/wav//coca_spok_filter_punct_50K_${line_count}.wav"
+while read string; do
+      framename=$(printf '%05d' i)
+      possible_file="/om/user/ehoseini/MyData/sent_sampling/coca_spok_filter_punct_50K/wav//coca_spok_filter_punct_50K_${framename}.wav"
       if [ -f "$possible_file" ]
       then
         true
       else
         LINE_COUNT=$(expr ${LINE_COUNT} + 1)
-        printf "%d,%s,%s,%s\n" "$LINE_COUNT" "$line_id" "$string" "$possible_file"  >> $GRAND_PIPE_FILE
+        printf "%d,%s,%s,%s\n" "$LINE_COUNT" "$framename" "$string" "$possible_file"  >> $GRAND_PIPE_FILE
   fi
+          i=$i+1
 done < /om/user/ehoseini/MyData/sent_sampling/coca_spok_filter_punct_50K/text/coca_spok_filter_punct_50K_all.txt
 
 echo $LINE_COUNT

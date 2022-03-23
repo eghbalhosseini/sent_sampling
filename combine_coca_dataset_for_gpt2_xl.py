@@ -41,7 +41,7 @@ if __name__ == '__main__':
     with open(txt_file,'w') as f:
         for line_id,line in tqdm(enumerate(sentence_text)):
             id_z = str(line_id).zfill(5)
-            f.write(f'{id_z},{line}')
+            f.write(f'{line}')
             f.write('\n')
     f.close()
     for id, txt in tqdm(enumerate(sentence_text)):
