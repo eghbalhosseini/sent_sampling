@@ -17,9 +17,9 @@ elif getpass.getuser()=='ehoseini':
     COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
     COCA_PREPROCESSED_DIR = '/om/user/ehoseini/MyData/COCA_corpus/preprocessed/'
     BENCHMARK_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score/'
-    SAVE_DIR = '/om2/user/ehoseini/MyData/sent_sampling/'
-    RESULTS_DIR='/om2/user/ehoseini/MyData/sent_sampling/results/'
-    ANALYZE_DIR = '/om2/user/ehoseini/MyData/sent_sampling/analysis/'
+    SAVE_DIR = '/om/user/ehoseini/MyData/sent_sampling/'
+    RESULTS_DIR='/om/user/ehoseini/MyData/sent_sampling/results/'
+    ANALYZE_DIR = '/om/user/ehoseini/MyData/sent_sampling/analysis/'
 elif getpass.getuser() == 'alexso':
     UD_PARENT = '/om2/user/alexso/MyData/Universal Dependencies 2.6/'
     BENCHMARK_DIR = '/om2/user/alexso/.result_caching/neural_nlp.score'

@@ -20,7 +20,7 @@ def mock_get_args():
     new_args = mock_args('gpt2-xl', 'ud_sentencez_token_filter_v3_sample')
     return new_args
 
-debug=True
+debug=False
 
 if __name__ == '__main__':
     if debug:
