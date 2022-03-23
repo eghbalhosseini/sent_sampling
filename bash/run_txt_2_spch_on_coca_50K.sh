@@ -1,6 +1,7 @@
 #!/bin/bash
 DATA_DIR=/om/user/ehoseini/MyData/sent_sampling/
 i=0
+i=$(expr ${i} + 0)
 LINE_COUNT=0
 GRAND_PIPE_FILE="${DATA_DIR}/Grand_coca_txt_2_spch_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
