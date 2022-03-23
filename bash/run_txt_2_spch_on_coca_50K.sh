@@ -16,7 +16,7 @@ while read string; do
         LINE_COUNT=$(expr ${LINE_COUNT} + 1)
         printf "%d,%s,%s,%s\n" "$LINE_COUNT" "$framename" "$string" "$possible_file"  >> $GRAND_PIPE_FILE
   fi
-          i=$i+1
+    i=$(expr ${i} + 1)
 done < /om/user/ehoseini/MyData/sent_sampling/coca_spok_filter_punct_50K/text/coca_spok_filter_punct_50K_all.txt
 
 echo $LINE_COUNT
