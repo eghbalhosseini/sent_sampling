@@ -7,7 +7,7 @@ rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
 printf "%s,%s,%s,%s\n" "row" "id" "sentence" "file"  >> $GRAND_PIPE_FILE
 while read string; do
-      framename=$(printf '%05d' i)
+      framename=$(printf '%05d' $i)
       possible_file="/om/user/ehoseini/MyData/sent_sampling/coca_spok_filter_punct_50K/wav//coca_spok_filter_punct_50K_${framename}.wav"
       if [ -f "$possible_file" ]
       then
