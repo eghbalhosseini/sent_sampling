@@ -3,7 +3,7 @@
 #SBATCH --job-name=txt2spch
 #SBATCH --exclude node[017-018]
 #SBATCH --time=1:00:00
-#SBATCH --mem=16G
+#SBATCH --mem=32G
 #SBATCH --ntasks=1
 
 GRAND_FILE=$1
