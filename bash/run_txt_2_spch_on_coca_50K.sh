@@ -24,7 +24,8 @@ echo $LINE_COUNT
 run_val=0
 if [ "$LINE_COUNT" -gt "$run_val" ]; then
   echo "running  ${LINE_COUNT} "
-   nohup /cm/shared/admin/bin/submit-many-jobs 3000 950 600 350 txt_2_spch_coca_50K.sh $GRAND_PIPE_FILE
+   #nohup /cm/shared/admin/bin/submit-many-jobs 3000 950 600 350 txt_2_spch_coca_50K.sh $GRAND_PIPE_FILE
+   nohup /cm/shared/admin/bin/submit-many-jobs 10 5 3 2 txt_2_spch_coca_50K.sh $GRAND_PIPE_FILE
    #nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT  250 300 50 extract_model_act_for_group.sh $GRAND_PIPE_FILE
   else
     echo $LINE_COUNT

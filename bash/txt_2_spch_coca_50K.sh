@@ -39,8 +39,10 @@ echo "id ${run_framename}"
 echo "sentence: ${run_sentence}"
 echo "save location: ${run_save_file}"
 #
-. ~/.bash_profile
+. /home/ehoseini/.bash_profile
+
 conda activate neural_nlp_1
+export HOME=/om/user/ehoseini/
 echo $(which python)
 
 tts --text "${run_sentence}" --model_name tts_models/en/ljspeech/vits  --out_path "${run_save_file}"
