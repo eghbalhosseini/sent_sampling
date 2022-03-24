@@ -1,6 +1,6 @@
 from utils import extract_pool
 from utils.extract_utils import model_extractor
-from utils.data_utils import RESULTS_DIR, save_obj,load_obj,SAVE_DIR
+from utils.data_utils import RESULTS_DIR, save_obj,load_obj,SAVE_DIR,COCA_CORPUS_DIR
 from utils.data_utils import SENTENCE_CONFIG
 import os
 import numpy as np
@@ -44,22 +44,26 @@ if __name__ == '__main__':
             f.write(f'{line}')
             f.write('\n')
     f.close()
-    for id, txt in tqdm(enumerate(sentence_text)):
-        id_z=str(id).zfill(5)
-        txt_file=f'{txt_path.__str__()}/{new_dataset_id}_{id_z}.txt'
-        text_file = open(txt_file, "w")
-        n = text_file.write(txt)
-        text_file.close()
+    # for id, txt in tqdm(enumerate(sentence_text)):
+    #     id_z=str(id).zfill(5)
+    #     txt_file=f'{txt_path.__str__()}/{new_dataset_id}_{id_z}.txt'
+    #     text_file = open(txt_file, "w")
+    #     n = text_file.write(txt)
+    #     text_file.close()
 
 
 
-    # remove duplicates from the set
+    # save the data into coca folder
+    l=0
+    t_all = []
+    for sample_1 in range(5):
+        dataset_id = f'coca_spok_filter_punct_10K_sample_{sample_1+1}'
+        extractor_id = f'group=gpt2-xl_layers-dataset={dataset_id}-activation-bench=None-ave=None'
+        extractor_obj = extract_pool[extractor_id]()
+        extractor_obj.load_dataset()
+        t_all.append(extractor_obj.data_)
 
-    unique_sentences = list(set(sentence_text))
-    unique_sentences=np.unique(sentence_text)
-    duplicate_indices=[]
-    for id, x in tqdm(enumerate(unique_sentences)):
-        duplicate_indices.append(sentence_text.index(x))
-    np.unique(duplicate_indices).shape
-    sentence_data_filter_no_dup = [sentence_data_filter_len[x] for x in duplicate_indices]
-    print(f'Filtered out {len(sentence_data_filter_len) - len(sentence_data_filter_no_dup)} duplicate sentences')
+    flat_list = [item for sublist in t_all for item in sublist]
+    new_dataset_id = f'coca_spok_filter_punct_50K'
+    file_loc = os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K.pkl')
+    save_obj(flat_list,file_loc)
