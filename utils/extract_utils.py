@@ -71,7 +71,7 @@ def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_colu
 
 
 class extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence='False',modality=None):
+    def __init__(self,dataset=None,datafile=None,identifier=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence='False',modality=None):
         ##### DATA ####
         self.dataset=dataset # name of the dataset
         self.datafile = datafile  # name of the dataset
@@ -82,6 +82,7 @@ class extractor:
         self.extract_benchmark=extract_benchmark
         self.average_sentence=average_sentence # which representation to output, last token, or average of all tokens.
         self.atlas=atlas
+        self.identifier=identifier
         self.modality=modality
         self.extract_name=extract_name
 

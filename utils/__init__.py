@@ -295,6 +295,7 @@ for config in extract_configuration:
         #model=getattr(module,configure['model'])
         extractor_param=extractor(dataset=configure['dataset'],
                                   datafile=configure['datafile'],
+                                  identifier=configure['identifier'],
                                   model_spec=configure['model_set'],
                                   layer_spec=configure['layer_set'],
                                   layer_name=configure['layer_name'],

@@ -3,7 +3,7 @@ sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_samp
 from utils import extract_pool
 from utils.optim_utils import optim_pool
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj
+from utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR, load_obj
 import os
 parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('extractor_id', type=str,
@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K-activation-bench=None-ave=False'
     optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=200-n_init=1-run_gpu=True"
-
+    low_resolution='False'
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
     # extract data
@@ -28,7 +28,12 @@ if __name__ == '__main__':
     # optimize
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
-
+    xy_dir=os.path.join(SAVE_DIR, f"{extractor_id}_XY_corr_list-low_res={low_resolution}.pkl")
+    if os.path.exists(xy_dir):
+        D_precompute=load_obj(xy_dir)
+        optimizer_obj.XY_corr_list=D_precompute
+        #optimizer_obj.N_S=
+    # save_obj(self.XY_corr_list,xy_dir)
     optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=True,cpu_dump=True)
     S_opt_d, DS_opt_d = optimizer_obj()
     # save results
@@ -49,7 +54,7 @@ if __name__ == '__main__':
     # self=optimizer_obj
     # self.XY_corr_list = []
     # cpu_dump=True
-    # low_resolution=True
+    # low_resolution=False
     # if not cpu_dump:
     #     target_device = self.device
     # else:

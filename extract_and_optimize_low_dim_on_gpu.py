@@ -22,6 +22,8 @@ if __name__ == '__main__':
     # optimize
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
+
+
     optimizer_obj.precompute_corr_rdm_on_gpu(low_dim=True,low_resolution=True,cpu_dump=True)
     S_opt_d, DS_opt_d = optimizer_obj()
     # save results

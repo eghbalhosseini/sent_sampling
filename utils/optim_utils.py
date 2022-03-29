@@ -145,10 +145,14 @@ class optim:
         else:
             self.activation_list = activation_list
 
-    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=200,pca_type='fixed',low_resolution=False,cpu_dump=False):
+    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=200,pca_type='fixed',low_resolution=False,cpu_dump=False,save_results=True,preload=True):
         #assert(torch.cuda.is_available())
         #torch.cuda.empty_cache()
         self.XY_corr_list=[]
+        if preload:
+            #xy_dir=os.path.join(SAVE_DIR, f"{extractor_id}_XY_corr_list-low_res={low_resolution}.pkl")
+            True
+
         if not cpu_dump:
             target_device=self.device
         else:
@@ -198,12 +202,21 @@ class optim:
                     XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0))
 
                 self.XY_corr_list.append(XY_corr.to(target_device))
+                del X
+                del act
+                del XY_corr
+                torch.cuda.empty_cache()
+
         # double check target device allocation.
         self.XY_corr_list=[x.to(target_device) for x in self.XY_corr_list]
         if self.run_gpu:
             del self.activations
             torch.cuda.empty_cache()
-        pass
+        if save_results:
+            D_precompute=dict(N_S=self.N_S,XY_corr_list=self.XY_corr_list)
+            save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extract_name}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl"))
+
+
 
     def gpu_object_function(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
