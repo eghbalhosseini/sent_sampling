@@ -177,6 +177,7 @@ SENTENCE_CONFIG = [
     dict(name='coca_spok_filter_punct_10K_sample_4',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_4.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_5',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_5.pkl')),
     dict(name='coca_spok_filter_punct_50K',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K.pkl')),
+    dict(name='coca_spok_filter_punct_50K_sylb',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K_sylb.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_ev_editsSep12',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsSep12.pkl'),
     dict(name='coca_spok_filter_punct_10K_sample_ev_editsOct16',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsOct16.pkl'),
     dict(name='ud_sentences_U01_SET1_paraphrase',file_loc=os.path.join(RESULTS_DIR,'ud_sentences_U01_SET1_paraphrase.pkl')),
