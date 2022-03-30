@@ -3,8 +3,8 @@
 #SBATCH --job-name=COCA_50K
 #SBATCH -N 1
 #SBATCH --time=5-12:00:00
-#SBATCH --mem=256G
-#SBATCH --gres=gpu:RTXA6000:1
+#SBATCH --mem=300G
+#SBATCH --gres=gpu:RTXA6000:2
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --nodelist=node094
