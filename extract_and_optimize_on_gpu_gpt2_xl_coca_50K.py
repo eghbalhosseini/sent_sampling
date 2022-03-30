@@ -30,8 +30,9 @@ if __name__ == '__main__':
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
     xy_dir=os.path.join(SAVE_DIR, f"{optimizer_obj.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}_low_dim={low_dim}.pkl")
+
     if os.path.exists(xy_dir):
-        print('loading precomputed correlation matrix ')
+        print(f'loading precomputed correlation matrix from {xy_dir}')
         D_precompute=load_obj(xy_dir)
         optimizer_obj.XY_corr_list=D_precompute
     else:
