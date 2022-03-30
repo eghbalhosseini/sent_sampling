@@ -13,8 +13,8 @@ parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    extractor_id = args.extractor_id
-    optimizer_id = args.optimizer_id
+    #extractor_id = args.extractor_id
+    #optimizer_id = args.optimizer_id
 
     extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K_sylb-activation-bench=None-ave=False'
     optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=250-n_init=1-run_gpu=True"

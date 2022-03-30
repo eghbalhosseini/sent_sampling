@@ -14,7 +14,8 @@ device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
 import warnings
 import os
-from utils.data_utils import save_obj, SAVE_DIR
+from utils.data_utils import save_obj, SAVE_DIR,load_obj
+
 try :
     torch.set_deterministic(True)
 except:
@@ -149,63 +150,68 @@ class optim:
         #assert(torch.cuda.is_available())
         #torch.cuda.empty_cache()
         self.XY_corr_list=[]
-        if preload:
-            #xy_dir=os.path.join(SAVE_DIR, f"{extractor_id}_XY_corr_list-low_res={low_resolution}.pkl")
-            True
-
         if not cpu_dump:
-            target_device=self.device
+            target_device = self.device
         else:
-            target_device=torch.device('cpu')
-        if low_dim:
-            var_explained = []
-            for idx, act_dict in tqdm(enumerate(self.activations)):
-                # backward compatibility
-                act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
-                act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
-                # act must be in m sample * n feature shape ,
-                q=min(500,min(act.shape))
-                u, s, v = torch.pca_lowrank(act, q=q)
-                # keep 85% variance explained ,
-                idx_85 = torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2) < .85
-                cols = list(torch.where(idx_85)[0].cpu().numpy())
-                if pca_type == 'fixed':
-                    act_pca = torch.matmul(act, v[:, :low_dim_num])
-                elif pca_type == 'equal_var':
-                    act_pca = torch.matmul(act, v[:, cols])
-
-                #activation_list.append(act_pca)
-                var_explained.append(torch.cumsum(torch.cat((torch.tensor([0], device=self.device), s ** 2)),
-                                                  dim=0) / torch.sum(s ** 2))
-                # just in time computation:
-                X=torch.nn.functional.normalize(act_pca.squeeze())
-                X=X - X.mean(axis=1, keepdim=True)
-                X =torch.nn.functional.normalize(X)
-                if low_resolution==True:
-                    XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1, 0)).half()
-                else:
-                    XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X,torch.transpose(X, 1,0))
-
-                self.XY_corr_list.append(XY_corr.to(target_device))
-            self.var_explained=var_explained
+            target_device = torch.device('cpu')
+        if preload:
+            xy_dir=os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}_low_dim={low_dim}.pkl")
+            if os.path.exists(xy_dir):
+                self.XY_corr_list=load_obj(xy_dir)
+                self.XY_corr_list=[x.to(target_device) for x in self.XY_corr_list]
+            else:
+                assert False, "file doesnt exist, set preload to False"
         else:
-            for idx, act_dict in (enumerate(self.activations)):
-                # backward compatiblity
-                act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
-                act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
-                X = torch.nn.functional.normalize(act.squeeze())
-                X = X - X.mean(axis=1, keepdim=True)
-                X = torch.nn.functional.normalize(X)
-                if low_resolution == True:
-                    XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X,torch.transpose(X, 1,0)).half()
-                else:
-                    XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0))
 
-                self.XY_corr_list.append(XY_corr.to(target_device))
-                del X
-                del act
-                del XY_corr
-                torch.cuda.empty_cache()
+            if low_dim:
+                var_explained = []
+                for idx, act_dict in tqdm(enumerate(self.activations)):
+                    # backward compatibility
+                    act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+                    act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
+                    # act must be in m sample * n feature shape ,
+                    q=min(500,min(act.shape))
+                    u, s, v = torch.pca_lowrank(act, q=q)
+                    # keep 85% variance explained ,
+                    idx_85 = torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2) < .85
+                    cols = list(torch.where(idx_85)[0].cpu().numpy())
+                    if pca_type == 'fixed':
+                        act_pca = torch.matmul(act, v[:, :low_dim_num])
+                    elif pca_type == 'equal_var':
+                        act_pca = torch.matmul(act, v[:, cols])
+
+                    #activation_list.append(act_pca)
+                    var_explained.append(torch.cumsum(torch.cat((torch.tensor([0], device=self.device), s ** 2)),
+                                                      dim=0) / torch.sum(s ** 2))
+                    # just in time computation:
+                    X=torch.nn.functional.normalize(act_pca.squeeze())
+                    X=X - X.mean(axis=1, keepdim=True)
+                    X =torch.nn.functional.normalize(X)
+                    if low_resolution==True:
+                        XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1, 0)).half()
+                    else:
+                        XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X,torch.transpose(X, 1,0))
+
+                    self.XY_corr_list.append(XY_corr.to(target_device))
+                self.var_explained=var_explained
+            else:
+                for idx, act_dict in tqdm(enumerate(self.activations)):
+                    # backward compatiblity
+                    act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+                    act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
+                    X = torch.nn.functional.normalize(act.squeeze())
+                    X = X - X.mean(axis=1, keepdim=True)
+                    X = torch.nn.functional.normalize(X)
+                    if low_resolution == True:
+                        XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X,torch.transpose(X, 1,0)).half()
+                    else:
+                        XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0))
+
+                    self.XY_corr_list.append(XY_corr.to(target_device))
+                    del X
+                    del act
+                    del XY_corr
+                    torch.cuda.empty_cache()
 
         # double check target device allocation.
         self.XY_corr_list=[x.to(target_device) for x in self.XY_corr_list]
@@ -213,7 +219,7 @@ class optim:
             del self.activations
             torch.cuda.empty_cache()
         if save_results:
-            D_precompute=dict(N_S=self.N_S,XY_corr_list=self.XY_corr_list)
+            D_precompute=self.XY_corr_list
             save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extract_name}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl"))
 
 
