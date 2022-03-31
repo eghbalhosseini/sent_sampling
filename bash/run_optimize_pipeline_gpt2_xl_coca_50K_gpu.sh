@@ -8,6 +8,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --nodelist=node094
+#SBATCH -p evlab
 #SBATCH --mail-user=ehoseini@mit.edu
 
 export SINGULARITY_CACHEDIR=/om/user/${USER}/st/
