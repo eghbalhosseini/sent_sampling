@@ -73,3 +73,5 @@ if __name__ == '__main__':
     ax.spines["right"].set_visible(False)
     ax.set_title(f"sentence from {file_name}")
     fig.show()
+
+    rdm_src = optimizer_obj.mod_rdm_function(res['optimized_S'])
