@@ -111,7 +111,7 @@ def Variation(s,N_S, pZ_S):
     return entropy(qZ)
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance,rdm_function=compute_RDM, optim_algorithm=None,run_gpu=False,early_stopping=True,stop_threshold=1e-4):
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance,rdm_function=compute_rdm, optim_algorithm=None,run_gpu=False,early_stopping=True,stop_threshold=1e-4):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
