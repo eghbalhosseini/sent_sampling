@@ -84,8 +84,8 @@ def compute_rdm(S,group_act,vector=True, distance='correlation'):
         #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
         #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
     #[x.values for x in patterns if type]
-    rdm1_vec = create_rdm(patterns_list, vec=vector, distance)
-    rdm2_vec = rdm2_vec = second_order_rdm(patterns_list, vec=vector, distance)
+    rdm1_vec = create_rdm(patterns_list, vec=vector, distance=distance)
+    rdm2_vec = rdm2_vec = second_order_rdm(patterns_list, vec=vector, distance=distance)
     rdm_dict= dict(RDM_1st=rdm1_vec,RDM_2nd=rdm2_vec)
     return rdm_dict
 
