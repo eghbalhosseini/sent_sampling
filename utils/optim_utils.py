@@ -44,7 +44,7 @@ ch.setFormatter(formatter)
 
 #‌impor functions from Noga's optimization pipeline.
 sys.path.insert(1,OPTIM_PARENT)
-from opt_exp_design import coordinate_ascent, coordinate_ascent_eh,coordinate_ascent_parallel_eh,
+from opt_exp_design import coordinate_ascent, coordinate_ascent_eh,coordinate_ascent_parallel_eh
 import tools
 from tools import second_order_rdm, create_rdm, MI
 LOGGER = tools.get_logger('OPT-EXP-DSGN')
