@@ -298,11 +298,11 @@ class optim:
         elif self.extract_type=='brain_resp':
             return np.mean([self.objective_function(S,x) for x in self.activations_by_split])
 
-    def mod_rdm_function(self,S):
+    def mod_rdm_function(self,S,vector=True):
         if self.extract_type=='activation':
-            return self.rdm_function(S,self.activations)
+            return self.rdm_function(S,self.activations,vector=vector)
         elif self.extract_type=='brain_resp':
-            return np.mean([self.rdm_function(S,x) for x in self.activations_by_split])
+            return np.mean([self.rdm_function(S,x,vector=vector) for x in self.activations_by_split])
 
     def __call__(self,*args, **kwargs):
         if self.run_gpu:
