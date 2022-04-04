@@ -34,7 +34,6 @@ if __name__ == '__main__':
         result[f"originial"] = ds_src
         sentences = [x['text'] for x in ext_obj.data_]
         ev_sent_id = ([sentences.index(ev_sent) for ev_sent in ev_sentences])
-        ds_ev = optimizer_obj.mod_objective_function([1,2])
         ds_ev = optimizer_obj.mod_objective_function(np.asarray(ev_sent_id))
         result[f"filtering by Ev"] = ds_ev
         #
@@ -44,3 +43,33 @@ if __name__ == '__main__':
             sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s))
             ds_rand.append(optimizer_obj.mod_objective_function(sent_random))
         result[f"random"] = ds_rand
+
+    fig = plt.figure(figsize=[15, 8])
+    ax = fig.add_axes([.1, .1, .4, .6])
+
+    cmap = cm.get_cmap('viridis_r')
+
+    alph_col = cmap(np.divide(range(len(result)), len(result)))
+    tick_l = []
+
+    ax.barh(0, result['originial'], color=alph_col[[0], :], label='originial')
+    str_val = "{:.5f}".format(result['originial'])
+    tick_l.append(f"original\n {str_val}")
+
+    ax.barh(1, result['filtering by Ev'], color=alph_col[[1], :], label='filtering by Ev')
+    str_val = "{:.5f}".format(result['filtering by Ev'])
+    tick_l.append(f"filtering by Ev \n {str_val}")
+
+    ax.barh(2, np.mean(result['random']), xerr=np.std(result['random']), color=alph_col[[2], :], label='random')
+    str_val = "{:.5f}".format(np.mean(result['random']))
+    tick_l.append(f"random \n {str_val}")
+
+    ax.invert_yaxis()
+
+    ax.set_xlabel('D_s')
+    ax.set_yticks([0, 1, 2])
+    ax.set_yticklabels(tick_l, fontsize=14)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.set_title(f"sentence from {file_name}")
+    fig.show()

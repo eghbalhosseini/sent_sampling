@@ -44,7 +44,7 @@ ch.setFormatter(formatter)
 
 #‌impor functions from Noga's optimization pipeline.
 sys.path.insert(1,OPTIM_PARENT)
-from opt_exp_design import coordinate_ascent, coordinate_ascent_eh,coordinate_ascent_parallel_eh
+from opt_exp_design import coordinate_ascent, coordinate_ascent_eh,coordinate_ascent_parallel_eh,
 import tools
 from tools import second_order_rdm, create_rdm, MI
 LOGGER = tools.get_logger('OPT-EXP-DSGN')
@@ -69,6 +69,26 @@ def Distance(S,group_act, distance='correlation'):
     rdm2_vec = second_order_rdm(patterns_list, True, distance)
     return rdm2_vec.mean()
 
+def compute_rdm(S,group_act,vector=True, distance='correlation'):
+    if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
+        patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
+    else:
+        # backward compatibility
+        group_act_mod=[]
+        for act_dict in group_act:
+            act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+            group_act_mod.append(act_)
+        patterns_list=[]
+        for grp_act in tqdm(group_act_mod):
+            patterns_list.append(np.stack([grp_act[i] for i in S]))
+        #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
+        #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
+    #[x.values for x in patterns if type]
+    rdm1_vec = create_rdm(patterns_list, vec=vector, distance)
+    rdm2_vec = rdm2_vec = second_order_rdm(patterns_list, vec=vector, distance)
+    rdm_dict= dict(RDM_1st=rdm1_vec,RDM_2nd=rdm2_vec)
+    return rdm_dict
+
 @torch.no_grad()
 def pt_create_corr_rdm_short(X,Y=None,vec=False,device=None):
     # note currently it is compeletely ignoring Y
@@ -91,11 +111,12 @@ def Variation(s,N_S, pZ_S):
     return entropy(qZ)
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False,early_stopping=True,stop_threshold=1e-4):
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance,rdm_function=compute_RDM, optim_algorithm=None,run_gpu=False,early_stopping=True,stop_threshold=1e-4):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
         self.objective_function=objective_function
+        self.rdm_function = compute_rdm
         self.optim_algorithm=optim_algorithm
         self.device=device
         self.run_gpu=run_gpu
@@ -231,8 +252,6 @@ class optim:
             D_precompute=self.XY_corr_list
             save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extract_name}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl"))
 
-
-
     def gpu_object_function(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         pairs = torch.combinations(samples, with_replacement=False)
@@ -275,6 +294,12 @@ class optim:
             return self.objective_function(S,self.activations)
         elif self.extract_type=='brain_resp':
             return np.mean([self.objective_function(S,x) for x in self.activations_by_split])
+
+    def mod_rdm_function(self,S):
+        if self.extract_type=='activation':
+            return self.rdm_function(S,self.activations)
+        elif self.extract_type=='brain_resp':
+            return np.mean([self.rdm_function(S,x) for x in self.activations_by_split])
 
     def __call__(self,*args, **kwargs):
         if self.run_gpu:
