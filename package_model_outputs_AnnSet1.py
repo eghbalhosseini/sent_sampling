@@ -75,3 +75,11 @@ if __name__ == '__main__':
     fig.show()
 
     rdm_src = optimizer_obj.mod_rdm_function(res['optimized_S'],vector=False)
+    model_names=[x['model_name'] for x in optimizer_obj.activations]
+    rdm_output=dict(model_names=model_names,rdm_1st=rdm_src['RDM_1st'],rdm_2nd=rdm_src['RDM_2nd'])
+
+    rdm_ev = optimizer_obj.mod_rdm_function(np.asarray(ev_sent_id),vector=False)
+    rdm_ev_output = dict(model_names=model_names,sentences=ev_sentences ,rdm_1st=rdm_ev['RDM_1st'], rdm_2nd=rdm_ev['RDM_2nd'])
+
+    save_obj(rdm_ev_output,os.path.join(SAVE_DIR,'results','rdm_ev_AnnSet1.pkl'))
+
