@@ -26,6 +26,13 @@ if __name__ == '__main__':
     extractor_obj = extract_pool[extractor_id]()
     extractor_obj.load_dataset()
     extractor_obj()
+    #
+    # values = []
+    # values=[d['text'] for d in extractor_obj.data_]
+    # with open(os.path.join('/om/user/ehoseini/MyData/sent_sampling/coca_spok_filter_punct_50K/text/', f"sentences_{extractor_obj.dataset}.txt"), 'w') as f:
+    #             for item in values:
+    #                 f.write("%s\n" % (item))
+
     # optimize
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
