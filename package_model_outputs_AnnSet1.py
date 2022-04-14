@@ -73,6 +73,23 @@ if __name__ == '__main__':
     ax.spines["right"].set_visible(False)
     ax.set_title(f"sentence from {file_name}")
     fig.show()
+    #
+    model_input = optimizer_obj.extractor_obj.data_
+    selected_sentences=[model_input[x] for x in ev_sent_id]
+    model_activations=[]
+    model_ids=[]
+    for k in tqdm(range(len(optimizer_obj.activations))):
+
+        model_act=optimizer_obj.activations[k]['activations']
+        act_ = [x[0] if isinstance(model_act[0], list) else x for x in model_act]
+        model_activations.append([act_[x] for x in ev_sent_id])
+        model_ids.append(optimizer_obj.activations[k]['model_name'])
+
+    # save activation
+    act_ev_output = dict(model_names=model_ids,sentences=selected_sentences ,model_acts=model_activations)
+
+    save_obj(act_ev_output,os.path.join(SAVE_DIR,'results','act_ev_AnnSet1.pkl'))
+    # save rdms
 
     rdm_src = optimizer_obj.mod_rdm_function(res['optimized_S'],vector=False)
     model_names=[x['model_name'] for x in optimizer_obj.activations]
