@@ -123,6 +123,7 @@ if __name__ == '__main__':
 
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
+    S_opt_d, DS_opt_d = optimizer_obj()
     # plot_waveform(waveform, sample_rate)
     #
     # n_fft = 1024

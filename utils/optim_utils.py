@@ -188,7 +188,7 @@ class optim:
         else:
             target_device = torch.device('cpu')
         if preload:
-            xy_dir=os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}_low_dim={low_dim}.pkl")
+            xy_dir=os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl")
             if os.path.exists(xy_dir):
                 self.XY_corr_list=load_obj(xy_dir)
                 self.XY_corr_list=[x.to(target_device) for x in self.XY_corr_list]
