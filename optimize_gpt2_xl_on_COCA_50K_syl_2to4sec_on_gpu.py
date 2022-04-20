@@ -20,7 +20,8 @@ if __name__ == '__main__':
 
     extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K_sylb_2to4sec-activation-bench=None-ave=False'
     optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=250-n_init=1-run_gpu=True"
-
+    low_resolution='False'
+    low_dim='False'
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
     # extract data
@@ -34,7 +35,20 @@ if __name__ == '__main__':
     #xy_dir = os.path.join(SAVE_DIR, f"{extractor_id}_XY_corr_list-low_res=True.pkl")
     #if os.path.exists(xy_dir):
     #    xy_list=load_obj(xy_dir)
-    optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=False,cpu_dump=True,preload=True)
+    xy_dir = os.path.join(SAVE_DIR,
+                          f"{optimizer_obj.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}_low_dim={low_dim}.pkl")
+
+    if os.path.exists(xy_dir):
+        print(f'loading precomputed correlation matrix from {xy_dir}')
+        D_precompute=load_obj(xy_dir)
+        optimizer_obj.XY_corr_list=D_precompute
+    else:
+        #optimizer_obj.N_S=
+    # save_obj(self.XY_corr_list,xy_dir)
+        print('precomputing correlation matrix ')
+        optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=False,cpu_dump=True,preload=False,save_results=True)
+
+
     S_opt_d, DS_opt_d = optimizer_obj()
     # save results
     optim_results = dict(extractor_name=extractor_id,
