@@ -104,6 +104,25 @@ if __name__ == '__main__':
 
     file_loc = os.path.join(COCA_CORPUS_DIR,new_dataset_id)
     save_obj(new_list,file_loc)
+
+    '''read and save correaltion '''
+    extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K_sylb_2to4sec-activation-bench=None-ave=False'
+    extractor_obj = extract_pool[extractor_id]()
+    extractor_obj.load_dataset()
+    extractor_obj()
+    optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=250-n_init=1-run_gpu=True"
+
+    optimizer_obj = optim_pool[optimizer_id]()
+    optimizer_obj.load_extractor(extractor_obj)
+
+    optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=False, cpu_dump=True,preload=False)
+
+    files_t_fix=glob(os.path.join(SAVE_DIR,'coca_spok_filter_punct_50K_sylb_sylb_2to4sec_gpt2-xl_layer_*.pkl'))
+    for file in files_t_fix:
+        os.rename(file, file.replace('_sylb_sylb_','_sylb_'))
+
+    optimizer_obj = optim_pool[optimizer_id]()
+    optimizer_obj.load_extractor(extractor_obj)
     # plot_waveform(waveform, sample_rate)
     #
     # n_fft = 1024

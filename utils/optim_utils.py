@@ -253,7 +253,7 @@ class optim:
             torch.cuda.empty_cache()
         if save_results:
             D_precompute=self.XY_corr_list
-            save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extract_name}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl"))
+            save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl"))
 
     def gpu_object_function(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
