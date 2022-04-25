@@ -1,4 +1,4 @@
-from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd
+from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd,construct_stimuli_set_no_grouping
 from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.stimuli import load_stimuli, StimulusSet
 from neural_nlp.models import model_pool, model_layers
@@ -97,6 +97,20 @@ class extractor:
             assert(hasattr(self, 'stimuli_set'))
         else:
             stimuli_set = construct_stimuli_set(data_, self.dataset)
+            self.stimuli_set = stimuli_set
+            self.N_S=int(len(data_))
+
+    def load_dataset_no_grouping(self,silent=True):
+        data_ = load_obj(self.datafile,silent=silent)
+        self.data_=data_
+        if isinstance(self.data_, pd.DataFrame):
+            NotImplementedError
+        #    stimuli_set=construct_stimuli_set_from_pd(data_, self.dataset)
+        #   self.stimuli_set = stimuli_set
+        #    self.N_S=int(len(data_.groupby('sent_id')))
+        #    assert(hasattr(self, 'stimuli_set'))
+        else:
+            stimuli_set = construct_stimuli_set_no_grouping(data_, self.dataset)
             self.stimuli_set = stimuli_set
             self.N_S=int(len(data_))
 

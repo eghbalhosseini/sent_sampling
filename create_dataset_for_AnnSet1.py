@@ -1,4 +1,7 @@
 import sys
+
+import pandas as pd
+
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 from utils import extract_pool
 from utils.optim_utils import optim_pool
@@ -17,7 +20,7 @@ from librosa.onset import onset_detect
 import numpy as np
 import re
 import matplotlib as mpl
-
+import pandas as pd
 if __name__ == '__main__':
     save_loc = '/om/user/ehoseini/MyData/sent_sampling/results/'
     ann_sentneces=open(os.path.join(save_loc, 'sentence_AnnSet1_ordered_for_RDM_analysis.txt'), 'r')
@@ -39,3 +42,13 @@ if __name__ == '__main__':
         ann_data.append(input_data[overlap_idx])
 
     save_obj(ann_data,os.path.join(RESULTS_DIR, 'ud_sentences_U01_AnnSET1_ordered_for_RDM.pkl'))
+
+
+    #
+    extrac_id = 'group=albert-xxlarge-v2_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+
+    ext_obj.load_dataset()
+    all_stim=ext_obj.stimuli_set
+    ext_obj()
+    stimuli_data=ext_obj.data_

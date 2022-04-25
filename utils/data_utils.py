@@ -133,6 +133,30 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
         all_sentence_set.append(sentence_set)
     return all_sentence_set
 
+def construct_stimuli_set_no_grouping(stimuli_data, stimuli_data_name):
+    all_sentence_set=[]
+    seq = np.floor(np.linspace(0, len(stimuli_data), num=2))
+    seq_pair=np.vstack((seq[0:-1], seq[1:]))
+    seq_pair=seq_pair.astype(np.int).transpose()
+    num_row=seq_pair.shape[0]
+    for row in range(num_row):
+        sentence_words, word_nums, sentenceID = [], [], []
+        for id, sent_id in tqdm(enumerate(range(seq_pair[row,0],seq_pair[row,1]))):
+            sentence= stimuli_data[sent_id]
+            for word_ind, word in enumerate(sentence['text'].split()):
+                word = word.rstrip('\n')
+                sentence_words.append(word)
+                word_nums.append(word_ind)
+                sentenceID.append(sent_id)
+        word_number = list(range(len(sentence_words)))
+        zipped_lst = list(zip(sentenceID, word_number, sentence_words))
+        sentence_set = StimulusSet(zipped_lst, columns=['sentence_id', 'stimulus_id', 'word'])
+
+        sentence_set.name = stimuli_data_name+'_no_group'
+        all_sentence_set.append(sentence_set)
+    return all_sentence_set
+
+
 def construct_stimuli_set_from_pd(stimuli_pd, stimuli_data_name='null',splits=200):
     all_sentence_set=[]
     stimuli_pd.sent_id.max()
