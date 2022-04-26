@@ -10,7 +10,7 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
     extractor_id = args.extractor_id
-    optimizer_id = args.optimizer_id
+
     print(extractor_id+'\n')
     # extract data
     extractor_obj = extract_pool[extractor_id]()
