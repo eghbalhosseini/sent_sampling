@@ -35,6 +35,14 @@ for set in albert-xxlarge-v2 \
 done
 
 
+run=0
+
+for extract in ${extract_list[@]} ; do
+    extract_pool[$run]="$extract"
+    run=$run+1
+  done
+done
+
 
 
 
