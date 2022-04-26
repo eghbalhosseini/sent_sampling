@@ -1,7 +1,5 @@
 import sys
-
 import pandas as pd
-
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 from utils import extract_pool
 from utils.optim_utils import optim_pool
@@ -22,6 +20,7 @@ import re
 import matplotlib as mpl
 import pandas as pd
 if __name__ == '__main__':
+    os.environ['RESULTCACHING_HOME']
     save_loc = '/om/user/ehoseini/MyData/sent_sampling/results/'
     ann_sentneces=open(os.path.join(save_loc, 'sentence_AnnSet1_ordered_for_RDM_analysis.txt'), 'r')
     content=ann_sentneces.read()
@@ -43,7 +42,6 @@ if __name__ == '__main__':
 
     save_obj(ann_data,os.path.join(RESULTS_DIR, 'ud_sentences_U01_AnnSET1_ordered_for_RDM.pkl'))
 
-
     #
     extrac_id = 'group=albert-xxlarge-v2_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
     ext_obj = extract_pool[extrac_id]()
@@ -52,3 +50,50 @@ if __name__ == '__main__':
     all_stim=ext_obj.stimuli_set
     ext_obj()
     stimuli_data=ext_obj.data_
+    #
+    extrac_id = 'group=albert-xxlarge-v2_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+
+    ext_obj.load_dataset_no_grouping()
+    all_stim=ext_obj.stimuli_set
+    ext_obj()
+    stimuli_data=ext_obj.data_
+
+    extrac_id = 'group=ctrl_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+
+    ext_obj.load_dataset_no_grouping()
+    ext_obj()
+
+    model_id='bert-large-uncased-whole-word-masking'
+    extrac_id = f'group={model_id}_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+    ext_obj.load_dataset_no_grouping()
+    ext_obj()
+
+
+    model_id='roberta-base'
+    extrac_id = f'group={model_id}_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+    ext_obj.load_dataset_no_grouping()
+    ext_obj()
+
+    model_id = 'xlnet-large-cased'
+    extrac_id = f'group={model_id}_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+    ext_obj.load_dataset_no_grouping()
+    ext_obj()
+
+
+    model_id = 'gpt2-xl'
+    extrac_id = f'group={model_id}_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+    ext_obj.load_dataset_no_grouping()
+    ext_obj()
+
+
+    model_id = 'xlm-mlm-en-2048'
+    extrac_id = f'group={model_id}_layers-dataset=ud_sentences_U01_AnnSET1_ordered_for_RDM-activation-bench=None-ave=False'
+    ext_obj = extract_pool[extrac_id]()
+    ext_obj.load_dataset_no_grouping()
+    ext_obj()
