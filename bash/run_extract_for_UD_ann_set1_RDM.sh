@@ -41,7 +41,6 @@ for extract in ${extract_list[@]} ; do
     extract_pool[$run]="$extract"
     run=$run+1
   done
-done
 
 
 
