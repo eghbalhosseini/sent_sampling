@@ -218,5 +218,6 @@ SENTENCE_CONFIG = [
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_2',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_2.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_3',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_3.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_4',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_4.pkl')),
-    dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_5',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_5.pkl'))]
+    dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_5',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_5.pkl')),
+    dict(name='pereira2018-243sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,''))]
 
