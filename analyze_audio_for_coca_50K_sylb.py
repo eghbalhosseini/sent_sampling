@@ -42,37 +42,70 @@ if __name__ == '__main__':
         #wave_ts=waveform.shape[-1]/sample_rate
         wave_tss.append(wave_ts)
     wave_tss=np.asarray(wave_tss)
-    plt.hist(wave_tss, bins=100, edgecolor='k', linewidth=.2)
-    plt.show()
-    sent_length=[x['sentence_length'] for x in sent_info]
-    #plt.scatter(wave_tss,sent_length)
+
+    sent_length = [x['sentence_length'] for x in sent_info]
     tss_ks=[]
     for k in np.unique(sent_length):
         locations=np.argwhere(np.asarray(sent_length)==k)
         tss_k=wave_tss[locations]
         tss_ks.append(np.squeeze(tss_k))
     ks=np.unique(sent_length)
-    plt.violinplot(tss_ks,positions=ks)
-    plt.show()
-    #
 
-    alowable_range=np.argwhere(np.logical_and(wave_tss<4.0, wave_tss>2.0))
+    alowable_range = np.argwhere(np.logical_and(wave_tss < 4.0, wave_tss > 2.0))
 
-    wave_tss_allowed=wave_tss[alowable_range]
-    alow_sent_length=[sent_length[int(x)] for x in alowable_range]
+    wave_tss_allowed = wave_tss[alowable_range]
+    alow_sent_length = [sent_length[int(x)] for x in alowable_range]
 
-    tss_ks_allow=[]
+    tss_ks_allow = []
     for k in np.unique(alow_sent_length):
-        locations=np.argwhere(np.asarray(alow_sent_length)==k)
-        tss_k=wave_tss_allowed[locations]
+        locations = np.argwhere(np.asarray(alow_sent_length) == k)
+        tss_k = wave_tss_allowed[locations]
         tss_ks_allow.append(np.squeeze(tss_k))
-    ks=np.unique(alow_sent_length)
-    plt.violinplot(tss_ks_allow,positions=ks)
-    plt.show()
+    ks = np.unique(alow_sent_length)
+
+    #
+    #fig = plt.figure(figsize=(11, 8), dpi=100, frameon=False)
+    fig = plt.figure(figsize=(11, 8), dpi=200, frameon=False)
+    ax = plt.axes((.1, .5, .35, .25))
+    ax.hist(wave_tss, bins=50, edgecolor='w', linewidth=.2,color=np.divide((55, 76, 128),256))
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.set_ylabel('count')
+    ax.set_xlabel('duration (seconds)')
+    ax.set_title('estimated duration of sentences')
+    ax = plt.axes((.1, .1, .35, .25))
+    viol=ax.violinplot(tss_ks,positions=ks,showmeans=True,showextrema=False)
+    for pc in viol['bodies']:
+        pc.set_facecolor(np.divide((55, 76, 128),256))
+        pc.set_edgecolor('white')
+        pc.set_alpha(1)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.set_xlabel('number of words')
+    ax.set_ylabel('duration (seconds)')
+    #ax.set_title('estimated duration of sentences')
+
+    #
+    ax = plt.axes((.55, .5, .35, .25))
+    ax.hist(np.squeeze(wave_tss[alowable_range]), bins=50, edgecolor='w', linewidth=.2, color=np.divide((255, 166, 0), 255))
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.set_ylabel('count')
+    ax.set_xlabel('duration (seconds)')
+    ax.set_title('estimated duration of selected sentences')
 
 
-    plt.hist(np.squeeze(wave_tss[alowable_range]),bins=100,edgecolor='k', linewidth=.2)
-    plt.show()
+    ax = plt.axes((.55, .1, .35, .25))
+    viol=ax.violinplot(tss_ks_allow,positions=ks,showmeans=True,showextrema=False)
+    for pc in viol['bodies']:
+        pc.set_facecolor(np.divide((255, 166, 0), 255))
+        pc.set_edgecolor('white')
+        pc.set_alpha(1)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.set_xlabel('number of words')
+    ax.set_ylabel('duration (seconds)')
+    fig.show()
     # get sentence index for the alowable range
     allowable_sent_id=[sentence_id[int(x)] for x in alowable_range]
     allowable_sent_id[-1]

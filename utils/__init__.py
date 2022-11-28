@@ -2,6 +2,7 @@ import itertools
 from utils.data_utils import SENTENCE_CONFIG
 import copy
 from utils.extract_utils import extractor
+import neural_nlp
 from neural_nlp.models import model_pool, model_layers
 from itertools import count
 # add the layerwise model definition
