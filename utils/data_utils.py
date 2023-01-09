@@ -130,7 +130,7 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
 
 def construct_stimuli_set_from_text(stimuli_data, stimuli_data_name,drop_period=False):
     all_sentence_set=[]
-    seq = np.floor(np.linspace(0, len(stimuli_data), num=10))
+    seq = np.floor(np.linspace(0, len(stimuli_data), num=20))
     seq_pair=np.vstack((seq[0:-1], seq[1:]))
     seq_pair=seq_pair.astype(int).transpose()
     num_row=seq_pair.shape[0]
