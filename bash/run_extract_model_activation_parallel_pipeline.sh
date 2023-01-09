@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-9
+#SBATCH --array=0-280%175
 #SBATCH --time=144:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=80G
+#SBATCH --mem=20G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
