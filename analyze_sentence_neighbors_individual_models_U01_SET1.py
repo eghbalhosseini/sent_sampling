@@ -3,6 +3,8 @@ import numpy as np
 import os
 os.chdir('/om/user/ehoseini/sent_sampling')
 os.getcwd()
+import sys
+sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 import torch.cuda
 from tqdm import tqdm
 import pickle
