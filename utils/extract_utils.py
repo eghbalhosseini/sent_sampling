@@ -1,4 +1,4 @@
-from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd,construct_stimuli_set_no_grouping
+from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd,construct_stimuli_set_no_grouping, construct_stimuli_set_from_text
 from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.stimuli import load_stimuli, StimulusSet
 from neural_nlp.models import model_pool, model_layers
@@ -69,9 +69,9 @@ def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_colu
 
     return model_activations
 
-
+# stim_type : wordFORM, textPeriod, textNoPeriod
 class extractor:
-    def __init__(self,dataset=None,datafile=None,identifier=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',extract_benchmark='',atlas=None,average_sentence='False',modality=None):
+    def __init__(self,dataset=None,datafile=None,identifier=None,model_spec=None,layer_spec=None,layer_name=None,extract_name='activation',extract_type='activation',stim_type='wordFORM',extract_benchmark='',atlas=None,average_sentence='False',modality=None):
         ##### DATA ####
         self.dataset=dataset # name of the dataset
         self.datafile = datafile  # name of the dataset
@@ -85,6 +85,7 @@ class extractor:
         self.identifier=identifier
         self.modality=modality
         self.extract_name=extract_name
+        self.stim_type=stim_type
 
 
     def load_dataset(self,silent=True):
@@ -96,7 +97,13 @@ class extractor:
             self.N_S=int(len(data_.groupby('sent_id')))
             assert(hasattr(self, 'stimuli_set'))
         else:
-            stimuli_set = construct_stimuli_set(data_, self.dataset)
+            if self.stim_type=='wordFORM':
+                stimuli_set = construct_stimuli_set(data_, self.dataset)
+            elif self.stim_type=='textPeriod':
+                stimuli_set = construct_stimuli_set_from_text(data_, self.dataset,drop_period=False)
+            elif self.stim_type == 'textNoPeriod':
+                stimuli_set = construct_stimuli_set_from_text(data_, self.dataset, drop_period=True)
+
             self.stimuli_set = stimuli_set
             self.N_S=int(len(data_))
 
@@ -233,7 +240,7 @@ class extractor:
         for idx, model_id in enumerate(self.model_spec):
 
             if self.extract_type=='activation':
-                model_activation_name = f"{self.dataset}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_name}_ave_{self.average_sentence}.pkl"
+                model_activation_name = f"{self.dataset}_{self.stim_type}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_name}_ave_{self.average_sentence}.pkl"
                 print(f"extracting network activations for {self.model_spec[idx]}")
                 # see whether model activation already extracted
                 if os.path.exists(os.path.join(SAVE_DIR,model_activation_name)):
@@ -247,7 +254,7 @@ class extractor:
                 activation=dict(model_name=self.model_spec[idx],layer=self.layer_spec[idx],activations=model_activation)
                 model_grp_activations.append(activation)
             elif self.extract_type=='brain_resp':
-                brain_resp_name = f"{self.dataset}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_name}_{self.extract_benchmark}_ave_{self.average_sentence}.pkl"
+                brain_resp_name = f"{self.dataset}_{self.stim_type}_{self.model_spec[idx]}_layer_{self.layer_spec[idx]}_{self.extract_name}_{self.extract_benchmark}_ave_{self.average_sentence}.pkl"
                 print(f"extracting brain response for {self.model_spec[idx]}")
                 if os.path.exists(os.path.join(SAVE_DIR, brain_resp_name)):
                     print(f"{brain_resp_name} already exists, loading...")
@@ -269,7 +276,7 @@ class extractor:
         pass
 
 class model_extractor:
-    def __init__(self,dataset=None,datafile=None,model_spec=None,extract_name='activation',extract_type='activation',atlas=None,average_sentence='False'):
+    def __init__(self,dataset=None,datafile=None,model_spec=None,extract_name='activation',extract_type='activation',stim_type='wordFORM',atlas=None,average_sentence='False'):
         self.dataset=dataset
         self.datafile=datafile
         self.model_spec=model_spec
@@ -277,7 +284,8 @@ class model_extractor:
         self.extract_name=extract_name
         self.atlas=atlas
         self.average_sentence=average_sentence
-        self.extractor=extractor(datafile=self.datafile,dataset=self.dataset,extract_name=self.extract_name,extract_type=self.extract_type,average_sentence=self.average_sentence)
+        self.stim_type = stim_type
+        self.extractor=extractor(datafile=self.datafile,dataset=self.dataset,extract_name=self.extract_name,extract_type=self.extract_type,average_sentence=self.average_sentence,stim_type=stim_type)
 
     # delegations from extractor
     def load_dataset(self):
@@ -289,7 +297,7 @@ class model_extractor:
         layers=model_layers[self.model_spec]
 
         for i, layer in enumerate(tqdm(layers, desc='layers')):
-            model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_ave_{self.average_sentence}.pkl"
+            model_activation_name = f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{i}_{self.extract_name}_ave_{self.average_sentence}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
             if os.path.exists(os.path.join(SAVE_DIR, model_activation_name)):
                 print(f"\n{model_activation_name} already exists, skipping...\n")
@@ -317,7 +325,7 @@ class model_extractor:
 
 class model_extractor_parallel:
     def __init__(self, dataset=None, datafile=None, model_spec=None, extract_name='activation',
-                 extract_type='activation', atlas=None, average_sentence='False',total_runs=0):
+                 extract_type='activation', atlas=None, average_sentence='False',total_runs=0,stim_type='wordFORM'):
         self.dataset = dataset
         self.datafile = datafile
         self.model_spec = model_spec
@@ -326,8 +334,9 @@ class model_extractor_parallel:
         self.atlas = atlas
         self.average_sentence = average_sentence
         self.total_runs = total_runs
+        self.stim_type=stim_type
         self.extractor = extractor(datafile=self.datafile, dataset=self.dataset, extract_name=self.extract_name,
-                                   extract_type=self.extract_type, average_sentence=self.average_sentence)
+                                   extract_type=self.extract_type, average_sentence=self.average_sentence,stim_type=self.stim_type)
 
     # delegations from extractor
     def load_dataset(self):
@@ -342,8 +351,8 @@ class model_extractor_parallel:
             model_save_path = os.path.join(SAVE_DIR, mdl_name)
             layers= model_layers[mdl_name]
             for k, layer in enumerate(tqdm(layers, desc='layers')):
-                model_activation_name = f"{self.dataset}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
-                new_model_activation_name=f"{self.dataset}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
+                model_activation_name = f"{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
+                new_model_activation_name=f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
                 if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == False:
                     print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
                 else:
@@ -377,7 +386,7 @@ class model_extractor_parallel:
                         save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
                         print(f'saved {new_model_activation_name}\n')
                     else:
-                        print(f'{self.dataset}_{mdl_name}_layer_{i}_{self.extract_name} is missing groups!\n')
+                        print(f'{self.dataset}_{self.stim_type}_{mdl_name}_layer_{i}_{self.extract_name} is missing groups!\n')
         pass
     def __call__(self,group_id,overwrite=False, *args, **kwargs):
         # get layers for model
@@ -390,7 +399,7 @@ class model_extractor_parallel:
         else:
             os.mkdir(model_save_path)
         for i, layer in enumerate(tqdm(layers, desc='layers')):
-            model_activation_name = f"{self.dataset}_{self.model_spec}_layer_{i}_{self.extract_name}_group_{group_id}.pkl"
+            model_activation_name = f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{i}_{self.extract_name}_group_{group_id}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
             if os.path.exists(os.path.join(model_save_path, model_activation_name)) and overwrite==False:
                 print(f"\n{model_activation_name} already exists, skipping...\n")

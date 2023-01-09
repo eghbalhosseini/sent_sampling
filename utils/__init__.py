@@ -267,10 +267,11 @@ activation_extract_config=[dict(name='activation',type='activation',benchmark='N
                            dict(name='brain_resp_Pereira_exp2',type='brain_resp',benchmark='Pereira2018-encoding-weights',atlas=(('243sentences', 'language'),),modality='fMRI')]
 # define extraction configuration
 extract_configuration = []
+stim_types=['wordFORM', 'textPeriod', 'textNoPeriod']
 average_style=['True','False','None']
-for model_grp, dataset, extract_type, average in itertools.product(model_grps_config, SENTENCE_CONFIG,
-                                                                   activation_extract_config, average_style):
-    extract_identifier = f"[group={model_grp['grp_id']}]-[dataset={dataset['name']}]-[{extract_type['name']}]-[bench={extract_type['benchmark']}]-[ave={average}]"
+for model_grp, dataset, extract_type,stim_type, average in itertools.product(model_grps_config, SENTENCE_CONFIG,
+                                                                   activation_extract_config,stim_types, average_style):
+    extract_identifier = f"[group={model_grp['grp_id']}]-[dataset={dataset['name']}_{stim_type}]-[{extract_type['name']}]-[bench={extract_type['benchmark']}]-[ave={average}]"
     extract_identifier = extract_identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
     model_set = tuple(x[0] for x in model_grp['grp_layer_tuple'])
     if model_grp['layer_by_name']:
@@ -281,7 +282,7 @@ for model_grp, dataset, extract_type, average in itertools.product(model_grps_co
         layer_name = tuple([model_layers[x][layer_set[idx]] for idx, x in enumerate(model_set)])
 
     extract_configuration.append(dict(identifier=extract_identifier,model_set=model_set,
-                                      layer_set=layer_set,layer_name=layer_name, dataset=dataset['name'],datafile=dataset['file_loc'],
+                                      layer_set=layer_set,layer_name=layer_name, dataset=dataset['name'],stim_type=stim_type,datafile=dataset['file_loc'],
                                       extract_name=extract_type['name'],extract_type=extract_type['type'],benchmark=extract_type['benchmark'],atlas=extract_type['atlas'],modality=extract_type['modality'],average=average))
 
 
@@ -295,6 +296,7 @@ for config in extract_configuration:
         #module = import_module('utils.model_utils')
         #model=getattr(module,configure['model'])
         extractor_param=extractor(dataset=configure['dataset'],
+                                  stim_type=configure['stim_type'],
                                   datafile=configure['datafile'],
                                   identifier=configure['identifier'],
                                   model_spec=configure['model_set'],

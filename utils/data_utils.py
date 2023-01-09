@@ -16,7 +16,7 @@ elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
     COCA_PREPROCESSED_DIR = '/om/user/ehoseini/MyData/COCA_corpus/preprocessed/'
-    BENCHMARK_DIR = '/om/user/ehoseini/.result_caching/neural_nlp.score/'
+    BENCHMARK_DIR = '/om5/group/evlab/u/ehoseini/.result_caching/neural_nlp.score/'
     SAVE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/'
     RESULTS_DIR='/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/results/'
     ANALYZE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/analysis/'
@@ -104,7 +104,7 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
     all_sentence_set=[]
     seq = np.floor(np.linspace(0, len(stimuli_data), num=10))
     seq_pair=np.vstack((seq[0:-1], seq[1:]))
-    seq_pair=seq_pair.astype(np.int).transpose()
+    seq_pair=seq_pair.astype(int).transpose()
     num_row=seq_pair.shape[0]
     for row in range(num_row):
         sentence_words, word_nums, sentenceID = [], [], []
@@ -127,6 +127,35 @@ def construct_stimuli_set(stimuli_data, stimuli_data_name):
         sentence_set.name = stimuli_data_name+'_group_'+str(row)
         all_sentence_set.append(sentence_set)
     return all_sentence_set
+
+def construct_stimuli_set_from_text(stimuli_data, stimuli_data_name,drop_period=False):
+    all_sentence_set=[]
+    seq = np.floor(np.linspace(0, len(stimuli_data), num=10))
+    seq_pair=np.vstack((seq[0:-1], seq[1:]))
+    seq_pair=seq_pair.astype(int).transpose()
+    num_row=seq_pair.shape[0]
+    for row in range(num_row):
+        sentence_words, word_nums, sentenceID = [], [], []
+        for id, sent_id in tqdm(enumerate(range(seq_pair[row,0],seq_pair[row,1]))):
+            sentence= stimuli_data[sent_id]
+            words_from_text=sentence['text'].split(' ')
+            word_ind=np.arange(len(words_from_text))
+            sent_ind=np.repeat(sent_id,len(words_from_text))
+            if '.' in words_from_text[-1] and drop_period:
+                words_from_text[-1]=words_from_text[-1].rstrip('.')
+            sentence_words.append(words_from_text)
+            word_nums.append(word_ind)
+            sentenceID.append(sent_ind)
+        sentence_words_flat = [item for sublist in sentence_words for item in sublist]
+        sentenceID_flat=[item for sublist in sentenceID for item in sublist]
+        word_number_flat = list(range(len(sentence_words_flat)))
+        zipped_lst = list(zip(sentenceID_flat, word_number_flat, sentence_words_flat))
+        sentence_set = StimulusSet(zipped_lst, columns=['sentence_id', 'stimulus_id', 'word'])
+
+        sentence_set.name = f'{stimuli_data_name}_from_text_period_{drop_period}_group_{row}'
+        all_sentence_set.append(sentence_set)
+    return all_sentence_set
+
 
 def construct_stimuli_set_no_grouping(stimuli_data, stimuli_data_name):
     all_sentence_set=[]
