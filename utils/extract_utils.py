@@ -43,6 +43,11 @@ def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_colu
     for i, reset_id in enumerate(ordered_set(stimulus_set[reset_column].values)):
         part_stimuli = stimulus_set[stimulus_set[reset_column] == reset_id]
         # stimulus_ids = part_stimuli['stimulus_id']
+        # replace charcter in partstimuli
+        # fix unicode space
+        if u'\xa0' in ' '.join(part_stimuli['word']):
+            part_stimuli['word']  = part_stimuli['word'].str.replace(u'\xa0', u' ')
+
         sentence_stimuli = StimulusSet({'sentence': ' '.join(part_stimuli['word']),
                                         reset_column: list(set(part_stimuli[reset_column]))})
         sentence_stimuli.name = f"{stimulus_set.name}-{reset_id}"
