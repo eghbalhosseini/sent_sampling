@@ -138,6 +138,8 @@ def construct_stimuli_set_from_text(stimuli_data, stimuli_data_name,drop_period=
         sentence_words, word_nums, sentenceID = [], [], []
         for id, sent_id in tqdm(enumerate(range(seq_pair[row,0],seq_pair[row,1]))):
             sentence= stimuli_data[sent_id]
+            if u'\xa0' in sentence['text']:
+                sentence['text']=sentence['text'].replace(u'\xa0', u' ')
             words_from_text=sentence['text'].split(' ')
             word_ind=np.arange(len(words_from_text))
             sent_ind=np.repeat(sent_id,len(words_from_text))
