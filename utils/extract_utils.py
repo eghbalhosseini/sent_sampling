@@ -386,7 +386,7 @@ class model_extractor_parallel:
                         save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
                         print(f'saved {new_model_activation_name}\n')
                     else:
-                        print(f'{self.dataset}_{self.stim_type}_{mdl_name}_layer_{i}_{self.extract_name} is missing groups!\n')
+                        print(f'{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name} is missing groups!\n')
         pass
     def __call__(self,group_id,overwrite=False, *args, **kwargs):
         # get layers for model

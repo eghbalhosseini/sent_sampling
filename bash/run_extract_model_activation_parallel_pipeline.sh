@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-280%175
+#SBATCH --array=0-14
 #SBATCH --time=144:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
@@ -11,7 +11,7 @@
 
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
-  for group_ids in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
+  for group_ids in 1 ; do
     for stim_type in textPeriod textNoPeriod ; do
       for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
           xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
@@ -25,6 +25,7 @@ for dataset in ud_sentencez_token_filter_v3 ; do
   done
 done
 
+#  2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running model ${model_list[$SLURM_ARRAY_TASK_ID]}"
 echo "Running dataset ${dataset_list[$SLURM_ARRAY_TASK_ID]}"

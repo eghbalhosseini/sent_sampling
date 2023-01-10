@@ -1,9 +1,8 @@
+import sys
+sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 from utils import extract_pool
 from utils.extract_utils import model_extractor_parallel
-from utils.optim_utils import optim_pool
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj
-import os
 from utils.data_utils import SENTENCE_CONFIG
 parser = argparse.ArgumentParser(description='extract activations from a model')
 parser.add_argument('model_name', type=str,
