@@ -31,7 +31,22 @@ elif getpass.getuser()=='alexso':
     OPTIM_PARENT = '/om/user/alexso/opt-exp-design-nlp'
 
 
-
+def low_dim_project(act,var_explained=0.90):
+    # act must be in m sample * n feature shape ,
+    q = min(1000, min(act.shape))
+    u, s, v = torch.pca_lowrank(act, q=q)
+    var_explained_curve=torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2)
+    idx_cutoff = var_explained_curve < var_explained
+    num_dimensions=torch.sum(idx_cutoff)
+    v_cut=v[:, idx_cutoff]
+    s_project=torch.multiply(s,idx_cutoff)
+    act_project=torch.matmul(torch.matmul(u,torch.diag(s_project)),v.transpose(1,0))
+    #act_pca=torch.matmul(u[:,idx_cutoff],torch.matmul(torch.diag(s[idx_cutoff]),v[:, idx_cutoff].transpose(1,0)))
+    #pearson=PearsonCorrCoef(num_outputs=act_project.shape[1]).to(device)
+    #a=pearson(act,act_project)
+    #print(f'pca {num_dimensions} dims, vs actual {act.shape[1]}, correlation,mean={a.mean():.3f} ,min={a.min():.3f},max={a.max():.3f}')
+    print(f'pca {num_dimensions} dims, vs actual {act.shape[1]}')
+    return act_project,var_explained_curve
 
 LOG_BASE = np.e
 EPSILON = 1e-16
@@ -202,20 +217,9 @@ class optim:
                     # backward compatibility
                     act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
                     act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
-                    # act must be in m sample * n feature shape ,
-                    q=min(500,min(act.shape))
-                    u, s, v = torch.pca_lowrank(act, q=q)
-                    # keep 85% variance explained ,
-                    idx_85 = torch.cumsum(s ** 2, dim=0) / torch.sum(s ** 2) < .85
-                    cols = list(torch.where(idx_85)[0].cpu().numpy())
-                    if pca_type == 'fixed':
-                        act_pca = torch.matmul(act, v[:, :low_dim_num])
-                    elif pca_type == 'equal_var':
-                        act_pca = torch.matmul(act, v[:, cols])
-
-                    #activation_list.append(act_pca)
-                    var_explained.append(torch.cumsum(torch.cat((torch.tensor([0], device=self.device), s ** 2)),
-                                                      dim=0) / torch.sum(s ** 2))
+                    act_pca,var_exp=low_dim_project(act)
+                    activation_list.append(act_pca)
+                    var_explained.append(var_exp)
                     # just in time computation:
                     X=torch.nn.functional.normalize(act_pca.squeeze())
                     X=X - X.mean(axis=1, keepdim=True)

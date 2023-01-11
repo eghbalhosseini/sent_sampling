@@ -16,8 +16,9 @@ if __name__ == '__main__':
     extractor_id = args.extractor_id
     optimizer_id = args.optimizer_id
 
-    extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K_sylb-activation-bench=None-ave=False'
-    optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=250-n_init=1-run_gpu=True"
+    #extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K_sylb-activation-bench=None-ave=False'
+    optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=125-n_init=1-run_gpu=True"
+    extractor_id = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textPeriod-activation-bench=None-ave=False'
     low_resolution='False'
     low_dim='False'
     print(extractor_id+'\n')
@@ -29,14 +30,12 @@ if __name__ == '__main__':
     # optimize
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
-    xy_dir=os.path.join(SAVE_DIR, f"{optimizer_obj.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}_low_dim={low_dim}.pkl")
+    xy_dir=os.path.join(SAVE_DIR, f"{optimizer_obj.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl")
     if os.path.exists(xy_dir):
         print('loading precomputed correlation matrix ')
         D_precompute=load_obj(xy_dir)
         optimizer_obj.XY_corr_list=D_precompute
     else:
-        #optimizer_obj.N_S=
-    # save_obj(self.XY_corr_list,xy_dir)
         print('precomputing correlation matrix ')
         optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=False,cpu_dump=True,preload=False,save_results=True)
     S_opt_d, DS_opt_d = optimizer_obj()
