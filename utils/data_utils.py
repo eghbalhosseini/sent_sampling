@@ -141,10 +141,12 @@ def construct_stimuli_set_from_text(stimuli_data, stimuli_data_name,drop_period=
             if u'\xa0' in sentence['text']:
                 sentence['text']=sentence['text'].replace(u'\xa0', u' ')
             words_from_text=sentence['text'].split(' ')
-            word_ind=np.arange(len(words_from_text))
-            sent_ind=np.repeat(sent_id,len(words_from_text))
             if '.' in words_from_text[-1] and drop_period:
                 words_from_text[-1]=words_from_text[-1].rstrip('.')
+            # drop empty string
+            words_from_text=[x for x in words_from_text if x]
+            word_ind = np.arange(len(words_from_text))
+            sent_ind = np.repeat(sent_id, len(words_from_text))
             sentence_words.append(words_from_text)
             word_nums.append(word_ind)
             sentenceID.append(sent_ind)
