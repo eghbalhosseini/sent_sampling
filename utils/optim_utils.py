@@ -218,7 +218,7 @@ class optim:
                     act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
                     act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
                     act_pca,var_exp=low_dim_project(act)
-                    activation_list.append(act_pca)
+                    #activation_list.append(act_pca)
                     var_explained.append(var_exp)
                     # just in time computation:
                     X=torch.nn.functional.normalize(act_pca.squeeze())
