@@ -20,7 +20,7 @@ if __name__ == '__main__':
     optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=125-n_init=1-run_gpu=True"
     extractor_id = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textPeriod-activation-bench=None-ave=False'
     low_resolution='False'
-    low_dim='False'
+    low_dim='True'
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
     # extract data
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         optimizer_obj.XY_corr_list=D_precompute
     else:
         print('precomputing correlation matrix ')
-        optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=False,cpu_dump=True,preload=False,save_results=True)
+        optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution,cpu_dump=True,preload=False,save_results=True,low_dim=low_dim)
     S_opt_d, DS_opt_d = optimizer_obj()
     # save results
     optim_results = dict(extractor_name=extractor_id,

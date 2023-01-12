@@ -8,29 +8,22 @@ import copy
 import xarray as xr
 import torch
 from tqdm import tqdm
-import utils
 from utils import extract_pool
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
-import warnings
 import os
 from utils.data_utils import save_obj, SAVE_DIR,load_obj
-
 try :
     torch.set_deterministic(True)
 except:
     pass
 torch.set_printoptions(precision=10)
-from scipy.spatial.distance import squareform
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 if getpass.getuser()=='eghbalhosseini':
     OPTIM_PARENT='/Users/eghbalhosseini/MyCodes/opt-exp-design-nlp/'
 elif getpass.getuser()=='ehoseini':
     OPTIM_PARENT = '/om/user/ehoseini/opt-exp-design-nlp'
-elif getpass.getuser()=='alexso':
-    OPTIM_PARENT = '/om/user/alexso/opt-exp-design-nlp'
-
-
 def low_dim_project(act,var_explained=0.90):
     # act must be in m sample * n feature shape ,
     q = min(1000, min(act.shape))
@@ -48,16 +41,21 @@ def low_dim_project(act,var_explained=0.90):
     print(f'pca {num_dimensions} dims, vs actual {act.shape[1]}')
     return act_project,var_explained_curve
 
+def corrcoef_metric(act):
+    """corrcoef"""
+    metric_val = 1 - torch.corrcoef(act)
+    return metric_val
+
+
 LOG_BASE = np.e
 EPSILON = 1e-16
 PRECISION = 1e-200
-
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s - %(funcName)s] %(message)s')
 ch.setFormatter(formatter)
 
-#‌impor functions from Noga's optimization pipeline.
+
 sys.path.insert(1,OPTIM_PARENT)
 from opt_exp_design import coordinate_ascent, coordinate_ascent_eh,coordinate_ascent_parallel_eh
 import tools
@@ -129,7 +127,9 @@ def Variation(s,N_S, pZ_S):
     return entropy(qZ)
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance,rdm_function=compute_rdm, optim_algorithm=None,run_gpu=False,early_stopping=True,stop_threshold=1e-4):
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance,
+                 rdm_function=compute_rdm, optim_algorithm=None,low_dim=False,
+                 run_gpu=False,early_stopping=True,stop_threshold=1e-4):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
@@ -138,6 +138,7 @@ class optim:
         self.optim_algorithm=optim_algorithm
         self.device=device
         self.run_gpu=run_gpu
+        self.low_dim=low_dim
         self.early_stopping=early_stopping
         self.stop_threshold=stop_threshold
 
@@ -149,8 +150,6 @@ class optim:
         if self.extract_type == 'brain_resp':
             self.construct_activation_by_split()
 
-
-    # add a function for random baseline
 
     def construct_activation_by_split(self):
         #assert(len(self.activations[0])>1)
@@ -194,7 +193,7 @@ class optim:
         else:
             self.activation_list = activation_list
 
-    def precompute_corr_rdm_on_gpu(self,low_dim=False,low_dim_num=200,pca_type='fixed',low_resolution=False,cpu_dump=False,save_results=True,preload=True):
+    def precompute_corr_rdm_on_gpu(self,low_dim_num=200,pca_type='fixed',low_resolution=False,cpu_dump=False,save_results=True,preload=True):
         #assert(torch.cuda.is_available())
         #torch.cuda.empty_cache()
         self.XY_corr_list=[]
@@ -203,49 +202,53 @@ class optim:
         else:
             target_device = torch.device('cpu')
         if preload:
-            xy_dir=os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl")
+            xy_dir=os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={self.low_dim}.pkl")
             if os.path.exists(xy_dir):
                 self.XY_corr_list=load_obj(xy_dir)
                 self.XY_corr_list=[x.to(target_device) for x in self.XY_corr_list]
             else:
                 assert False, "file doesnt exist, set preload to False"
         else:
-
-            if low_dim:
+            if self.low_dim:
                 var_explained = []
                 for idx, act_dict in tqdm(enumerate(self.activations)):
                     # backward compatibility
                     act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
                     act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
                     act_pca,var_exp=low_dim_project(act)
-                    #activation_list.append(act_pca)
                     var_explained.append(var_exp)
                     # just in time computation:
-                    X=torch.nn.functional.normalize(act_pca.squeeze())
-                    X=X - X.mean(axis=1, keepdim=True)
-                    X =torch.nn.functional.normalize(X)
-                    if low_resolution==True:
-                        XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1, 0)).half()
-                    else:
-                        XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X,torch.transpose(X, 1,0))
-
+                    #X=torch.nn.functional.normalize(act_pca.squeeze())
+                    #X=X - X.mean(axis=1, keepdim=True)
+                    #X =torch.nn.functional.normalize(X)
+                    #if low_resolution==True:
+                    #    XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1, 0)).half()
+                    #else:
+                    #    XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X,torch.transpose(X, 1,0))
+                    XY_corr=corrcoef_metric(act_pca)
                     self.XY_corr_list.append(XY_corr.to(target_device))
+                    del act
+                    del act_pca
+                    del XY_corr
+                    torch.cuda.empty_cache()
                 self.var_explained=var_explained
+
             else:
                 for idx, act_dict in tqdm(enumerate(self.activations)):
                     # backward compatiblity
                     act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
                     act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
-                    X = torch.nn.functional.normalize(act.squeeze())
-                    X = X - X.mean(axis=1, keepdim=True)
-                    X = torch.nn.functional.normalize(X)
-                    if low_resolution == True:
-                        XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X,torch.transpose(X, 1,0)).half()
-                    else:
-                        XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0))
-
+                    #X = torch.nn.functional.normalize(act.squeeze())
+                    #X = X - X.mean(axis=1, keepdim=True)
+                    #X = torch.nn.functional.normalize(X)
+                    #if low_resolution == True:
+                    #    XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X,torch.transpose(X, 1,0)).half()
+                    #else:
+                    #    XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0))
+                    XY_corr=corrcoef_metric(act)
                     self.XY_corr_list.append(XY_corr.to(target_device))
-                    del X
+                    #self.XY_corr_list.append(.to(target_device))
+                    #del X
                     del act
                     del XY_corr
                     torch.cuda.empty_cache()
@@ -257,7 +260,7 @@ class optim:
             torch.cuda.empty_cache()
         if save_results:
             D_precompute=self.XY_corr_list
-            save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl"))
+            save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={self.low_dim}.pkl"))
 
     def gpu_object_function(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
@@ -428,13 +431,13 @@ n_iters=[2,5,25,50,100,500,1000,2000,5000,10000]
 N_s=[10,25,50,75,100,125,150,175,200,225,250,275,300]
 n_inits=[1,2,3,5]
 run_gpu=[True,False]
-
+low_dim=[True,False]
 
 optim_configuration=[]
-for method , obj,n_iter, n_s, init , gpu in itertools.product(optim_method,objective_function,n_iters,N_s,n_inits,run_gpu):
-    identifier=f"[{method['name']}]-[obj={obj['name']}]-[n_iter={n_iter}]-[n_samples={n_s}]-[n_init={init}]-[run_gpu={gpu}]"
+for method , obj,n_iter, n_s, init ,dim_, gpu in itertools.product(optim_method,objective_function,n_iters,N_s,n_inits,low_dim,run_gpu):
+    identifier=f"[{method['name']}]-[obj={obj['name']}]-[n_iter={n_iter}]-[n_samples={n_s}]-[n_init={init}]-[low_dim={dim_}]-[run_gpu={gpu}]"
     identifier=identifier.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
-    optim_configuration.append(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init,run_gpu=gpu))
+    optim_configuration.append(dict(identifier=identifier,method=method['fun'],obj=obj['fun'],n_iter=n_iter,n_s=n_s,n_init=init,low_dim=dim_,run_gpu=gpu))
 
 
 optim_pool={}
