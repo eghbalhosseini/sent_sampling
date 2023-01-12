@@ -65,6 +65,7 @@ LOGGER = tools.get_logger('OPT-EXP-DSGN')
 # Objective functions :
 # this works on a list,
 def Distance(S,group_act, distance='correlation'):
+    """ds"""
     if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
         patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
     else:
@@ -83,6 +84,7 @@ def Distance(S,group_act, distance='correlation'):
     return rdm2_vec.mean()
 
 def minus_Distance(S,group_act, distance='correlation'):
+    """2-ds"""
     if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
         patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
     else:
@@ -99,8 +101,6 @@ def minus_Distance(S,group_act, distance='correlation'):
     #[x.values for x in patterns if type]
     rdm2_vec = second_order_rdm(patterns_list, True, distance)
     return 2-rdm2_vec.mean()
-
-
 
 
 def compute_rdm(S,group_act,vector=True, distance='correlation'):
@@ -148,7 +148,7 @@ def Variation(s,N_S, pZ_S):
     return entropy(qZ)
 
 class optim:
-    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=Distance,
+    def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=None,
                  rdm_function=compute_rdm, optim_algorithm=None,low_dim=False,
                  run_gpu=False,early_stopping=True,stop_threshold=1e-4):
         self.n_iter=n_iter
@@ -283,7 +283,7 @@ class optim:
             D_precompute=self.XY_corr_list
             save_obj(D_precompute, os.path.join(SAVE_DIR, f"{self.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={self.low_dim}.pkl"))
 
-    def gpu_object_function(self,S):
+    def gpu_object_function_ds(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         pairs = torch.combinations(samples, with_replacement=False)
         XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
@@ -301,6 +301,26 @@ class optim:
         mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
         d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
         d_optim=d_val_mean #-.2*d_val_std
+        return d_optim
+
+    def gpu_object_function_minus_ds(self,S):
+        samples=torch.tensor(S, dtype = torch.long, device = self.device)
+        pairs = torch.combinations(samples, with_replacement=False)
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
+        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
+        d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
+        n1 = d_mat.shape[1]
+        correction = n1 * n1 / (n1 * (n1 - 1) / 2)
+        d_val = correction * d_mat.mean(dim=(0, 1))
+        d_val_mean=d_val.cpu().numpy().mean()
+        # do a version with std reductions too
+        mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
+        d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
+        d_optim=2-d_val_mean #-.2*d_val_std
         return d_optim
 
     def gpu_object_function_debug(self,S):
@@ -333,12 +353,18 @@ class optim:
             return np.mean([self.rdm_function(S,x,vector=vector) for x in self.activations_by_split])
 
     def __call__(self,*args, **kwargs):
+
         if self.run_gpu:
+            if self.objective_function.__doc__ == 'ds':
+                objective = self.gpu_object_function_ds
+            elif self.objective_function.__doc__ == 'ds_minus':
+                objective = self.gpu_object_function_minus_ds
+
             if self.early_stopping:
-                S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s, objective_function=self.gpu_object_function, n_init=self.n_init,
+                S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s, objective_function=objective, n_init=self.n_init,
                                                          n_iter=self.n_iter,early_stopping=self.early_stopping,stop_threshold=self.stop_threshold)
             else:
-                S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, self.gpu_object_function, self.n_init,
+                S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, objective, self.n_init,
                                                      self.n_iter)
         else:
             if self.early_stopping:
