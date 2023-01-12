@@ -82,6 +82,27 @@ def Distance(S,group_act, distance='correlation'):
     rdm2_vec = second_order_rdm(patterns_list, True, distance)
     return rdm2_vec.mean()
 
+def minus_Distance(S,group_act, distance='correlation'):
+    if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
+        patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
+    else:
+        # backward compatibility
+        group_act_mod=[]
+        for act_dict in group_act:
+            act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+            group_act_mod.append(act_)
+        patterns_list=[]
+        for grp_act in tqdm(group_act_mod):
+            patterns_list.append(np.stack([grp_act[i] for i in S]))
+        #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
+        #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
+    #[x.values for x in patterns if type]
+    rdm2_vec = second_order_rdm(patterns_list, True, distance)
+    return 2-rdm2_vec.mean()
+
+
+
+
 def compute_rdm(S,group_act,vector=True, distance='correlation'):
     if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
         patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
@@ -336,8 +357,6 @@ class optim:
 
         return S_opt_d, DS_opt_d
 
-
-
 class optim_group:
     def __init__(self,n_init=3,extract_group_name=None,ext_group_ids=[], n_iter=300,N_s=50, objective_function=Distance, optim_algorithm=None,run_gpu=False):
         self.n_iter = n_iter
@@ -425,11 +444,12 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_eh',fun=coordinate_ascent_eh),
               dict(name='coordinate_ascent_parallel_eh',fun=coordinate_ascent_parallel_eh)]
 
-objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance)]
+objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance),
+                    dict(name='2-D_s',fun=minus_Distance)]
 
-n_iters=[2,5,25,50,100,500,1000,2000,5000,10000]
+n_iters=[2,50,100,500]
 N_s=[10,25,50,75,100,125,150,175,200,225,250,275,300]
-n_inits=[1,2,3,5]
+n_inits=[1,2]
 run_gpu=[True,False]
 low_dim=[True,False]
 
@@ -454,6 +474,7 @@ for config in optim_configuration:
                                   n_init=configure['n_init'],
                                   n_iter=configure['n_iter'],
                                 run_gpu=configure['run_gpu'],
+                                low_dim=configure['low_dim'],
                                   N_s=configure['n_s'])
         return optim_param
 
