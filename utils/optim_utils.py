@@ -75,7 +75,7 @@ def Distance(S,group_act, distance='correlation'):
             act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
             group_act_mod.append(act_)
         patterns_list=[]
-        for grp_act in tqdm(group_act_mod):
+        for grp_act in group_act_mod:
             patterns_list.append(np.stack([grp_act[i] for i in S]))
         #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
         #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
@@ -94,7 +94,7 @@ def minus_Distance(S,group_act, distance='correlation'):
             act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
             group_act_mod.append(act_)
         patterns_list=[]
-        for grp_act in tqdm(group_act_mod):
+        for grp_act in group_act_mod:
             patterns_list.append(np.stack([grp_act[i] for i in S]))
         #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
         #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
@@ -357,7 +357,7 @@ class optim:
         if self.run_gpu:
             if self.objective_function.__doc__ == 'ds':
                 objective = self.gpu_object_function_ds
-            elif self.objective_function.__doc__ == 'ds_minus':
+            elif self.objective_function.__doc__ == '2-ds':
                 objective = self.gpu_object_function_minus_ds
 
             if self.early_stopping:
@@ -370,7 +370,7 @@ class optim:
             if self.early_stopping:
 
                 S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s,
-                                                             objective_function=self.mod_object_function,
+                                                             objective_function=self.mod_objective_function,
                                                              n_init=self.n_init,
                                                              n_iter=self.n_iter, early_stopping=self.early_stopping,
                                                              stop_threshold=self.stop_threshold)

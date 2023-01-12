@@ -15,12 +15,11 @@ args = parser.parse_args()
 if __name__ == '__main__':
     extractor_id = args.extractor_id
     optimizer_id = args.optimizer_id
-
     #extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K_sylb-activation-bench=None-ave=False'
-    optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=125-n_init=1-low_dim=True-run_gpu=True"
-    extractor_id = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textPeriod-activation-bench=None-ave=False'
+    #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=True"
+    #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=False"
+    #extractor_id = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textPeriod-activation-bench=None-ave=False'
     low_resolution='False'
-    low_dim='True'
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
     # extract data
@@ -30,7 +29,8 @@ if __name__ == '__main__':
     # optimize
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
-    xy_dir=os.path.join(SAVE_DIR, f"{optimizer_obj.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={low_dim}.pkl")
+    optimizer_obj.early_stopping=False
+    xy_dir=os.path.join(SAVE_DIR, f"{optimizer_obj.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={optimizer_obj.low_dim}.pkl")
     if os.path.exists(xy_dir):
         print('loading precomputed correlation matrix ')
         D_precompute=load_obj(xy_dir)
@@ -51,36 +51,3 @@ if __name__ == '__main__':
                          optimized_d=DS_opt_d)
     optim_file=os.path.join(RESULTS_DIR,f"results_{extractor_id}_{optimizer_id}.pkl")
     save_obj(optim_results, optim_file)
-
-
-    # test compartmentilation
-    # self=optimizer_obj
-    # self.XY_corr_list = []
-    # cpu_dump=True
-    # low_resolution=False
-    # if not cpu_dump:
-    #     target_device = self.device
-    # else:
-    #     target_device = torch.device('cpu')
-    # for idx, act_dict in tqdm(enumerate(self.activations)):
-    #     # backward compatiblity
-    #     act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
-    #     act = torch.tensor(act_, dtype=float, device=self.device, requires_grad=False)
-    #     X = torch.nn.functional.normalize(act.squeeze())
-    #     X = X - X.mean(axis=1, keepdim=True)
-    #     X = torch.nn.functional.normalize(X)
-    #
-    #     if low_resolution == True:
-    #         XY_corr = torch.tensor(1, device=self.device, dtype=torch.float16) - torch.mm(X, torch.transpose(X, 1,
-    #                                                                                                          0)).half()
-    #     else:
-    #         XY_corr = torch.tensor(1, device=self.device, dtype=float) - torch.mm(X, torch.transpose(X, 1, 0))
-    #
-    #     XY_corr= XY_corr.to(target_device)
-    #     self.XY_corr_list.append(XY_corr)
-    #     del X
-    #     del act
-    #     del XY_corr
-    #     torch.cuda.empty_cache()
-    # xy_dir=os.path.join(SAVE_DIR, f"{extractor_id}_XY_corr_list-low_res={low_resolution}.pkl")
-    # save_obj(self.XY_corr_list,xy_dir)
