@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_lowdim
-#SBATCH --array=0-8
+#SBATCH --array=0-7
 #SBATCH --time=48:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
@@ -38,7 +38,7 @@ bench_type=($bench_type)
 for set in best_performing_pereira_1 ; do
   for idx in 0 ; do
     for ave in False ; do
-      for dataset in ud_sentencez_token_filter_v3 ; do
+      for dataset in ud_sentencez_token_filter_v3_minus_ev_sentences ; do
         for text in textPeriod ; do
           extract_id="group=${set}-dataset=${dataset}_${text}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
           extract_list[$i]="$extract_id"

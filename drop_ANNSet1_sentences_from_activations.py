@@ -32,7 +32,8 @@ if __name__ == '__main__':
         pickle.dump(data_mod, f, protocol=4)
     ext_obj()
 
-    new_dataset_name=ext_obj.dataset+'-minus_ev_sentences'
+    new_dataset_name=ext_obj.dataset+'_minus_ev_sentences'
+    old_dataset_name=ext_obj.dataset+'-minus_ev_sentences'
     new_model_sentence_set=[]
     for idx in range(len(ext_obj.model_spec)):
         model_layers_ids = tuple([(idx, x) for idx, x in enumerate(model_layers[ext_obj.model_spec[idx]])])
@@ -49,6 +50,10 @@ if __name__ == '__main__':
             # save model_activation_mod with new_dataset_name
             model_activation_name_mod = f"{new_dataset_name}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{layer_spec[0]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
             save_obj(model_activation_mod, Path(SAVE_DIR,model_activation_name_mod).__str__())
+            # delete old model_activation_name
+            old_model_activation_name=f"{old_dataset_name}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{layer_spec[0]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
+            if Path(SAVE_DIR,old_model_activation_name).exists():
+                os.remove(Path(SAVE_DIR,old_model_activation_name).__str__())
             new_model_sentence_set.append([x[1] for x in model_activation_mod])
 
 

@@ -15,10 +15,10 @@ args = parser.parse_args()
 if __name__ == '__main__':
     extractor_id = args.extractor_id
     optimizer_id = args.optimizer_id
-    #extractor_id = f'group=gpt2-xl_layers-dataset=coca_spok_filter_punct_50K_sylb-activation-bench=None-ave=False'
-    #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=True"
+
+    #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=125-n_init=1-low_dim=False-run_gpu=True"
     #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=False"
-    #extractor_id = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textPeriod-activation-bench=None-ave=False'
+    #extractor_id = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textPeriod-activation-bench=None-ave=False'
     low_resolution='False'
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
