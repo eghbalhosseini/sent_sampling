@@ -18,12 +18,12 @@ import torch
 from scipy.spatial.distance import pdist, squareform
 if __name__ == '__main__':
     extract_id = [
-        'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textPeriod-activation-bench=None-ave=False']
-    #optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
-    #             'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True'             ]
+        'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textPeriod-activation-bench=None-ave=False']
+    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
+                 'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True'             ]
     #
-    optim_id=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
-                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
+    #optim_id=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
+    #            'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
     low_resolution = 'False'
     optim_files = []
     optim_results = []
@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     ds_rand = []
     RDM_rand=[]
-    for k in tqdm(enumerate(range(50))):
+    for k in tqdm(enumerate(range(200))):
         sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s))
         d_s_r,RDM_r= optimizer_obj.gpu_object_function_debug(sent_random)
         ds_rand.append(d_s_r)
@@ -108,9 +108,6 @@ if __name__ == '__main__':
     ax.set_xticks(np.arange(len(ext_obj.model_spec)))
     ax.set_xticklabels(ext_obj.model_spec, fontsize=6,rotation=90)
 
-    # add colorbar for RDM_max
-    #ax = plt.axes((.9, .7, .01, .25))
-    #plt.colorbar(im, cax=ax)
 
 
     ax=plt.axes((.6, .4, .25, .25))
@@ -126,8 +123,6 @@ if __name__ == '__main__':
     ax.set_xticklabels(ext_obj.model_spec, fontsize=6, rotation=90)
 
     ax.set_title('RDM_max')
-    #ax = plt.axes((.9, .4, .01, .25))
-    #plt.colorbar(im, cax=ax)
 
     ax = plt.axes((.6, .05, .25, .25))
     im = ax.imshow(RDM_min.cpu(), cmap='viridis',vmax=RDM_max.cpu().numpy().max())
@@ -197,7 +192,7 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(11, 8))
     for i in range(len(X_Max)):
         ax = plt.subplot(3, 7, i + 1+7)
-        im = ax.imshow(X_Max[i], cmap='viridis',vmax=RDM_max.cpu().numpy().max())
+        im = ax.imshow(X_Max[i], cmap='viridis',vmax=X_Max[i].max())
         ax.set_ylabel(f'{ext_obj.model_spec[i]}',fontsize=6)
         ax.set_title('Ds_max')
         # turn off ticks
@@ -206,7 +201,7 @@ if __name__ == '__main__':
 
     for i in range(len(X_Min)):
         ax = plt.subplot(3, 7, i + 1+14)
-        im = ax.imshow(X_Min[i], cmap='viridis', vmax=RDM_max.cpu().numpy().max())
+        im = ax.imshow(X_Min[i], cmap='viridis', vmax=X_Min[i].max())
         ax.set_ylabel(f'{ext_obj.model_spec[i]}', fontsize=6)
         ax.set_title('Ds_min')
         ax.set_xticks([])
@@ -215,14 +210,14 @@ if __name__ == '__main__':
 
     for i in range(len(X_rand)):
         ax = plt.subplot(3, 7, i+1)
-        im = ax.imshow(X_rand[i], cmap='viridis', vmax=RDM_max.cpu().numpy().max())
+        im = ax.imshow(X_rand[i], cmap='viridis', vmax=X_rand[i].max())
         ax.set_ylabel(f'{ext_obj.model_spec[i]}', fontsize=6)
         ax.set_title('Ds_rand')
         ax.set_xticks([])
         ax.set_yticks([])
 
-    ax = plt.axes((.95, .05, .01, .25))
-    plt.colorbar(im, cax=ax)
+    #ax = plt.axes((.95, .05, .01, .25))
+    #plt.colorbar(im, cax=ax)
 
     fig.show()
 
@@ -255,3 +250,130 @@ if __name__ == '__main__':
     df = pd.DataFrame(np.asarray(select_activations).transpose(), index=S_id, columns=ext_obj.model_spec)
     ax1 = ax_title.replace('ds_result', 'sentences')
     df.to_csv(Path(ANALYZE_DIR, f'{ax1}.csv'))
+
+    # compare low dim to no low dim results
+
+    optim_id_low_dim = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
+                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True']
+    #
+    optim_id_wo_low_dim=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
+                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
+    low_resolution = 'False'
+    optim_files = []
+    optim_results_low_dim = []
+    optim_results_wo_low_dim = []
+    for ext in extract_id:
+        for optim in optim_id_low_dim:
+            optim_file = Path(RESULTS_DIR, f"results_{ext}_{optim}.pkl")
+            assert (optim_file.exists())
+            optim_files.append(optim_file.__str__())
+            optim_results_low_dim.append(load_obj(optim_file.__str__()))
+        # get results without low dim
+        for optim in optim_id_wo_low_dim:
+            optim_file = Path(RESULTS_DIR, f"results_{ext}_{optim}.pkl")
+            assert (optim_file.exists())
+            optim_files.append(optim_file.__str__())
+            optim_results_wo_low_dim.append(load_obj(optim_file.__str__()))
+
+    ext_obj = extract_pool[extract_id[0]]()
+    ext_obj.load_dataset()
+    ext_obj()
+    # wordFORM extractor
+    ext_obj_wordFORM= extract_pool[extract_id[0].replace('textPeriod','wordFORM')]()
+    ext_obj_wordFORM.load_dataset()
+    ext_obj_wordFORM()
+    optimizer_obj_low_dim = optim_pool[optim_id_low_dim[0]]()
+    optimizer_obj_low_dim.load_extractor(ext_obj)
+
+    optimizer_obj_low_dim.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=True,
+                                                 save_results=False)
+    # make an optimizer object without low dim
+    optimizer_obj_wo_low_dim = optim_pool[optim_id_wo_low_dim[0]]()
+    optimizer_obj_wo_low_dim.load_extractor(ext_obj)
+    optimizer_obj_wo_low_dim.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=True,
+                                                    save_results=False)
+
+    DS_max_low_dim_low_dim, _ = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_low_dim[0]['optimized_S'])
+    DS_min_low_dim_low_dim, _ = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_low_dim[1]['optimized_S'])
+    # compute DS for no low dim
+    DS_max_wo_low_dim_wo_low_dim, _ = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[0]['optimized_S'])
+    DS_min_wo_low_dim_wo_low_dim, _ = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[1]['optimized_S'])
+
+    # compute Ds for low dim using no low dim
+    DS_max_low_dim_wo_low_dim, _ = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_low_dim[0]['optimized_S'])
+    DS_min_low_dim_wo_low_dim, _ = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_low_dim[1]['optimized_S'])
+    # compute Ds for no low dim using low dim
+    DS_max_wo_low_dim_low_dim, _ = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[0]['optimized_S'])
+    DS_min_wo_low_dim_low_dim, _ = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[1]['optimized_S'])
+
+    ds_rand_low_dim = []
+    for k in tqdm(enumerate(range(200))):
+        sent_random = list(np.random.choice(optimizer_obj_low_dim.N_S, optimizer_obj_low_dim.N_s))
+        d_s_r, RDM_r = optimizer_obj_low_dim.gpu_object_function_debug(sent_random)
+        ds_rand_low_dim.append(d_s_r)
+    # compute random ds for no low dim
+    ds_rand_wo_low_dim = []
+    for k in tqdm(enumerate(range(200))):
+        sent_random = list(np.random.choice(optimizer_obj_wo_low_dim.N_S, optimizer_obj_wo_low_dim.N_s))
+        d_s_r, RDM_r = optimizer_obj_wo_low_dim.gpu_object_function_debug(sent_random)
+        ds_rand_wo_low_dim.append(d_s_r)
+
+
+
+    # plot results
+    fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
+    ax = plt.axes((.2, .7, .08, .25))
+    ax.scatter(.02 * np.random.normal(size=(np.asarray(len(ds_rand_low_dim)))) + 0, np.asarray(ds_rand_low_dim),
+               color=(.6, .6, .6), s=2, alpha=.3)
+    rand_mean = np.asarray(ds_rand_low_dim).mean()
+    ax.scatter(0, rand_mean, color=np.divide((55, 76, 128), 256), s=50,
+               label=f'random= {rand_mean:.4f}', edgecolor='k')
+
+
+    ax.scatter(0, DS_min_low_dim_low_dim, color=np.divide((188, 80, 144), 255), s=50, label=f'Ds_min={DS_min_low_dim_low_dim:.4f}', edgecolor='k')
+    ax.scatter(0, DS_max_low_dim_low_dim, color=np.divide((255, 128, 0), 255), s=50, label=f'Ds_max={DS_max_low_dim_low_dim:.4f}', edgecolor='k')
+
+    ax.scatter(0, DS_min_wo_low_dim_low_dim, color=np.divide((188, 80, 144), 255), s=50,edgecolor='w', label=f'Ds_min using full dim optimization samples={DS_min_wo_low_dim_low_dim:.4f}')
+    ax.scatter(0, DS_max_wo_low_dim_low_dim, color=np.divide((255, 128, 0), 255), s=50,edgecolor='w', label=f'Ds_max using full dim optimization samples={DS_max_wo_low_dim_low_dim:.4f}')
+
+
+    ax.scatter(1+.02 * np.random.normal(size=(np.asarray(len(ds_rand_wo_low_dim)))) + 0, np.asarray(ds_rand_wo_low_dim),
+               color=(.6, .6, .6), s=2, alpha=.3)
+    rand_mean = np.asarray(ds_rand_wo_low_dim).mean()
+    ax.scatter(1, rand_mean, color=np.divide((55, 76, 128), 256), s=50,
+               label=f'random= {rand_mean:.4f}',marker='s', edgecolor='k')
+    ax.scatter(1, DS_min_wo_low_dim_wo_low_dim,marker='s', color=np.divide((188, 80, 144), 255), s=50, label=f'Ds_min={DS_min_wo_low_dim_wo_low_dim:.4f}',
+               edgecolor='k')
+    ax.scatter(1, DS_max_low_dim_low_dim,marker='s', color=np.divide((255, 128, 0), 255), s=50, label=f'Ds_max={DS_max_low_dim_low_dim:.4f}',
+               edgecolor='k')
+
+    ax.scatter(1, DS_min_low_dim_wo_low_dim, color=np.divide((188, 80, 144), 255), s=50, edgecolor='w',
+               label=f'Ds_min using low dim optimization samples={DS_min_low_dim_wo_low_dim:.4f}',marker='s',)
+    ax.scatter(1, DS_max_low_dim_wo_low_dim, color=np.divide((255, 128, 0), 255), s=50, edgecolor='w',
+               label=f'Ds_max using low dim optimization samples={DS_max_low_dim_wo_low_dim:.4f}',marker='s',)
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_linewidth(1)
+    ax.spines['left'].set_linewidth(1)
+    ax.set_xlim((-.4, 1.4))
+    ax.set_ylim((0.0, 1.2))
+    ax.set_xticks([0,1])
+    ax.set_xticklabels(['low dim', 'full dim'],rotation=45)
+    ax.legend(bbox_to_anchor=(1.1, .2), frameon=True)
+    ax.set_ylabel(r'$D_s$')
+    # plot no low dim case
+
+
+    fig.show()
+    ax_title = f'ds_result,extractor={dataset}_low_dim_vs_no_low_dim_{optimizer_obj.N_s}'
+    save_path = Path(ANALYZE_DIR)
+    save_loc = Path(save_path.__str__(), f'{ax_title}.png')
+    fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
+                facecolor='auto',
+                edgecolor='auto', backend=None)
+    save_loc = Path(save_path.__str__(), f'{ax_title}.eps')
+    fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
+                facecolor='auto',
+                edgecolor='auto', backend=None)
+    # looking at optimization
