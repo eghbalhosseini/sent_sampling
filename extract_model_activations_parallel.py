@@ -1,8 +1,9 @@
-from utils.extract_utils import model_extractor_parallel
 import argparse
 import sys
-from utils.data_utils import SENTENCE_CONFIG
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
+from utils.extract_utils import model_extractor_parallel
+from utils.data_utils import SENTENCE_CONFIG
+
 parser = argparse.ArgumentParser(description='extract activations from a model')
 parser.add_argument('model_name', type=str, default='bert-base-uncased')
 parser.add_argument('dataset', type=str, default='ud_sentences_filter_v3_sample')
@@ -22,4 +23,4 @@ if __name__ == '__main__':
     datafile = [x['file_loc'] for x in SENTENCE_CONFIG if x['name'] == dataset_id][0]
     extractor_obj = model_extractor_parallel(dataset=dataset_id, datafile=datafile, model_spec=model_id,stim_type=stim_type)
     extractor_obj.load_dataset()
-    extractor_obj(group_id=group_id,overwrite=True)
+    extractor_obj(group_id=group_id,overwrite=False)

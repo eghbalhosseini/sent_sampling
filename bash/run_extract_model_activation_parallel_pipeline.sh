@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-120
+#SBATCH --array=0-280
 #SBATCH --time=144:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=40G
+#SBATCH --mem=20G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
@@ -12,7 +12,7 @@
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
-    for stim_type in wordFORM ; do
+    for stim_type in wordFORM textNoPeriod ; do
       for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
           xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
             model_list[$i]="$model"
