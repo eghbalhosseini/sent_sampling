@@ -408,5 +408,5 @@ class model_extractor_parallel:
                 pass
             else:
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i == 0 else None)
-                model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False,overwrite=overwrite)  #
+                model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False,overwrite=False)  #
                 save_obj(model_activations, os.path.join(model_save_path, model_activation_name))
