@@ -27,19 +27,6 @@ def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_colu
     """
     # Input: stimulus_set = pandas df, col 1 with sentence ID and 2nd col as word.
     activations = []
-    # remove previous saved activation
-    # if overwrite:
-    #     print('removing previous run\n')
-    #     for i, reset_id in tqdm(enumerate(ordered_set(stimulus_set[reset_column].values))):
-    #         part_stimuli = stimulus_set[stimulus_set[reset_column] == reset_id]
-    #         # stimulus_ids = part_stimuli['stimulus_id']
-    #         sentence_stimuli = StimulusSet({'sentence': ' '.join(part_stimuli['word']),
-    #                                         reset_column: list(set(part_stimuli[reset_column]))})
-    #         sentence_stimuli.name = f"{stimulus_set.name}-{reset_id}"
-    #         name_format = f'identifier={candidate._model.identifier},stimuli_identifier={sentence_stimuli.name}.pkl'
-    #         file_loc = Path(os.path.join(neural_nlp_store_abs, name_format))
-    #         if file_loc.exists() : file_loc.unlink()
-    # run sentences
     for i, reset_id in enumerate(ordered_set(stimulus_set[reset_column].values)):
         part_stimuli = stimulus_set[stimulus_set[reset_column] == reset_id]
         # stimulus_ids = part_stimuli['stimulus_id']
@@ -53,14 +40,6 @@ def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_colu
         sentence_stimuli.name = f"{stimulus_set.name}-{reset_id}"
         print(f"running {sentence_stimuli.name} : {' '.join(part_stimuli['word'])}\n")
 
-        # if overwrite:
-        #     name_format = f'identifier={candidate._model.identifier},stimuli_identifier={sentence_stimuli.name}.pkl'
-        #     file_loc=Path(os.path.join(neural_nlp_store_abs,name_format))
-        #     if file_loc.exists():
-        #         print(f"removing and rerunning {sentence_stimuli.name} : {' '.join(part_stimuli['word'])}\n")
-        #         file_loc.unlink()
-        # else:
-        #     pass
         sentence_activations = candidate(stimuli=sentence_stimuli, average_sentence=average_sentence)
         for column in copy_columns:
             sentence_activations[column] = ('presentation', part_stimuli[column])
@@ -393,7 +372,7 @@ class model_extractor_parallel:
                     else:
                         print(f'{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name} is missing groups!\n')
         pass
-    def __call__(self,group_id,overwrite=False, *args, **kwargs):
+    def __call__(self,group_id,overwrite_layer=False,overwrite_sentence=False, *args, **kwargs):
         # get layers for model
         model_impl = model_pool[self.model_spec]
         layers = model_layers[self.model_spec]
@@ -405,7 +384,7 @@ class model_extractor_parallel:
             os.mkdir(model_save_path)
         # make an
         stim = self.extractor.stimuli_set[group_id]
-        if overwrite==True:
+        if overwrite_sentence==True:
             # remove model output from read_words_eh
             print('removing previous run\n')
             for i, reset_id in tqdm(enumerate(ordered_set(stim['sentence_id'].values))):
@@ -413,17 +392,21 @@ class model_extractor_parallel:
                 name_format = f'identifier={model_impl.identifier},stimuli_identifier={sentence_name}.pkl'
                 file_loc = Path(os.path.join(neural_nlp_store_abs, name_format))
                 if file_loc.exists(): file_loc.unlink()
+        if overwrite_layer==True:
+            for k, layer in enumerate(tqdm(layers, desc='layers')):
+                model_activation_name = f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{k}_{self.extract_name}_group_{group_id}.pkl"
+                # if model_activation_name already exists, remove it
+                if os.path.exists(os.path.join(model_save_path,model_activation_name)):
+                # remove the file
+                    print(f'removing {model_activation_name}\n')
+                    os.remove(os.path.join(model_save_path,model_activation_name))
         for i, layer in enumerate(tqdm(layers, desc='layers')):
             model_activation_name = f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{i}_{self.extract_name}_group_{group_id}.pkl"
             print(f"\nextracting network activations for {self.model_spec}\n")
-            if os.path.exists(os.path.join(model_save_path, model_activation_name)) and overwrite==False:
+            if os.path.exists(os.path.join(model_save_path, model_activation_name)):
                 print(f"\n{model_activation_name} already exists, skipping...\n")
                 pass
             else:
-                if overwrite==True:
-                    print(f"\n{model_activation_name} exists but overwriting...\n")
-                else:
-                    print(f"\n{model_activation_name} doesn't exists, creating...\n")
                 candidate = FixedLayer(model_impl, layer, prerun=layers if i == 0 else None)
                 model_activations = read_words_eh(candidate, stim, copy_columns=['stimulus_id'], average_sentence=False,overwrite=overwrite)  #
                 save_obj(model_activations, os.path.join(model_save_path, model_activation_name))
