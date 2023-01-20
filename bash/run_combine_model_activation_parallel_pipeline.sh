@@ -11,7 +11,7 @@
 
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
-      for stim_type in textPeriod textNoPeriod ; do
+      for stim_type in textNoPeriod wordFORM ; do
       for model in roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
           xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
               for average_mode in False True None ; do
