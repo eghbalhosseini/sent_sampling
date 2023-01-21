@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-280
+#SBATCH --array=0-10
 #SBATCH --time=144:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
@@ -10,10 +10,14 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
+# 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+# roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+  #          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
+
 for dataset in ud_sentencez_token_filter_v3 ; do
-  for group_ids in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
-    for stim_type in wordFORM textNoPeriod ; do
-      for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+  for group_ids in  18 ; do
+    for stim_type in textNoPeriod ; do
+      for model in  xlnet-large-cased bert-large-uncased-whole-word-masking \
           xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
@@ -24,6 +28,22 @@ for dataset in ud_sentencez_token_filter_v3 ; do
     done
   done
 done
+
+
+for dataset in ud_sentencez_token_filter_v3 ; do
+  for group_ids in 0  ; do
+    for stim_type in wordFORM  ; do
+      for model in  roberta-base xlnet-large-cased ; do
+            model_list[$i]="$model"
+            dataset_list[$i]="$dataset"
+            stim_type_list[$i]="$stim_type"
+            group_id_list[$i]=$group_ids
+            i=$i+1
+      done
+    done
+  done
+done
+
 
 #  2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID

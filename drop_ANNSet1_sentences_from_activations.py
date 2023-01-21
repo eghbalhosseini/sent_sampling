@@ -9,10 +9,13 @@ from utils.data_utils import SENTENCE_CONFIG, RESULTS_DIR, UD_PARENT, SAVE_DIR,l
 from utils import extract_pool
 import pickle
 from neural_nlp.models import model_pool, model_layers
-
+import fnmatch
+import re
 from utils.extract_utils import model_extractor_parallel
+import numpy as np
 if __name__ == '__main__':
-    extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textPeriod-activation-bench=None-ave=False'
+    extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
+    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_wordFORM-activation-bench=None-ave=False'
 
     file_name = 'U01_sentselection_Dec18-2020_updDec23.xlsx'
     df_ev_selected = pd.read_excel(os.path.join(RESULTS_DIR, f"{file_name}"))
@@ -21,9 +24,34 @@ if __name__ == '__main__':
     ev_sentences
     ext_obj = extract_pool[extract_id]()
     ext_obj.load_dataset()
+
+    for k, layer in enumerate(tqdm(ext_obj.layer_spec, desc='layers')):
+        model_save_path = os.path.join(SAVE_DIR, ext_obj.model_spec[k])
+        model_activation_name = f"{ext_obj.dataset}_{ext_obj.stim_type}_{ext_obj.model_spec[k]}_layer_{k}_{ext_obj.extract_name}_group_*.pkl"
+        new_model_activation_name = f"{ext_obj.dataset}_{ext_obj.stim_type}_{ext_obj.model_spec[k]}_layer_{k}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
+        if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)):
+            print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
+
+        activation_files = []
+        for file in os.listdir(model_save_path):
+            if fnmatch.fnmatch(file, model_activation_name):
+                activation_files.append(os.path.join(model_save_path, file))
+        # sort files:
+        sorted_files = []
+        s = [re.findall('group_\d+', x) for x in activation_files]
+        s = [item for sublist in s for item in sublist]
+        file_id = [int(x.split('group_')[1]) for x in s]
+        # find which numbers from 0 to 18  is missing from file_id
+        missing = [x for x in range(0, 19) if x not in file_id]
+        # print missing numbers
+        print(f'model {ext_obj.model_spec[k]} missing: {missing}')
+        #sorted_files = [activation_files[x] for x in np.argsort(file_id)]
+
+    ext_obj()
     data_sentences=[x['text'] for x in ext_obj.data_]
     # find location of ev_sentences in data_sentences
     ev_sentences_loc = [data_sentences.index(x) for x in ev_sentences]
+    ev_sentence_data= [ext_obj.data_[x] for x in ev_sentences_loc]
     # drop ev_sentences_loc from data_sentences
     data_mod = [x for i, x in enumerate(ext_obj.data_) if i not in ev_sentences_loc]
 
@@ -35,6 +63,16 @@ if __name__ == '__main__':
     new_dataset_name=ext_obj.dataset+'_minus_ev_sentences'
     old_dataset_name=ext_obj.dataset+'-minus_ev_sentences'
     new_model_sentence_set=[]
+
+    for idx in range(len(ext_obj.model_spec)):
+        model_activation_name = f"{ext_obj.dataset}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{ext_obj.layer_spec[idx]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
+        model_activation = load_obj(Path(SAVE_DIR, model_activation_name).__str__())
+        if isinstance(model_activation[0], list):
+            pass
+        else:
+            # go through ext_obj.stimulus_set and extract sentences
+            # print model name and layer name
+            print(f'{ext_obj.model_spec[idx]},{ext_obj.model_spec[idx]} doesnt have a list')
     for idx in range(len(ext_obj.model_spec)):
         model_layers_ids = tuple([(idx, x) for idx, x in enumerate(model_layers[ext_obj.model_spec[idx]])])
         for layer_spec in tqdm(model_layers_ids):
@@ -42,9 +80,33 @@ if __name__ == '__main__':
             assert Path(SAVE_DIR,model_activation_name).exists(), f"model activation file {model_activation_name} does not exist"
             model_activation=load_obj(Path(SAVE_DIR,model_activation_name).__str__())
             # find model activations for ev_sentences_loc
-            model_activation_sentences=[x[1] for x in model_activation]
+            # check whether the model activation is a list or a dict
+            if isinstance(model_activation[0], list):
+                model_activation_sentences=[x[1] for x in model_activation]
+                ev_activation_sentences_loc = [model_activation_sentences.index(x) for x in ev_sentences]
+            else:
+                #go through ext_obj.stimulus_set and extract sentences
+                # print model name and layer name
+                print(f'{ext_obj.model_spec[idx]},{ext_obj.model_spec[idx]} doesnt have a list')
+                sentence_ids=[]
+                sent_strings=[]
+                for stim_group in ext_obj.stimuli_set:
+                    for sent_id,sent in stim_group.groupby('sentence_id'):
+                        sent_string= ' '.join(sent.word.tolist())
+                        sent_strings.append(sent_string)
+                        sentence_ids.append(sent_id)
+
+                # for each sentence in ev_sentences, find with strings in sent_strings has the most overlap
+                ev_activation_sentences_loc=[]
+                for ev_sent in tqdm(ev_sentences):
+                    sent_overlap=[len(set(ev_sent.split()).intersection(set(x.split()))) for x in sent_strings]
+                    ev_activation_sentences_loc.append(sentence_ids[sent_overlap.index(max(sent_overlap))])
+                [[sent_strings[x],ev_sentences.tolist()[idx]] for idx, x in enumerate(ev_activation_sentences_loc)]
+
+                ev_activation_sentences_loc = [sent_strings.index(x) for x in ev_sentences]
+
             # find location of ev_sentences in model_activation_sentences
-            ev_activation_sentences_loc = [model_activation_sentences.index(x) for x in ev_sentences]
+
             # drop ev_activation_sentences_loc from model_activation
             model_activation_mod = [x for i, x in enumerate(model_activation) if i not in ev_activation_sentences_loc]
             # save model_activation_mod with new_dataset_name
