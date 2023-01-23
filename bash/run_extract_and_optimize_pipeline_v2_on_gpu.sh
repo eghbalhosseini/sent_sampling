@@ -39,7 +39,7 @@ for set in best_performing_pereira_1 ; do
   for idx in 0 ; do
     for ave in False ; do
       for dataset in ud_sentencez_token_filter_v3_minus_ev_sentences ; do
-        for text in  ; do
+        for text in textNoPeriod ; do
           extract_id="group=${set}-dataset=${dataset}_${text}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
           extract_list[$i]="$extract_id"
           i=$i+1
