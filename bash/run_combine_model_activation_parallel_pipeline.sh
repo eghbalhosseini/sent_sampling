@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-20
+#SBATCH --array=0-2
 #SBATCH --time=168:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=40G
@@ -11,9 +11,8 @@
 
 i=0
 for dataset in ud_sentencez_token_filter_v3 ; do
-      for stim_type in wordFORM ; do
-      for model in roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
-          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
+      for stim_type in textNoPeriod ; do
+      for model in ctrl ; do
               for average_mode in False True None ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"

@@ -17,11 +17,6 @@ if __name__ == '__main__':
     extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
     extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_wordFORM-activation-bench=None-ave=False'
 
-    file_name = 'U01_sentselection_Dec18-2020_updDec23.xlsx'
-    df_ev_selected = pd.read_excel(os.path.join(RESULTS_DIR, f"{file_name}"))
-
-    ev_sentences = df_ev_selected.sentence[df_ev_selected.previously_selected_by_ev == 1]
-    ev_sentences
     ext_obj = extract_pool[extract_id]()
     ext_obj.load_dataset()
 
@@ -46,6 +41,12 @@ if __name__ == '__main__':
         # print missing numbers
         print(f'model {ext_obj.model_spec[k]} missing: {missing}')
         #sorted_files = [activation_files[x] for x in np.argsort(file_id)]
+    # first extract ev sentences
+    file_name = 'U01_sentselection_Dec18-2020_updDec23.xlsx'
+    df_ev_selected = pd.read_excel(os.path.join(RESULTS_DIR, f"{file_name}"))
+
+    ev_sentences = df_ev_selected.sentence[df_ev_selected.previously_selected_by_ev == 1]
+    ev_sentences
 
     ext_obj()
     data_sentences=[x['text'] for x in ext_obj.data_]

@@ -19,8 +19,8 @@ from scipy.spatial.distance import pdist, squareform
 if __name__ == '__main__':
     extract_id = [
         'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textPeriod-activation-bench=None-ave=False']
-    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
-                 'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True'             ]
+    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=True',
+                 'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=True'             ]
     #
     #optim_id=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
     #            'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
@@ -253,11 +253,11 @@ if __name__ == '__main__':
 
     # compare low dim to no low dim results
 
-    optim_id_low_dim = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
-                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True']
+    optim_id_low_dim = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=True',
+                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=True']
     #
-    optim_id_wo_low_dim=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
-                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
+    optim_id_wo_low_dim=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=125-n_init=1-low_dim=False-run_gpu=True',
+                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=False-run_gpu=True']
     low_resolution = 'False'
     optim_files = []
     optim_results_low_dim = []
@@ -278,10 +278,7 @@ if __name__ == '__main__':
     ext_obj = extract_pool[extract_id[0]]()
     ext_obj.load_dataset()
     ext_obj()
-    # wordFORM extractor
-    ext_obj_wordFORM= extract_pool[extract_id[0].replace('textPeriod','wordFORM')]()
-    ext_obj_wordFORM.load_dataset()
-    ext_obj_wordFORM()
+
     optimizer_obj_low_dim = optim_pool[optim_id_low_dim[0]]()
     optimizer_obj_low_dim.load_extractor(ext_obj)
 
