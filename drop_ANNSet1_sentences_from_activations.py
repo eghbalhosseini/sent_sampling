@@ -59,54 +59,46 @@ if __name__ == '__main__':
     file_name=Path(UD_PARENT,'ud_sentencez_data_token_filter_v3_no_dup_minus_ev_sentences.pkl')
     with open(file_name.__str__(), 'wb') as f:
         pickle.dump(data_mod, f, protocol=4)
-    ext_obj()
+
 
     new_dataset_name=ext_obj.dataset+'_minus_ev_sentences'
     old_dataset_name=ext_obj.dataset+'-minus_ev_sentences'
     new_model_sentence_set=[]
 
-    for idx in range(len(ext_obj.model_spec)):
-        model_activation_name = f"{ext_obj.dataset}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{ext_obj.layer_spec[idx]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
-        model_activation = load_obj(Path(SAVE_DIR, model_activation_name).__str__())
-        if isinstance(model_activation[0], list):
-            pass
-        else:
-            # go through ext_obj.stimulus_set and extract sentences
-            # print model name and layer name
-            print(f'{ext_obj.model_spec[idx]},{ext_obj.model_spec[idx]} doesnt have a list')
+
+
     for idx in range(len(ext_obj.model_spec)):
         model_layers_ids = tuple([(idx, x) for idx, x in enumerate(model_layers[ext_obj.model_spec[idx]])])
         for layer_spec in tqdm(model_layers_ids):
             model_activation_name = f"{ext_obj.dataset}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{layer_spec[0]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
             assert Path(SAVE_DIR,model_activation_name).exists(), f"model activation file {model_activation_name} does not exist"
             model_activation=load_obj(Path(SAVE_DIR,model_activation_name).__str__())
+            # for sentences in model_activation if the ext_obj.identifier has wordFORM, find correponding text from ext_obj.data_
+            if ext_obj.stim_type=='wordFORM':
+                model_activation_sentences = [x[1] for x in model_activation]
+                ev_activation_sentences_loc=[]
+                for ev_sent in tqdm(ev_sentences):
+                    sent_overlap = [len(set(ev_sent.split()).intersection(set(x.split()))) for x in model_activation_sentences]
+                    if max(sent_overlap)>=len(ev_sent.split())-3:
+                        ev_activation_sentences_loc.append(sent_overlap.index(max(sent_overlap)))
+                    else:
+                        ev_activation_sentences_loc.append(None)
+            elif ext_obj.stim_type=='textNoPeriod':
+
             # find model activations for ev_sentences_loc
             # check whether the model activation is a list or a dict
-            if isinstance(model_activation[0], list):
-                model_activation_sentences=[x[1] for x in model_activation]
-                ev_activation_sentences_loc = [model_activation_sentences.index(x) for x in ev_sentences]
-            else:
                 #go through ext_obj.stimulus_set and extract sentences
                 # print model name and layer name
-                print(f'{ext_obj.model_spec[idx]},{ext_obj.model_spec[idx]} doesnt have a list')
-                sentence_ids=[]
-                sent_strings=[]
-                for stim_group in ext_obj.stimuli_set:
-                    for sent_id,sent in stim_group.groupby('sentence_id'):
-                        sent_string= ' '.join(sent.word.tolist())
-                        sent_strings.append(sent_string)
-                        sentence_ids.append(sent_id)
+
 
                 # for each sentence in ev_sentences, find with strings in sent_strings has the most overlap
                 ev_activation_sentences_loc=[]
+                model_sentences=[x[1] for x in model_activation]
                 for ev_sent in tqdm(ev_sentences):
-                    sent_overlap=[len(set(ev_sent.split()).intersection(set(x.split()))) for x in sent_strings]
-                    ev_activation_sentences_loc.append(sentence_ids[sent_overlap.index(max(sent_overlap))])
-                [[sent_strings[x],ev_sentences.tolist()[idx]] for idx, x in enumerate(ev_activation_sentences_loc)]
+                    # drop period in the end from ev_sent
+                    ev_sent=ev_sent[:-1]
+                    ev_activation_sentences_loc.append(model_sentences.index(ev_sent))
 
-                ev_activation_sentences_loc = [sent_strings.index(x) for x in ev_sentences]
-
-            # find location of ev_sentences in model_activation_sentences
 
             # drop ev_activation_sentences_loc from model_activation
             model_activation_mod = [x for i, x in enumerate(model_activation) if i not in ev_activation_sentences_loc]
@@ -114,9 +106,9 @@ if __name__ == '__main__':
             model_activation_name_mod = f"{new_dataset_name}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{layer_spec[0]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
             save_obj(model_activation_mod, Path(SAVE_DIR,model_activation_name_mod).__str__())
             # delete old model_activation_name
-            old_model_activation_name=f"{old_dataset_name}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{layer_spec[0]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
-            if Path(SAVE_DIR,old_model_activation_name).exists():
-                os.remove(Path(SAVE_DIR,old_model_activation_name).__str__())
+            #old_model_activation_name=f"{old_dataset_name}_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{layer_spec[0]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
+            #if Path(SAVE_DIR,old_model_activation_name).exists():
+            #    os.remove(Path(SAVE_DIR,old_model_activation_name).__str__())
             new_model_sentence_set.append([x[1] for x in model_activation_mod])
 
 

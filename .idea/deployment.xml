@@ -2,13 +2,6 @@
 <project version="4">
   <component name="PublishConfigData" serverName="ehoseini@node094:22 agent" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="ehoseini@evnode.mit.edu:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="ehoseini@evnode_X11:22 agent">
         <serverdata>
           <mappings>
@@ -16,14 +9,14 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="ehoseini@node094:22">
+      <paths name="ehoseini@node094:22 agent">
         <serverdata>
           <mappings>
-            <mapping deploy="/om/user/ehoseini/sent_sampling/" local="$PROJECT_DIR$" />
+            <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="ehoseini@node094:22 agent">
+      <paths name="ehoseini@node105:22 agent">
         <serverdata>
           <mappings>
             <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />

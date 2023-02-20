@@ -13,13 +13,17 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 500 ; do
-    for N_s in  100  125 ; do
+    for N_s in  100 ; do
       for ds in D_s 2-D_s ; do
         for low_dim in True False ; do
-          for init in 1 ; do
-            optim_id="${optim_method}-obj=${ds}-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-low_dim=${low_dim}-run_gpu=True"
-            optim_list[$i]="$optim_id"
-            i=$i+1
+          for pca_var in .9 ;do
+            for pca_type in pytorch sklearn ; do
+              for init in 1 ; do
+                optim_id="${optim_method}-obj=${ds}-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-low_dim=${low_dim}-pca_var=${pca_var}-pca_type=${pca_type}-run_gpu=True"
+                optim_list[$i]="$optim_id"
+              i=$i+1
+              done
+            done
           done
         done
       done

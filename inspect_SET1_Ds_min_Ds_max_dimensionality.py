@@ -55,11 +55,11 @@ def make_rotational_colors(X_list):
 if __name__ == '__main__':
     extract_id = [
         'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textPeriod-activation-bench=None-ave=False']
-    #optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
-    #             'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True'             ]
+    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
+                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True'             ]
     #
-    optim_id=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
-                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
+    #optim_id=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
+    # 'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
     low_resolution = 'False'
     optim_files = []
     optim_results = []
@@ -140,7 +140,11 @@ if __name__ == '__main__':
         rot = rot_list[idx]
         l_v = loadings_p12[idx]
 
-        ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=line_cols)
+        #ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=line_cols)
+        #ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
+        grays=(.7,.7,.7,.5)
+        ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=grays)
+        #ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
         ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
         right_side = ax.spines["right"]
         right_side.set_visible(False)
@@ -177,8 +181,10 @@ if __name__ == '__main__':
 
         rot = rot_list[idx]
         l_v = loadings_p12[idx]
-
-        ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=line_cols)
+        grays=(.7,.7,.7,.5)
+        #ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=line_cols)
+        ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=grays)
+        #ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
         ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
         right_side = ax.spines["right"]
         right_side.set_visible(False)

@@ -16,7 +16,7 @@ if __name__ == '__main__':
     extractor_id = args.extractor_id
     optimizer_id = args.optimizer_id
 
-    #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=125-n_init=1-low_dim=False-run_gpu=True"
+    #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=125-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=True-run_gpu=False"
     #extractor_id = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textPeriod-activation-bench=None-ave=False'
     low_resolution='False'
@@ -30,14 +30,8 @@ if __name__ == '__main__':
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
     optimizer_obj.early_stopping=False
-    xy_dir=os.path.join(SAVE_DIR, f"{optimizer_obj.extractor_obj.identifier}_XY_corr_list-low_res={low_resolution}-low_dim={optimizer_obj.low_dim}.pkl")
-    if os.path.exists(xy_dir):
-        print('loading precomputed correlation matrix ')
-        D_precompute=load_obj(xy_dir)
-        optimizer_obj.XY_corr_list=D_precompute
-    else:
-        print('precomputing correlation matrix ')
-        optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution,cpu_dump=True,preload=False,save_results=True)
+    optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=True,
+                                                 save_results=False)
     S_opt_d, DS_opt_d = optimizer_obj()
     # save results
     optim_results = dict(extractor_name=extractor_id,
