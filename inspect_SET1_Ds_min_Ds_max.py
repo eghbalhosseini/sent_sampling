@@ -16,6 +16,7 @@ from matplotlib.pyplot import GridSpec
 import pandas as pd
 from pathlib import Path
 import torch
+from extract_and_optimize_on_gpu import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 if __name__ == '__main__':

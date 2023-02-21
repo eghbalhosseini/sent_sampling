@@ -7,6 +7,47 @@ from neural_nlp.models import model_pool, model_layers
 from itertools import count
 # add the layerwise model definition
 
+def make_shorthand(extractor_id, optimizer_id):
+    # create a short hand version for the file name
+    # get group= from extract_id
+    group = extractor_id.split('-')[0].split('=')[1]
+    # get dataset= from extract_id
+    dataset = extractor_id.split('-')[1].split('=')[1]
+    # get activation from extract_id
+    activation = extractor_id.split('-')[2]
+    # get bench from extract_id
+    bench = extractor_id.split('-')[3].split('=')[1]
+    # get ave from extract_id
+    ave = extractor_id.split('-')[4].split('=')[1]
+    # get coord from optim_id
+    coord = optimizer_id.split('-')[0]
+    # make an auxilary name by removing coord from optimizer_id
+    aux_name = '-'.join(optimizer_id.split('-')[1:])
+    # get obj from aux_name by finding -n_iter and taking the first part
+    obj = aux_name.split('-n_iter')[0].split('=')[1]
+    # get n_iter from aux_name
+    n_iter = aux_name.split('-n_iter')[1].split('-')[0].split('=')[1]
+    # get n_samples from aux_name
+    n_samples = aux_name.split('-n_samples')[1].split('-')[0].split('=')[1]
+    # get n_init from aux_name
+    n_init = aux_name.split('-n_init')[1].split('-')[0].split('=')[1]
+    # get low_dim from aux_name
+    low_dim = aux_name.split('-low_dim')[1].split('-')[0].split('=')[1]
+    # get pca_var from aux_name
+    pca_var = aux_name.split('-pca_var')[1].split('-')[0].split('=')[1]
+    # get pca_type from aux_name
+    pca_type = aux_name.split('-pca_type')[1].split('-')[0].split('=')[1]
+    # get run_gpu from aux_name
+    run_gpu = aux_name.split('-run_gpu')[1].split('-')[0].split('=')[1]
+    # create a short hand name from the above
+    optim_short_hand = f"[{coord}]-[O={obj}]-[Nit={n_iter}]-[Ns={n_samples}]-[Nin={n_init}]-[LD={low_dim}]-[V={pca_var}]-[T={pca_type}]-[GPU={run_gpu}]"
+    optim_short_hand = optim_short_hand.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
+    # extract shorthand
+    extract_short_hand = f"[G={group}]-[D={dataset}]-[{activation}]-[B={bench}]-[AVE={ave}]"
+    extract_short_hand = extract_short_hand.translate(str.maketrans({'[': '', ']': '', '/': '_'}))
+
+    return (extract_short_hand, optim_short_hand)
+
 model_grps_config = [
 
                      dict(grp_id='best_performing_pereira',description='best layer/Pereira benchmark',
