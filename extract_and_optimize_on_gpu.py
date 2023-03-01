@@ -37,8 +37,8 @@ if __name__ == '__main__':
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
     optimizer_obj.early_stopping=False
-    optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=True,
-                                                 save_results=False)
+    optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=False,
+                                                 save_results=True)
     S_opt_d, DS_opt_d = optimizer_obj()
     # save results
     optim_results = dict(extractor_name=extractor_id,
