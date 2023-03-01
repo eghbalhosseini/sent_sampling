@@ -15,12 +15,13 @@ from utils.extract_utils import model_extractor_parallel
 import numpy as np
 if __name__ == '__main__':
     extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
-    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_wordFORM-activation-bench=None-ave=False'
+    #extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_wordFORM-activation-bench=None-ave=False'
 
     ext_obj = extract_pool[extract_id]()
     ext_obj.load_dataset()
 
     for k, layer in enumerate(tqdm(ext_obj.layer_spec, desc='layers')):
+        True
         model_save_path = os.path.join(SAVE_DIR, ext_obj.model_spec[k])
         model_activation_name = f"{ext_obj.dataset}_{ext_obj.stim_type}_{ext_obj.model_spec[k]}_layer_{k}_{ext_obj.extract_name}_group_*.pkl"
         new_model_activation_name = f"{ext_obj.dataset}_{ext_obj.stim_type}_{ext_obj.model_spec[k]}_layer_{k}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
@@ -60,10 +61,16 @@ if __name__ == '__main__':
     with open(file_name.__str__(), 'wb') as f:
         pickle.dump(data_mod, f, protocol=4)
 
+    # create a new dataset where sentence length is limited to be between 7 words and 14 words
+    data_mod_7_14 = [x for x in data_mod if len(x['text'].split()) in range(7, 15)]
+    file_name=Path(UD_PARENT,'ud_sentencez_data_token_filter_v3_no_dup_minus_ev_sentences_len_7_14.pkl')
+    with open(file_name.__str__(), 'wb') as f:
+        pickle.dump(data_mod_7_14, f, protocol=4)
 
     new_dataset_name=ext_obj.dataset+'_minus_ev_sentences'
     old_dataset_name=ext_obj.dataset+'-minus_ev_sentences'
     new_model_sentence_set=[]
+    new_model_sentence_set_7_14=[]
 
 
 
@@ -110,11 +117,21 @@ if __name__ == '__main__':
             #if Path(SAVE_DIR,old_model_activation_name).exists():
             #    os.remove(Path(SAVE_DIR,old_model_activation_name).__str__())
             new_model_sentence_set.append([x[1] for x in model_activation_mod])
+            # create a second set which has sentences between 7 and 14 words
+            model_activation_mod_7_14 = [x for x in model_activation_mod if len(x[1].split()) in range(7, 15)]
+            model_activation_name_mod_7_14 = f"{new_dataset_name}_len_7_14_{ext_obj.stim_type}_{ext_obj.model_spec[idx]}_layer_{layer_spec[0]}_{ext_obj.extract_name}_ave_{ext_obj.average_sentence}.pkl"
+            save_obj(model_activation_mod_7_14, Path(SAVE_DIR,model_activation_name_mod_7_14).__str__())
+            new_model_sentence_set_7_14.append([x[1] for x in model_activation_mod_7_14])
+
+
 
 
 
     # check whether the setnences in are the same for all the lists in new_model_sentence_set
     assert all([new_model_sentence_set[0]==x for x in new_model_sentence_set]), "the sentences in the new_model_sentence_set are not the same"
+
+    assert all([new_model_sentence_set_7_14[0] == x for x in
+                new_model_sentence_set_7_14]), "the sentences in the new_model_sentence_set are not the same"
     # check whether the sentences in new_model_sentence_set are the same as the sentences in data_mod
     assert [x['text'] for x in data_mod]==new_model_sentence_set[0], "the sentences in the new_model_sentence_set are not the same as the sentences in data_mod"
 

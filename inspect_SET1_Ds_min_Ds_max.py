@@ -16,15 +16,18 @@ from matplotlib.pyplot import GridSpec
 import pandas as pd
 from pathlib import Path
 import torch
-from extract_and_optimize_on_gpu import make_shorthand
+from utils import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 if __name__ == '__main__':
     modelnames = ['roberta-base',  'xlnet-large-cased',  'bert-large-uncased','xlm-mlm-en-2048', 'gpt2-xl', 'albert-xxlarge-v2','ctrl']
     extract_id = [
         'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False']
-    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
-                 'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True']
+    #optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
+    #             'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True']
+
+    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True'
+        ,'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True']
     #
     #optim_id=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
     #            'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
@@ -42,8 +45,11 @@ if __name__ == '__main__':
     optim_results = []
     for ext in extract_id:
         for optim in optim_id:
-            optim_file = Path(RESULTS_DIR, f"results_{ext}_{optim}.pkl")
+            (ext_sh,optim_sh)=make_shorthand(ext, optim)
+            #optim_file = Path(RESULTS_DIR, f"results_{ext}_{optim}.pkl")
+            optim_file = Path(RESULTS_DIR, f"results_{ext_sh}_{optim_sh}.pkl")
             assert(optim_file.exists())
+
             optim_files.append(optim_file.__str__())
             optim_results.append(load_obj(optim_file.__str__()))
 
@@ -178,11 +184,12 @@ if __name__ == '__main__':
 
 
     save_path = Path(ANALYZE_DIR)
-    save_loc = Path(save_path.__str__(), f'{ax_title}.png')
+    (ext_sh,optim_sh)=make_shorthand(extract_id[0], optim_id[0])
+    save_loc = Path(save_path.__str__(), f'ds_{ext_sh}_{optim_sh}.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
-    save_loc = Path(save_path.__str__(), f'{ax_title}.eps')
+    save_loc = Path(save_path.__str__(), f'ds_{ext_sh}_{optim_sh}.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
@@ -257,11 +264,11 @@ if __name__ == '__main__':
 
     save_path = Path(ANALYZE_DIR)
     ax_1=ax_title.replace('ds_result','model_rdm')
-    save_loc = Path(save_path.__str__(), f'{ax_1}.png')
+    save_loc = Path(save_path.__str__(), f'RDMs_{ext_sh}_{optim_sh}.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
-    save_loc = Path(save_path.__str__(), f'{ax_1}.eps')
+    save_loc = Path(save_path.__str__(), f'RDMs_{ext_sh}_{optim_sh}.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
@@ -276,7 +283,8 @@ if __name__ == '__main__':
     df_act_max= pd.DataFrame(np.asarray(select_activations).transpose(), index=S_id, columns=ext_obj.model_spec)
     dataset = optim_results[0]['extractor_name']
     optim=optim_results[0]['optimizatin_name']
-    ax_title = f'sent,{dataset},{optim}'
+    (ext_sh, optim_sh) = make_shorthand(extract_id[0],optim_id[0])
+    ax_title = f'sent,{ext_sh},{optim_sh}'
     df_max.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
 
     S_id = optim_results[1]['optimized_S']
@@ -289,8 +297,40 @@ if __name__ == '__main__':
     df_act_min = pd.DataFrame(np.asarray(select_activations).transpose(), index=S_id, columns=ext_obj.model_spec)
     dataset = optim_results[1]['extractor_name']
     optim=optim_results[1]['optimizatin_name']
-    ax_title = f'sent,{dataset},{optim}'
+    (ext_sh, optim_sh) = make_shorthand(extract_id[0], optim_id[1])
+    ax_title = f'sent,{ext_sh},{optim_sh}'
     df_min.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
+
+    # create a random set that is closest to the mean of distrubtion
+    ds_rand=[]
+    RDM_rand=[]
+    sent_randoms=[]
+    for k in tqdm(enumerate(range(1000))):
+        sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s))
+        d_s_r,RDM_r= optimizer_obj.gpu_object_function_debug(sent_random)
+        ds_rand.append(d_s_r)
+        RDM_rand.append(RDM_r)
+        sent_randoms.append(sent_random)
+
+    ds_rand_mean=np.mean(ds_rand)
+    # find the index of ds_rand element that is closest to the mean of ds_rand
+    ds_rand_mean_index = (np.abs(ds_rand - ds_rand_mean)).argmin()
+    sent_randoms[ds_rand_mean_index]
+
+    S_id = sent_randoms[ds_rand_mean_index]
+    select_activations = []
+    select_sentences = []
+    for model_act in ext_obj.model_group_act:
+        select_sentences.append([model_act['activations'][s][1] for s in S_id])
+        select_activations.append([model_act['activations'][s][0] for s in S_id])
+    df_rand = pd.DataFrame(np.asarray(select_sentences).transpose(), index=S_id, columns=ext_obj.model_spec)
+    df_act_rand = pd.DataFrame(np.asarray(select_activations).transpose(), index=S_id, columns=ext_obj.model_spec)
+
+    (ext_sh, optim_sh) = make_shorthand(extract_id[0], optim_id[1])
+    # in optim_sh replace O=2-Ds with O=DRand
+    optim_sh=optim_sh.replace('O=2-D_s','O=D_rand')
+    ax_title = f'sent,{ext_sh},{optim_sh}'
+    df_rand.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
 
     # check if there an overlap between columns of df_max and df_min
     sent_max=df_max['roberta-base'].values
@@ -606,3 +646,140 @@ if __name__ == '__main__':
 
 
         #act = torch.tensor(act_, dtype=float, device=optimizer_obj.device, requires_grad=False)
+    # compute the DS scores for sentences that are selected
+    Ds_rand_file_selected='sent,G=best_performing_pereira_1-D=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-B=None-AVE=False,O=D_rand-Nit=500-Ns=100-Nin=1-LD=False_eh_edit.csv'
+    Ds_min_file_selected='sent,G=best_performing_pereira_1-D=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-B=None-AVE=False,O=2-D_s-Nit=500-Ns=100-Nin=1-LD=False_eh_edit.csv'
+    Ds_max_file_selected='sent,G=best_performing_pereira_1-D=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-B=None-AVE=False,O=D_s-Nit=500-Ns=100-Nin=1-LD=False_eh_edit.csv'
+    Ds_rand_file_selected=Path(ANALYZE_DIR,Ds_rand_file_selected)
+    Ds_max_file_selected=Path(ANALYZE_DIR,Ds_max_file_selected)
+    Ds_min_file_selected=Path(ANALYZE_DIR,Ds_min_file_selected)
+
+    # read the Ds_rand_file_selected csv
+    df_rand_selected=pd.read_csv(Ds_rand_file_selected)
+    df_max_selected=pd.read_csv(Ds_max_file_selected)
+    df_min_selected=pd.read_csv(Ds_min_file_selected)
+    # select the sentences that are in the included in df_rand_selected
+    df_rand_selected=df_rand_selected[df_rand_selected['Include']==1]
+    df_max_selected=df_max_selected[df_max_selected['Include']==1]
+    df_min_selected=df_min_selected[df_min_selected['Include']==1]
+
+    # find the location of sentences in
+    S_id_rand_selected=[int(x) for x in list(df_rand_selected['Unnamed: 0'])]
+    S_id_max_selected=[int(x) for x in list(df_max_selected['Unnamed: 0'])]
+    S_id_min_selected=[int(x) for x in list(df_min_selected['Unnamed: 0'])]
+    assert len(S_id_rand_selected)==len(S_id_max_selected)==len(S_id_min_selected)==80
+    DS_max_selected, RDM_max_selected = optimizer_obj.gpu_object_function_debug(S_id_max_selected)
+    DS_min_selected, RDM_min_selected = optimizer_obj.gpu_object_function_debug(S_id_min_selected)
+    DS_rand_selected, RDM_rand_selected = optimizer_obj.gpu_object_function_debug(S_id_rand_selected)
+
+    fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
+    ax = plt.axes((.2, .7, .08, .25))
+    ax.scatter(0, DS_rand_selected, color=np.divide((55, 76, 128), 256), s=50,label=f'random= {DS_rand_selected:.4f}', edgecolor='k')
+    ax.scatter(0, DS_min_selected, color=np.divide((188, 80, 144), 255), s=50, label=f'Ds_min={DS_min_selected:.4f}', edgecolor='k')
+    ax.scatter(0, DS_max_selected, color=np.divide((255, 128, 0), 255), s=50, label=f'Ds_max={DS_max_selected:.4f}', edgecolor='k')
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_linewidth(1)
+    ax.spines['left'].set_linewidth(1)
+    ax.set_xlim((-.4, 0.4))
+    ax.set_ylim((0.0, 1.2))
+    ax.set_xticks([])
+    ax.set_xticklabels([])
+    ax.legend(bbox_to_anchor=(1.1, .2), frameon=True)
+    ax.set_ylabel(r'$D_s$')
+    ax.tick_params(direction='out', length=3, width=2, colors='k',
+                   grid_color='k', grid_alpha=0.5)
+
+    dataset = optim_results[0]['extractor_name']
+    optim = optim_results[0]['optimizatin_name']
+    ax_title = f'ds for selected sentences,{dataset},{optim}'
+    ax.set_title(ax_title.replace(',', ',\n'), fontsize=8)
+
+    ax = plt.axes((.6, .73, .25, .25))
+    im = ax.imshow(RDM_rand_selected.cpu(), cmap='viridis', vmax=RDM_max_selected.cpu().numpy().max())
+    # add values to image plot
+
+    for i in range(RDM_rand_selected.shape[0]):
+        for j in range(RDM_rand_selected.shape[1]):
+            text = ax.text(j, i, f"{RDM_rand_selected[i, j]:.2f}",
+                           ha="center", va="center", color="w", fontsize=6)
+    ax.set_title('RDM_rand_selected')
+    # set ytick labels to ext_obj.model_spec
+    ax.set_yticks(np.arange(len(ext_obj.model_spec)))
+    ax.set_yticklabels(ext_obj.model_spec, fontsize=6)
+    ax.set_xticks(np.arange(len(ext_obj.model_spec)))
+    ax.set_xticklabels(ext_obj.model_spec, fontsize=6, rotation=90)
+
+    ax = plt.axes((.6, .4, .25, .25))
+    im = ax.imshow(RDM_max_selected.cpu(), cmap='viridis', vmax=RDM_max_selected.cpu().numpy().max())
+    # add values to image plot
+    for i in range(RDM_max_selected.shape[0]):
+        for j in range(RDM_max_selected.shape[1]):
+            text = ax.text(j, i, f'{RDM_max_selected[i, j]:.2f}',
+                           ha="center", va="center", color="w", fontsize=6)
+    ax.set_yticks(np.arange(len(ext_obj.model_spec)))
+    ax.set_yticklabels(ext_obj.model_spec, fontsize=6)
+    ax.set_xticks(np.arange(len(ext_obj.model_spec)))
+    ax.set_xticklabels(ext_obj.model_spec, fontsize=6, rotation=90)
+
+    ax.set_title('RDM_max')
+
+    ax = plt.axes((.6, .05, .25, .25))
+    im = ax.imshow(RDM_min_selected.cpu(), cmap='viridis', vmax=RDM_max_selected.cpu().numpy().max())
+    # add values to image plot
+    for i in range(RDM_min_selected.shape[0]):
+        for j in range(RDM_min_selected.shape[1]):
+            text = ax.text(j, i, f'{RDM_min_selected[i, j]:.2f}',
+                           ha="center", va="center", color="w", fontsize=6)
+    ax.set_yticks(np.arange(len(ext_obj.model_spec)))
+    ax.set_yticklabels(ext_obj.model_spec, fontsize=8)
+    ax.set_xticks(np.arange(len(ext_obj.model_spec)))
+    ax.set_xticklabels(ext_obj.model_spec, fontsize=6, rotation=90)
+
+    ax.set_title('RDM_min')
+    ax = plt.axes((.9, .05, .01, .25))
+    plt.colorbar(im, cax=ax)
+
+    rdm_rand_vec = RDM_rand_selected[np.triu_indices(RDM_min_selected.shape[0], k=1)].to('cpu').numpy()
+    rdm_max_vec = RDM_max_selected[np.triu_indices(RDM_min_selected.shape[0], k=1)].to('cpu').numpy()
+    rdm_min_vec = RDM_min_selected[np.triu_indices(RDM_min_selected.shape[0], k=1)].to('cpu').numpy()
+    # plot rdm vectors connecting points from rdom_rand to rdm max to rdm min
+    # fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
+    ax = plt.axes((.1, .05, .15, .35))
+
+    color_set = [np.divide((188, 80, 144), 255), np.divide((55, 76, 128), 256), np.divide((255, 128, 0), 255)]
+
+    rdm_vec = np.vstack((rdm_min_vec, rdm_rand_vec, rdm_max_vec))
+    # plot one line per column in rdm_vec
+    for i in range(rdm_vec.shape[1]):
+        ax.plot([1, 2, 3], rdm_vec[:, i], color='k', alpha=.3, linewidth=.5)
+        # plot a scatter with each point color same as color_set
+        ax.scatter([1, 2, 3], rdm_vec[:, i], color=color_set, s=10, marker='o', alpha=.5)
+    # use a boxplot to show the distribution of rdm values per row, with colors matching above scatter plot
+
+    ax.boxplot(rdm_vec.transpose(), vert=True, showfliers=False, showmeans=False,
+               meanprops={'marker': 'o', 'markerfacecolor': 'r', 'markeredgecolor': 'k'})
+    # set xtick labels to ds_min, ds_rand, ds_max
+    ax.set_xticklabels(['ds_min', 'ds_rand', 'ds_max'], fontsize=8)
+    ax.set_ylabel('Ds')
+    ax.set_ylim((0, 1.4))
+    ax.set_title('Ds distribution')
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.set_xlim((.75, 3.25))
+    # ax.violinplot([0,1,2],rdm_vec.transpose(),showmeans=True,showextrema=False,showmedians=False)
+
+    fig.show()
+    ax_title = f'sent_selected,{group_id},{dataset_id},Ns={optimizer_obj.N_s},Low_dim={optimizer_obj.low_dim}'
+    # add a suptitle to the figure
+    fig.suptitle(ax_title, fontsize=10, y=.99)
+    save_path = Path(ANALYZE_DIR)
+    save_loc = Path(save_path.__str__(), f'{ax_title}.png')
+
+    fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
+                facecolor='auto',edgecolor='auto', backend=None)
+    save_loc = Path(save_path.__str__(), f'{ax_title}.eps')
+    fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
+                facecolor='auto',edgecolor='auto', backend=None)
+
