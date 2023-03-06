@@ -13,7 +13,7 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 500 ; do
-    for N_s in  125 ; do
+    for N_s in  100 ; do
       for ds in D_s 2-D_s ; do
         for low_dim in False ; do
           for pca_var in 0.9 ;do
