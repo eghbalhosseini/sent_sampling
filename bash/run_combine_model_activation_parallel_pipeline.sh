@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-3
+#SBATCH --array=0-63
 #SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
@@ -10,11 +10,10 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in ud_sentencez_ds_max_100_edited ; do
+for dataset in ud_sentencez_ds_max_100_edited_selected ud_sentencez_ds_min_100_edited_selected ud_sentencez_ds_random_100_edited_selected ; do
       for stim_type in textNoPeriod ; do
-      #for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
-      #    xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
-      for model in  roberta-base  ; do
+      for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
               for average_mode in False True None ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
