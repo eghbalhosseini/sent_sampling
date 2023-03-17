@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-63
-#SBATCH --time=168:00:00
+#SBATCH --array=0-43
+#SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
 #SBATCH --mail-type=ALL
