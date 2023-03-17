@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-4
+#SBATCH --array=1-4
 #SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
