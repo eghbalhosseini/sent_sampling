@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0
+#SBATCH --array=0-1
 #SBATCH --time=144:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
