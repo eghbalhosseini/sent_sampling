@@ -18,7 +18,7 @@ i=0
 for dataset in ud_sentencez_ds_random_100_edited ; do
   for group_ids in  9 ; do
     for stim_type in textNoPeriod ; do
-      for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+      for model in  xlnet-large-cased \
           xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
