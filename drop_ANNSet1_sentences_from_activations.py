@@ -16,6 +16,7 @@ import numpy as np
 if __name__ == '__main__':
     extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
     #extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_wordFORM-activation-bench=None-ave=False'
+    extract_id ='group=best_performing_pereira_1-dataset=ud_sentencez_ds_random_100_edited_selected_textNoPeriod-activation-bench=None-ave=False'
 
     ext_obj = extract_pool[extract_id]()
     ext_obj.load_dataset()
@@ -40,7 +41,7 @@ if __name__ == '__main__':
         # find which numbers from 0 to 18  is missing from file_id
         missing = [x for x in range(0, 19) if x not in file_id]
         # print missing numbers
-        print(f'model {ext_obj.model_spec[k]} missing: {missing}')
+        print(f'model {ext_obj.model_spec[k]} missing: {missing}\n')
         #sorted_files = [activation_files[x] for x in np.argsort(file_id)]
     # first extract ev sentences
     file_name = 'U01_sentselection_Dec18-2020_updDec23.xlsx'
