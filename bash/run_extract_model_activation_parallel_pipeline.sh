@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-114
+#SBATCH --array=1-18
 #SBATCH --time=3:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
@@ -16,7 +16,7 @@ i=0
   #          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
 
 for dataset in ud_sentencez_ds_max_100_edited_selected ud_sentencez_ds_min_100_edited_selected ud_sentencez_ds_random_100_edited_selected ; do
-  for group_ids in  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
+  for group_ids in  0 17 18 ; do
     for stim_type in textNoPeriod ; do
       for model in gpt2-xl ctrl ; do
             model_list[$i]="$model"
