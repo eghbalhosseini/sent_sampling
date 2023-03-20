@@ -16,7 +16,7 @@ import numpy as np
 if __name__ == '__main__':
     extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
     #extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_wordFORM-activation-bench=None-ave=False'
-    extract_id ='group=best_performing_pereira_1-dataset=ud_sentencez_ds_max_100_edited_selected_textNoPeriod-activation-bench=None-ave=False'
+    extract_id ='group=best_performing_pereira_1-dataset=ud_sentencez_ds_min_100_edited_selected_textNoPeriod-activation-bench=None-ave=False'
 
     ext_obj = extract_pool[extract_id]()
     ext_obj.load_dataset()
