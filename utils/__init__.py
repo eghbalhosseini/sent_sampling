@@ -48,8 +48,43 @@ def make_shorthand(extractor_id, optimizer_id):
 
     return (extract_short_hand, optim_short_hand)
 
-model_grps_config = [
+modl_name='distilgpt2'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+distilgpt2_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
+modl_name='gpt2'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='gpt2-medium'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_medium_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='gpt2-large'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_large_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='gpt2-xl'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_xl_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='gpt2-untrained'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='gpt2-xl-untrained'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+gpt2_xl_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+
+model_grps_config = [
+    distilgpt2_config,
+    gpt2_grp_config,
+    gpt2_medium_config,
+    gpt2_large_config,
+    gpt2_xl_grp_config,
+    gpt2_untrained_grp_config,
+    gpt2_xl_untrained_grp_config,
                      dict(grp_id='best_performing_pereira',description='best layer/Pereira benchmark',
                           grp_layer_tuple=(('bert-large-uncased-whole-word-masking','encoder.layer.11.output'),
                                                             ('xlm-mlm-en-2048','encoder.layer_norm2.11'),
