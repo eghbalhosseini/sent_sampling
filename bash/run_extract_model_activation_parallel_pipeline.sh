@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-3
-#SBATCH --time=3:00:00
+#SBATCH --array=0-120
+#SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
 #SBATCH --mail-type=ALL
@@ -15,10 +15,10 @@ i=0
 # roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
   #          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
 
-for dataset in ud_sentencez_ds_max_100_edited_selected ud_sentencez_ds_min_100_edited_selected ud_sentencez_ds_random_100_edited_selected ; do
-  for group_ids in  0 ; do
+for dataset in ud_sentencez_token_filter_v3 ; do
+  for group_ids in  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
     for stim_type in textNoPeriod ; do
-      for model in gpt2-xl ; do
+      for model in gpt2-xl-untrained gpt2 gpt2-untrained distilgpt2 gpt2-medium gpt2-large ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
             stim_type_list[$i]="$stim_type"
