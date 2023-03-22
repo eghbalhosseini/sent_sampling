@@ -9,7 +9,7 @@ GRAND_PIPE_FILE="${DATA_DIR}/PIPE_${extract_id}.txt"
 TEXT_FILE="${DATA_DIR}/sentences_${extract_id}.txt"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
-model="tts_models/en/ljspeech/glow-tts"
+model="tts_models/en/ek1/tacotron2"
 # replace / in model with _
 model_name=${model//\//_}
 printf "%s\t%s\t%s\t%s\t%s\n" "row" "id" "sentence" "model" "file"  >> $GRAND_PIPE_FILE
