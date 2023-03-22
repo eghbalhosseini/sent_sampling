@@ -15,7 +15,12 @@ model_name=${model//\//_}
 printf "%s\t%s\t%s\t%s\t%s\n" "row" "id" "sentence" "model" "file"  >> $GRAND_PIPE_FILE
 while read string; do
       framename=$(printf '%02d' $i)
+
       possible_file="${DATA_DIR}/wav_${extract_id}/${model_name}_sentence_${framename}.wav"
+      # if parent directory doesnt exist create it
+      if [ ! -d "${DATA_DIR}/wav_${extract_id}" ]; then
+        mkdir -p "${DATA_DIR}/wav_${extract_id}"
+      fi
       if [ -f "$possible_file" ]
       then
         true
