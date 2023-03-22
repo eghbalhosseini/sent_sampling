@@ -21,74 +21,41 @@ from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 if __name__ == '__main__':
     modelnames = ['roberta-base',  'xlnet-large-cased',  'bert-large-uncased','xlm-mlm-en-2048', 'gpt2-xl', 'albert-xxlarge-v2','ctrl']
-
-    extract_id = [
-        f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_len_7_14_textNoPeriod-activation-bench=None-ave=False']
-    #optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
-    #             'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True']
-
-    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True'
-        ,'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True']
-    #
-    #optim_id=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
-    #            'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
-    # get group= from extract_id
-    group_id = extract_id[0].split('-')[0].split('=')[1]
-    dataset_id=extract_id[0].split('-')[1].split('=')[1]
+    extract_ids = [
+        f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_max_100_edited_selected_textNoPeriod-activation-bench=None-ave=False',
+    f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_min_100_edited_selected_textNoPeriod-activation-bench=None-ave=False',
+    f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_random_100_edited_selected_textNoPeriod-activation-bench=None-ave=False']
+    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True']
     # get obj= from optim_id
     obj_id = ['Ds_max', '2-Ds_max']
     # get n_samples from each element in optim_id
+    low_resolution=False
 
-
-
-    low_resolution = 'False'
-    optim_files = []
-    optim_results = []
-    for ext in extract_id:
-        for optim in optim_id:
-            (ext_sh,optim_sh)=make_shorthand(ext, optim)
-            #optim_file = Path(RESULTS_DIR, f"results_{ext}_{optim}.pkl")
-            optim_file = Path(RESULTS_DIR, f"results_{ext_sh}_{optim_sh}.pkl")
-            assert(optim_file.exists())
-
-            optim_files.append(optim_file.__str__())
-            optim_results.append(load_obj(optim_file.__str__()))
-
-
-    ext_obj=extract_pool[extract_id[0]]()
-    ext_obj.load_dataset()
-    ext_obj()
-
-    optimizer_obj = optim_pool[optim_id[0]]()
-    optimizer_obj.load_extractor(ext_obj)
-
-    optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=True,
+    ds_all= []
+    RDM_all = []
+    for extract_id in extract_ids:
+        ext_obj=extract_pool[extract_id]()
+        ext_obj.load_dataset()
+        ext_obj()
+        optimizer_obj = optim_pool[optim_id[0]]()
+        optimizer_obj.load_extractor(ext_obj)
+        optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=False,
                                                  save_results=False)
+        n_samples = optimizer_obj.N_S
+        print(f'{n_samples}\n')
+        sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_S, replace=False))
+        d_s_r, RDM_r = optimizer_obj.gpu_object_function_debug(sent_random)
+        ds_all.append(d_s_r)
+        RDM_all.append(RDM_r)
+
     # get n_samples from optimizer_obj
-    n_samples = optimizer_obj.N_s
-    # get low_dim from optimizer_obj
-    is_low_dim = optimizer_obj.low_dim
-    DS_max,RDM_max=optimizer_obj.gpu_object_function_debug(optim_results[0]['optimized_S'])
-    DS_min,RDM_min = optimizer_obj.gpu_object_function_debug(optim_results[1]['optimized_S'])
-
-    ds_rand=[]
-    RDM_rand=[]
-    for k in tqdm(enumerate(range(200))):
-        sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s))
-        d_s_r,RDM_r= optimizer_obj.gpu_object_function_debug(sent_random)
-        ds_rand.append(d_s_r)
-        RDM_rand.append(RDM_r)
-
     fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
     ax = plt.axes((.2, .7, .08, .25))
-    ax.scatter(.02 * np.random.normal(size=(np.asarray(len(ds_rand)))) + 0,np.asarray(ds_rand),
-               color=(.6, .6, .6), s=2, alpha=.3)
-    rand_mean = np.asarray(ds_rand).mean()
-    ax.scatter(0, rand_mean, color=np.divide((55, 76, 128), 256), s=50,
-               label=f'random= {rand_mean:.4f}', edgecolor='k')
-    ax.scatter(0, DS_min, color=np.divide((188, 80, 144), 255), s=50, label=f'Ds_min={DS_min:.4f}', edgecolor='k')
+    ax.scatter(0, ds_all[2], color=np.divide((55, 76, 128), 256), s=50,
+               label=f'random= {ds_all[2]:.4f}', edgecolor='k')
+    ax.scatter(0, ds_all[1], color=np.divide((188, 80, 144), 255), s=50, label=f'Ds_min={ds_all[1]:.4f}', edgecolor='k')
 
-    ax.scatter(0, DS_max, color=np.divide((255, 128, 0), 255), s=50, label=f'Ds_max={DS_max:.4f}', edgecolor='k')
+    ax.scatter(0, ds_all[0], color=np.divide((255, 128, 0), 255), s=50, label=f'Ds_max={ds_all[0]:.4f}', edgecolor='k')
 
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -103,14 +70,16 @@ if __name__ == '__main__':
     ax.tick_params(direction='out', length=3, width=2, colors='k',
                    grid_color='k', grid_alpha=0.5)
 
-    dataset=optim_results[0]['extractor_name']
-    optim=optim_results[0]['optimizatin_name']
-    ax_title = f'ds,{dataset},{optim}'
-    ax.set_title(ax_title.replace(',', ',\n'),fontsize=8)
+    #dataset=optim_results[0]['extractor_name']
+    #optim=optim_results[0]['optimizatin_name']
+    #ax_title = f'ds,{dataset},{optim}'
+    #ax.set_title(ax_title.replace(',', ',\n'),fontsize=8)
 
     ax=plt.axes((.6, .73, .25, .25))
-    RDM_rand_mean=torch.stack(RDM_rand).mean(0).cpu().numpy()
-    im=ax.imshow(RDM_rand_mean, cmap='viridis',vmax=RDM_max.cpu().numpy().max())
+    RDM_rand_mean=RDM_all[2]
+    RDM_max=RDM_all[0]
+    RDM_min=RDM_all[1]
+    im=ax.imshow(RDM_all[2], cmap='viridis',vmax=RDM_all[0].cpu().numpy().max())
     # add values to image plot
     for i in range(RDM_rand_mean.shape[0]):
         for j in range(RDM_rand_mean.shape[1]):
@@ -119,9 +88,9 @@ if __name__ == '__main__':
     ax.set_title('RDM_rand')
     # set ytick labels to ext_obj.model_spec
     ax.set_yticks(np.arange(len(ext_obj.model_spec)))
-    ax.set_yticklabels(ext_obj.model_spec,fontsize=6)
+    ax.set_yticklabels(modelnames,fontsize=6)
     ax.set_xticks(np.arange(len(ext_obj.model_spec)))
-    ax.set_xticklabels(ext_obj.model_spec, fontsize=6,rotation=90)
+    ax.set_xticklabels(modelnames, fontsize=6,rotation=90)
 
     ax=plt.axes((.6, .4, .25, .25))
     im=ax.imshow(RDM_max.cpu(), cmap='viridis',vmax=RDM_max.cpu().numpy().max())
@@ -131,9 +100,9 @@ if __name__ == '__main__':
             text = ax.text(j, i, f'{RDM_max[i, j]:.2f}',
                            ha="center", va="center", color="w",fontsize=6)
     ax.set_yticks(np.arange(len(ext_obj.model_spec)))
-    ax.set_yticklabels(ext_obj.model_spec, fontsize=6)
+    ax.set_yticklabels(modelnames, fontsize=6)
     ax.set_xticks(np.arange(len(ext_obj.model_spec)))
-    ax.set_xticklabels(ext_obj.model_spec, fontsize=6, rotation=90)
+    ax.set_xticklabels(modelnames, fontsize=6, rotation=90)
 
     ax.set_title('RDM_max')
 
@@ -145,9 +114,9 @@ if __name__ == '__main__':
             text = ax.text(j, i, f'{RDM_min[i, j]:.2f}',
                            ha="center", va="center", color="w",fontsize=6)
     ax.set_yticks(np.arange(len(ext_obj.model_spec)))
-    ax.set_yticklabels(ext_obj.model_spec, fontsize=8)
+    ax.set_yticklabels(modelnames, fontsize=8)
     ax.set_xticks(np.arange(len(ext_obj.model_spec)))
-    ax.set_xticklabels(ext_obj.model_spec, fontsize=6, rotation=90)
+    ax.set_xticklabels(modelnames, fontsize=6, rotation=90)
 
     ax.set_title('RDM_min')
     ax = plt.axes((.9, .05, .01, .25))
@@ -185,7 +154,7 @@ if __name__ == '__main__':
 
 
     save_path = Path(ANALYZE_DIR)
-    (ext_sh,optim_sh)=make_shorthand(extract_id[0], optim_id[0])
+    (ext_sh,optim_sh)=make_shorthand(extract_ids[0], optim_id[0])
     save_loc = Path(save_path.__str__(), f'ds_{ext_sh}_{optim_sh}.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
                 facecolor='auto',
@@ -195,171 +164,34 @@ if __name__ == '__main__':
                 facecolor='auto',
                 edgecolor='auto', backend=None)
 
+    select_sentneces=[]
+    ext_objs=[]
+    df_acts=[]
+    for extract_id in extract_ids:
+        ext_obj = extract_pool[extract_id]()
+        ext_obj.load_dataset()
+        ext_obj()
+        ext_objs.append(ext_obj)
+        select_sentences=[]
+        select_activations=[]
+        for model_act in ext_obj.model_group_act:
 
-    # plot model RDMS
-    # for each matrix in optimizer_obj.XY_corr_list select rows and colums based on a list S
-    # and plot the resulting matrix
-    X_Max= []
-    S_id = optim_results[0]['optimized_S']
-    for XY_corr in optimizer_obj.XY_corr_list:
+            select_sentences.append([model_act['activations'][s][1] for s in range(len(model_act['activations']))])
+            select_activations.append([model_act['activations'][s][0] for s in range(len(model_act['activations']))])
 
-        pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
-        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]]
-        # make squareform matrix
-        X_sample=squareform(X_sample)
-        X_Max.append(X_sample)
+        df_data = pd.DataFrame(np.asarray(select_sentences).transpose(), columns=ext_obj.model_spec)
+        df_act = pd.DataFrame(np.asarray(select_activations).transpose(), columns=ext_obj.model_spec)
+        df_acts.append(df_act)
 
-    X_Min = []
-    S_id = optim_results[1]['optimized_S']
-    for XY_corr in optimizer_obj.XY_corr_list:
-
-        pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
-        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]]
-        # make squareform matrix
-        X_sample = squareform(X_sample)
-        X_Min.append(X_sample)
-
-    X_rand = []
-    sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s))
-    for XY_corr in optimizer_obj.XY_corr_list:
-        S_id = sent_random
-        pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
-        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]]
-        # make squareform matrix
-        X_sample = squareform(X_sample)
-        X_rand.append(X_sample)
-
-    # create a figure with 7 rows and 3 columns and plot x_samples in each row
-
-    fig = plt.figure(figsize=(11, 8))
-    for i in range(len(X_Max)):
-        ax = plt.subplot(3, 7, i + 1+7)
-        im = ax.imshow(X_Max[i], cmap='viridis',vmax=X_Max[i].max())
-        ax.set_ylabel(f'{ext_obj.model_spec[i]}',fontsize=6)
-        ax.set_title('Ds_max')
-        # turn off ticks
-        ax.set_xticks([])
-        ax.set_yticks([])
-
-    for i in range(len(X_Min)):
-        ax = plt.subplot(3, 7, i + 1+14)
-        im = ax.imshow(X_Min[i], cmap='viridis', vmax=X_Min[i].max())
-        ax.set_ylabel(f'{ext_obj.model_spec[i]}', fontsize=6)
-        ax.set_title('Ds_min')
-        ax.set_xticks([])
-        ax.set_yticks([])
-
-
-    for i in range(len(X_rand)):
-        ax = plt.subplot(3, 7, i+1)
-        im = ax.imshow(X_rand[i], cmap='viridis', vmax=X_rand[i].max())
-        ax.set_ylabel(f'{ext_obj.model_spec[i]}', fontsize=6)
-        ax.set_title('Ds_rand')
-        ax.set_xticks([])
-        ax.set_yticks([])
-
-    #ax = plt.axes((.95, .05, .01, .25))
-    #plt.colorbar(im, cax=ax)
-
-    fig.show()
-
-    save_path = Path(ANALYZE_DIR)
-    ax_1=ax_title.replace('ds_result','model_rdm')
-    save_loc = Path(save_path.__str__(), f'RDMs_{ext_sh}_{optim_sh}.png')
-    fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
-                facecolor='auto',
-                edgecolor='auto', backend=None)
-    save_loc = Path(save_path.__str__(), f'RDMs_{ext_sh}_{optim_sh}.eps')
-    fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
-                facecolor='auto',
-                edgecolor='auto', backend=None)
-
-    S_id = optim_results[0]['optimized_S']
-    select_sentences=[]
-    select_activations=[]
-    for model_act in ext_obj.model_group_act:
-        select_sentences.append([model_act['activations'][s][1] for s in S_id])
-        select_activations.append([model_act['activations'][s][0] for s in S_id])
-    df_max = pd.DataFrame(np.asarray(select_sentences).transpose(), index=S_id, columns=ext_obj.model_spec)
-    df_act_max= pd.DataFrame(np.asarray(select_activations).transpose(), index=S_id, columns=ext_obj.model_spec)
-    dataset = optim_results[0]['extractor_name']
-    optim=optim_results[0]['optimizatin_name']
-    (ext_sh, optim_sh) = make_shorthand(extract_id[0],optim_id[0])
-    ax_title = f'sent,{ext_sh},{optim_sh}'
-    df_max.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
-
-    S_id = optim_results[1]['optimized_S']
-    select_activations = []
-    select_sentences = []
-    for model_act in ext_obj.model_group_act:
-        select_sentences.append([model_act['activations'][s][1] for s in S_id])
-        select_activations.append([model_act['activations'][s][0] for s in S_id])
-    df_min = pd.DataFrame(np.asarray(select_sentences).transpose(), index=S_id, columns=ext_obj.model_spec)
-    df_act_min = pd.DataFrame(np.asarray(select_activations).transpose(), index=S_id, columns=ext_obj.model_spec)
-    dataset = optim_results[1]['extractor_name']
-    optim=optim_results[1]['optimizatin_name']
-    (ext_sh, optim_sh) = make_shorthand(extract_id[0], optim_id[1])
-    ax_title = f'sent,{ext_sh},{optim_sh}'
-    df_min.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
-
-    # create a random set that is closest to the mean of distrubtion
-    ds_rand=[]
-    RDM_rand=[]
-    sent_randoms=[]
-    for k in tqdm(enumerate(range(1000))):
-        sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s))
-        d_s_r,RDM_r= optimizer_obj.gpu_object_function_debug(sent_random)
-        ds_rand.append(d_s_r)
-        RDM_rand.append(RDM_r)
-        sent_randoms.append(sent_random)
-
-    ds_rand_mean=np.mean(ds_rand)
-    # find the index of ds_rand element that is closest to the mean of ds_rand
-    ds_rand_mean_index = (np.abs(ds_rand - ds_rand_mean)).argmin()
-    sent_randoms[ds_rand_mean_index]
-
-    S_id = sent_randoms[ds_rand_mean_index]
-    select_activations = []
-    select_sentences = []
-    for model_act in ext_obj.model_group_act:
-        select_sentences.append([model_act['activations'][s][1] for s in S_id])
-        select_activations.append([model_act['activations'][s][0] for s in S_id])
-    df_rand = pd.DataFrame(np.asarray(select_sentences).transpose(), index=S_id, columns=ext_obj.model_spec)
-    df_act_rand = pd.DataFrame(np.asarray(select_activations).transpose(), index=S_id, columns=ext_obj.model_spec)
-
-    (ext_sh, optim_sh) = make_shorthand(extract_id[0], optim_id[1])
-    # in optim_sh replace O=2-Ds with O=DRand
-    optim_sh=optim_sh.replace('O=2-D_s','O=D_rand')
-    ax_title = f'sent,{ext_sh},{optim_sh}'
-    df_rand.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
+        (ext_sh, optim_sh) = make_shorthand(extract_id,optim_id[0])
+        ax_title = f'sent,{ext_sh},{optim_sh}'
+        df_data.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
 
     # check if there an overlap between columns of df_max and df_min
-    sent_max=df_max['roberta-base'].values
-    sent_min=df_min['roberta-base'].values
-    # find overlap between sent_max and sent_min
-    overlap = np.intersect1d(sent_max, sent_min)
-    print(f'overlap between max and min {overlap}')
-    # plot a histogram for number of words in each sentence in sent_max and sent_min
-    sentence_from_ext_obj=[]
-    for sent_id,sentence in enumerate(ext_obj.data_):
-        if u'\xa0' in sentence['text']:
-            sentence['text'] = sentence['text'].replace(u'\xa0', u' ')
-        words_from_text = sentence['text'].split(' ')
-        if '.' in words_from_text[-1] and ext_obj.stim_type=='textNoPeriod':
-            words_from_text[-1] = words_from_text[-1].rstrip('.')
-        # drop empty string
-        words_from_text = [x for x in words_from_text if x]
-        word_ind = np.arange(len(words_from_text))
-        sent_for_model=' '.join(words_from_text)
-        sentence_from_ext_obj.append(sent_for_model)
-
-    sent_max_loc=[sentence_from_ext_obj.index(x) for x in sent_max]
-    sent_min_loc=[sentence_from_ext_obj.index(x) for x in sent_min]
-    assert len(sent_max_loc)==len(sent_max)
     # get elements from ext_obj.data_ that are selected by sent_max_loc
-    sent_max_data=[ext_obj.data_[x] for x in sent_max_loc]
-    sent_min_data = [ext_obj.data_[x] for x in sent_min_loc]
-    sent_all_data = [ext_obj.data_[x] for x in range(len(ext_obj.data_))]
+    sent_max_data=[ext_objs[0].data_[x] for x in range(80)]
+    sent_min_data = [ext_objs[1].data_[x] for x in range(80)]
+    sent_all_data = [ext_objs[2].data_[x] for x in range(80)]
 
 
     lex_names = [x['name'] for x in LEX_PATH_SET]
@@ -382,7 +214,7 @@ if __name__ == '__main__':
     axes=axes.flatten()
     for i in range(len(lex_names)):
         # plot a histogram for sent_max_lex_values using seaborn.distplot on axes[i]
-        seaborn.distplot(sent_all_lex_values[:, i], bins=50, label='full', norm_hist=True, hist=False,ax=axes[i],kde_kws={"lw": 5, "color": 'k'})
+        seaborn.distplot(sent_all_lex_values[:, i], bins=50, label='Ds_rand', norm_hist=True, hist=False,ax=axes[i],kde_kws={"lw": 3, "color": np.divide([150, 150, 150], 255)})
         seaborn.distplot(sent_max_lex_values[:, i], bins=50, label='Ds_max', norm_hist=True, hist=False,ax=axes[i], kde_kws={"lw": 3, "color": np.divide((255, 128, 0), 255)})
         seaborn.distplot(sent_min_lex_values[:, i], bins=50, label='Ds_min', norm_hist=True, hist=False,ax=axes[i],kde_kws={"lw": 3,   "color": np.divide((188, 80, 144), 255)})
         # put tick in the begining and end of x axis
@@ -408,179 +240,51 @@ if __name__ == '__main__':
     save_loc = Path(save_path.__str__(), f'{ax_title}.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1)
     fig.show()
-    # compare low dim to no low dim results
-    #
-    # optim_id_low_dim = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
-    #             'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True']
-    # #
-    # optim_id_wo_low_dim=['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
-    #             'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
-    # low_resolution = 'False'
-    # optim_files = []
-    # optim_results_low_dim = []
-    # optim_results_wo_low_dim = []
-    # for ext in extract_id:
-    #     for optim in optim_id_low_dim:
-    #         optim_file = Path(RESULTS_DIR, f"results_{ext}_{optim}.pkl")
-    #         assert (optim_file.exists())
-    #         optim_files.append(optim_file.__str__())
-    #         optim_results_low_dim.append(load_obj(optim_file.__str__()))
-    #     # get results without low dim
-    #     for optim in optim_id_wo_low_dim:
-    #         optim_file = Path(RESULTS_DIR, f"results_{ext}_{optim}.pkl")
-    #         assert (optim_file.exists())
-    #         optim_files.append(optim_file.__str__())
-    #         optim_results_wo_low_dim.append(load_obj(optim_file.__str__()))
-    #
-    # ext_obj = extract_pool[extract_id[0]]()
-    # ext_obj.load_dataset()
-    # ext_obj()
-    #
-    # optimizer_obj_low_dim = optim_pool[optim_id_low_dim[0]]()
-    # optimizer_obj_low_dim.load_extractor(ext_obj)
-    # optimizer_obj_low_dim.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=True,
-    #                                              save_results=False)
-    # # make an optimizer object without low dim
-    # optimizer_obj_wo_low_dim = optim_pool[optim_id_wo_low_dim[0]]()
-    # optimizer_obj_wo_low_dim.load_extractor(ext_obj)
-    # optimizer_obj_wo_low_dim.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=True,
-    #                                                 save_results=False)
-    #
-    # DS_max_low_dim_low_dim, RDM_max_low_dim_low_dim = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_low_dim[0]['optimized_S'])
-    # DS_min_low_dim_low_dim, RDM_min_low_dim_low_dim = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_low_dim[1]['optimized_S'])
-    # # compute DS for no low dim
-    # DS_max_wo_low_dim_wo_low_dim, RDM_Max_wo_low_dim_low_dim = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[0]['optimized_S'])
-    # DS_min_wo_low_dim_wo_low_dim, RDM_min_low_dim_wo_low_dim = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[1]['optimized_S'])
-    #
-    # # compute Ds for low dim using no low dim
-    # DS_max_low_dim_wo_low_dim, RDM_max_low_dim_wo_low_dim = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_low_dim[0]['optimized_S'])
-    # DS_min_low_dim_wo_low_dim, RDM_min_low_dim_wo_low_dim = optimizer_obj_wo_low_dim.gpu_object_function_debug(optim_results_low_dim[1]['optimized_S'])
-    # # compute Ds for no low dim using low dim
-    # DS_max_wo_low_dim_low_dim, RDM_max_wo_low_dim_low_dim = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[0]['optimized_S'])
-    # DS_min_wo_low_dim_low_dim, RDM_min_wo_low_dim_low_dim = optimizer_obj_low_dim.gpu_object_function_debug(optim_results_wo_low_dim[1]['optimized_S'])
-    #
-    # ds_rand_low_dim = []
-    # for k in tqdm(enumerate(range(200))):
-    #     sent_random = list(np.random.choice(optimizer_obj_low_dim.N_S, optimizer_obj_low_dim.N_s))
-    #     d_s_r, RDM_r = optimizer_obj_low_dim.gpu_object_function_debug(sent_random)
-    #     ds_rand_low_dim.append(d_s_r)
-    # # compute random ds for no low dim
-    # ds_rand_wo_low_dim = []
-    # for k in tqdm(enumerate(range(200))):
-    #     sent_random = list(np.random.choice(optimizer_obj_wo_low_dim.N_S, optimizer_obj_wo_low_dim.N_s))
-    #     d_s_r, RDM_r = optimizer_obj_wo_low_dim.gpu_object_function_debug(sent_random)
-    #     ds_rand_wo_low_dim.append(d_s_r)
-    #
-    #
-    #
-    # # plot results
-    # fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
-    # ax = plt.axes((.2, .7, .08, .25))
-    # ax.scatter(.02 * np.random.normal(size=(np.asarray(len(ds_rand_low_dim)))) + 0, np.asarray(ds_rand_low_dim),
-    #            color=(.6, .6, .6), s=2, alpha=.3)
-    # rand_mean = np.asarray(ds_rand_low_dim).mean()
-    # ax.scatter(0, rand_mean, color=np.divide((55, 76, 128), 256), s=50,
-    #            label=f'random= {rand_mean:.4f}', edgecolor='k')
-    #
-    #
-    # ax.scatter(0, DS_min_low_dim_low_dim, color=np.divide((188, 80, 144), 255), s=50, label=f'Ds_min={DS_min_low_dim_low_dim:.4f}', edgecolor='k')
-    # ax.scatter(0, DS_max_low_dim_low_dim, color=np.divide((255, 128, 0), 255), s=50, label=f'Ds_max={DS_max_low_dim_low_dim:.4f}', edgecolor='k')
-    #
-    # ax.scatter(0, DS_min_wo_low_dim_low_dim, color=np.divide((188, 80, 144), 255), s=50,edgecolor='w', label=f'Ds_min using full dim optimization samples={DS_min_wo_low_dim_low_dim:.4f}')
-    # ax.scatter(0, DS_max_wo_low_dim_low_dim, color=np.divide((255, 128, 0), 255), s=50,edgecolor='w', label=f'Ds_max using full dim optimization samples={DS_max_wo_low_dim_low_dim:.4f}')
-    #
-    #
-    # ax.scatter(1+.02 * np.random.normal(size=(np.asarray(len(ds_rand_wo_low_dim)))) + 0, np.asarray(ds_rand_wo_low_dim),
-    #            color=(.6, .6, .6), s=2, alpha=.3)
-    # rand_mean = np.asarray(ds_rand_wo_low_dim).mean()
-    # ax.scatter(1, rand_mean, color=np.divide((55, 76, 128), 256), s=50,
-    #            label=f'random= {rand_mean:.4f}',marker='s', edgecolor='k')
-    # ax.scatter(1, DS_min_wo_low_dim_wo_low_dim,marker='s', color=np.divide((188, 80, 144), 255), s=50, label=f'Ds_min={DS_min_wo_low_dim_wo_low_dim:.4f}',
-    #            edgecolor='k')
-    # ax.scatter(1, DS_max_wo_low_dim_wo_low_dim,marker='s', color=np.divide((255, 128, 0), 255), s=50, label=f'Ds_max={DS_max_wo_low_dim_wo_low_dim:.4f}',
-    #            edgecolor='k')
-    #
-    # ax.scatter(1, DS_min_low_dim_wo_low_dim, color=np.divide((188, 80, 144), 255), s=50, edgecolor='w',
-    #            label=f'Ds_min using low dim optimization samples={DS_min_low_dim_wo_low_dim:.4f}',marker='s',)
-    # ax.scatter(1, DS_max_low_dim_wo_low_dim, color=np.divide((255, 128, 0), 255), s=50, edgecolor='w',
-    #            label=f'Ds_max using low dim optimization samples={DS_max_low_dim_wo_low_dim:.4f}',marker='s',)
-    #
-    # ax.spines["top"].set_visible(False)
-    # ax.spines["right"].set_visible(False)
-    # ax.spines["bottom"].set_linewidth(1)
-    # ax.spines['left'].set_linewidth(1)
-    # ax.set_xlim((-.4, 1.4))
-    # ax.set_ylim((0.0, 1.2))
-    # ax.set_xticks([0,1])
-    # ax.set_xticklabels(['low dim', 'full dim'],rotation=45)
-    # ax.legend(bbox_to_anchor=(1.1, .2), frameon=True)
-    # ax.set_ylabel(r'$D_s$')
-    # # plot no low dim case
-    #
-    #
-    # fig.show()
-    # ax_title = f'ds_result,extractor={dataset}_low_dim_vs_no_low_dim_{optimizer_obj.N_s}'
-    # save_path = Path(ANALYZE_DIR)
-    # save_loc = Path(save_path.__str__(), f'{ax_title}.png')
-    # fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
-    #             facecolor='auto',
-    #             edgecolor='auto', backend=None)
-    # save_loc = Path(save_path.__str__(), f'{ax_title}.eps')
-    # fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
-    #             facecolor='auto',
-    #             edgecolor='auto', backend=None)
-    # # looking at optimization
-
-    # act_dict=optimizer_obj.activations[0]
-    # act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
-    # act = torch.tensor(act_, dtype=float, device=optimizer_obj.device, requires_grad=False)
-    # act_pca, var_exp = low_dim_project(act)
-    #
-    # act_pca
-    # # create a function that uses pca to project the activations to a lower dim
-    #
-    # pca = PCA(n_components=350)
-    # pca.fit(act_)
-    # act_pca_ = pca.transform(act_)
-    # var_exp_ = pca.explained_variance_ratio_
-    # # check whether act_pca and act_pca_ are the same
-    # print(f'act_pca and act_pca_ are the same: {np.allclose(act_pca.cpu(), act_pca_)}')
-
-
-    # compare the dimensionality of df_act_max
 
     # for each key in df_act_min and df_act_max, compute a pca over the rows and check the explained variance ratio
     dims_for_min = []
     dims_for_max = []
-    for key in tqdm(df_act_min.keys()):
-        a=np.stack(df_act_min[key].values)
+    dims_for_rand= []
+    for key in tqdm(df_acts[1].keys()):
+        a=np.stack(df_acts[1][key].values)
         pca=PCA()
         pca.fit(a)
-        dim_for_90_min=np.where(np.cumsum(pca.explained_variance_ratio_)<.9)[0][-1]/len(pca.explained_variance_ratio_)
+        dim_for_90_min=np.where(np.cumsum(pca.explained_variance_ratio_)<.85)[0][-1]/len(pca.explained_variance_ratio_)
         dims_for_min.append(dim_for_90_min)
-        b=np.stack(df_act_max[key].values)
+        b=np.stack(df_acts[0][key].values)
         pca=PCA()
         pca.fit(b)
-        dim_for_90_max=np.where(np.cumsum(pca.explained_variance_ratio_)<.9)[0][-1]/len(pca.explained_variance_ratio_)
+        dim_for_90_max=np.where(np.cumsum(pca.explained_variance_ratio_)<.85)[0][-1]/len(pca.explained_variance_ratio_)
         dims_for_max.append(dim_for_90_max)
+
+        c=np.stack(df_acts[2][key].values)
+        pca=PCA()
+        pca.fit(c)
+        dim_for_90_rand=np.where(np.cumsum(pca.explained_variance_ratio_)<.85)[0][-1]/len(pca.explained_variance_ratio_)
+        dims_for_rand.append(dim_for_90_rand)
+
+
     # plot the results
     fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
 
     ax = plt.axes((.2, .2, .35, .25))
     # plot a bar graph for dim_for_90_min and one for dim_for_90_max side by side
-    ax.bar(np.arange(len(dims_for_min)), dims_for_min, width=.4, label='min')
-    ax.bar(np.arange(len(dims_for_max)) + .4, dims_for_max, width=.4, label='max')
+    ax.bar(np.arange(len(dims_for_min))-.22, dims_for_min, width=.2,linewidth=1,edgecolor='k', label='min')
+    ax.bar(np.arange(len(dims_for_max)) + .22, dims_for_max, width=.2,linewidth=1,edgecolor='k', label='max')
+    ax.bar(np.arange(len(dims_for_rand)), dims_for_rand, width=.2,linewidth=1,edgecolor='k', label='rand')
     ax.set_xticks(np.arange(len(dims_for_min)) + .2)
     ax.set_xticklabels(modelnames, rotation=90)
-    ax.set_ylabel('fraction of variance explained')
+    ax.set_ylabel('fraction of dimension needed \n to explain 90% of variance')
     ax.set_title('PCA dimensionality for min and max activations')
-    ax.legend()
+    # put legend outside the plot
+    ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
+
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
     fig.show()
 
-    ax_title = f'dimenstionalty_comp_ds_min_ds_max,low_dim={optimizer_obj.low_dim},{dataset}'
+    ax_title = f'dimenstionalty_comp_ds_min_ds_max,ds_rand,low_dim={optimizer_obj.low_dim},{extract_ids[0]}'
     save_path = Path(ANALYZE_DIR)
     save_loc = Path(save_path.__str__(), f'{ax_title}.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
