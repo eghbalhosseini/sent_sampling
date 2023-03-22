@@ -4,8 +4,8 @@ i=0
 i=$(expr ${i} + 0)
 LINE_COUNT=0
 extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_ds_max_100_edited_selected_textNoPeriod-activation-bench=None-ave=False'
-GRAND_PIPE_FILE="${DATA_DIR}/PIPE_{$extract_id}.txt"
-TEXT_FILE="${DATA_DIR}/sentences_{$extract_id}.txt"
+GRAND_PIPE_FILE="${DATA_DIR}/PIPE_${extract_id}.txt"
+TEXT_FILE="${DATA_DIR}/sentences_${extract_id}.txt"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
 model="tts_models/en/ljspeech/vits"
