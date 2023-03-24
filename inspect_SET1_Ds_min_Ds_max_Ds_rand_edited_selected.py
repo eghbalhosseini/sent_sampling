@@ -167,6 +167,7 @@ if __name__ == '__main__':
     select_sentneces=[]
     ext_objs=[]
     df_acts=[]
+    df_datas=[]
     for extract_id in extract_ids:
         ext_obj = extract_pool[extract_id]()
         ext_obj.load_dataset()
@@ -182,11 +183,13 @@ if __name__ == '__main__':
         df_data = pd.DataFrame(np.asarray(select_sentences).transpose(), columns=ext_obj.model_spec)
         df_act = pd.DataFrame(np.asarray(select_activations).transpose(), columns=ext_obj.model_spec)
         df_acts.append(df_act)
+        df_datas.append(df_data)
 
         (ext_sh, optim_sh) = make_shorthand(extract_id,optim_id[0])
         ax_title = f'sent,{ext_sh},{optim_sh}'
         df_data.to_csv(Path(ANALYZE_DIR, f'{ax_title}.csv'))
-
+    # comine df_datas
+    df_data = pd.concat(df_datas, axis=0)
     # check if there an overlap between columns of df_max and df_min
     # get elements from ext_obj.data_ that are selected by sent_max_loc
     sent_max_data=[ext_objs[0].data_[x] for x in range(80)]
@@ -294,64 +297,167 @@ if __name__ == '__main__':
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
-
+    #%%
     # check the projection of sampled activations on the PCA of the full activations
+    # get n_samples from each element in optim_id
+    Ds_modified_sentences = 'ANNSET_DS_MIN_MAX_from_100ev_eh.csv'
+    Ds_modified_sentences = Path(ANALYZE_DIR, Ds_modified_sentences)
+
+    Ds_modified_sentences = pd.read_csv(Ds_modified_sentences)
+
+    # find location of DS_MAX sentences in ext_obj.data_
+    Ds_max_sentences = Ds_modified_sentences['DS_MAX']
+    Ds_max_selected = Ds_modified_sentences['max_include']
+
+    Ds_min_sentences = Ds_modified_sentences['DS_MIN']
+    Ds_min_selected = Ds_modified_sentences['min_include']
+    Ds_random_sentences = Ds_modified_sentences['DS_RAND']
+    Ds_random_selected = Ds_modified_sentences['rand_include']
+
+    # remove index after 102
+    Ds_max_sentences = Ds_max_sentences[:100]
+    Ds_max_selected = Ds_max_selected[:100]
+    Ds_max_sentences_included = Ds_max_sentences[:100]
+
+    Ds_min_sentences = Ds_min_sentences[:100]
+    Ds_min_selected = Ds_min_selected[:100]
+    Ds_min_sentences_included = Ds_min_sentences[:100]
+
+    Ds_random_sentences = Ds_random_sentences[:100]
+    Ds_random_selected = Ds_random_selected[:100]
+    Ds_random_sentences_included= Ds_random_sentences[:100]
+
+    # create a flat list of the included sentences
+    Ds_sentences_included = [item for sublist in [Ds_max_sentences_included,Ds_min_sentences_included,Ds_min_sentences_included] for item in sublist]
+
+    # load full dataset
+
+
+    extract_id_full = f'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False'
+
+    # load ext_object
+    ext_obj_full = extract_pool[extract_id_full]()
+    ext_obj_full.load_dataset()
+    ext_obj_full()
+    optimizer_obj_full = optim_pool[optim_id[0]]()
+    optimizer_obj_full.load_extractor(ext_obj_full)
+
     optimizer_obj.load_extractor(ext_obj)
     proj_list_min=[]
     proj_list_max=[]
-    for idx,act_dict in tqdm(enumerate(optimizer_obj.activations)):
-        act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+    proj_dim_list=[]
+    variance_shape_list=[]
+    for idx,act_dict in tqdm(enumerate(ext_obj_full.model_group_act)):
+        True
+        sentences=[x[1] for x in act_dict['activations']]
+        act_ = [x[0] for x in act_dict['activations']]
+        # find location of Ds_sentences_included in sentences
+        locs=[sentences.index(x) for x in Ds_sentences_included]
+        # drop elements of act_ that are in locs
+        act_ = [x for i,x in enumerate(act_) if i not in locs]
+
         act_=np.stack(act_)
-        pca=PCA()
-        pca.fit(act_)
-        a=np.stack(df_act_min[ext_obj.model_spec[idx]])
-        # for each colum in a compute the projection on the pca components
-        proj=np.matmul(a,pca.components_.T)
-        proj_list_min.append(proj)
+        pca_full=PCA()
+        pca_full.fit(act_)
+        proj_dims=[]
+        variance_shape=[]
+        for df_act in df_acts:
+            a=np.stack(df_act[act_dict['model_name']].values)
+            # for each colum in a compute the projection on the pca components
+            proj=np.matmul(a,pca_full.components_.T)
+            # normalize the projection
+            pca = PCA()
+            pca.fit(proj)
+            # find where variance explained in pca is 90%
+            variance_shape.append(pca.explained_variance_ratio_)
+            dim = np.where(np.cumsum(pca.explained_variance_ratio_) > .9)[0][0]
+            proj_dims.append(dim)
+            # find the norm of proj values on each columns
+
+
+
+        proj_dim_list.append(proj_dims)
+        variance_shape_list.append(variance_shape)
+
+
         #
-        b=np.stack(df_act_max[ext_obj.model_spec[idx]])
+        #b=np.stack(df_act_max[ext_obj.model_spec[idx]])
         # for each colum in a compute the projection on the pca components
-        proj=np.matmul(b,pca.components_.T)
-        proj_list_max.append(proj)
+        #proj=np.matmul(b,pca.components_.T)
+        #proj_list_max.append(proj)
+    proj_dim_list=np.stack(proj_dim_list)/80
 
-    fig=plt.figure(figsize=(11,8),dpi=300,frameon=False)
-    # create a grid of 10 columns and 7 rows
-    gs=GridSpec(7,10)
-    for idx,proj in enumerate(proj_list_min):
-        # in each row plot a histogram of the projection values for each column in proj
-        for idy in range(10):
-            # select the column in proj
-            a=proj[:,idy]
-            # sort the values in a and plot a bar graph
-            a=np.sort(a)
-            ax=fig.add_subplot(gs[idx,idy])
-            ax.scatter(np.arange(len(a)),a,color='b',s=1)
-            # plot a line at 0
-            #ax.axhline(0,color='k')
-            b=proj_list_max[idx][:,idy]
-            b=np.sort(b)
-            ax.scatter(np.arange(len(b)),b,color='r',s=1)
-            ax.set_xticks([])
-            ax.set_yticks([])
-            ax.spines["top"].set_visible(False)
-            ax.spines["right"].set_visible(False)
-            ax.spines["bottom"].set_visible(False)
-            ax.spines["left"].set_visible(False)
-            if idy==0:
-                ax.set_ylabel(modelnames[idx],fontsize=8,rotation=0,horizontalalignment='right',verticalalignment='center',labelpad=10)
-            if idx==0:
-                ax.set_title(f'PC#{idy+1}',fontsize=8)
-    ax_title = f'proj_on_pca_ds_min,low_dim={optimizer_obj.low_dim},{dataset}'
-    save_path = Path(ANALYZE_DIR)
-    save_loc = Path(save_path.__str__(), f'{ax_title}.png')
-    fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
-                facecolor='auto',edgecolor='auto', backend=None)
-    save_loc = Path(save_path.__str__(), f'{ax_title}.eps')
-    fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
-                facecolor='auto',edgecolor='auto', backend=None)
+    fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
 
+    ax = plt.axes((.2, .2, .35, .25))
+    # plot a bar graph for dim_for_90_min and one for dim_for_90_max side by side
+    ax.bar(np.arange(len(proj_dim_list)) - .22, proj_dim_list[:,1], width=.2, linewidth=1, edgecolor='k', label='min')
+    ax.bar(np.arange(len(proj_dim_list)) + .22, proj_dim_list[:,0], width=.2, linewidth=1, edgecolor='k', label='max')
+    ax.bar(np.arange(len(proj_dim_list)), proj_dim_list[:,2], width=.2, linewidth=1, edgecolor='k', label='rand')
+    ax.set_xticks(np.arange(len(proj_dim_list)) + .2)
+    ax.set_xticklabels(modelnames, rotation=90)
+    ax.set_ylabel('fraction of dimension needed \n to explain 90% of variance')
+    ax.set_title('PCA dimensionality for min and max activations')
+    # put legend outside the plot
+    ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
-        #act = torch.tensor(act_, dtype=float, device=optimizer_obj.device, requires_grad=False)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    fig.show()
+
+    # creat3 7 suplots and in each plot the variance_shape element
+    fig, axs = plt.subplots(7, 1, figsize=(8, 11), dpi=300, frameon=False)
+    for idx,ax in enumerate(axs):
+        ax.plot(np.arange(len(variance_shape_list[idx][0]))[:10], np.cumsum(variance_shape_list[idx][0][:10]), label='max')
+        ax.plot(np.arange(len(variance_shape_list[idx][1]))[:10], np.cumsum(variance_shape_list[idx][1][:10]), label='min')
+        ax.plot(np.arange(len(variance_shape_list[idx][2]))[:10], np.cumsum(variance_shape_list[idx][2][:10]), label='rand')
+        ax.set_title(modelnames[idx])
+        ax.set_ylabel('variance explained')
+        ax.set_xlabel('PCA component')
+        ax.legend()
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+    plt.tight_layout()
+    fig.show()
+    # fig=plt.figure(figsize=(11,8),dpi=300,frameon=False)
+    # # create a grid of 10 columns and 7 rows
+    # gs=GridSpec(7,10)
+    # for idx,proj in enumerate(proj_dim_list):
+    #     # in each row plot a histogram of the projection values for each column in proj
+    #     for idy in range(10):
+    #         # select the column in proj
+    #         a=proj[:,idy]
+    #         # sort the values in a and plot a bar graph
+    #         a=np.sort(a)
+    #         ax=fig.add_subplot(gs[idx,idy])
+    #         ax.scatter(np.arange(len(a)),a,color='b',s=1)
+    #         # plot a line at 0
+    #         #ax.axhline(0,color='k')
+    #         b=proj_list_max[idx][:,idy]
+    #         b=np.sort(b)
+    #         ax.scatter(np.arange(len(b)),b,color='r',s=1)
+    #         ax.set_xticks([])
+    #         ax.set_yticks([])
+    #         ax.spines["top"].set_visible(False)
+    #         ax.spines["right"].set_visible(False)
+    #         ax.spines["bottom"].set_visible(False)
+    #         ax.spines["left"].set_visible(False)
+    #         if idy==0:
+    #             ax.set_ylabel(modelnames[idx],fontsize=8,rotation=0,horizontalalignment='right',verticalalignment='center',labelpad=10)
+    #         if idx==0:
+    #             ax.set_title(f'PC#{idy+1}',fontsize=8)
+    # ax_title = f'proj_on_pca_ds_min,low_dim={optimizer_obj.low_dim},{dataset}'
+    # save_path = Path(ANALYZE_DIR)
+    # save_loc = Path(save_path.__str__(), f'{ax_title}.png')
+    # fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
+    #             facecolor='auto',edgecolor='auto', backend=None)
+    # save_loc = Path(save_path.__str__(), f'{ax_title}.eps')
+    # fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
+    #             facecolor='auto',edgecolor='auto', backend=None)
+    #
+    #
+    #     #act = torch.tensor(act_, dtype=float, device=optimizer_obj.device, requires_grad=False)
     # compute the DS scores for sentences that are selected
     Ds_rand_file_selected='sent,G=best_performing_pereira_1-D=ud_sentencez_token_filter_v3_minus_ev_sentences_len_7_14_textNoPeriod-activation-B=None-AVE=False,coordinate_ascent_eh-O=D_rand-Nit=500-Ns=100-Nin=1-LD=False-V=0.9-T=sklearn-GPU=True_eh_edit.csv'
     Ds_min_file_selected='sent,G=best_performing_pereira_1-D=ud_sentencez_token_filter_v3_minus_ev_sentences_len_7_14_textNoPeriod-activation-B=None-AVE=False,coordinate_ascent_eh-O=2-D_s-Nit=500-Ns=100-Nin=1-LD=False-V=0.9-T=sklearn-GPU=True_eh_edit.csv'
