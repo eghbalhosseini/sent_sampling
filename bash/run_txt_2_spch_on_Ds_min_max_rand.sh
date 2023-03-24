@@ -19,6 +19,8 @@ for model in tts_models/bg/cv/vits tts_models/en/ek1/tacotron2  tts_models/en/lj
   tts_models/en/ljspeech/vits--neon tts_models/en/ljspeech/fast_pitch tts_models/en/ljspeech/overflow tts_models/en/ljspeech/neural_hmm tts_models/en/vctk/vits \
   tts_models/en/vctk/fast_pitch tts_models/en/sam/tacotron-DDC tts_models/en/blizzard2013/capacitron-t2-c50 tts_models/en/blizzard2013/capacitron-t2-c150_v2 ; do
   model_name=${model//\//_}
+  i=0
+  i=$(expr ${i} + 0)
   while read string; do
       framename=$(printf '%02d' $i)
       possible_file="${DATA_DIR}/wav_${extract_id}/${model_name}_sentence_${framename}.wav"
