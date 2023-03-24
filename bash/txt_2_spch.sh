@@ -5,8 +5,6 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=64G
 #SBATCH --ntasks=1
-#SBATCH -e stderr.txt
-#SBATCH -o stdout.txt
 #SBATCH --open-mode=append
 
 GRAND_FILE=$1
