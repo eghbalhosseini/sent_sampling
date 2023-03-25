@@ -23,7 +23,7 @@ args = parser.parse_args()
 if __name__ == '__main__':
     extractor_id = args.extractor_id
     optimizer_id = args.optimizer_id
-    #extractor_id='group=best_performing_pereira_1-dataset=pereira2018-243sentences_textNoPeriod-activation-bench=None-ave=False'
+    #extractor_id='group=best_performing_pereira_1-dataset=pereira2018_243sentences_textNoPeriod-activation-bench=None-ave=False'
     #extractor_id = f'group=best_performing_pereira_1-dataset=pereira2018-243sentences-activation-bench=None-ave=False'
     #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=1000-n_samples=50-n_init=1-run_gpu=True"
     #optimizer_id=f'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=125-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True'
