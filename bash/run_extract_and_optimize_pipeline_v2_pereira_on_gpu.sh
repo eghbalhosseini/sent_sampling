@@ -42,7 +42,7 @@ bench_type=($bench_type)
 for set in best_performing_pereira_1 ; do
   for idx in 0 ; do
     for ave in False ; do
-      for dataset in pereira2018-243sentences pereira2018-384sentences  ; do
+      for dataset in pereira2018_243sentences pereira2018_384sentences  ; do
         for text in textNoPeriod ; do
           extract_id="group=${set}-dataset=${dataset}_${text}-${extract_name[$idx]}-bench=${bench_type[$idx]}-ave=${ave}"
           extract_list[$i]="$extract_id"
