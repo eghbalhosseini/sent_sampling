@@ -3,9 +3,7 @@
 #SBATCH --job-name=opt_lowdim
 #SBATCH --array=0-20
 #SBATCH --time=48:00:00
-#SBATCH --mem=64G
-#SBATCH --gres=gpu:1
-#SBATCH --constraint=high-capacity
+#SBATCH --mem=20G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
@@ -81,3 +79,7 @@ conda activate neural_nlp_2022
 
 
 /om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/user/ehoseini/sent_sampling/optimize_pereira_sentence_for_ANNSet1_models.py ${extract_pool[$SLURM_ARRAY_TASK_ID]} ${optim_pool[$SLURM_ARRAY_TASK_ID]}
+
+
+###SBATCH --gres=gpu:1
+###SBATCH --constraint=high-capacity
