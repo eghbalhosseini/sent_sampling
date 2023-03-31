@@ -17,7 +17,7 @@ i=0
 
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
-    for stim_type in wordForm ; do
+    for stim_type in wordFORM ; do
       for model in gpt2-xl-untrained gpt2 gpt2-untrained distilgpt2 gpt2-medium gpt2-large ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
