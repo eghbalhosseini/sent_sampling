@@ -18,7 +18,10 @@ neural_nlp_stor_rel='neural_nlp.models.wrapper.core.ActivationsExtractorHelper._
 neural_nlp_store_abs=os.path.join(temp_store._storage_directory,neural_nlp_stor_rel)
 
 
-# modified read_words
+import re
+
+
+
 def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_columns=(), average_sentence=False,overwrite=False):
     """
     Pass a `stimulus_set` through a model `candidate`.

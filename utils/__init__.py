@@ -48,6 +48,32 @@ def make_shorthand(extractor_id, optimizer_id):
 
     return (extract_short_hand, optim_short_hand)
 
+modl_name='mistral-caprica-gpt2-small-x81-ckpnt-0'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+mistral_chkpnt_0_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='mistral-caprica-gpt2-small-x81-ckpnt-40'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+mistral_chkpnt_40_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='mistral-caprica-gpt2-small-x81-ckpnt-400'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+mistral_chkpnt_400_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='mistral-caprica-gpt2-small-x81-ckpnt-4000'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+mistral_chkpnt_4000_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='mistral-caprica-gpt2-small-x81-ckpnt-40000'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+mistral_chkpnt_40000_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='mistral-caprica-gpt2-small-x81-ckpnt-400000'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+mistral_chkpnt_400000_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+
+
 modl_name='distilgpt2'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 distilgpt2_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
@@ -78,6 +104,12 @@ gpt2_xl_untrained_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=t
 
 
 model_grps_config = [
+    mistral_chkpnt_0_config,
+    mistral_chkpnt_40_config,
+    mistral_chkpnt_400_config,
+    mistral_chkpnt_4000_config,
+    mistral_chkpnt_40000_config,
+    mistral_chkpnt_400000_config,
     distilgpt2_config,
     gpt2_grp_config,
     gpt2_medium_config,
