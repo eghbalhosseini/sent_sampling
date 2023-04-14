@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-120
+#SBATCH --array=0-240
 #SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
@@ -17,7 +17,7 @@ i=0
 
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
-    for stim_type in textPeriod textNoPeriod wordFORM ; do
+    for stim_type in textNoPeriod wordFORM ; do
       for model in mistral-caprica-gpt2-small-x81-ckpnt-0 mistral-caprica-gpt2-small-x81-ckpnt-40 mistral-caprica-gpt2-small-x81-ckpnt-400 mistral-caprica-gpt2-small-x81-ckpnt-4000 mistral-caprica-gpt2-small-x81-ckpnt-40000 mistral-caprica-gpt2-small-x81-ckpnt-400000 ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
