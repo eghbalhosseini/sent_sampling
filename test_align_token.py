@@ -83,11 +83,13 @@ all_num_words=[]
 all_num_words_aligned=[]
 all_correspondances=[]
 for id in tqdm(range(len(ordered_sets)),desc='set:',leave=True):
+    True
     stimulus_set = ordered_sets[id]
     all_sentences = stimulus_set.groupby('sentence_id').apply(lambda x: ' '.join(x.word))
     num_words = [len(sentence.split()) for sentence in all_sentences.values]
     num_words_aligned = []
     for idx in tqdm(range(len(all_sentences.values)),desc='sentences:',position=1,leave=False,disable=True):
+        True
         sentence=all_sentences.values[idx]
         tokenized_sentences = [candidate._model._model_container.tokenizer.tokenize(s) for s in [sentence]]
         tokenized_sentences = list(itertools.chain.from_iterable(tokenized_sentences))

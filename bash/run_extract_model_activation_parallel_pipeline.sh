@@ -14,11 +14,11 @@ i=0
 # 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 # roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
   #          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
-
+# mistral-caprica-gpt2-small-x81-ckpnt-0 mistral-caprica-gpt2-small-x81-ckpnt-40 mistral-caprica-gpt2-small-x81-ckpnt-400 mistral-caprica-gpt2-small-x81-ckpnt-4000 mistral-caprica-gpt2-small-x81-ckpnt-40000 mistral-caprica-gpt2-small-x81-ckpnt-400000
 for dataset in ud_sentencez_token_filter_v3 ; do
   for group_ids in  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
     for stim_type in textNoPeriod wordFORM ; do
-      for model in mistral-caprica-gpt2-small-x81-ckpnt-0 mistral-caprica-gpt2-small-x81-ckpnt-40 mistral-caprica-gpt2-small-x81-ckpnt-400 mistral-caprica-gpt2-small-x81-ckpnt-4000 mistral-caprica-gpt2-small-x81-ckpnt-40000 mistral-caprica-gpt2-small-x81-ckpnt-400000 ; do
+      for model in  ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
             stim_type_list[$i]="$stim_type"

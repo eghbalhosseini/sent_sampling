@@ -19,17 +19,64 @@ import torch
 from utils import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
+from glob import glob
+import re
+import xarray as xr
+from scipy.spatial.distance import pdist, squareform
 if __name__ == '__main__':
     modelnames = ['roberta-base',  'xlnet-large-cased',  'bert-large-uncased','xlm-mlm-en-2048', 'gpt2-xl', 'albert-xxlarge-v2','ctrl']
-    extract_ids = [
-        f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_max_100_edited_selected_textNoPeriod-activation-bench=None-ave=False',
-    f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_min_100_edited_selected_textNoPeriod-activation-bench=None-ave=False',
-    f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_random_100_edited_selected_textNoPeriod-activation-bench=None-ave=False']
-    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True']
-    # get obj= from optim_id
-    obj_id = ['Ds_max', '2-Ds_max']
-    # get n_samples from each element in optim_id
-    low_resolution=False
+    model_layers = [('roberta-base', 'encoder.layer.1'),
+                    ('xlnet-large-cased', 'encoder.layer.23'),
+                    ('bert-large-uncased-whole-word-masking', 'encoder.layer.11.output'),
+                    ('xlm-mlm-en-2048', 'encoder.layer_norm2.11'),
+                    ('gpt2-xl', 'encoder.h.43'),
+                    ('albert-xxlarge-v2', 'encoder.albert_layer_groups.4'),
+                    ('ctrl', 'h.46')]
+    expr='Pereira2018rand'
+    model_activations=[]
+    for (model_id,model_layer) in  model_layers:
+        True
+        pattern = os.path.join(
+            '/om5/group/evlab/u/ehoseini/.result_caching/neural_nlp.models.wrapper.core.ActivationsExtractorHelper._from_sentences_stored',
+            f'identifier={model_id},stimuli_identifier={expr}*.pkl')
+        sent_set = glob(pattern)
+        len(sent_set)
+        # seperate sentences into 384sentences and 243sentences
+        sent_set_384 = [sent for sent in sent_set if '384sentences' in sent]
+        sent_set_243 = [sent for sent in sent_set if '243sentences' in sent]
+        model_activation=[]
+        for sent_set in [sent_set_384, sent_set_243]:
+            a_list = []
+            for kk in range(len(sent_set)):
+                a = pd.read_pickle(sent_set[kk])
+                a = a['data']
+                a_list.append(a)
+            a_concat = xr.concat(a_list, dim='presentation')
+            # find model_layer in a_concat
+            a_concat = a_concat.sel(layer=model_layer)
+            model_activation.append(a_concat)
+        model_activations.append(model_activation)
+
+
+
+    prereira_243=[x[1] for x in model_activations]
+    prereira_384=[x[0] for x in model_activations]
+    # for each model compute the
+    # make sure the order of sentences is the ame in pereria_243 and pereria_384
+    # sort the sentences in each element of pereira_243 and pereira_384
+# sort the sentences in each element of pereira_243 and pereira_384
+    preira_243_sorted=[]
+    preira_384_sorted=[]
+    for i in range(len(prereira_243)):
+        preira_243_sorted.append(prereira_243[i].sortby('stimulus_sentence'))
+        preira_384_sorted.append(prereira_384[i].sortby('stimulus_sentence'))
+
+
+    [np.array_equal(x.stimulus_sentence,preira_384_sorted[0].stimulus_sentence) for x in preira_384_sorted]
+    model_dist=np.stack([pdist(x, metric='correlation') for x in preira_384_sorted])
+    np.mean(pdist(model_dist, metric='correlation'))
+    model_dist = np.stack([pdist(x, metric='correlation') for x in preira_243_sorted])
+    np.mean(pdist(model_dist, metric='correlation'))
 
     ds_all= []
     RDM_all = []

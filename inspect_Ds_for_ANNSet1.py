@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
 
     DS_max,RDM_max=optim_obj.gpu_object_function_debug(ev_sentence_ids)
-    if isinstance(RDM_max, torch.Tensor):
+    if  isinstance(RDM_max, torch.Tensor):
         RDM_max = RDM_max.cpu().numpy()
 
     ds_rand = []

@@ -32,7 +32,7 @@ if __name__ == '__main__':
         'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=None']
     #optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True',
     #             'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=True-run_gpu=True']
-    mdl_name = 'gpt2-xl'
+    mdl_name = 'gpt2'
     group = f'{mdl_name}_layers'
     # dataset='coca_spok_filter_punct_10K_sample_1'
     dataset = 'ud_sentencez_token_filter_v3_textNoPeriod'
