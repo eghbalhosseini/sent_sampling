@@ -176,6 +176,10 @@ if __name__ == '__main__':
         del model
         # add curvature_dict to model_curvature_dict
         model_curvature_dict[modelname]=curvature_dict
+        # save curvature dict
+        with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname}.pkl'),'wb') as f:
+            pickle.dump(curvature_dict,f)
+
     # save model_curvature_dict
 
     with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelclass}.pkl'),'wb') as f:

@@ -195,10 +195,8 @@ if __name__ == '__main__':
     ax.spines['top'].set_visible(False)  #
     #    ax.set_ylim((-15, 5))
     ax.set_ylabel(f'curvature change$')
-
-
     fig.show()
-    fig.savefig(os.path.join(ANALYZE_DIR, f'curvature_{basemodel}_{dataset}_true_vs_greedy_masked_{masked}.pdf'), transparent=True)
+    fig.savefig(os.path.join(ANALYZE_DIR, f'curvature_{basemodel}_{dataset}_true_vs_greedy_cntx_{context_k}_cont_{continuation_k}.pdf'), transparent=True)
 
     #
     # plot the best layer
