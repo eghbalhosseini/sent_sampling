@@ -155,37 +155,42 @@ if __name__ == '__main__':
     model_curvature_dict=dict()
 
     for modelname in tqdm(modelnames):
-        if masked==True:
-            model = AutoModelForMaskedLM.from_pretrained(modelname)
+        model_file=Path(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'))
+        # if modele_file  already exist then skip
+        if model_file.exists():
+            continue
         else:
-            model = AutoModel.from_pretrained(modelname)
 
+            if masked==True:
+                model = AutoModelForMaskedLM.from_pretrained(modelname)
+            else:
+                model = AutoModel.from_pretrained(modelname)
         # send model to gpu
-        model.cuda()
+            model.cuda()
 
-        # get activations
-        # print that we are getting activations
-        print('getting activations for model: {}'.format(modelname))
-        all_layers=compute_model_activations(model,indexed_tokens)
-        # printe that we are getting curvature
-        print('getting curvature for model: {}'.format(modelname))
-        curvature_dict=compute_model_curvature(all_layers)
-        # empty cuda cache
-        torch.cuda.empty_cache()
-        # delete model
-        del model
-        # add curvature_dict to model_curvature_dict
-        model_curvature_dict[modelname]=curvature_dict
-        # save curvature dict
-        # replace / with _
-        modelname_=modelname.replace('/','_')
-        with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'),'wb') as f:
-            pickle.dump(curvature_dict,f)
+            # get activations
+            # print that we are getting activations
+            print('getting activations for model: {}'.format(modelname))
+            all_layers=compute_model_activations(model,indexed_tokens)
+            # printe that we are getting curvature
+            print('getting curvature for model: {}'.format(modelname))
+            curvature_dict=compute_model_curvature(all_layers)
+            # empty cuda cache
+            torch.cuda.empty_cache()
+            # delete model
+            del model
+            # add curvature_dict to model_curvature_dict
+         #   model_curvature_dict[modelname]=curvature_dict
+            # save curvature dict
+            # replace / with _
+            modelname_=modelname.replace('/','_')
+            with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'),'wb') as f:
+                pickle.dump(curvature_dict,f)
 
     # save model_curvature_dict
 
-    with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelclass}.pkl'),'wb') as f:
-        pickle.dump(model_curvature_dict,f)
+    #with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelclass}.pkl'),'wb') as f:
+    #    pickle.dump(model_curvature_dict,f)
 
 
 

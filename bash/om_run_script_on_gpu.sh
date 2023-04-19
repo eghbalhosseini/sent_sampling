@@ -3,7 +3,7 @@
 #SBATCH --job-name=opt
 #SBATCH --time=48:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=120G
+#SBATCH --mem=256G
 #SBATCH --gres=gpu:RTXA6000:2
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
