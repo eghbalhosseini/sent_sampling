@@ -155,12 +155,10 @@ if __name__ == '__main__':
     model_curvature_dict=dict()
 
     for modelname in tqdm(modelnames):
+        modelname_ = modelname.replace('/', '_')
         model_file=Path(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'))
         # if modele_file  already exist then skip
-        if model_file.exists():
-            continue
-        else:
-
+        if not model_file.exists():
             if masked==True:
                 model = AutoModelForMaskedLM.from_pretrained(modelname)
             else:
@@ -183,7 +181,7 @@ if __name__ == '__main__':
          #   model_curvature_dict[modelname]=curvature_dict
             # save curvature dict
             # replace / with _
-            modelname_=modelname.replace('/','_')
+
             with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'),'wb') as f:
                 pickle.dump(curvature_dict,f)
 
