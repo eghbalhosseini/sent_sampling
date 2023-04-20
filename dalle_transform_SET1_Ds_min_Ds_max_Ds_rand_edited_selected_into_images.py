@@ -20,43 +20,34 @@ from utils import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 import openai
+import base64
 if __name__ == '__main__':
-    modelnames = ['roberta-base',  'xlnet-large-cased',  'bert-large-uncased','xlm-mlm-en-2048', 'gpt2-xl', 'albert-xxlarge-v2','ctrl']
-    extract_ids = [
-        f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_max_100_edited_selected_textNoPeriod-activation-bench=None-ave=False',
-    f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_min_100_edited_selected_textNoPeriod-activation-bench=None-ave=False',
-    f'group=best_performing_pereira_1-dataset=ud_sentencez_ds_random_100_edited_selected_textNoPeriod-activation-bench=None-ave=False']
-    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True']
-    # get obj= from optim_id
-    obj_id = ['Ds_max', '2-Ds_max']
-    # get n_samples from each element in optim_id
-    low_resolution=False
+    ds_random_sentence=pd.read_csv(os.path.join(ANALYZE_DIR,'ds_parametric','sent,G=best_performing_pereira_1-D=ud_sentencez_ds_random_100_edited_selected_textNoPeriod_final.csv'))
+    ds_min_sentence=pd.read_csv(os.path.join(ANALYZE_DIR,'ds_parametric','sent,G=best_performing_pereira_1-D=ud_sentencez_ds_min_100_edited_selected_textNoPeriod_final.csv'))
+    ds_max_sentence=pd.read_csv(os.path.join(ANALYZE_DIR,'ds_parametric','sent,G=best_performing_pereira_1-D=ud_sentencez_ds_max_100_edited_selected_textNoPeriod_final.csv'))
 
-    PROMPT = "An eco-friendly computer from the 90s in the style of vaporwave"
+    ds_dict={'ds_random':ds_random_sentence,'ds_min':ds_min_sentence,'ds_max':ds_max_sentence}
     openai.api_key = os.getenv("OPENAI_API_KEY")
-    openai.organization= "org-kiIqN9X8obEBpYxCuLS0l3qs"
-    response = openai.Image.create(
-        prompt="a white siamese cat",
-        n=1,
-        size="1024x1024"
-    )
-    image_url = response['data'][0]['url']
+    openai.organization = "org-kiIqN9X8obEBpYxCuLS0l3qs"
+    for key, val in ds_dict.items():
+        sentences=[x[1] for x in val.values]
+        for kk in range(10):
+            prompt=sentences[kk]
+            response = openai.Image.create(prompt=prompt,n=3,size="1024x1024",response_format="b64_json")
+            for index, image_dict in enumerate(response["data"]):
+                image_data = base64.b64decode(image_dict["b64_json"])
+                image_file = Path(ANALYZE_DIR,'ds_parametric',f'dalle_{key}' ,f"{key}_sent_{kk}_render_{index}_{prompt}.png")
+                # make sure the directory exists
+                image_file.parent.mkdir(parents=True, exist_ok=True)
+                with open(image_file.__str__(), mode="wb") as png:
+                    png.write(image_data)
     ds_all= []
     RDM_all = []
     for extract_id in extract_ids:
         ext_obj=extract_pool[extract_id]()
         ext_obj.load_dataset()
         ext_obj()
-        optimizer_obj = optim_pool[optim_id[0]]()
-        optimizer_obj.load_extractor(ext_obj)
-        optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=True, preload=False,
-                                                 save_results=False)
-        n_samples = optimizer_obj.N_S
-        print(f'{n_samples}\n')
-        sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_S, replace=False))
-        d_s_r, RDM_r = optimizer_obj.gpu_object_function_debug(sent_random)
-        ds_all.append(d_s_r)
-        RDM_all.append(RDM_r)
+
 
     # get n_samples from optimizer_obj
     fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
