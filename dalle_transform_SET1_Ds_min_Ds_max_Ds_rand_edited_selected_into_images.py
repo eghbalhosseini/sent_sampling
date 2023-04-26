@@ -21,6 +21,7 @@ from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 import openai
 import base64
+import pandas as pd
 if __name__ == '__main__':
     ds_random_sentence=pd.read_csv(os.path.join(ANALYZE_DIR,'ds_parametric','sent,G=best_performing_pereira_1-D=ud_sentencez_ds_random_100_edited_selected_textNoPeriod_final.csv'))
     ds_min_sentence=pd.read_csv(os.path.join(ANALYZE_DIR,'ds_parametric','sent,G=best_performing_pereira_1-D=ud_sentencez_ds_min_100_edited_selected_textNoPeriod_final.csv'))
