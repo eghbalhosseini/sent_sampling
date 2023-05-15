@@ -19,12 +19,12 @@ import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
 import xarray as xr
 from minicons import scorer
-from neural_nlp.models.gpt_neox_model import GPTNeoXPosLearnedModel,GPTNeoXPosLearnedConfig, initialize_gpt_neox_weights
+#from neural_nlp.models.gpt_neox_model import GPTNeoXPosLearnedModel,GPTNeoXPosLearnedConfig, initialize_gpt_neox_weights
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
 #AutoConfig.register('gpt-neox',GPTNeoXConfig)
-AutoConfig.register('gpt-neox-pos-learned',GPTNeoXPosLearnedConfig)
+#AutoConfig.register('gpt-neox-pos-learned',GPTNeoXPosLearnedConfig)
 #AutoModel.register(GPTNeoXConfig, GPTNeoXModel)
-AutoModel.register(GPTNeoXPosLearnedConfig, GPTNeoXPosLearnedModel)
+#AutoModel.register(GPTNeoXPosLearnedConfig, GPTNeoXPosLearnedModel)
 
 from transformers import PreTrainedTokenizer
 import pickle
@@ -131,20 +131,28 @@ def compute_model_curvature(all_layers):
     curve_change = (curve_[0:, :] - curve_[0, :])
     # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
     return dict(curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
-
+from transformers import AutoModel
 if __name__ == '__main__':
     #%%
 
     #modelnames='facebook/opt-125m'
 
-    modelclass='gpt2'
+    modelclass='cerberas_gpt2'
     basemodel='gpt2'
     modelnames=['distilgpt2','gpt2','gpt2-medium','gpt2-large','gpt2-xl']
     modelsizes=[82,117,345,774,1558]
     #modelclass = 'opt'
     # basemodel = 'facebook/opt-125m'
-    #modelnames = ["facebook/opt-125m", "facebook/opt-350m","facebook/opt-1.3b","facebook/opt-2.7b","facebook/opt-6.7b"]#,"facebook/opt-13b","facebook/opt-30b","facebook/opt-66b"]
+    # modelnames = ["cerebras/Cerebras-GPT-111M",
+    # "cerebras/Cerebras-GPT-256M",
+    # "cerebras/Cerebras-GPT-590M",
+    # "cerebras/Cerebras-GPT-1.3B",
+    # "cerebras/Cerebras-GPT-2.7B",
+    # "cerebras/Cerebras-GPT-6.7B",
+    #"cerebras/Cerebras-GPT-13B"
+    #]
     #modelsizes=[125,330,1300,2700,6700]#,13000,30000,66000]
+    modelsizes=[111,256,590,1300,2700,6700]
 
     masked=False
     dataset='ud_sentencez_token_filter_v3_textNoPeriod'

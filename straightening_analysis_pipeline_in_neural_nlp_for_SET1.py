@@ -16,7 +16,7 @@ from matplotlib.pyplot import GridSpec
 import pandas as pd
 from pathlib import Path
 import torch
-from neural_nlp.models.implementations import align_tokens
+
 from utils import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
@@ -27,11 +27,46 @@ import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM
 import xarray as xr
 import itertools
+import seaborn as sns
 from minicons import scorer
 def normalized(a, axis=-1, order=2):
     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
     l2[l2==0] = 1
     return a / np.expand_dims(l2, axis)
+def compute_model_activations(model,indexed_tokens):
+    # get activations
+    all_layers = []
+    for i in tqdm(range(len(indexed_tokens))):
+        tokens_tensor = torch.tensor([indexed_tokens[i]]).to('cuda')
+        with torch.no_grad():
+            outputs = model(tokens_tensor, output_hidden_states=True, output_attentions=False)
+            hidden_states = outputs['hidden_states']
+            # squeeze the first dimension
+            hidden_states = [x.squeeze(0).cpu() for x in hidden_states]
+        all_layers.append(hidden_states)
+    torch.cuda.empty_cache()
+    return all_layers
+
+def compute_model_curvature(all_layers):
+    all_layer_curve = []
+    all_layer_curve_all = []
+    all_layer_curve_rnd = []
+    all_layer_curve_rnd_all = []
+    for idk, layer_act in tqdm(enumerate(all_layers)):
+        sent_act = [torch.diff(x, axis=0).cpu() for x in layer_act]
+        sent_act = [normalized(x) for x in sent_act]
+        curvature = []
+        for idy, vec in (enumerate(sent_act)):
+            curve = [np.dot(vec[idx, :], vec[idx + 1, :]) for idx in range(vec.shape[0] - 1)]
+            curvature.append(np.arccos(curve))
+        all_layer_curve.append([np.mean(x) for x in curvature])
+        all_layer_curve_all.append(curvature)
+
+    curve_ = np.stack(all_layer_curve).transpose()
+    curve_change = (curve_[1:, :] - curve_[1, :])
+    # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
+    return dict(curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
+
 if __name__ == '__main__':
     #%%
     #modelname = 'xlnet-base-cased'
@@ -40,14 +75,14 @@ if __name__ == '__main__':
     #modelname='funnel-transformer/small'
     #modelname='facebook/opt-125m'
 
-    dataset='ud_sentencez_token_filter_v3_WordForm'
+    dataset='ud_sentencez_token_filter_v3'
     # get data
     extract_id = [
-        'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_WordForm-activation-bench=None-ave=None']
-    modelname = 'gpt2-xl'
+        'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_TextNoPeriod-activation-bench=None-ave=None']
+    modelname = 'gpt2-xl-untrained'
     group = f'{modelname}_layers'
     # dataset='coca_spok_filter_punct_10K_sample_1'
-    dataset = 'ud_sentencez_token_filter_v3_wordFORM'
+    #dataset = 'ud_sentencez_token_filter_v3_wordFORM'
     activatiion_type = 'activation'
     average = 'None'
     extractor_id = f'group={group}-dataset={dataset}-{activatiion_type}-bench=None-ave={average}'
@@ -83,7 +118,7 @@ if __name__ == '__main__':
 
 
     curve_ = np.stack(all_layer_curve)
-    curve_change = (curve_[1:-1, :] - curve_[1, :])
+    curve_change = (curve_[1:, :] - curve_[1, :])
     num_colors = curve_.shape[0] + 2
     color_fact = num_colors + 10
     h0 = cm.get_cmap('inferno', color_fact)
@@ -199,8 +234,120 @@ if __name__ == '__main__':
     # clear cuda memory
     torch.cuda.empty_cache()
 
+    #%%
+
+    fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
+    pap_ratio = 5.5 / 9
+    for i in range(len(all_layer_curve)):
+        curv = all_layer_curve[i]
+        # drop nan values from both suprise and curvature
+        nan_idx = np.logical_or(np.isnan(curv), np.isnan(tot_surprise_ave))
+        # select only non nan values
+        curv = np.array(curv)[~nan_idx]
+        tot_surprise_ave_ = np.array(tot_surprise_ave)[~nan_idx]
+        ax = plt.subplot(10, 5, i + 1)
+        # ax.scatter(tot_surprise_ave,curv,s=5,color=(0,0,1),zorder=4,edgecolor=(1,1,1),linewidth=.5,alpha=.5)
+        curv_deg=curv * 180 / np.pi
+        ax = sns.regplot(x=tot_surprise_ave_, y=curv_deg,
+                         scatter_kws={"s": 3, "alpha": .2, "edgecolor": (1, 1, 1), "linewidth": .5},
+                         line_kws={"lw": .5, 'color': 'k'})
+        r, p = sp.stats.pearsonr(tot_surprise_ave_, curv)
+        ax = plt.gca()
+        ax.text(.5, .8, 'r={:.2f}, p={:.2g}'.format(r, p),
+                transform=ax.transAxes, fontsize=6)
+        # m, b = np.polyfit(tot_surprise_ave, curv, 1)
+        # X_plot = np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],100)
+        # plt.plot(X_plot, m*X_plot + b, 'k-',zorder=4)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)  #
+        # ax.set_yticks([])
+        ax.set_title(f"layer {i + 1}")
+        # ax.tick_params(
+        #                     axis='x',          # changes apply to the x-axis
+        #                     which='both',      # both major and minor ticks are affected
+        #                     bottom=False,      # ticks along the bottom edge are off
+        #                     top=False,         # ticks along the top edge are off
+        #                     labelbottom=False)
+        ax.tick_params(
+            axis='both',  # changes apply to the x-axis
+            which='both',  # both major and minor ticks are affected
+            bottom=True,  # ticks along the bottom edge are off
+            top=False,  # ticks along the top edge are off
+            labelbottom=False)
+        if i == len(curve_change) - 1:
+            ax.set_xlabel('surprisal')
+            ax.set_ylabel('curvature')
+
+    plt.tight_layout()
+    fig.show()
+#%%
+
+    fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
+    pap_ratio = 5.5 / 9
+    axes_set=[(.1, .1, .2, .2 * pap_ratio),(.1, .4, .2, .2 * pap_ratio)]
+    for ax_id,i in enumerate([0,20]):
+            #range(len(all_layer_curve)):
+        curv = all_layer_curve[i]
+        ax = plt.axes(axes_set[ax_id])
+        nan_idx = np.logical_or(np.isnan(curv), np.isnan(tot_surprise_ave))
+        # select only non nan values
+        curv = np.array(curv)[~nan_idx]
+        tot_surprise_ave_ = np.array(tot_surprise_ave)[~nan_idx]
+        # ax.scatter(tot_surprise_ave,curv,s=5,color=(0,0,1),zorder=4,edgecolor=(1,1,1),linewidth=.5,alpha=.5)
+        curv_deg = curv * 180 / np.pi
+        #ax = sns.regplot(x=tot_surprise_ave_, y=curv_deg,
+        #                 scatter_kws={"s": 3, "alpha": .2, "edgecolor": (1, 1, 1), "linewidth": .5},
+        #                 line_kws={"lw": .5, 'color': 'k'})
+        x_data=tot_surprise_ave_
+        y_data=curv_deg
+        ax=sns.scatterplot(x=x_data, y=y_data,s=3,alpha=.2,edgecolor=(1,1,1),linewidth=.5)
+        m, b = np.polyfit(x_data, y_data, 1)
+        X_plot = np.linspace(ax.get_xlim()[0], ax.get_xlim()[1], 100)
+        #ax.plot(X_plot, m * X_plot + b, '-')
+
+        #slope, intercept, r, p, sterr = sp.stats.linregress(x=ax.get_lines()[0].get_xdata(),
+        #                                                           y=ax.get_lines()[0].get_ydata())
+        r, p = sp.stats.pearsonr(tot_surprise_ave_, curv)
+        ax = plt.gca()
+        ax.text(.5, .8, 'r={:.2f}, p={:.2g}'.format(r, p),
+                transform=ax.transAxes, fontsize=6)
+        # m, b = np.polyfit(tot_surprise_ave, curv, 1)
+        # X_plot = np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],100)
+        # plt.plot(X_plot, m*X_plot + b, 'k-',zorder=4)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)  #
+        #  limit xlim and ylims to 99 percentile
+        ax.set_xlim([np.percentile(tot_surprise_ave_, 0.05), np.percentile(tot_surprise_ave_, 99.95)])
+        ax.set_ylim([np.percentile(curv_deg, 0.05), np.percentile(curv_deg, 99.95)])
+
+        # ax.set_yticks([])
+        ax.set_title(f"layer {i + 1}")
+        # ax.tick_params(
+        #                     axis='x',          # changes apply to the x-axis
+        #                     which='both',      # both major and minor ticks are affected
+        #                     bottom=False,      # ticks along the bottom edge are off
+        #                     top=False,         # ticks along the top edge are off
+        #                     labelbottom=False)
+        # remove top and right spines
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)  #
 
 
+
+        # ax.tick_params(
+        #     axis='both',  # changes apply to the x-axis
+        #     which='both',  # both major and minor ticks are affected
+        #     bottom=False,  # ticks along the bottom edge are off
+        #     top=False,  # ticks along the top edge are off
+        #     labelbottom=False)
+        if i == len(curve_change) - 1:
+            ax.set_xlabel('surprisal')
+            ax.set_ylabel('curvature')
+
+    plt.tight_layout()
+    fig.show()
+    fig.savefig(os.path.join(ANALYZE_DIR, f'curvature_vs_surprisal_select_layers_{modelname}_neural_nlp_{dataset}.eps'),
+                transparent=True)
     #%% calculate relationship between curvature values and modellikelihiods
     mincons_model=scorer.IncrementalLMScorer(modelname,device='cuda')
     tokenizer=AutoTokenizer.from_pretrained(modelname)

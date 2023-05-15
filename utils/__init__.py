@@ -183,7 +183,7 @@ activation_extract_config=[dict(name='activation',type='activation',benchmark='N
                            ]
 # define extraction configuration
 extract_configuration = []
-stim_types=['wordFORM', 'textPeriod', 'textNoPeriod']
+stim_types=['','wordFORM', 'textPeriod', 'textNoPeriod']
 average_style=['True','False','None']
 for model_grp, dataset, extract_type,stim_type, average in itertools.product(model_grps_config, SENTENCE_CONFIG,
                                                                    activation_extract_config,stim_types, average_style):
