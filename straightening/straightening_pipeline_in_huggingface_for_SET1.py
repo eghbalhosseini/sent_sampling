@@ -3,9 +3,9 @@ import numpy as np
 import sys
 from pathlib import Path
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
-from utils import extract_pool
+from utils.curvature_utils import SENTENCE_CONFIG
+from utils.curvature_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from utils.curvature_utils import extract_pool
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
@@ -19,136 +19,20 @@ import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
 import xarray as xr
 from minicons import scorer
-from neural_nlp.models.gpt_neox_model import GPTNeoXPosLearnedModel,GPTNeoXPosLearnedConfig, initialize_gpt_neox_weights
+
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
-#AutoConfig.register('gpt-neox',GPTNeoXConfig)
-AutoConfig.register('gpt-neox-pos-learned',GPTNeoXPosLearnedConfig)
-#AutoModel.register(GPTNeoXConfig, GPTNeoXModel)
-AutoModel.register(GPTNeoXPosLearnedConfig, GPTNeoXPosLearnedModel)
+
+
 
 from transformers import PreTrainedTokenizer
 import pickle
-def align_tokens_debug(tokenized_sentences, sentences, max_num_words, additional_tokens, use_special_tokens,special_tokens):
-    # sliding window approach (see https://github.com/google-research/bert/issues/66)
-    # however, since this is a brain model candidate, we don't let it see future words (just like the brain
-    # doesn't receive future word input). Instead, we maximize the past context of each word
-    sentence_index = 0
-    sentences_chain = ' '.join(sentences).split()
-    previous_indices = []
-    all_context=[]
-    for token_index in tqdm(range(len(tokenized_sentences)), desc='token features',position=2,leave=False,disable=True):
-    #    if tokenized_sentences[token_index] in additional_tokens:
-    #        continue  # ignore altogether
-        # combine e.g. "'hunts', '##man'" or "'jennie', '##s'"
-        tokens = [
-            # tokens are sometimes padded by prefixes, clear those here
-            word.lstrip('##').lstrip('▁').rstrip('@@')
-            for word in tokenized_sentences[previous_indices + [token_index]]]
-        token_word = ''.join(tokens).lower()
-
-        for special_token in special_tokens:
-            token_word = token_word.replace(special_token, '')
-        #print(token_word)
-        if sentences_chain[sentence_index].lower() != token_word:
-            previous_indices.append(token_index)
-            continue
-        previous_indices = []
-        sentence_index += 1
-        #print(token_index)
-        context_start = max(0, token_index - max_num_words + 1)
-        #print(context_start)
-        context = tokenized_sentences[context_start:token_index + 1]
-        if use_special_tokens and context_start > 0:  # `cls_token` has been discarded
-            # insert `cls_token` again following
-            # https://huggingface.co/pytorch-transformers/model_doc/roberta.html#pytorch_transformers.RobertaModel
-            context = np.insert(context, 0, tokenized_sentences[0])
-        #context_ids = self.tokenizer.convert_tokens_to_ids(context)
-        all_context.append(context)
-        #yield context
-    return all_context
-def get_word_locations(sentence: str, tokenizer: PreTrainedTokenizer):
-    # Tokenize the sentence
-    tokens = tokenizer.tokenize(sentence)
-    # Get the word locations
-    word_locations = {}
-    current_word_tokens = []
-    current_word_token_ids=[]
-    i_word=0
-    output_dict=dict()
-    for i, token in enumerate(tokens):
-        # Check if the current token is the start of a new word
-        current_word_tokens.append(token)
-        current_word_token_ids.append(i)
-        current_candidate=''.join(tokenizer.convert_tokens_to_string(current_word_tokens))
-        if  sentence.split()[:i_word] in current_candidate:
-            output_dict[sentence.split()[:i_word]]=current_word_token_ids
-            current_word_tokens=[]
-            current_word_token_ids=[]
-            i_word+=1
-        else:
-            continue
-
-        # make sure length of the sentence is the same as the length of output_dict
-    assert len(output_dict)==len(sentence.split())
-    return output_dict
-def normalized(a, axis=-1, order=2):
-    l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
-    l2[l2==0] = 1
-    return a / np.expand_dims(l2, axis)
-def compute_model_activations(model,indexed_tokens):
-    # get activations
-    all_layers = []
-    for i in tqdm(range(len(indexed_tokens))):
-        tokens_tensor = torch.tensor([indexed_tokens[i]]).to('cuda')
-        with torch.no_grad():
-            outputs = model(tokens_tensor, output_hidden_states=True, output_attentions=False)
-            hidden_states = outputs['hidden_states']
-            # squeeze the first dimension
-            hidden_states = [x.squeeze(0).cpu() for x in hidden_states]
-        all_layers.append(hidden_states)
-    torch.cuda.empty_cache()
-    return all_layers
-def compute_model_curvature(all_layers):
-    all_layer_curve = []
-    all_layer_curve_all = []
-    all_layer_curve_rnd = []
-    all_layer_curve_rnd_all = []
-    for idk, layer_act in tqdm(enumerate(all_layers)):
-        sent_act = [torch.diff(x, axis=0).cpu() for x in layer_act]
-        sent_act = [normalized(x) for x in sent_act]
-        curvature = []
-        for idy, vec in (enumerate(sent_act)):
-            curve = [np.dot(vec[idx, :], vec[idx + 1, :]) for idx in range(vec.shape[0] - 1)]
-            curvature.append(np.arccos(curve))
-        all_layer_curve.append([np.mean(x) for x in curvature])
-        all_layer_curve_all.append(curvature)
-
-    curve_ = np.stack(all_layer_curve).transpose()
-    curve_change = (curve_[0:, :] - curve_[0, :])
-    # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
-    return dict(curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
 from transformers import AutoModel
 if __name__ == '__main__':
     #%%
     #modelnames='facebook/opt-125m'
 
     modelclass='gpt2'
-    basemodel='gpt2'
-    modelnames=['distilgpt2','gpt2','gpt2-medium','gpt2-large','gpt2-xl']
-    modelsizes=[82,117,345,774,1558]
-    #modelclass = 'opt'
-    # basemodel = 'facebook/opt-125m'
-    # modelnames = ["cerebras/Cerebras-GPT-111M",
-    # "cerebras/Cerebras-GPT-256M",
-    # "cerebras/Cerebras-GPT-590M",
-    # "cerebras/Cerebras-GPT-1.3B",
-    # "cerebras/Cerebras-GPT-2.7B",
-    # "cerebras/Cerebras-GPT-6.7B",
-    #"cerebras/Cerebras-GPT-13B"
-    #]
-    #modelsizes=[125,330,1300,2700,6700]#,13000,30000,66000]
-    #modelsizes=[111,256,590,1300,2700,6700]
-
+    modelname='gpt2'
     masked=False
     dataset='ud_sentencez_token_filter_v3_textNoPeriod'
     extract_id = ['group=gpt2_layers-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=None']
@@ -161,40 +45,30 @@ if __name__ == '__main__':
     good_sent_id=np.where(np.asarray([len(x['word_FORM'])==len(x['surprisal_3']) for x in ext_obj.data_]))[0]
     sentences_=[sentences[i] for i in good_sent_id]
     del ext_obj
-    tokenizer = AutoTokenizer.from_pretrained(basemodel)
+
+    tokenizer = AutoTokenizer.from_pretrained(modelname)
+
+    model = AutoModel.from_pretrained(modelname)
+    model.cuda()
+
     # tokenize sentences
     tokenized_text = [tokenizer.tokenize(x) for x in sentences]
     # get ids
     indexed_tokens = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_text]
 
-    model_curvature_dict=dict()
-    model_curvature_dict_file=Path(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelclass}.pkl'))
-    if model_curvature_dict_file.exists():
-        model_curvature_dict=pickle.load(open(model_curvature_dict_file,'rb'))
-    else:
-        for modelname in tqdm(modelnames):
-            modelname_ = modelname.replace('/', '_')
-            model_file=Path(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'))
-            # if modele_file  already exist then skip
-            if not model_file.exists():
-                if masked==True:
-                    model = AutoModelForMaskedLM.from_pretrained(modelname)
-                else:
-                    model = AutoModel.from_pretrained(modelname)
-            # send model to gpu
-                model.cuda()
+
 
                 # get activations
                 # print that we are getting activations
-                print('getting activations for model: {}'.format(modelname))
-                all_layers=compute_model_activations(model,indexed_tokens)
-                # printe that we are getting curvature
-                print('getting curvature for model: {}'.format(modelname))
-                curvature_dict=compute_model_curvature(all_layers)
+    print('getting activations for model: {}'.format(modelname))
+    all_layers=compute_model_activations(model,indexed_tokens)
+    # printe that we are getting curvature
+    print('getting curvature for model: {}'.format(modelname))
+    curvature_dict=compute_model_curvature(all_layers)
                 # empty cuda cache
-                torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
                 # delete model
-                del model
+    del model
                 # add curvature_dict to model_curvature_dict
              #   model_curvature_dict[modelname]=curvature_dict
                 # save curvature dict

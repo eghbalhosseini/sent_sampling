@@ -3,6 +3,9 @@ import numpy as np
 import sys
 from pathlib import Path
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
+desired_path = '/om/weka/evlab/ehoseini/JointMDS'
+sys.path.extend([desired_path,desired_path])
+sys.path.append(desired_path)
 from utils.data_utils import SENTENCE_CONFIG
 from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
 from utils import extract_pool
@@ -24,6 +27,7 @@ import pickle
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from datasets import Dataset, DatasetDict
 from scipy import stats
+
 
 def normalized(a, axis=-1, order=2):
     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
@@ -149,7 +153,8 @@ if __name__ == '__main__':
 
     # create a dicitonary of greed_continuation activations and true continuation
 
-
+    tokenizer.convert_ids_to_tokens(continuations_dict['greedy'][3358])
+    tokenizer.convert_ids_to_tokens(continuations_dict['true'][3358])
 
     all_layers_greedy = compute_model_activations(model, continuations_dict['greedy'])
     curvature_dict_greedy = compute_model_curvature(all_layers_greedy)
@@ -183,11 +188,18 @@ if __name__ == '__main__':
                    linewidth=.5, alpha=1)
         ax.errorbar(i, np.nanmean(curv) * 180 / np.pi, yerr=(np.nanstd(curv) * 180 / np.pi)/np.sqrt(curv.shape[0]), linewidth=0, elinewidth=1,
                 color=line_cols[i, :], zorder=0, alpha=1)
-    # plot a line for the average
+           # plot a line for the average
 
     ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_, axis=1) * 180 / np.pi, color=(0, 0, 0),
             linewidth=2,
             zorder=1)
+    # plot sem around the average as fill_between
+
+
+    ax.fill_between(np.arange(curve_.shape[0]),
+                    (np.nanmean(curve_, axis=1) - np.nanstd(curve_, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    (np.nanmean(curve_, axis=1) + np.nanstd(curve_, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    color=(0, 0, 0), alpha=.2, zorder=1)
 
     curve_ = curvature_dict_greedy['curve']
     for i, curv in enumerate(curve_):
@@ -199,6 +211,10 @@ if __name__ == '__main__':
     ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_, axis=1) * 180 / np.pi, color=(1, .2, .2),
             linewidth=2,
             zorder=1)
+    ax.fill_between(np.arange(curve_.shape[0]),
+                    (np.nanmean(curve_, axis=1) - np.nanstd(curve_, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    (np.nanmean(curve_, axis=1) + np.nanstd(curve_, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    color=(1, .2, .2), alpha=.2, zorder=1)
 
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)  #
@@ -223,6 +239,10 @@ if __name__ == '__main__':
 
     ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change, axis=1) * 180 / np.pi, color=(0, 0, 0), linewidth=2,
         zorder=1)
+    ax.fill_between(np.arange(curve_change.shape[0]),
+                    (np.nanmean(curve_change, axis=1) - np.nanstd(curve_change, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    color=(0,0,1), alpha=.2, zorder=1)
 
     curve_ = curvature_dict_greedy['curve']
     curve_change = (curve_[1:, :] - curve_[1, :])
@@ -236,6 +256,10 @@ if __name__ == '__main__':
     ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change, axis=1) * 180 / np.pi, color=(1, .2, .2),
             linewidth=2,
             zorder=1)
+    ax.fill_between(np.arange(curve_change.shape[0]),
+                    (np.nanmean(curve_change, axis=1) - np.nanstd(curve_change, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
+                    color=(1, .2, .2), alpha=.2, zorder=1)
 
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)  #
@@ -243,11 +267,95 @@ if __name__ == '__main__':
     #    ax.set_ylim((-15, 5))
     ax.set_ylabel(f'curvature change$')
     fig.show()
-    fig.savefig(os.path.join(ANALYZE_DIR, f'curvature_{basemodel}_{dataset}_true_vs_greedy_cntx_{context_k}_cont_{continuation_k}.pdf'), transparent=True)
 
+    fig.savefig(os.path.join(ANALYZE_DIR,
+                             f'curvature_{basemodel}_{dataset}_true_vs_greedy_cntx_{context_k}_cont_{continuation_k}_sem.pdf'),
+                transparent=True)
 
+    fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
+    pap_ratio = 5.5 / 9
 
+    curve_greedy=curvature_dict_greedy['curve']
+    curve_change_greedy = (curve_greedy[1:, :] - curve_greedy[1, :])
+    curve_true=curvature_dict_true['curve']
+    curve_change_true = (curve_true[1:, :] - curve_true[1, :])
 
+    # plot the difference in curve
+    curvature_difference=curve_greedy-curve_true
+    curvature_change_difference=curve_change_greedy-curve_change_true
+    ax = plt.axes((.65, .1, .3, .3 * pap_ratio))
+    ax.plot(np.arange(curvature_change_difference.shape[0]), np.nanmean(curvature_change_difference, axis=1) * 180 / np.pi, color=(1, .2, .2),
+            linewidth=2,
+            zorder=1)
+    ax.fill_between(np.arange(curvature_change_difference.shape[0]),
+                    (np.nanmean(curvature_change_difference, axis=1) - np.nanstd(curvature_change_difference, axis=1)) * 180 / np.pi,
+                    (np.nanmean(curvature_change_difference, axis=1) + np.nanstd(curvature_change_difference, axis=1)) * 180 / np.pi,
+                    color=(1, .2, .2), alpha=.2, zorder=1)
 
-
+    ax = plt.axes((.65, .55, .3, .3 * pap_ratio))
+    ax.plot(np.arange(curvature_difference.shape[0]),
+            np.nanmean(curvature_difference, axis=1) * 180 / np.pi, color=(1, .2, .2),
+            linewidth=2,
+            zorder=1)
+    ax.fill_between(np.arange(curvature_difference.shape[0]),
+                    (np.nanmean(curvature_difference, axis=1) - np.nanstd(curvature_difference,
+                                                                                 axis=1)) * 180 / np.pi,
+                    (np.nanmean(curvature_difference, axis=1) + np.nanstd(curvature_difference,
+                                                                                 axis=1)) * 180 / np.pi,
+                    color=(1, .2, .2), alpha=.2, zorder=1)
+    fig.show()
+    fig.savefig(os.path.join(ANALYZE_DIR, f'curvature_difference_{basemodel}_{dataset}_true_vs_greedy_cntx_{context_k}_cont_{continuation_k}.pdf'), transparent=True)
+    # do a ttest to see if each column of curvature_difference is significantly different from 0
+    fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
+    pap_ratio = 5.5 / 9
+    ttest_results = np.zeros((curvature_difference.shape[0]))
+    for i in range(curvature_difference.shape[0]):
+        ttest_results[i] = sp.stats.ttest_1samp(curvature_difference[i, :], 0)[1]
+    # plot the pvalues
+    ax = plt.axes((.65, .55, .3, .3 * pap_ratio))
+    ax.plot(np.arange(curvature_difference.shape[0]), -np.log10(ttest_results), color=(1, .2, .2),
+            linewidth=2,
+            zorder=1)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)  #
+    ax.set_xlim((-1, 49))
+    #    ax.set_ylim((-15, 5))
+    fig.show()
     #%% mistral models
+    fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
+    pap_ratio = 5.5 / 9
+    ttest_results = np.zeros((curvature_change_difference.shape[0]))
+    ttest_stat=np.zeros((curvature_change_difference.shape[0]))
+    for i in range(curvature_change_difference.shape[0]):
+        ttest_results[i] = sp.stats.ttest_1samp(curvature_change_difference[i, :], 0)[1]
+        ttest_stat[i] = sp.stats.ttest_1samp(curvature_change_difference[i, :], 0)[0]
+    # plot the pvalues
+    ax = plt.axes((.65, .55, .3, .3 * pap_ratio))
+    ax.plot(np.arange(curvature_change_difference.shape[0]), -np.log10(ttest_results), color=(1, .2, .2),
+            linewidth=2,
+            zorder=1)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)  #
+    ax.set_xlim((-1, 49))
+    #    ax.set_ylim((-15, 5))
+    fig.show()
+
+    #%%
+    # check if curvature_change_greedy is significantly less than curvature_change_true for each column with signifiance level 0.01
+    fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
+    pap_ratio = 5.5 / 9
+    ttest_results = np.zeros((curvature_change_difference.shape[0]))
+    for i in range(curvature_change_difference.shape[0]):
+        ttest_results[i] = sp.stats.ttest_ind(curvature_change_greedy[i, :], curvature_change_true[i, :])[1]
+    # plot the pvalues
+    ax = plt.axes((.65, .55, .3, .3 * pap_ratio))
+    ax.plot(np.arange(curvature_change_difference.shape[0]), -np.log10(ttest_results), color=(1, .2, .2),
+            linewidth=2,
+            zorder=1)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)  #
+    ax.set_xlim((-1, 49))
+    #    ax.set_ylim((-15, 5))
+    fig.show()
+
+
