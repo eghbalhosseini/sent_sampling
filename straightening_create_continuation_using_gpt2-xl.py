@@ -41,7 +41,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     continuation_k=int(args.continuation)
     context_k=int(args.context)
-
+    print('continuation_k',continuation_k)
+    print('context_k',context_k)
     #continuation_k=7
     #context_k=3
     basemodel = 'gpt2-xl'
