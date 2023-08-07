@@ -2,6 +2,8 @@ import os
 import numpy as np
 import sys
 from pathlib import Path
+import torch
+from tqdm import tqdm
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 
 def normalized(a, axis=-1, order=2):
@@ -37,6 +39,6 @@ def compute_model_curvature(all_layers):
         all_layer_curve_all.append(curvature)
 
     curve_ = np.stack(all_layer_curve).transpose()
-    curve_change = (curve_[0:, :] - curve_[0, :])
+    curve_change = (curve_[1:, :] - curve_[1, :])
     # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
     return dict(curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
