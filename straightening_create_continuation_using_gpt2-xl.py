@@ -35,8 +35,6 @@ parser.add_argument('--continuation', type=str, default='7',
                     help='continuation')
 parser.add_argument('--context', type=str, default='3',
                     help='context')
-
-parser = argparse.ArgumentParser(description='Process some integers.')
 if __name__ == '__main__':
     #%%
     # get arguments
