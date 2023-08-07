@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=continuation
-#SBATCH --array=0-1
+#SBATCH --array=0-6
 #SBATCH --time=12:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
