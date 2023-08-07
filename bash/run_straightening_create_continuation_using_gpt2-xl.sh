@@ -35,4 +35,4 @@ export XDG_CACHE_HOME
 . /om/user/ehoseini/.bash_profile
 conda activate neural_nlp_2022
 
-/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/user/ehoseini/sent_sampling/straightening_create_continuation_using_gpt2-xl.py ${contination_list[$SLURM_ARRAY_TASK_ID]} ${context_list[$SLURM_ARRAY_TASK_ID]}
+/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/user/ehoseini/sent_sampling/straightening_create_continuation_using_gpt2-xl.py --continuation ${contination_list[$SLURM_ARRAY_TASK_ID]} --context ${context_list[$SLURM_ARRAY_TASK_ID]}
