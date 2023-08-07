@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=opt_lowdim
+#SBATCH --job-name=continuation
 #SBATCH --array=0-1
-#SBATCH --time=48:00:00
+#SBATCH --time=12:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
