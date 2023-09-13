@@ -1,10 +1,9 @@
 #!/bin/bash
-
 #SBATCH --job-name=opt
-#SBATCH --time=48:00:00
-#SBATCH --ntasks=1
-#SBATCH --mem=256G
-#SBATCH --gres=gpu:A100:3
+#SBATCH --time=24:00:00
+#SBATCH --mem=64G
+#SBATCH --gres=gpu:1
+#SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
