@@ -2,9 +2,9 @@
 
 #SBATCH --job-name=EX_PA
 #SBATCH --array=0-199
-#SBATCH --time=168:00:00
+#SBATCH --time=24:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=32G
+#SBATCH --mem=16G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
