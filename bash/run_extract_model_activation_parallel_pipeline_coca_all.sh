@@ -11,7 +11,7 @@
 
 i=0
 for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
-  for group_ids in `seq 0 1 199` ; do
+  for group_ids in `seq 200 1 499` ; do
       for model in gpt2-xl xlnet-large-cased ; do
         for stim_type in textNoPeriod ; do
           model_list[$i]="$model"
@@ -41,7 +41,6 @@ export XDG_CACHE_HOME
 . /om/weka/evlab/ehoseini/.bash_profile
 . /om/weka/evlab/ehoseini/.bashrc
 conda activate neural_nlp_2022
-
 
 echo $(which python)
 
