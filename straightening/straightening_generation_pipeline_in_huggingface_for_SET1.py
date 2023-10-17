@@ -147,21 +147,48 @@ if __name__ == '__main__':
     else:
         with open(path_continuation_dict.__str__(),'rb') as f:
             continuations_dict=pickle.load(f)
+    # sample from continuations_dict 500 samples
+    continuations_dict_small=dict()
+    for key in continuations_dict.keys():
+        continuations_dict_small[key]=continuations_dict[key][:500]
+    # compute activations for all layers
+    all_layers=compute_model_activations(model,continuations_dict_small['true'])
+    curvature_dict_true=compute_model_curvature(all_layers)
 
-    all_layers_true=compute_model_activations(model,continuations_dict['true'])
-    curvature_dict_true=compute_model_curvature(all_layers_true)
+    all_layers = compute_model_activations(model, continuations_dict_small['greedy'])
+    curvature_dict_greedy = compute_model_curvature(all_layers)
 
-    # create a dicitonary of greed_continuation activations and true continuation
+    all_layers = compute_model_activations(model, continuations_dict_small['beam'])
+    curvature_dict_beam = compute_model_curvature(all_layers)
 
-    tokenizer.convert_ids_to_tokens(continuations_dict['greedy'][3358])
-    tokenizer.convert_ids_to_tokens(continuations_dict['true'][3358])
+    all_layers = compute_model_activations(model, continuations_dict_small['sample'])
+    curvature_dict_sample = compute_model_curvature(all_layers)
 
-    all_layers_greedy = compute_model_activations(model, continuations_dict['greedy'])
-    curvature_dict_greedy = compute_model_curvature(all_layers_greedy)
+    all_layer = compute_model_activations(model, continuations_dict_small['top_k'])
+    curvature_dict_top_k = compute_model_curvature(all_layer)
+
+    all_layer = compute_model_activations(model, continuations_dict_small['top_p'])
+    curvature_dict_top_p = compute_model_curvature(all_layer)
 
     #%%
     curve_ = curvature_dict_true['curve']
     curve_change = (curve_[1:, :] - curve_[1, :])
+
+    curve_greedy = curvature_dict_greedy['curve']
+    curve_change_greedy = (curve_greedy[1:, :] - curve_greedy[1, :])
+
+    curve_beam = curvature_dict_beam['curve']
+    curve_change_beam = (curve_beam[1:, :] - curve_beam[1, :])
+
+    curve_sample = curvature_dict_sample['curve']
+    curve_change_sample = (curve_sample[1:, :] - curve_sample[1, :])
+
+    curve_top_k = curvature_dict_top_k['curve']
+    curve_change_top_k = (curve_top_k[1:, :] - curve_top_k[1, :])
+
+    curve_top_p = curvature_dict_top_p['curve']
+    curve_change_top_p = (curve_top_p[1:, :] - curve_top_p[1, :])
+
 
     fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
     pap_ratio = 5.5 / 9

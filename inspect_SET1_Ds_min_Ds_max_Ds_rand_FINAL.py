@@ -2,7 +2,18 @@ import os
 import numpy as np
 import sys
 from pathlib import Path
-sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
+import getpass
+if getpass.getuser() == 'eghbalhosseini':
+    SAMPLING_PARENT = '/Users/eghbalhosseini/MyCodes/sent_sampling'
+    SAMPLING_DATA = '/Users/eghbalhosseini/MyCodes//fmri_DNN/ds_parametric/'
+
+elif getpass.getuser() == 'ehoseini':
+    SAMPLING_PARENT = '/om/user/ehoseini/sent_sampling'
+    SAMPLING_DATA = '/om2/user/ehoseini/fmri_DNN/ds_parametric/'
+
+
+
+sys.path.extend([SAMPLING_PARENT, SAMPLING_PARENT])
 from utils.data_utils import SENTENCE_CONFIG
 from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
 from utils import extract_pool
@@ -267,6 +278,7 @@ if __name__ == '__main__':
         axes[i].set_yticks([])
 
     plt.tight_layout()
+    fig.show()
     ax_title = f'sent_features,{ext_sh},{optim_sh}'
 
     # add a suptitle to the figure
@@ -279,4 +291,131 @@ if __name__ == '__main__':
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1)
     fig.show()
 
+    #%%
+    # plot model RDMS
+    # for each matrix in optimizer_obj.XY_corr_list select rows and colums based on a list S
+    # and plot the resulting matrix
+    X_Max = []
+    S_id = ds_max_loc
+    for XY_corr in optim_obj.XY_corr_list:
+        pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
+        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]]
+        # make squareform matrix
+        X_sample = squareform(X_sample)
+        X_Max.append(X_sample)
+
+    X_Min = []
+    S_id = ds_min_loc
+    for XY_corr in optim_obj.XY_corr_list:
+        pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
+        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]]
+        # make squareform matrix
+        X_sample = squareform(X_sample)
+        X_Min.append(X_sample)
+
+    X_rand = []
+    S_id = ds_rand_loc
+    for XY_corr in optim_obj.XY_corr_list:
+        pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
+        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]]
+        # make squareform matrix
+        X_sample = squareform(X_sample)
+        X_rand.append(X_sample)
+    # create a figure with 7 rows and 3 columns and plot x_samples in each row
+
+    fig = plt.figure(figsize=(11, 8))
+    for i in range(len(X_Max)):
+        ax = plt.subplot(3, 7, i + 1 + 7)
+        im = ax.imshow(X_Max[i], cmap='viridis', vmax=X_Max[i].max())
+        ax.set_ylabel(f'{ext_obj.model_spec[i]}', fontsize=6)
+        ax.set_title('Ds_max')
+        # turn off ticks
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    for i in range(len(X_Min)):
+        ax = plt.subplot(3, 7, i + 1 + 14)
+        im = ax.imshow(X_Min[i], cmap='viridis', vmax=X_Min[i].max())
+        ax.set_ylabel(f'{ext_obj.model_spec[i]}', fontsize=6)
+        ax.set_title('Ds_min')
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    for i in range(len(X_rand)):
+        ax = plt.subplot(3, 7, i + 1)
+        im = ax.imshow(X_rand[i], cmap='viridis', vmax=X_rand[i].max())
+        ax.set_ylabel(f'{ext_obj.model_spec[i]}', fontsize=6)
+        ax.set_title('Ds_rand')
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    # ax = plt.axes((.95, .05, .01, .25))
+    # plt.colorbar(im, cax=ax)
+
+    fig.show()
+    ax_title = f'sent_rdms,{ext_sh},{optim_sh}'
+    # save the figure
+    save_path = Path(ANALYZE_DIR)
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.png')
+    fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350)
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.eps')
+    fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1)
+    #%%
+    # plot average distances between setnences for each model
+    x_max_=[]
+    for a in X_Max:
+        # get the upper diagonal part of a
+        a_upper=a[np.triu_indices(a.shape[0],k=1)]
+        x_max_.append(a_upper.squeeze())
+
+    x_min_=[]
+    for a in X_Min:
+        # get the upper diagonal part of a
+        a_upper=a[np.triu_indices(a.shape[0],k=1)]
+        x_min_.append(a_upper.squeeze())
+
+    x_rand_=[]
+    for a in X_rand:
+        # get the upper diagonal part of a
+        a_upper=a[np.triu_indices(a.shape[0],k=1)]
+        x_rand_.append(a_upper.squeeze())
+    #
+    # save a dictionary of x_min, x_rand and x_max
+    model_names = [x['model_name'] for x in ext_obj.model_group_act]
+    similirity_dict={'x_min':x_min_,'x_rand':x_rand_,'x_max':x_max_}
+    similiary_path=Path(ANALYZE_DIR,'similarity_dict_DsParametric.pkl')
+    save_obj(similirity_dict,similiary_path.__str__())
+    fig = plt.figure(figsize=(11, 8))
+    for i in tqdm(range(len(X_Max))):
+        ax = plt.subplot(2, 4, i + 1)
+        # create a df with 2 columns, [x_min_[i],x_rand_[i],x_max_[i]]] and a second column with 'min','rand','max'
+        df=pd.DataFrame(2-np.vstack((x_min_[i],x_rand_[i],x_max_[i])).transpose(),columns=['min','rand','max'])
+        # change the colors to match the colors in the previous plot
+        # melt the df
+        df=pd.melt(df)
+        # plot a swarm plot of df
+        seaborn.violinplot(x='variable',y='value',data=df,ax=ax,palette=colors,scale='width')
+        #seaborn.swarmplot(x="variable", y="value", data=df,ax=ax,palette=colors)
+        ax.set_title(f'{model_names[i]}', fontsize=8)
+        ax.set_ylabel('Sentence alignment', fontsize=8)
+        ax.set_xlabel('')
+        ax.set_xticks([0,1,2])
+        ax.set_xticklabels(['Ds_min','Ds_rand','Ds_max'],fontsize=8,rotation=90)
+        # turn off spines
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        # turn off ticks
+        #ax.set_xticks([])
+        #ax.set_yticks([])
+    plt.tight_layout()
+    fig.show()
+    # create a figure title
+    ax_title = f'sent_alignment,{ext_sh},{optim_sh}'
+    # save the figure
+    save_path = Path(ANALYZE_DIR)
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.png')
+    fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350)
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.eps')
+    fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1)
     #%%

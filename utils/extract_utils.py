@@ -79,7 +79,10 @@ class extractor:
         data_ = load_obj(self.datafile,silent=silent)
         self.data_=data_
         if isinstance(self.data_, pd.DataFrame):
-            stimuli_set=construct_stimuli_set_from_pd(data_, self.dataset)
+            if self.stim_type=='textPeriod':
+                stimuli_set=construct_stimuli_set_from_pd(data_, self.dataset,drop_period=False)
+            elif self.stim_type == 'textNoPeriod':
+                stimuli_set = construct_stimuli_set_from_pd(data_, self.dataset, drop_period=True)
             self.stimuli_set = stimuli_set
             self.N_S=int(len(data_.groupby('sent_id')))
             assert(hasattr(self, 'stimuli_set'))

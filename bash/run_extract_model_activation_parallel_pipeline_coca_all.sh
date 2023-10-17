@@ -13,10 +13,12 @@ i=0
 for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
   for group_ids in `seq 0 1 199` ; do
       for model in gpt2-xl ; do
+        for stim_type in textNoPeriod ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
           i=$i+1
+      done
       done
       done
 done

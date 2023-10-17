@@ -14,8 +14,8 @@ if getpass.getuser()=='eghbalhosseini':
     COCA_PREPROCESSED_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/preprocessed/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
-    COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
-    COCA_PREPROCESSED_DIR = '/om/user/ehoseini/MyData/COCA_corpus/preprocessed/'
+    COCA_CORPUS_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/COCA_corpus/parsed/'
+    COCA_PREPROCESSED_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData//COCA_corpus/preprocessed/'
     BENCHMARK_DIR = '/om5/group/evlab/u/ehoseini/.result_caching/neural_nlp.score/'
     SAVE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/'
     RESULTS_DIR='/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/results/'
@@ -185,25 +185,41 @@ def construct_stimuli_set_no_grouping(stimuli_data, stimuli_data_name):
     return all_sentence_set
 
 
-def construct_stimuli_set_from_pd(stimuli_pd, stimuli_data_name='null',splits=200):
+def construct_stimuli_set_from_pd(stimuli_pd, stimuli_data_name='null',drop_period=False,splits=200):
     all_sentence_set=[]
-    stimuli_pd.sent_id.max()
-    seq = np.floor(np.linspace(0, stimuli_pd.sent_id.max()+1, num=splits))
+    # create a column that is the sentence_number and goes from 0 to len(stimuli_pd.groupby('sent_id'))
+    new_col=np.zeros((len(stimuli_pd),))
+    # make new_col have the same index as stimuli_pd
+    new_col=pd.Series(new_col,index=stimuli_pd.index)
+    for idx, group in tqdm(enumerate(stimuli_pd.groupby('sent_id'))):
+        new_col[group[1].index]=np.int(idx)
+    # combine new_col and stimuli_pd
+    stimuli_pd['sentence_number']=new_col
+    seq = np.floor(np.linspace(0, stimuli_pd.sentence_number.max()+1, num=splits))
     seq_pair=np.vstack((seq[0:-1], seq[1:]))
     seq_pair=seq_pair.astype(np.int).transpose()
     num_row=seq_pair.shape[0]
     for row in tqdm(range(num_row)):
         sentence_words, word_nums, sentenceID = [], [], []
-        stimuli_chunck=stimuli_pd[np.logical_and(np.asarray(stimuli_pd.sent_id>=seq_pair[row,0]),
-                                  np.asarray(stimuli_pd.sent_id< seq_pair[row,1]))]
+        stimuli_chunck=stimuli_pd[np.logical_and(np.asarray(stimuli_pd.sentence_number>=seq_pair[row,0]),
+                                  np.asarray(stimuli_pd.sentence_number< seq_pair[row,1]))]
 
         sentenceID=list(stimuli_chunck.sent_id)
-        sentence_words = list(stimuli_chunck.word_form)
+        if drop_period:
+            # group word form by the sentence number and look at the last word and remove the period
+            sentence_words=[]
+            for idx, group in stimuli_chunck.groupby('sentence_number'):
+                if group.word_form.iloc[-1]=='.':
+                    group.word_form.iloc[-1]=group.word_form.iloc[-1].rstrip('.')
+                sentence_words.append(group.word_form)
+            sentence_words = list(pd.concat(sentence_words))
+        else:
+            sentence_words = list(stimuli_chunck.word_form)
         word_number=list(range(len(stimuli_chunck)))
-        zipped_lst = list(zip(sentenceID, word_number, sentence_words))
-        sentence_set = StimulusSet(zipped_lst, columns=['sentence_id', 'stimulus_id', 'word'])
-
-        sentence_set.name = stimuli_data_name+'_group_'+str(row)
+        sentenceNum=list(stimuli_chunck.sentence_number)
+        zipped_lst = list(zip(sentenceID, word_number, sentence_words,sentenceNum))
+        sentence_set = StimulusSet(zipped_lst, columns=['sentence_id', 'stimulus_id', 'word','sentence_number'])
+        sentence_set.name = f'{stimuli_data_name}_from_text_period_{drop_period}_group_{row}'
         all_sentence_set.append(sentence_set)
     return all_sentence_set
 
@@ -245,6 +261,7 @@ SENTENCE_CONFIG = [
     dict(name='ud_sentences_U01_AnnSET1_ordered_for_RDM',
          file_loc=os.path.join(RESULTS_DIR, 'ud_sentences_U01_AnnSET1_ordered_for_RDM.pkl')),
     dict(name='coca_preprocessed_all',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all.pkl')),
+    dict(name='coca_preprocessed_all_clean',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean.pkl')),
     dict(name='coca_preprocessed_all_clean_100K_sample_1',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1.pkl')),
     dict(name='coca_preprocessed_all_clean_100K_sample_2',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_2.pkl')),
     dict(name='coca_preprocessed_all_clean_100K_sample_3',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_3.pkl')),

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.8.12 (sftp://ehoseini@node094:22/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python)" project-jdk-type="Python SDK" />
+  <component name="Black">
+    <option name="sdkUUID" value="ed151538-e17f-4cf9-9e40-290433297eb5" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.8.12 (sftp://ehoseini@node094:22/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python)" project-jdk-type="Python SDK" />
 </project>

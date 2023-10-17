@@ -19,7 +19,7 @@ import matplotlib
 import numpy as np
 if __name__ == '__main__':
     extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
-    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_wordFORM-activation-bench=None-ave=False'
+    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
 
 
     ext_obj = extract_pool[extract_id]()
@@ -53,9 +53,11 @@ if __name__ == '__main__':
 
 
     DS_max,RDM_max=optim_obj.gpu_object_function_debug(ev_sentence_ids)
+    DS_max=2-DS_max
+
     if  isinstance(RDM_max, torch.Tensor):
         RDM_max = RDM_max.cpu().numpy()
-
+    RDM_max=2-RDM_max
     ds_rand = []
     RDM_rand = []
     for k in tqdm(enumerate(range(200))):
@@ -63,7 +65,8 @@ if __name__ == '__main__':
         d_s_r, RDM_r = optim_obj.gpu_object_function_debug(sent_random)
         ds_rand.append(d_s_r)
         RDM_rand.append(RDM_r)
-
+    ds_rand = 2 - np.asarray(ds_rand)
+    RDM_rand = [2 -x for x in  RDM_rand]
     ## reset defaults
     plt.rcdefaults()
 
@@ -74,7 +77,7 @@ if __name__ == '__main__':
         "font.serif": ["Computer Modern Roman"],
         "font.size": 6,
     })
-
+    y_lim=(.6,2)
     fig = plt.figure(figsize=(8, 11), dpi=300, frameon=False)
     ax = plt.axes((.2, .7, .08, .25))
     ax.scatter(.02 * np.random.normal(size=(np.asarray(len(ds_rand)))) + 0,np.asarray(ds_rand),
@@ -89,7 +92,7 @@ if __name__ == '__main__':
     ax.spines["bottom"].set_linewidth(1)
     ax.spines['left'].set_linewidth(1)
     ax.set_xlim((-.4, 0.4))
-    ax.set_ylim((0.0, 1.2))
+    ax.set_ylim(y_lim)
     ax.set_xticks([])
     ax.set_xticklabels([])
     ax.legend(bbox_to_anchor=(1.1, .2), frameon=True)
@@ -105,7 +108,8 @@ if __name__ == '__main__':
     RDM_rand_mean = torch.stack(RDM_rand).mean(0).cpu().numpy()
     RDM_rand_mean=RDM_rand_mean.T
     RDM_rand_mean = np.multiply(RDM_rand_mean, mask)
-    im = ax.imshow(RDM_rand_mean, cmap='viridis', vmax=np.nanmax(RDM_max),vmin=0)
+    #im = ax.imshow(RDM_rand_mean, cmap='viridis', vmax=np.nanmax(RDM_max),vmin=0)
+    im = ax.imshow(RDM_rand_mean, cmap='viridis', vmax=1.6, vmin=.6)
     # add values to image plot
     for i in range(RDM_rand_mean.shape[0]):
         for j in range(RDM_rand_mean.shape[1]):
@@ -135,7 +139,8 @@ if __name__ == '__main__':
     # add values to image plot
     cmap = matplotlib.cm.viridis
     cmap.set_bad('white', 1.)
-    im = ax.imshow(RDM_max, cmap=cmap, vmin=0,vmax=np.nanmax(RDM_max))
+    #im = ax.imshow(RDM_max, cmap=cmap, vmin=0,vmax=np.nanmax(RDM_max))
+    im = ax.imshow(RDM_max, cmap=cmap, vmin=.6, vmax=1.6)
     # add lower triangle of RDM_max to image plot
     for i in range(RDM_max.shape[0]):
         for j in range(RDM_max.shape[1]):
@@ -170,7 +175,7 @@ if __name__ == '__main__':
     # set xtick labels to ds_min, ds_rand, ds_max
     ax.set_xticklabels([ 'ds_rand', 'ds_max'], fontsize=8)
     ax.set_ylabel('Ds')
-    ax.set_ylim((0, 1.4))
+    ax.set_ylim(y_lim)
     ax.set_title('Ds distribution')
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -180,11 +185,11 @@ if __name__ == '__main__':
     save_path = Path(ANALYZE_DIR)
 
 
-    save_loc = Path(save_path.__str__(),  f'ANNSet1_Ds_{extract_id}.png')
+    save_loc = Path(save_path.__str__(),  f'ANNSet1_Ds_{extract_id}_v2.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
-    save_loc = Path(save_path.__str__(),  f'ANNSet1_Ds_{extract_id}.eps')
+    save_loc = Path(save_path.__str__(),  f'ANNSet1_Ds_{extract_id}_v2.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
                 facecolor='white',
                 edgecolor='white')

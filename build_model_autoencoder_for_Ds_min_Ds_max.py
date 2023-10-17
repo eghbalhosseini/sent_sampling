@@ -287,6 +287,9 @@ if __name__ == '__main__':
     sweep_id = wandb.sweep(sweep_config, project="mseEncoder_sweep")
     wandb.agent(sweep_id, train, count=20)
     wandb.finish()
+
+
+
     # %% train a model on selected hyperparameters
     wandb.finish()
 

@@ -8,7 +8,7 @@ import pandas as pd
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-
+from utils.data_utils import ANALYZE_DIR
 from tqdm import tqdm
 import torch
 import itertools
@@ -20,6 +20,7 @@ import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
 import xarray as xr
 from minicons import scorer
+from utils.curvature_utils import compute_model_activations,compute_model_curvature
 
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
 from transformers import PreTrainedTokenizer
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     Pereira_stim=pd.read_csv('/net/storage001.ib.cluster/om2/group/evlab/u/ehoseini/.result_caching/.neural_nlp/Pereira2018-stimulus_set.csv')
 
     modelclass='gpt2'
-    modelname='gpt2'
+    modelname='gpt2-xl'
     masked=False
 
     # get sentences from ext_obj
@@ -44,10 +45,11 @@ if __name__ == '__main__':
     sentence_passage=Pereira_stim.passage_index.values
     sentence_experiment=Pereira_stim.experiment.values
     tokenizer = AutoTokenizer.from_pretrained(modelname)
-
+    # combine each element of the sentence passage id with sentence_experiment
+    sentence_passage_experiment=[str(x)+'_'+str(y) for x,y in zip(sentence_passage,sentence_experiment)]
     model = AutoModel.from_pretrained(modelname)
     model.cuda()
-
+    # grop
     # tokenize sentences
     tokenized_text = [tokenizer.tokenize(x) for x in sentences_]
     # get ids
@@ -62,7 +64,36 @@ if __name__ == '__main__':
                 # empty cuda cache
     torch.cuda.empty_cache()
                 # delete model
-    del model
+
+    all_layers = []
+    # cumulative tokens
+    # group sentence by which passage they belong to
+    _, idx = np.unique(sentence_passage_experiment, return_index=True)
+    unique_sent_pass = [sentence_passage_experiment[i] for i in sorted(idx)]
+    all_sentence_commulative = []
+    for i in tqdm(unique_sent_pass):
+        # find index of setnecne_passage_experiment that are equal to i
+        idx = [j for j, x in enumerate(sentence_passage_experiment) if x == i]
+        # make sure its sorted
+        idx = sorted(idx)
+        # find the sentences that are in idx
+        sentences = [sentences_[j] for j in idx]
+        # now incremeantlly add each sentence to the previous one so there is a list of sentences
+        sentences_cumulative = [sentences[0]]
+        for j in range(1, len(sentences)):
+            sentences_cumulative.append(sentences_cumulative[j - 1] + ' ' + sentences[j])
+        all_sentence_commulative.append(sentences_cumulative)
+    # make all_sentence_commulative flat
+    all_sentence_commulative = list(itertools.chain(*all_sentence_commulative))
+    tokenized_text_cumulative = [tokenizer.tokenize(x) for x in all_sentence_commulative]
+    # get ids
+    indexed_tokens_cumulative = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_text_cumulative]
+    all_layers_cm=compute_model_activations(model,indexed_tokens_cumulative)
+    curvature_dict_cm = compute_model_curvature(all_layers_cm)
+
+    curvature_dict=curvature_dict_cm
+
+
     #%%
 
 
@@ -111,9 +142,10 @@ if __name__ == '__main__':
     ax.set_ylabel(f'curvature change$')
 
     fig.show()
-
+    # save figure in ANALYZE_DIR folder
+    fig.savefig(os.path.join(ANALYZE_DIR, f'{model_name}_curvature.pdf'), format='pdf', dpi=200, bbox_inches='tight')
     # select atlas == language in perire dat
-    (Pereira_dat.atlas=='language').values
+
     Pereira_dat_lang=Pereira_dat.sel(neuroid=(Pereira_dat.atlas=='language').values)
     # sort Pereira_dat_lang by values in sentence_id
     alinments=np.asarray([np.argwhere(Pereira_dat_lang.stimulus_id.values==x) for x in sentence_id]).squeeze()
@@ -166,7 +198,7 @@ if __name__ == '__main__':
 
     curve_vox_corrs_roi = []
 
-    for curv in curve_change:
+    for curv in curve_:
         # compute the correaltion between curv and Pereira_dat_lang
         layer_corr_dict = dict()
         for g, grp in Pereira_dat_lang.groupby('roi'):
@@ -209,5 +241,61 @@ if __name__ == '__main__':
     #%%
     # group sentences in each layer by their curvature change and find the the level of activation is for those sentances
     # in perereia dat lang
+    pereira_layer_group=[]
+    ranges=[25,50,75]
+    # zscore neuroid responses across presenteations
+    Pereira_dat_lang=Pereira_dat_lang.dropna('neuroid')
+    Pereira_dat_lang_norm=(Pereira_dat_lang-Pereira_dat_lang.mean('presentation'))/Pereira_dat_lang.std('presentation')
     for curv in curve_change:
-        True
+        # divide the curv to 3 groups and find index of sentences in each group
+        #group_values=np.percentile(curv, ranges)
+        low_threshold = np.percentile(curv, 33)
+        high_threshold = np.percentile(curv, 66)
+
+        # Group the data using np.digitize
+        group_inds = np.digitize(curv, [low_threshold, high_threshold])
+        #group_inds=np.digitize(curv, group_values)
+        pereira_goup=[]
+        for i in range(len(ranges)):
+            idx=np.argwhere(group_inds==i).squeeze()
+            # find the mean activation for each voxel in Pereira_dat_lang
+            pereira_goup.append(Pereira_dat_lang_norm.isel(presentation=idx).mean('presentation'))
+        # combine them into a single array
+        pereira_goup=xr.concat(pereira_goup,dim='group')
+        pereira_layer_group.append(pereira_goup)
+
+    # now plot the mean activation for each group in each layer
+    fig = plt.figure(figsize=(8,11), dpi=200, frameon=False)
+    pap_ratio=8/11
+    for i,curv in enumerate(pereira_layer_group):
+        ax = fig.add_subplot(8, int(np.ceil(len(pereira_layer_group)/4)), i+1)
+        #curv=curv.groupby('subject').mean('neuroid')
+        # plot indivdual subjects as a line
+        for j,curv_ in enumerate(curv):
+            ax.scatter(j, np.nanmean(curv_) , s=25, color=line_cols[j, :], zorder=2, edgecolor=(0, 0, 0),
+                   linewidth=.5, alpha=1)
+            ax.errorbar(j, np.nanmean(curv_) , yerr=np.nanstd(curv_), linewidth=0, elinewidth=1,
+                    color=line_cols[j, :], zorder=0, alpha=1)
+        # plot a group values for individual subjects and connect them with a line
+    #    for curv_ in curv.T:
+    #        ax.plot(np.arange(len(curv_)), curv_, color=(.5, .5, .5), linewidth=1,
+    #        zorder=1)
+        # connect them with a line
+        ax.plot(np.arange(len(curv)), np.nanmean(curv, axis=1), color=(0, 0, 0), linewidth=1,
+            zorder=1)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        # ax title
+        ax.set_title(f'gpt2 layer {i}')
+        ax.set_xticks([0,1,2])
+        ax.set_ylim((-.12,.12))
+        if i==len(pereira_layer_group)-1:
+            ax.set_xticklabels(['low','mid','high'])
+            ax.set_xlabel('curvature change')
+            ax.set_ylabel('average voxel normalized activation(mean+std)')
+    #plt.tight_layout()
+    fig.show()
+    # save figure
+    fig.savefig(os.path.join(ANALYZE_DIR, f'{modelname}_curvature_change_vs_voxel_activation_Pereira.pdf'), transparent=True)
+
+
