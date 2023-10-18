@@ -4,15 +4,15 @@
 #SBATCH --array=0-6
 #SBATCH --time=12:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=20G
+#SBATCH --mem=128G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in ud_sentencez_token_filter_v3 ; do
-      for stim_type in textNoPeriod wordFORM ; do
-      for model in  gpt2-xl-untrained ; do
+for dataset in coca_preprocessed_all_clean_100K_sample_1 ; do
+      for stim_type in textNoPeriod ; do
+      for model in  gpt2-xl xlnet-large-cased ; do
               for average_mode in False True None ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"

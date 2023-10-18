@@ -27,4 +27,4 @@ if __name__ == '__main__':
     extractor_obj = model_extractor_parallel(dataset=dataset_id, datafile=datafile, model_spec=model_id,average_sentence=ave_mode,stim_type=stim_type)
     extractor_obj.load_dataset()
     extractor_obj.total_runs
-    extractor_obj.combine_runs(overwrite=True)
+    extractor_obj.combine_runs(overwrite=False)
