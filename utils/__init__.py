@@ -111,7 +111,7 @@ lm_1b_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_
 # make one for xlnet-large-cased
 modl_name='xlnet-large-cased'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
-xlnet_large_cased_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=False)
+xlnet_large_cased_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
 
 model_grps_config = [

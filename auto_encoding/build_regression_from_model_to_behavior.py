@@ -2,9 +2,10 @@ import numpy as np
 import pandas as pd
 import getpass
 import os
-from utils import extract_pool
-from pathlib import Path
 import sys
+sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
+from pathlib import Path
+
 from pathlib import Path
 import numpy as np
 from tqdm import tqdm
@@ -17,6 +18,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import warnings
+from utils import extract_pool
 #suppress warnings
 warnings.filterwarnings('ignore')
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
