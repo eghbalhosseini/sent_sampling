@@ -26,6 +26,7 @@ if __name__ == '__main__':
     # sent_id, word_from
     # split sentences into words
     words=[x.split(' ') for x in sentences]
+    word_form=words
     # create a counter for word id in each sentence
     word_id=[list(range(len(x))) for x in words]
     # create a counter for sentence id based on the words in each sentence
@@ -34,9 +35,10 @@ if __name__ == '__main__':
 
     # flatten the list
     words=[item for sublist in words for item in sublist]
+    word_form=[item for sublist in word_form for item in sublist]
     word_id=[item for sublist in word_id for item in sublist]
     sent_id=[item for sublist in sent_id for item in sublist]
     # combine words, words_id, and sent_id  to create a dataframe with 3 columns
-    df_extract=pd.DataFrame({'word':words,'word_id':word_id,'sent_id':sent_id})
+    df_extract=pd.DataFrame({'word':words,'word_id':word_id,'sent_id':sent_id,'word_form':word_form})
     # save the dataframe as a picklefile in the same directory
     df_extract.to_pickle(p.parent.joinpath('beta-control-neural_stimset_D-S_light_freq_extract.pkl').__str__())

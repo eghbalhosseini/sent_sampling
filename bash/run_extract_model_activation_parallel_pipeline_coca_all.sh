@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-199
+#SBATCH --array=0-399
 #SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=16G
@@ -10,8 +10,8 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
-  for group_ids in `seq 100 1 199` ; do
+for dataset in  neural_ctrl_stim ; do
+  for group_ids in `seq 0 1 199` ; do
       for model in gpt2-xl xlnet-large-cased ; do
         for stim_type in textNoPeriod ; do
           model_list[$i]="$model"
