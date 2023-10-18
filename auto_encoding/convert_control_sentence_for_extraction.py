@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 import getpass
@@ -22,6 +24,7 @@ if __name__ == '__main__':
     df=pd.read_csv(p.__str__())
     # get the sentences
     sentences=df['sentence'].values
+
     len(sentences)
     # sent_id, word_from
     # split sentences into words

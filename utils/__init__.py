@@ -78,6 +78,8 @@ modl_name='distilgpt2'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 distilgpt2_config=dict(grp_id= f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
+
+
 modl_name='gpt2'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 gpt2_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
@@ -106,6 +108,11 @@ modl_name='lm_1b'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 lm_1b_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
+# make one for xlnet-large-cased
+modl_name='xlnet-large-cased'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+xlnet_large_cased_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=False)
+
 
 model_grps_config = [
     # mistral_chkpnt_0_config,
@@ -122,6 +129,7 @@ model_grps_config = [
     gpt2_untrained_grp_config,
     gpt2_xl_untrained_grp_config,
     lm_1b_grp_config,
+    xlnet_large_cased_grp_config,
                      dict(grp_id='best_performing_pereira',description='best layer/Pereira benchmark',
                           grp_layer_tuple=(('bert-large-uncased-whole-word-masking','encoder.layer.11.output'),
                                                             ('xlm-mlm-en-2048','encoder.layer_norm2.11'),
