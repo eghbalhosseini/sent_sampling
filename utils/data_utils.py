@@ -12,6 +12,7 @@ if getpass.getuser()=='eghbalhosseini':
     RESULTS_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/results/'
     COCA_CORPUS_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/parsed/'
     COCA_PREPROCESSED_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/preprocessed/'
+    AUTO_ENCODER_DIR='/Users/eghbalhosseini/MyData/sent_sampling/auto_encoder/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/COCA_corpus/parsed/'
@@ -20,6 +21,7 @@ elif getpass.getuser()=='ehoseini':
     SAVE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/'
     RESULTS_DIR='/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/results/'
     ANALYZE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/analysis/'
+    AUTO_ENCODER_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/auto_encoder/'
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
@@ -272,6 +274,7 @@ SENTENCE_CONFIG = [
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_3',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_3.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_4',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_4.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_5',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_5.pkl')),
+    dict(name='neural_ctrl_stim',file_loc=os.path.join(AUTO_ENCODER_DIR,'beta-control-neural_stimset_D-S_light_freq_extract.pkl')),
     dict(name='pereira2018_243sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),
     dict(name='pereira2018_384sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,''))]
 
