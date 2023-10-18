@@ -11,7 +11,7 @@
 
 i=0
 for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
-  for group_ids in `seq 200 1 499` ; do
+  for group_ids in `seq 100 1 199` ; do
       for model in gpt2-xl xlnet-large-cased ; do
         for stim_type in textNoPeriod ; do
           model_list[$i]="$model"
