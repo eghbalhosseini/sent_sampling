@@ -12,7 +12,7 @@
 i=0
 #neural_ctrl_stim
 # coca_preprocessed_all_clean_100K_sample_1
-for dataset in neural_ctrl_stim ; do
+for dataset in ds_parametric ; do
       for stim_type in textPeriod textNoPeriod ; do
       for model in  gpt2-xl ; do
               for average_mode in False True None ; do
