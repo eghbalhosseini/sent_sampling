@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in  ds_parametric ; do
+for dataset in  coca_preprocessed_all_clean_100K_sample_2 ; do
   for group_ids in `seq 0 1 199` ; do
       for model in gpt2-xl  ; do
         for stim_type in textNoPeriod ; do
