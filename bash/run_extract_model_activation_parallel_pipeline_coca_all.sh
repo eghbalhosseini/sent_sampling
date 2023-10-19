@@ -13,7 +13,7 @@ i=0
 for dataset in  neural_ctrl_stim ; do
   for group_ids in `seq 0 1 199` ; do
       for model in gpt2-xl xlnet-large-cased ; do
-        for stim_type in textNoPeriod ; do
+        for stim_type in textNoPeriod textPeriod ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids

@@ -11,6 +11,7 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.model_selection import KFold
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import train_test_split
@@ -19,6 +20,8 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import warnings
 from utils import extract_pool
+# import PCA
+from sklearn.decomposition import PCA
 #suppress warnings
 warnings.filterwarnings('ignore')
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
@@ -29,7 +32,7 @@ else:
     data_path = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/auto_encoder/'
 
 if __name__ == '__main__':
-    model_id = 'xlnet-large-cased'
+    model_id = 'gpt2-xl'
     dataset_id='neural_ctrl_stim'
     stim_type='textNoPeriod'
     p = Path(data_path, 'beta-control-neural_stimset_D-S_light_freq.csv')
@@ -45,13 +48,20 @@ if __name__ == '__main__':
     rating_frequency_mean=df['rating_frequency_mean'].values
     # get rating_conversation_mean for sentences
     rating_conversation_mean=df['rating_conversational_mean'].values
+    rating_surprisal_sum=df['surprisal-gpt2-xl_sum'].values
+    rating_surprisal_mean=df['surprisal-gpt2-xl_mean'].values
     layer_mse=[]
     layer_r2=[]
     layer_mae=[]
+    y = rating_frequency_mean
     for layers in tqdm(extractor_obj.model_group_act):
         sentence_from_ext = [x[1] for x in layers['activations']]
         activations_from_ext = [x[0] for x in layers['activations']]
         X = np.array(activations_from_ext)
+        # do a pca and reduce the dimensionality of the data so that 90% of the variance is explained
+        #
+        pca_operator=PCA(n_components=0.8)
+        X=pca_operator.fit_transform(X)
         np.all([x == y for x, y in zip(sentences, sentence_from_ext)])
         # Define the number of folds
         k_folds = 5
@@ -59,13 +69,12 @@ if __name__ == '__main__':
         mse_scores = []
         r2_scores = []
         mae_scores=[]
-        y=rating_frequency_mean
         # Split the data into training and testing sets
+        model = Ridge(alpha=1.0)
         for train_index, test_index in kf.split(X):
             X_train, X_test = X[train_index], X[test_index]
             y_train, y_test = y[train_index], y[test_index]
             # Create and fit a linear regression model
-            model = LinearRegression()
             model.fit(X_train, y_train)
 
             # Predict on the test set
@@ -107,7 +116,7 @@ if __name__ == '__main__':
     axs[1].set_xlabel('Layer')
     axs[1].set_ylabel('R2')
     # set y lim to [-1,1]
-    axs[1].set_ylim([-5,1])
+    #axs[1].set_ylim([-5,1])
     # plot the mae
     axs[2].errorbar(np.arange(len(layer_mae_mean)),layer_mae_mean,layer_mae_std,marker='o',linestyle='None',capsize=5)
     axs[2].set_title('MAE')
@@ -115,5 +124,7 @@ if __name__ == '__main__':
     axs[2].set_ylabel('MAE')
 
     fig.show()
+
+
 
 
