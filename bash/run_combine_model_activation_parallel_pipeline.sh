@@ -12,7 +12,7 @@
 i=0
 for dataset in neural_ctrl_stim ; do
       for stim_type in textNoPeriod ; do
-      for model in  gpt2-xl xlnet-large-cased ; do
+      for model in  gpt2-xl ; do
               for average_mode in False True None ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"

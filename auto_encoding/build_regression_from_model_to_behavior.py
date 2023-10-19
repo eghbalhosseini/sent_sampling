@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
             # Predict on the test set
             y_pred = model.predict(X_test)
-            y_pred_constrained = 1 + 6 * (1 / (1 + np.exp(-y_pred)))
+            y_pred_constrained =y_pred#  1 + 6 * (1 / (1 + np.exp(-y_pred)))
 
             # Calculate the mean squared error
             mse = mean_squared_error(y_test, y_pred_constrained)
@@ -100,11 +100,14 @@ if __name__ == '__main__':
     axs[0].set_title('MSE')
     axs[0].set_xlabel('Layer')
     axs[0].set_ylabel('MSE')
+
     # plot the r2
     axs[1].errorbar(np.arange(len(layer_r2_mean)),layer_r2_mean,layer_r2_std,marker='o',linestyle='None',capsize=5)
     axs[1].set_title('R2')
     axs[1].set_xlabel('Layer')
     axs[1].set_ylabel('R2')
+    # set y lim to [-1,1]
+    axs[1].set_ylim([-5,1])
     # plot the mae
     axs[2].errorbar(np.arange(len(layer_mae_mean)),layer_mae_mean,layer_mae_std,marker='o',linestyle='None',capsize=5)
     axs[2].set_title('MAE')
