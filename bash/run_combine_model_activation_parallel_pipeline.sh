@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-6
+#SBATCH --array=0-1
 #SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=128G
@@ -12,10 +12,10 @@
 i=0
 #neural_ctrl_stim
 # coca_preprocessed_all_clean_100K_sample_1
-for dataset in ds_parametric ; do
-      for stim_type in textPeriod textNoPeriod ; do
+for dataset in coca_preprocessed_all_clean_100K_sample_2 ; do
+      for stim_type in textNoPeriod ; do
       for model in  gpt2-xl ; do
-              for average_mode in False True None ; do
+              for average_mode in False True ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
                   average_list[$i]="$average_mode"

@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in coca_preprocessed_all_clean_100K_sample_1 ; do
+for dataset in coca_preprocessed_all_clean_100K_sample_2 ; do
       for model in gpt2-xl ; do
               for average_mode in False True ; do
                   model_list[$i]="$model"
@@ -31,36 +31,9 @@ export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
 RESULTCACHING_HOME=/om/user/`whoami`/.result_caching
 export RESULTCACHING_HOME
 
-. ~/.bash_profile
-
-
-conda activate neural_nlp_1
+. /om/weka/evlab/ehoseini/.bash_profile
+. /om/weka/evlab/ehoseini/.bashrc
+conda activate neural_nlp_2022
 echo $(which python)
 
-python /om/user/ehoseini/sent_sampling/combine_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${average_list[$SLURM_ARRAY_TASK_ID]}
-
-#singularity exec -B /om:/om,/om2:/om2 /om/user/`whoami`/simg_images/neural_nlp_master.simg /usr/local/bin/python /om/user/ehoseini/sent_sampling/combine_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${average_list[$SLURM_ARRAY_TASK_ID]}
-
-#for dataset in coca_spok_filter_punct_10K_sample_1 \
-# coca_spok_filter_punct_10K_sample_2 \
-# coca_spok_filter_punct_10K_sample_3 \
-# coca_spok_filter_punct_10K_sample_4 \
-# coca_spok_filter_punct_10K_sample_5 ; do
-#      for model in gpt2-xl gpt2-large gpt2-medium gpt2 distilgpt2 openaigpt \
-#          albert-xxlarge-v2 albert-xlarge-v2 \
-#          t5-11b t5-3b t5-large \
-#          xlnet-large-cased \
-#          ctrl \
-#          bert-large-uncased-whole-word-masking distilbert-base-uncased \
-#          xlm-mlm-en-2048 \
-#          transfo-xl-wt103 \
-#          roberta-base; do
-#              for average_mode in True False None ; do
-#                  model_list[$i]="$model"
-#                  dataset_list[$i]="$dataset"
-#                  average_list[$i]="$average_mode"
-#                  dataset_list[$i]="$dataset"
-#                  i=$i+1
-#              done
-#      done
-#done
+/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/user/ehoseini/sent_sampling/combine_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${average_list[$SLURM_ARRAY_TASK_ID]}
