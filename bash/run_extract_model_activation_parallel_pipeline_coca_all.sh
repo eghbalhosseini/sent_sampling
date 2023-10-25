@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-199
+#SBATCH --array=0-399
 #SBATCH --time=24:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=16G
+#SBATCH --mem=10G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in  coca_preprocessed_all_clean_100K_sample_2 ; do
+for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 coca_preprocessed_all_clean_no_dup_100K_sample_2 ; do
   for group_ids in `seq 0 1 199` ; do
       for model in gpt2-xl  ; do
         for stim_type in textNoPeriod ; do
