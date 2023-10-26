@@ -52,9 +52,10 @@ if __name__ == '__main__':
     rating_surprisal_mean=df['surprisal-gpt2-xl_mean'].values
     layer_mse=[]
     layer_r2=[]
+    layer_r2_full=[]
     layer_mae=[]
     x_shape=[]
-    y = rating_surprisal_mean
+    y = rating_frequency_mean
     model = LinearRegression()
     # do a ridge regression
     #model = Ridge(alpha=10)
@@ -97,6 +98,13 @@ if __name__ == '__main__':
             # calcaute MAE
             mae = mean_absolute_error(y_test, y_pred)
             mae_scores.append(mae)
+        # do a regression on the whole dataset and get the R2
+
+        model.fit(X, y)
+        y_pred = model.predict(X)
+        r2_full = r2_score(y, y_pred)
+        layer_r2_full.append(r2_full)
+
         layer_mae.append(mae_scores)
         layer_mse.append(mse_scores)
         layer_r2.append(r2_scores)
@@ -126,6 +134,8 @@ if __name__ == '__main__':
     axs[1].set_ylim([-1,1])
     # plot a line at zero
     axs[1].axhline(y=0, color='r', linestyle='-')
+    # also plot the full R2
+    axs[1].plot(np.arange(len(layer_r2_mean)),layer_r2_full,marker='o',color='k',label='full R2')
     # plot the mae
     axs[2].errorbar(np.arange(len(layer_mae_mean)),layer_mae_mean,layer_mae_std,marker='o',linestyle='None',capsize=5)
     axs[2].set_title('MAE')
@@ -144,6 +154,13 @@ if __name__ == '__main__':
     ax.set_ylim([-1, 1])
     ax.legend()
     fig.show()
+
+    # find the layer with the best R2
+    best_layer=np.argmax(layer_r2_mean)
+    best_layer_full=np.argmax(layer_r2_full)
+
+    [x['layer'] for x in extractor_obj.model_group_act][best_layer_full]
+
 
 
 

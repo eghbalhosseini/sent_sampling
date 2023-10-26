@@ -75,14 +75,14 @@ class extractor:
         self.stim_type=stim_type
 
 
-    def load_dataset(self,silent=True):
+    def load_dataset(self,silent=True,splits=20):
         data_ = load_obj(self.datafile,silent=silent)
         self.data_=data_
         if isinstance(self.data_, pd.DataFrame):
             if self.stim_type=='textPeriod':
-                stimuli_set=construct_stimuli_set_from_pd(data_, self.dataset,drop_period=False)
+                stimuli_set=construct_stimuli_set_from_pd(data_, self.dataset,drop_period=False,splits=splits)
             elif self.stim_type == 'textNoPeriod':
-                stimuli_set = construct_stimuli_set_from_pd(data_, self.dataset, drop_period=True)
+                stimuli_set = construct_stimuli_set_from_pd(data_, self.dataset, drop_period=True,splits=splits)
             self.stimuli_set = stimuli_set
             self.N_S=int(len(data_.groupby('sent_id')))
             assert(hasattr(self, 'stimuli_set'))
@@ -90,9 +90,9 @@ class extractor:
             if self.stim_type=='wordFORM':
                 stimuli_set = construct_stimuli_set(data_, self.dataset)
             elif self.stim_type=='textPeriod':
-                stimuli_set = construct_stimuli_set_from_text(data_, self.dataset,drop_period=False)
+                stimuli_set = construct_stimuli_set_from_text(data_, self.dataset,drop_period=False,splits=splits)
             elif self.stim_type == 'textNoPeriod':
-                stimuli_set = construct_stimuli_set_from_text(data_, self.dataset, drop_period=True)
+                stimuli_set = construct_stimuli_set_from_text(data_, self.dataset, drop_period=True,splits=splits)
 
             self.stimuli_set = stimuli_set
             self.N_S=int(len(data_))

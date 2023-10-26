@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-240
+#SBATCH --array=0-140
 #SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
@@ -15,10 +15,14 @@ i=0
 # roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
   #          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
 # mistral-caprica-gpt2-small-x81-ckpnt-0 mistral-caprica-gpt2-small-x81-ckpnt-40 mistral-caprica-gpt2-small-x81-ckpnt-400 mistral-caprica-gpt2-small-x81-ckpnt-4000 mistral-caprica-gpt2-small-x81-ckpnt-40000 mistral-caprica-gpt2-small-x81-ckpnt-400000
-for dataset in ud_sentencez_token_filter_v3 ; do
-  for group_ids in  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ; do
-    for stim_type in textNoPeriod wordFORM ; do
-      for model in  ; do
+
+splits=20
+
+for dataset in coca_preprocessed_all_clean_100K_sample_1_estim_ds_min ; do
+  for group_ids in  `seq 0 1 19` ; do
+    for stim_type in textNoPeriod ; do
+      for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
             stim_type_list[$i]="$stim_type"
@@ -51,6 +55,6 @@ export XDG_CACHE_HOME
 . /om/weka/evlab/ehoseini/.bashrc
 conda activate neural_nlp_2022
 
-/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/weka/evlab/ehoseini//sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${stim_type_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
+/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/weka/evlab/ehoseini//sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${stim_type_list[$SLURM_ARRAY_TASK_ID]} ${splits} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
 
 
