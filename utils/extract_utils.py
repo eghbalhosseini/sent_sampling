@@ -329,8 +329,8 @@ class model_extractor_parallel:
                                    extract_type=self.extract_type, average_sentence=self.average_sentence,stim_type=self.stim_type)
 
     # delegations from extractor
-    def load_dataset(self):
-        self.extractor.load_dataset()
+    def load_dataset(self,splits=20):
+        self.extractor.load_dataset(splits=splits)
         self.total_runs=len(self.extractor.stimuli_set)
     def combine_runs(self,overwrite=False):
         if type(self.model_spec)==str:
