@@ -20,7 +20,7 @@ if __name__ == '__main__':
     splits= int(args.splits)
     print(model_id + '\n')
     print(dataset_id + '\n')
-    print(splits + '\n')
+    print(str(splits) + '\n')
     print(str(group_id) + '\n')
     # extract data
     datafile = [x['file_loc'] for x in SENTENCE_CONFIG if x['name'] == dataset_id][0]
