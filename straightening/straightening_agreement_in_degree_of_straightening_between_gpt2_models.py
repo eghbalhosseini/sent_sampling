@@ -14,22 +14,63 @@ import torch
 import itertools
 import matplotlib
 import re
+import torch
+import torch.nn.functional as F
 import scipy as sp
 import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
 import xarray as xr
-from minicons import scorer
-from neural_nlp.models.gpt_neox_model import GPTNeoXPosLearnedModel,GPTNeoXPosLearnedConfig, initialize_gpt_neox_weights
+
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
 #AutoConfig.register('gpt-neox',GPTNeoXConfig)
-AutoConfig.register('gpt-neox-pos-learned',GPTNeoXPosLearnedConfig)
 #AutoModel.register(GPTNeoXConfig, GPTNeoXModel)
-AutoModel.register(GPTNeoXPosLearnedConfig, GPTNeoXPosLearnedModel)
 from utils.curvature_utils import compute_model_activations,compute_model_curvature
 
 from transformers import PreTrainedTokenizer
 import pickle
 from transformers import AutoModel
+
+import torch
+import torch.nn.functional as F
+
+def pairwise_correlation(x, y):
+  """Computes the pairwise correlation between two matrices.
+
+  Args:
+    x: A PyTorch tensor of shape (N, D).
+    y: A PyTorch tensor of shape (N, D).
+
+  Returns:
+    A PyTorch tensor of shape (N, N).
+  """
+
+  x_norm = torch.norm(x, dim=1)
+  y_norm = torch.norm(y, dim=1)
+  x_y = torch.matmul(x, y.t())
+  x_y_norm=(x_norm.unsqueeze(1) * y_norm)
+  return x_y / x_y_norm
+
+
+def compute_cosine_similarity(x, y):
+    """
+    Compute the cosine similarity between rows of two PyTorch tensors.
+
+    Args:
+    x (torch.Tensor): The first input tensor.
+    y (torch.Tensor): The second input tensor.
+
+    Returns:
+    torch.Tensor: A tensor of shape (x.shape[0], y.shape[0]) containing the cosine similarities
+                 between rows of x and rows of y.
+    """
+    cosine_similarities = torch.zeros(x.shape[0], y.shape[0])
+
+    for i in range(x.shape[0]):
+        for j in range(y.shape[0]):
+            cosine_similarities[i, j] = F.cosine_similarity(x[i], y[j], dim=0)
+
+    return cosine_similarities
+
 if __name__ == '__main__':
     #%%
     #modelnames='facebook/opt-125m'
@@ -38,18 +79,6 @@ if __name__ == '__main__':
     basemodel='gpt2'
     modelnames=['distilgpt2','gpt2','gpt2-medium','gpt2-large','gpt2-xl']
     modelsizes=[82,117,345,774,1558]
-    #modelclass = 'opt'
-    # basemodel = 'facebook/opt-125m'
-    # modelnames = ["cerebras/Cerebras-GPT-111M",
-    # "cerebras/Cerebras-GPT-256M",
-    # "cerebras/Cerebras-GPT-590M",
-    # "cerebras/Cerebras-GPT-1.3B",
-    # "cerebras/Cerebras-GPT-2.7B",
-    # "cerebras/Cerebras-GPT-6.7B",
-    #"cerebras/Cerebras-GPT-13B"
-    #]
-    #modelsizes=[125,330,1300,2700,6700]#,13000,30000,66000]
-    #modelsizes=[111,256,590,1300,2700,6700]
 
     masked=False
     dataset='ud_sentencez_token_filter_v3_textNoPeriod'
@@ -115,6 +144,19 @@ if __name__ == '__main__':
     #    pickle.dump(model_curvature_dict,f)
 
 
+    x_all=model_curvature_dict['gpt2-medium']['all_layer_curve_all']
+    y_all=model_curvature_dict['gpt2']['all_layer_curve_all']
+    xy_list=[]
+    for xy_pair in tqdm(zip(x_all,y_all)):
+        x=torch.tensor(xy_pair[0])
+        y=torch.tensor(xy_pair[1])
+        xy=compute_cosine_similarity(x,y)
+        xy_list.append(xy)
+
+    # average them
+    xy=torch.stack(xy_list)
+    xy=torch.mean(xy,dim=0)
+
 
     #%%
     fig = plt.figure(figsize=(5.5,9), dpi=200, frameon=False)
@@ -123,33 +165,12 @@ if __name__ == '__main__':
     matplotlib.rcParams['pdf.fonttype'] = 42
     matplotlib.rcParams['ps.fonttype'] = 42
     # create colors for lines based on the number of models
-    num_colors = len(modelnames) + 2
-    color_fact = num_colors + 3
-    h0 = cm.get_cmap('inferno', color_fact)
-    line_cols = (h0(np.arange(color_fact) / color_fact))
-    line_cols = line_cols[2:, :]
-    ax = plt.axes((.1, .1, .55, .25 * pap_ratio))
-    kk=0
-    for key,val in model_curvature_dict.items():
-
-        curve_ = val['curve']
-        curve_change = (curve_[1:, :] - curve_[1, :])
-
-        ax.scatter(np.arange(curve_change.shape[0]), np.nanmean(curve_change, axis=1) * 180 / np.pi, s=5, color=line_cols[kk,:], zorder=2, edgecolor=(0, 0, 0),linewidth=.5, alpha=1)
-        ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change, axis=1) * 180 / np.pi, color=line_cols[kk,:], linewidth=1,
-            zorder=1,label=key)
-        ax.fill_between(np.arange(curve_change.shape[0]),
-                        np.nanmean(curve_change, axis=1)* 180 / np.pi - ((np.nanstd(curve_change, axis=1))*180 / np.pi)/np.sqrt(curve_change.shape[1]),
-                        np.nanmean(curve_change, axis=1)* 180 / np.pi + ((np.nanstd(curve_change, axis=1))*180 / np.pi)/np.sqrt(curve_change.shape[1]),
-                        color=line_cols[kk, :], alpha=.2, zorder=1)
-        kk+=1
-    ax.spines['right'].set_visible(False)
-    ax.spines['top'].set_visible(False)  #
-    ax.set_ylabel(f'curvature change$')
-    # set xlim to [-1,49]
-    ax.set_xlim([-1,49])
-    ax.set_ylim([-12,2])
-
+    h0 = cm.get_cmap('inferno')
+    ax = plt.axes((.05, .05, .9, .9 * pap_ratio))
+    # plot xy as an image
+    xy=xy.cpu().numpy()[:-1,:-1]
+    ax.imshow(xy, cmap='inferno',vmin=xy.min(),vmax=1)
+    fig.show()
 
 # show the legend
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=2, frameon=False, fontsize=6)
