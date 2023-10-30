@@ -36,11 +36,11 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
           # find pattern that has the layer number
           #look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
           look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
-          echo $look_up_pattern
+          #echo $look_up_pattern
           folder_to_look=${DATA_DIR}/${model}
           #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
-          echo $lines
+          #echo $lines
           if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
               echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
               LINE_COUNT=$(expr ${LINE_COUNT} + 1)
