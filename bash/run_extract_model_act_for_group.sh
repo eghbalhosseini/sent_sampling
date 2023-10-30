@@ -8,10 +8,10 @@ GRAND_PIPE_FILE="${DATA_DIR}/Grand_extraction_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
 
-models="gpt2-xl xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 ctrl roberta-base"
-layers="49 25 25 13 13 49 13" # adding the embedding layer so its layer plus 1
-#models="gpt2-xl"
-#layers="49" # adding the embedding layer so its layer plus 1
+#models="roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl"
+#layers="49 25 25 13 13 49 13" # adding the embedding layer so its layer plus 1
+models="gpt2-xl"
+layers="49" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
