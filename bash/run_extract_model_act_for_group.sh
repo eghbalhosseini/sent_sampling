@@ -17,6 +17,7 @@ layer_arr=($layers)
 splits=200
 len=${#layer_arr[@]}
 #
+#coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_34_activation_group_113.pkl
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
 for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
@@ -29,14 +30,14 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
           stim_type_list[$i]="$stim_type"
           group_id_list[$i]=$group_ids
           i=$i+1
-          look_up_pattern="${dataset}_${model}_${stim_type}_*_group_${group_ids}.pkl"
+          look_up_pattern="${dataset}_${stim_type}_${model}_*_group_${group_ids}.pkl"
           echo $look_up_pattern
           folder_to_look=${DATA_DIR}/${model}
           #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
           echo $lines
           if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
-              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${model}_${stim_type}_group_${group_ids} dosent exists, adding it \n"
+              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
               LINE_COUNT=$(expr ${LINE_COUNT} + 1)
               printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
 
