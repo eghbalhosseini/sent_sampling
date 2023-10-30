@@ -25,7 +25,6 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
     for stim_type in textNoPeriod ; do
       # make group_id go from 0 to splits -1
       for (( group_ids=0; idx_model<$splits; group_ids++ )) ; do
-    #for group_ids in `seq 0 1 ` ; do
           model="${model_arr[$idx_model]}"
           model_list[$i]="${model_arr[$idx_model]}"
           layer_list[$i]="${layer_arr[$idx_model]}"
@@ -47,7 +46,7 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
               printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
 
           fi
-      done
+        done
       done
     done
 done

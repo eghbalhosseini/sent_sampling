@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #SBATCH --job-name=EX_PA
 #SBATCH --array=0-399
 #SBATCH --time=24:00:00
