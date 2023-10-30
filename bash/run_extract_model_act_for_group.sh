@@ -23,7 +23,9 @@ printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group
 for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
     for stim_type in textNoPeriod ; do
-    for group_ids in `seq 0 1 198` ; do
+      # make group_id go from 0 to splits -1
+      for (( group_ids=0; idx_model<$splits; group_ids++ )) ; do
+    #for group_ids in `seq 0 1 ` ; do
           model="${model_arr[$idx_model]}"
           model_list[$i]="${model_arr[$idx_model]}"
           layer_list[$i]="${layer_arr[$idx_model]}"
@@ -65,17 +67,17 @@ done
 
 
 echo $LINE_COUNT
-#run_val=0
-#if [ "$LINE_COUNT" -gt "$run_val" ]; then
-#  echo "running  ${LINE_COUNT} jobs"
-#  if [ "$LINE_COUNT" -lt 100 ] ; then
-#    echo "less than 100 jobs:  ${LINE_COUNT} jobs"
-#    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT "$LINE_COUNT" "$LINE_COUNT" 0 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
-#  else
-#     echo "more than 100 jobs:  ${LINE_COUNT} jobs"
-#   #nohup /cm/shared/admin/bin/submit-many-jobs 3 2 3 1 glasser_parcellation_on_subject.sh  $SUBJECT_GLASSER_FILE
-#    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT 80 100 20 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
-#  fi
-#  else
-#    echo $LINE_COUNT
-#fi
+run_val=0
+if [ "$LINE_COUNT" -gt "$run_val" ]; then
+  echo "running  ${LINE_COUNT} jobs"
+  if [ "$LINE_COUNT" -lt 200 ] ; then
+    echo "less than 100 jobs:  ${LINE_COUNT} jobs"
+    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT "$LINE_COUNT" "$LINE_COUNT" 0 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
+  else
+     echo "more than 100 jobs:  ${LINE_COUNT} jobs"
+   #nohup /cm/shared/admin/bin/submit-many-jobs 3 2 3 1 glasser_parcellation_on_subject.sh  $SUBJECT_GLASSER_FILE
+    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT 180 200 20 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
+  fi
+  else
+    echo $LINE_COUNT
+fi
