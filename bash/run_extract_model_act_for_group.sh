@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DATA_DIR=/om2/user/ehoseini/MyData/sent_sampling/
+DATA_DIR=/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/
+
 i=0
 LINE_COUNT=0
 GRAND_PIPE_FILE="${DATA_DIR}/Grand_extraction_pipe_list.csv"
