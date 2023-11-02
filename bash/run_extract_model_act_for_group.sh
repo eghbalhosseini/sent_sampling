@@ -17,10 +17,12 @@ len=${#layer_arr[@]}
 #
 #coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_34_activation_group_113.pkl
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
-#for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
-#  for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
-#    for stim_type in textNoPeriod ; do
-#      # make group_id go from 0 to splits -1
+for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
+  for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
+    for stim_type in textNoPeriod ; do
+      # make group_id go from 0 to splits -1
+      # print idx of model
+      echo $idx_model
 #      for (( group_ids=0; idx_model<$splits; group_ids++ )) ; do
 #          model="${model_arr[$idx_model]}"
 #          model_list[$i]="${model_arr[$idx_model]}"
@@ -44,9 +46,9 @@ printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group
 #
 #          fi
 #        done
-#      done
-#    done
-#done
+      done
+    done
+done
 
 #echo $LINE_COUNT
 #run_val=0
