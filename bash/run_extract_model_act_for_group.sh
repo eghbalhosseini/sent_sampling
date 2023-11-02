@@ -39,12 +39,12 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
           #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
           echo $lines
-#          if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
-#              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
-#              LINE_COUNT=$(expr ${LINE_COUNT} + 1)
-#              printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
-#
-#          fi
+          if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
+              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
+              LINE_COUNT=$(expr ${LINE_COUNT} + 1)
+              printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
+
+          fi
         done
       done
     done
