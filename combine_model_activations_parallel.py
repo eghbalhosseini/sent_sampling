@@ -20,8 +20,8 @@ if __name__ == '__main__':
     ave_mode=args.ave_mode
     stim_type = args.stim_type
     splits=int(args.splits)
-    print(model_id+'\n')
-    print(dataset_id+'\n')
+    print(model_id +'\n')
+    print(dataset_id +'\n')
     print(ave_mode + '\n')
     # extract data
     datafile=[x['file_loc'] for x in SENTENCE_CONFIG if x['name']==dataset_id][0]
