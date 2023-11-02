@@ -23,6 +23,9 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
       # make group_id go from 0 to splits -1
       # print idx of model
       echo $idx_model
+      echo $len
+      echo $dataset
+      echo $stim_type
 #      for (( group_ids=0; idx_model<$splits; group_ids++ )) ; do
 #          model="${model_arr[$idx_model]}"
 #          model_list[$i]="${model_arr[$idx_model]}"
