@@ -17,7 +17,7 @@ for dataset in  coca_spok_filter_punct_10K_sample_5 ; do
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
           i=$i+1
-      done
+        done
       done
 done
 
