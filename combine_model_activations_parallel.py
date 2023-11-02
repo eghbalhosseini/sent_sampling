@@ -10,7 +10,7 @@ parser.add_argument('model_name', type=str,
 parser.add_argument('dataset', type=str, default='ud_sentences_filter_v3_sample')
 parser.add_argument('stim_type', type=str, default='textPeriod')
 parser.add_argument('ave_mode', type=str, default='False')
-parser.add_argument('splits',type=str,default='20')
+parser.add_argument('splits',type=int,default=20)
 
 args = parser.parse_args()
 
