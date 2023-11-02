@@ -12,7 +12,7 @@ layers="49" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
-splits=200
+splits=199
 len=${#layer_arr[@]}
 #
 #coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_34_activation_group_113.pkl
@@ -65,17 +65,17 @@ done
 
 
 echo $LINE_COUNT
-#run_val=0
-#if [ "$LINE_COUNT" -gt "$run_val" ]; then
-#  echo "running  ${LINE_COUNT} jobs"
-#  if [ "$LINE_COUNT" -lt 200 ] ; then
-#    echo "less than 100 jobs:  ${LINE_COUNT} jobs"
-#    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT "$LINE_COUNT" "$LINE_COUNT" 0 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
-#  else
-#     echo "more than 100 jobs:  ${LINE_COUNT} jobs"
-#   #nohup /cm/shared/admin/bin/submit-many-jobs 3 2 3 1 glasser_parcellation_on_subject.sh  $SUBJECT_GLASSER_FILE
-#    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT 180 200 20 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
-#  fi
-#  else
-#    echo $LINE_COUNT
-#fi
+run_val=0
+if [ "$LINE_COUNT" -gt "$run_val" ]; then
+  echo "running  ${LINE_COUNT} jobs"
+  if [ "$LINE_COUNT" -lt 200 ] ; then
+    echo "less than 100 jobs:  ${LINE_COUNT} jobs"
+    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT "$LINE_COUNT" "$LINE_COUNT" 0 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
+  else
+     echo "more than 100 jobs:  ${LINE_COUNT} jobs"
+   #nohup /cm/shared/admin/bin/submit-many-jobs 3 2 3 1 glasser_parcellation_on_subject.sh  $SUBJECT_GLASSER_FILE
+    nohup /cm/shared/admin/bin/submit-many-jobs $LINE_COUNT 180 200 20 extract_model_act_for_group.sh  $GRAND_PIPE_FILE
+  fi
+  else
+    echo $LINE_COUNT
+fi
