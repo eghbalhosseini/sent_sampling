@@ -23,33 +23,27 @@ for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
       # make group_id go from 0 to splits -1
       # print idx of model
       for (( group_ids=0; group_ids<$splits; group_ids++ )) ; do
-      echo $idx_model
-      echo $len
-      echo $dataset
-      echo $stim_type
-      echo $group_ids
+          model="${model_arr[$idx_model]}"
+          model_list[$i]="${model_arr[$idx_model]}"
+          layer_list[$i]="${layer_arr[$idx_model]}"
+          dataset_list[$i]="$dataset"
+          stim_type_list[$i]="$stim_type"
+          group_id_list[$i]=$group_ids
+          i=$i+1
+          # find pattern that has the layer number
+          #look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
+          look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
+          #echo $look_up_pattern
+          folder_to_look=${DATA_DIR}/${model}
+          #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
+          lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
+          echo $lines
+          if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
+              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
+              LINE_COUNT=$(expr ${LINE_COUNT} + 1)
+              printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
 
-#          model="${model_arr[$idx_model]}"
-#          model_list[$i]="${model_arr[$idx_model]}"
-#          layer_list[$i]="${layer_arr[$idx_model]}"
-#          dataset_list[$i]="$dataset"
-#          stim_type_list[$i]="$stim_type"
-#          group_id_list[$i]=$group_ids
-#          i=$i+1
-#          # find pattern that has the layer number
-#          #look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
-#          look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
-#          #echo $look_up_pattern
-#          folder_to_look=${DATA_DIR}/${model}
-#          #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
-#          lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
-#          #echo $lines
-#          if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
-#              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
-#              LINE_COUNT=$(expr ${LINE_COUNT} + 1)
-#              printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
-#
-#          fi
+          fi
         done
       done
     done
