@@ -75,8 +75,8 @@ if __name__ == '__main__':
     #modelnames='microsoft/DialoGPT-medium'
     #modelnames='funnel-transformer/small'
     #modelnames='facebook/opt-125m'
-    continuation_k=14
-    context_k=6
+    continuation_k=7
+    context_k=3
 
     basemodel = 'gpt2-xl'
     masked=False
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     # sample from continuations_dict 500 samples
     continuations_dict_small=dict()
     for key in continuations_dict.keys():
-        continuations_dict_small[key]=continuations_dict[key][:500]
+        continuations_dict_small[key]=continuations_dict[key][:1574]
     # compute activations for all layers
     all_layers=compute_model_activations(model,continuations_dict_small['true'])
     curvature_dict_true=compute_model_curvature(all_layers)
@@ -166,30 +166,31 @@ if __name__ == '__main__':
     all_layers = compute_model_activations(model, continuations_dict_small['sample'])
     curvature_dict_sample = compute_model_curvature(all_layers)
 
-    all_layer = compute_model_activations(model, continuations_dict_small['top_k'])
-    curvature_dict_top_k = compute_model_curvature(all_layer)
-
-    all_layer = compute_model_activations(model, continuations_dict_small['top_p'])
-    curvature_dict_top_p = compute_model_curvature(all_layer)
+    # all_layer = compute_model_activations(model, continuations_dict_small['top_k'])
+    # curvature_dict_top_k = compute_model_curvature(all_layer)
+    #
+    # all_layer = compute_model_activations(model, continuations_dict_small['top_p'])
+    # curvature_dict_top_p = compute_model_curvature(all_layer)
 
     #%%
+    k_sub=1
     curve_ = curvature_dict_true['curve']
-    curve_change = (curve_[1:, :] - curve_[1, :])
+    curve_change = (curve_[k_sub:, :] - curve_[k_sub, :])
 
     curve_greedy = curvature_dict_greedy['curve']
-    curve_change_greedy = (curve_greedy[1:, :] - curve_greedy[1, :])
+    curve_change_greedy = (curve_greedy[k_sub:, :] - curve_greedy[k_sub, :])
 
     curve_beam = curvature_dict_beam['curve']
-    curve_change_beam = (curve_beam[1:, :] - curve_beam[1, :])
+    curve_change_beam = (curve_beam[k_sub:, :] - curve_beam[k_sub, :])
 
     curve_sample = curvature_dict_sample['curve']
-    curve_change_sample = (curve_sample[1:, :] - curve_sample[1, :])
+    curve_change_sample = (curve_sample[k_sub:, :] - curve_sample[k_sub, :])
 
-    curve_top_k = curvature_dict_top_k['curve']
-    curve_change_top_k = (curve_top_k[1:, :] - curve_top_k[1, :])
-
-    curve_top_p = curvature_dict_top_p['curve']
-    curve_change_top_p = (curve_top_p[1:, :] - curve_top_p[1, :])
+    # curve_top_k = curvature_dict_top_k['curve']
+    # curve_change_top_k = (curve_top_k[1:, :] - curve_top_k[1, :])
+    #
+    # curve_top_p = curvature_dict_top_p['curve']
+    # curve_change_top_p = (curve_top_p[1:, :] - curve_top_p[1, :])
 
 
     fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
@@ -197,34 +198,38 @@ if __name__ == '__main__':
     matplotlib.rcParams['font.size'] = 6
     matplotlib.rcParams['pdf.fonttype'] = 42
     matplotlib.rcParams['ps.fonttype'] = 42
+    # create a colormap of tab20c
+    cmap = cm.get_cmap('tab20', 20)
+    # sample 20 colors from the colormap
+    colors = cmap(np.linspace(0, 1, 20))
     # create colors for lines based on the number of models
     ax = plt.axes((.1, .55, .55, .25 * pap_ratio))
     kk = 0
     # plot the average for each of the curves
-    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_, axis=1) * 180 / np.pi, color='black', linewidth=1, label='true',marker='o',markersize=1)
+    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_, axis=1) * 180 / np.pi, color=colors[6,:], linewidth=1, label='true',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_, axis=1) * 180 / np.pi - np.nanstd(curve_, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_, axis=1) * 180 / np.pi + np.nanstd(curve_, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='black')
+                    np.nanmean(curve_, axis=1) * 180 / np.pi + np.nanstd(curve_, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[6 ,:])
     # plot greedy
-    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_greedy, axis=1) * 180 / np.pi, color='red', linewidth=1, label='greedy',marker='o',markersize=1)
+    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_greedy, axis=1) * 180 / np.pi, color=colors[0,:], linewidth=1, label='greedy',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_greedy, axis=1) * 180 / np.pi - np.nanstd(curve_greedy, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_greedy, axis=1) * 180 / np.pi + np.nanstd(curve_greedy, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='red')
+                    np.nanmean(curve_greedy, axis=1) * 180 / np.pi + np.nanstd(curve_greedy, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[0,:])
     # plot beam
-    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_beam, axis=1) * 180 / np.pi, color='blue', linewidth=1, label='beam',marker='o',markersize=1)
+    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_beam, axis=1) * 180 / np.pi, color=colors[4,:], linewidth=1, label='beam',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_beam, axis=1) * 180 / np.pi - np.nanstd(curve_beam, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_beam, axis=1) * 180 / np.pi + np.nanstd(curve_beam, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='blue')
+                    np.nanmean(curve_beam, axis=1) * 180 / np.pi + np.nanstd(curve_beam, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[4,:])
     # plot sample
-    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_sample, axis=1) * 180 / np.pi, color='green', linewidth=1, label='sample',marker='o',markersize=1)
+    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_sample, axis=1) * 180 / np.pi, color=colors[8,:], linewidth=1, label='sample',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_sample, axis=1) * 180 / np.pi - np.nanstd(curve_sample, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_sample, axis=1) * 180 / np.pi + np.nanstd(curve_sample, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='green')
+                    np.nanmean(curve_sample, axis=1) * 180 / np.pi + np.nanstd(curve_sample, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[8,:])
     # plot top_k
-    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_top_k, axis=1) * 180 / np.pi, color='orange', linewidth=1, label='top-k',marker='o',markersize=1)
-    ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_top_k, axis=1) * 180 / np.pi - np.nanstd(curve_top_k, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_top_k, axis=1) * 180 / np.pi + np.nanstd(curve_top_k, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='orange')
-    # plot top_p
-    ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_top_p, axis=1) * 180 / np.pi, color='purple', linewidth=1, label='top-p',marker='o',markersize=1)
-    ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_top_p, axis=1) * 180 / np.pi - np.nanstd(curve_top_p, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_top_p, axis=1) * 180 / np.pi + np.nanstd(curve_top_p, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='purple')
-    # show the legend outside the plot
+    # ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_top_k, axis=1) * 180 / np.pi, color='orange', linewidth=1, label='top-k',marker='o',markersize=1)
+    # ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_top_k, axis=1) * 180 / np.pi - np.nanstd(curve_top_k, axis=1) * 180 / np.pi/np.sqrt(500),
+    #                 np.nanmean(curve_top_k, axis=1) * 180 / np.pi + np.nanstd(curve_top_k, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='orange')
+    # # plot top_p
+    # ax.plot(np.arange(curve_.shape[0]), np.nanmean(curve_top_p, axis=1) * 180 / np.pi, color='purple', linewidth=1, label='top-p',marker='o',markersize=1)
+    # ax.fill_between(np.arange(curve_.shape[0]), np.nanmean(curve_top_p, axis=1) * 180 / np.pi - np.nanstd(curve_top_p, axis=1) * 180 / np.pi/np.sqrt(500),
+    #                 np.nanmean(curve_top_p, axis=1) * 180 / np.pi + np.nanstd(curve_top_p, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='purple')
+    # # show the legend outside the plot
     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
 
     # set the axis labels
@@ -240,34 +245,34 @@ if __name__ == '__main__':
    # do the same thing for curve_change
     ax = plt.axes((.1, .1, .55, .25 * pap_ratio))
     # plot the average of each curve
-    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change, axis=1) * 180 / np.pi, color='black', linewidth=1, label='true',marker='o',markersize=1)
+    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change, axis=1) * 180 / np.pi, color=colors[6,:], linewidth=1, label='true',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change, axis=1) * 180 / np.pi - np.nanstd(curve_change, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_change, axis=1) * 180 / np.pi + np.nanstd(curve_change, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='black')
+                    np.nanmean(curve_change, axis=1) * 180 / np.pi + np.nanstd(curve_change, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[6,:])
 
     # plot greedy
-    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_greedy, axis=1) * 180 / np.pi, color='red', linewidth=1, label='greedy',marker='o',markersize=1)
+    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_greedy, axis=1) * 180 / np.pi, color=colors[0,:], linewidth=1, label='greedy',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change_greedy, axis=1) * 180 / np.pi - np.nanstd(curve_change_greedy, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_change_greedy, axis=1) * 180 / np.pi + np.nanstd(curve_change_greedy, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='red')
+                    np.nanmean(curve_change_greedy, axis=1) * 180 / np.pi + np.nanstd(curve_change_greedy, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[0,:])
 
     # plot beam
-    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_beam, axis=1) * 180 / np.pi, color='blue', linewidth=1, label='beam',marker='o',markersize=1)
+    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_beam, axis=1) * 180 / np.pi, color=colors[4,:], linewidth=1, label='beam',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change_beam, axis=1) * 180 / np.pi - np.nanstd(curve_change_beam, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_change_beam, axis=1) * 180 / np.pi + np.nanstd(curve_change_beam, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='blue')
+                    np.nanmean(curve_change_beam, axis=1) * 180 / np.pi + np.nanstd(curve_change_beam, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[4,:])
 
     # plot sample
-    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_sample, axis=1) * 180 / np.pi, color='green', linewidth=1, label='sample',marker='o',markersize=1)
+    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_sample, axis=1) * 180 / np.pi, color=colors[8,:], linewidth=1, label='sample',marker='o',markersize=1)
     ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change_sample, axis=1) * 180 / np.pi - np.nanstd(curve_change_sample, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_change_sample, axis=1) * 180 / np.pi + np.nanstd(curve_change_sample, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='green')
+                    np.nanmean(curve_change_sample, axis=1) * 180 / np.pi + np.nanstd(curve_change_sample, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color=colors[8,:])
 
-    # plot top_k
-    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_k, axis=1) * 180 / np.pi, color='orange', linewidth=1, label='top-k',marker='o',markersize=1)
-    ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_k, axis=1) * 180 / np.pi - np.nanstd(curve_change_top_k, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_change_top_k, axis=1) * 180 / np.pi + np.nanstd(curve_change_top_k, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='orange')
-
-    # plot top_p
-    ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_p, axis=1) * 180 / np.pi, color='purple', linewidth=1, label='top-p',marker='o',markersize=1)
-    ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_p, axis=1) * 180 / np.pi - np.nanstd(curve_change_top_p, axis=1) * 180 / np.pi/np.sqrt(500),
-                    np.nanmean(curve_change_top_p, axis=1) * 180 / np.pi + np.nanstd(curve_change_top_p, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='purple')
+    # # plot top_k
+    # ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_k, axis=1) * 180 / np.pi, color='orange', linewidth=1, label='top-k',marker='o',markersize=1)
+    # ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_k, axis=1) * 180 / np.pi - np.nanstd(curve_change_top_k, axis=1) * 180 / np.pi/np.sqrt(500),
+    #                 np.nanmean(curve_change_top_k, axis=1) * 180 / np.pi + np.nanstd(curve_change_top_k, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='orange')
+    #
+    # # plot top_p
+    # ax.plot(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_p, axis=1) * 180 / np.pi, color='purple', linewidth=1, label='top-p',marker='o',markersize=1)
+    # ax.fill_between(np.arange(curve_change.shape[0]), np.nanmean(curve_change_top_p, axis=1) * 180 / np.pi - np.nanstd(curve_change_top_p, axis=1) * 180 / np.pi/np.sqrt(500),
+    #                 np.nanmean(curve_change_top_p, axis=1) * 180 / np.pi + np.nanstd(curve_change_top_p, axis=1) * 180 / np.pi/np.sqrt(500), alpha=.2, color='purple')
 
     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
 
