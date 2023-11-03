@@ -229,13 +229,13 @@ if __name__ == '__main__':
             'value':  'sgd'
         },
         'hidden_size': {
-            'values': [128]
+            'values': [128,256, 512]
         },
         'bottleneck_size': {
-            'values': [16]
+            'values': [16,32,64]
         },
         'decoder_h': {
-            'values': [ 512]
+            'values': [ 128, 256,512]
         }
 
  #        ,'model_id':{'values':['roberta-base',
@@ -252,15 +252,15 @@ if __name__ == '__main__':
     }
     parameters_dict.update({
         'epochs': {
-            'value': 500},
+            'value': 800},
         'loss_mode': {
             'value': 'MSE'},
 
         'lr': {
         # a flat distribution between 0 and 0.1
         'distribution': 'uniform',
-        'min': 0.00001,
-        'max': 0.001},
+        'min': 0.0001,
+        'max': 0.005},
     'batch_size': {
         'value': 128},
     'alpha_r': {
@@ -273,6 +273,6 @@ if __name__ == '__main__':
     sweep_config['metric'] = metric
     pprint.pprint(sweep_config)
     sweep_id = wandb.sweep(sweep_config, project="mseEncoder_sweep")
-    wandb.agent(sweep_id, train, count=20)
+    wandb.agent(sweep_id, train, count=200)
     wandb.finish()
     # %% train a model on selected hyperparameters
