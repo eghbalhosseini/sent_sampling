@@ -12,7 +12,7 @@ layers="49" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
-splits=20
+splits=199
 len=${#layer_arr[@]}
 #
 
