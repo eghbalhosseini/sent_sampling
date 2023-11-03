@@ -23,8 +23,6 @@ from sklearn.decomposition import PCA
 import umap
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 import matplotlib.colors as mcolors
-from cuml.manifold import TSNE
-import cudf
 import torch
 import pickle
 import torch
@@ -144,19 +142,21 @@ if __name__ == '__main__':
 
     #%% compute the pca
     n_components=650
-    model_pca_path=Path(ANALYZE_DIR,f'model_pca_n_comp_{n_components}.pkl')
-    model_pca_loads=pd.read_pickle(model_pca_path.__str__())
+    extract_id = 'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'
+    model_pca_path=Path(ANALYZE_DIR,f'{extract_id}_pca_n_comp_{n_components}.pkl')
+    train_pca_loads=pd.read_pickle(model_pca_path.__str__())
 
     # create a plot with the number of models
     # get model names from ext_obj.model_group_act
     input_size = n_components
-    hidden_size = 64
+    hidden_size = 128
     bottleneck_size = 16
-    num_epochs = 100
-    learning_rate = 0.01
-    batch_size = 64
+    num_epochs = 400
+    learning_rate = 0.001
+    batch_size = 128
     alpha_activation=1e-8
-    input_data=[torch.tensor(x['act']) for x in model_pca_loads]
+    input_data=[torch.tensor(x['act']) for x in train_pca_loads]
+    input_data_shape=[x.shape[1] for x in input_data]
     train_data = torch.stack(input_data, dim=2)
     train_size = int(0.9 * len(train_data))
     test_size = len(train_data) - train_size
@@ -205,7 +205,9 @@ if __name__ == '__main__':
 
         # Print epoch loss
         print("Epoch [{}/{}], Loss: {:.4f}, Test Loss: {:.4f}".format(epoch + 1, num_epochs, epoch_loss, test_loss))
-
+    model_pca_loads=load_obj(os.path.join(ANALYZE_DIR,'model_pca_n_comp_650.pkl'))
+    modle_names=[x['model_name'] for x in model_pca_loads]
+    model_sh = ['RoBERTa', 'XLNet-L', 'BERT-L', 'XLM', 'GPT2-XL', 'ALBERT-XXL', 'CTRL']
     input_data_min = torch.stack([torch.tensor(x['act_min']) for x in model_pca_loads])
     input_data_max = torch.stack([torch.tensor(x['act_max']) for x in model_pca_loads])
     input_data_rand = torch.stack([torch.tensor(x['act_rand']) for x in model_pca_loads])
@@ -246,6 +248,9 @@ if __name__ == '__main__':
     similarity_loss(input_data_min,decoded_min)
     similarity_loss(input_data_max, decoded_max)
 
+
+    with torch.no_grad():
+        encoded_train= model(train_data.to(device))
 
     # plot the encoded min in the first 2 feature for each model in a different color
 
@@ -297,4 +302,76 @@ if __name__ == '__main__':
     #ax.set_ylim([-400, 400])
         fig.show()
 
+    sns.set_theme(style="ticks")
+    for i in range(7):
+        #fig, ax = plt.subplots()
+        x = encoded_max[:, :, i].detach().cpu().numpy()
+        pca = PCA(n_components=5)
+        x_pca_max = pca.fit_transform(x)[:,:2]
+        x = encoded_min[:, :, i].detach().cpu().numpy()
+        x_pca_min= pca.fit_transform(x)[:,:2]
+        # make a
+        # plot the pca
+        # concat x_pca_max and x_pca_min
 
+        x_pca=np.concatenate((x_pca_min,x_pca_max),axis=0)
+        # create labels max and min
+        labels=np.concatenate((np.repeat('min',x_pca_min.shape[0]),np.repeat('max',x_pca_max.shape[0])),axis=0)
+        # create a df with x_pca and labels
+        df=pd.DataFrame(x_pca,columns=['x','y'])
+        df['labels']=labels
+        g = sns.jointplot(
+            data=df,
+            x="x", y="y", hue="labels",
+            kind="scatter",
+        ax=fig)
+
+        # ax.scatter(x_pca[:, 0], x_pca[:, 1],s=3,c='r', label=i)
+        # x = encoded_min[:, :, i].detach().cpu().numpy()
+        # pca = PCA(n_components=5)
+        # x_pca = pca.fit_transform(x)
+        # # plot the pca
+        # ax.scatter(x_pca[:, 0], x_pca[:, 1],s=2,c='b', label=i)
+        #ax.set_xlim([-400,400])
+        #ax.set_ylim([-400, 400])
+        # add title
+        plt.title(f'{model_sh[i]}')
+        plt.show()
+
+
+    sns.set_theme(style="ticks")
+    for i in range(7):
+        #fig, ax = plt.subplots()
+        x_train=encoded_train[0][:, :, i]
+        pca = PCA(n_components=5)
+        x_pca_train = pca.fit(x_train.detach().cpu().numpy())
+        x = encoded_max[:, :, i].detach().cpu().numpy()
+
+        x_pca_max = pca.transform(x)[:,:2]
+        x = encoded_min[:, :, i].detach().cpu().numpy()
+        x_pca_min= pca.transform(x)[:,:2]
+        # make a
+        # plot the pca
+        # concat x_pca_max and x_pca_min
+
+        x_pca=np.concatenate((x_pca_min,x_pca_max),axis=0)
+        # create labels max and min
+        labels=np.concatenate((np.repeat('min',x_pca_min.shape[0]),np.repeat('max',x_pca_max.shape[0])),axis=0)
+        # create a df with x_pca and labels
+        df=pd.DataFrame(x_pca,columns=['x','y'])
+        df['labels']=labels
+        g = sns.jointplot(
+            data=df,
+            x="x", y="y", hue="labels",
+            kind="scatter",
+        ax=fig)
+
+        # ax.scatter(x_pca[:, 0], x_pca[:, 1],s=3,c='r', label=i)
+        # x = encoded_min[:, :, i].detach().cpu().numpy()
+        # pca = PCA(n_components=5)
+        # x_pca = pca.fit_transform(x)
+        # # plot the pca
+        # ax.scatter(x_pca[:, 0], x_pca[:, 1],s=2,c='b', label=i)
+        #ax.set_xlim([-400,400])
+        #ax.set_ylim([-400, 400])
+        plt.show()
