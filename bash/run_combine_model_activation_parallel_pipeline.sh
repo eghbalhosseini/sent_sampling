@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-14
+#SBATCH --array=0-1
 #SBATCH --time=24:00:00
 #SBATCH --mem=128G
 #SBATCH --mail-type=ALL
@@ -12,10 +12,11 @@ i=0
 split=20
 #neural_ctrl_stim
 # coca_preprocessed_all_clean_100K_sample_1
-for dataset in coca_preprocessed_all_clean_100K_sample_1_estim_ds_min  ; do
+#roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+#        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
+for dataset in coca_preprocessed_all_clean_no_dup_100K_sample_1  ; do
       for stim_type in textNoPeriod ; do
-      for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
-        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
+      for model in  gpt2-xl ; do
               for average_mode in False True ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
