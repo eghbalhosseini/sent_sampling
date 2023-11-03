@@ -252,17 +252,17 @@ if __name__ == '__main__':
     }
     parameters_dict.update({
         'epochs': {
-            'value': 50},
+            'value': 500},
         'loss_mode': {
             'value': 'MSE'},
 
         'lr': {
         # a flat distribution between 0 and 0.1
         'distribution': 'uniform',
-        'min': 0,
-        'max': 0.0001},
+        'min': 0.00001,
+        'max': 0.001},
     'batch_size': {
-        'value': 256},
+        'value': 128},
     'alpha_r': {
         # a flat distribution between 0 and 0.1
         'distribution': 'uniform',
