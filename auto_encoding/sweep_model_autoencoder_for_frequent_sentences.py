@@ -23,7 +23,6 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import random_split
 import math
 import wandb
-wandb.login()
 import pprint
 
 
