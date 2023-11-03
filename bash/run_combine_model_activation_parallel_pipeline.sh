@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-1
+#SBATCH --array=0
 #SBATCH --time=24:00:00
 #SBATCH --mem=128G
 #SBATCH --mail-type=ALL
@@ -17,7 +17,7 @@ split=199
 for dataset in coca_preprocessed_all_clean_no_dup_100K_sample_1  ; do
       for stim_type in textNoPeriod ; do
       for model in  gpt2-xl ; do
-              for average_mode in False True ; do
+              for average_mode in False ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
                   average_list[$i]="$average_mode"
