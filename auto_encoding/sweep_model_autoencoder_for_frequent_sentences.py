@@ -265,7 +265,7 @@ if __name__ == '__main__':
     sweep_config['parameters'] = parameters_dict
     sweep_config['metric'] = metric
     pprint.pprint(sweep_config)
-    sweep_id = wandb.sweep(sweep_config, project="mseEncoder_sweep")
+    sweep_id = wandb.sweep(sweep_config, project=f"mseEncoder_sweep_SIM")
     wandb.agent(sweep_id, train, count=200)
     wandb.finish()
     # %% train a model on selected hyperparameters
