@@ -9,7 +9,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-split=199
+split=200
 #neural_ctrl_stim
 # coca_preprocessed_all_clean_100K_sample_1
 #roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
