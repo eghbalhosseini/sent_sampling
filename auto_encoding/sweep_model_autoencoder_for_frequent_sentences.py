@@ -149,7 +149,7 @@ def train_epoch(network, train_loader,test_loader, optimizer,config,epoch):
         # Zero the gradients
         if config.loss_mode=='MSE':
             loss_act = mseloss(targets, decoded)
-        else:
+        elif config.loss_mode == 'SIM':
             similarities = similarity_loss(targets, decoded)
             loss_act = torch.sum(similarities) + torch.sqrt(torch.var(similarities))
         activation_loss = (1/config.bottleneck_size)*config.alpha_r * torch.norm(encoded, p=2)
@@ -225,8 +225,8 @@ if __name__ == '__main__':
     }
     parameters_dict = {
         'optimizer': {
-            #'values': ['adam', 'sgd']
-            'value':  'sgd'
+            'values': ['adam', 'sgd']
+            #'value':  'sgd'
         },
         'hidden_size': {
             'values': [128,256, 512]
@@ -237,24 +237,17 @@ if __name__ == '__main__':
         'decoder_h': {
             'values': [ 128, 256,512]
         }
-
- #        ,'model_id':{'values':['roberta-base',
- # 'xlnet-large-cased',
- # 'bert-large-uncased-whole-word-masking',
- # 'xlm-mlm-en-2048',
- # 'gpt2-xl',
- # 'albert-xxlarge-v2',
- # 'ctrl']}
         , 'model_id': {'values': ['xlnet-large-cased',
                        'gpt2-xl']},
+
         'extract_id':{'value':'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'}
 
     }
     parameters_dict.update({
         'epochs': {
-            'value': 800},
+            'value': 1000},
         'loss_mode': {
-            'value': 'MSE'},
+            'value': 'SIM'},
 
         'lr': {
         # a flat distribution between 0 and 0.1
