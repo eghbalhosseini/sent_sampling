@@ -100,7 +100,8 @@ def similarity_loss(X, Y):
     #XY_loss=torch.sum(similarites)+torch.var(similarites)
     return similarites
 
-def build_dataset(model_id,n_components,batch_size):
+def build_dataset(model_id,extract_id,n_components,batch_size):
+    #group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False_pca_n_comp_650.pkl
     model_pca_path = Path(ANALYZE_DIR, f'model_pca_n_comp_{n_components}.pkl')
     model_pca_loads = pd.read_pickle(model_pca_path.__str__())
     input_model_id = [model_id in x['model_name'] for x in model_pca_loads]
@@ -203,7 +204,7 @@ def train(config=None):
         # If called by wandb.agent, as below,
         # this config will be set by Sweep Controller
         config = wandb.config
-        train_loader,test_loader = build_dataset(config.model_id,650,config.batch_size)
+        train_loader,test_loader = build_dataset(config.model_id, config.extract_id,650,config.batch_size)
         network = build_network(650,config.hidden_size, config.bottleneck_size,config.decoder_h)
         network=network.to(device)
         optimizer = build_optimizer(network, config.optimizer, config.lr)
@@ -246,7 +247,8 @@ if __name__ == '__main__':
  # 'albert-xxlarge-v2',
  # 'ctrl']}
         , 'model_id': {'values': ['xlnet-large-cased',
-                       'gpt2-xl']}
+                       'gpt2-xl']},
+        'extract_id':{'value':'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'}
 
     }
     parameters_dict.update({
@@ -275,123 +277,121 @@ if __name__ == '__main__':
     wandb.agent(sweep_id, train, count=20)
     wandb.finish()
 
-
-
     # %% train a model on selected hyperparameters
     wandb.finish()
 
-    wandb.init(project="xlnet_autoencoder",
-        config={
-            "epochs": 10000,
-            "batch_size": 256,
-            "lr": 0.00009,
-            "hidden_size":128,
-            "bottleneck_size":16,
-            "decoder_h":512,
-            "optimizer":"sgd",
-            "model_id":'xlnet-large-cased',
-            #'alpha_r':0.0008,
-            'alpha_r': 0.0000,
-            "loss_mode":'MSE'
-
-        })
-    # wandb.init(project="xlnet_autoencoder",
-    #     config={
-    #         "epochs": 300,
-    #         "batch_size": 256,
-    #         "lr": 0.27,
-    #         "hidden_size":256,
-    #         "bottleneck_size":64,
-    #         "decoder_h":512,
-    #         "optimizer":"sgd",
-    #         "model_id":'gpt2-xl',
-    #         'alpha_r':0.0021,
-    #
-    #     })
-
-    config=wandb.config
-    xlnet_model=train(config=config)
-    wandb.finish()
-    alpha=str(config.alpha_r).replace('.','')
-    # save model
-    model_save_path=Path(ANALYZE_DIR,f'autoencoder_{config.model_id}_{config.loss_mode}_bn_{config.bottleneck_size}_h_{config.hidden_size}_dh_{config.decoder_h}_ep_{config.epochs}_alpha_{alpha}.pt')
-    torch.save(xlnet_model.state_dict(),model_save_path.__str__())
-    #%% load model
-    xlnet_model=build_network(650,config.hidden_size, config.bottleneck_size,config.decoder_h)
-    xlnet_model.load_state_dict(torch.load(model_save_path.__str__()))
-    xlnet_model=xlnet_model.to(device)
-    #%% compute the pca
-    n_components=650
-    model_pca_path=Path(ANALYZE_DIR,f'model_pca_n_comp_{n_components}.pkl')
-    model_pca_loads=pd.read_pickle(model_pca_path.__str__())
-    input_model_id=[config.model_id in x['model_name'] for x in model_pca_loads]
-    output_model_id=[ not(config.model_id in  x['model_name']) for x in model_pca_loads]
-    input_model=model_pca_loads[int(np.argwhere(input_model_id))]
-
-    input_data_min = torch.tensor(input_model['act_min']).to(device)
-
-    input_data_max = torch.tensor(input_model['act_max']).to(device)
-    input_data_rand = torch.tensor(input_model['act_rand']).to(device)
-    input_data=torch.tensor(input_model['act']).to(device)
-
-    with torch.no_grad():
-        encoded_min,decoded_min = xlnet_model(input_data_min)
-        encoded_max,decoded_max = xlnet_model(input_data_max)
-        encoded_rand, decoded_rand = xlnet_model(input_data_rand)
-        encoded_all,decoded_all=xlnet_model(input_data)
-
-
-
-    fig, ax = plt.subplots()
-    grays = (.8, .8, .8, .5)
-    x = encoded_all.detach().cpu().numpy()
-    pca = PCA(n_components=10)
-    x_pca = pca.fit_transform(x)
-    k=0
-    p=1
-
-    data = pd.DataFrame({'X': x_pca[:, k], 'Y':x_pca[:,p]})
-    sns.scatterplot(data=data, x='X', y='Y', color=grays, s=5, linewidth=0,ax=ax)
-    # min
-    x_min = encoded_min.detach().cpu().numpy()
-    x_points = x_min#scaler.transform(x_min)
-    x_points = x_points - pca.mean_
-    x_points_pca = np.dot(x_points, pca.components_.T)
-    data = pd.DataFrame({'X': x_points_pca[:, k], 'Y': x_points_pca[:, p]})
-    sns.scatterplot(data=data, x='X', y='Y', color='b', s=5, linewidth=0,ax=ax)
-    # max
-    x_max = encoded_max.detach().cpu().numpy()
-    x_points = x_max  # scaler.transform(x_min)
-    x_points = x_points - pca.mean_
-    x_points_pca = np.dot(x_points, pca.components_.T)
-    data = pd.DataFrame({'X': x_points_pca[:, k], 'Y': x_points_pca[:, p]})
-    sns.scatterplot(data=data, x='X', y='Y', color='r', s=5, linewidth=0,ax=ax)
-
-    fig.show()
-    plt.show()
-
- #%%
-    min_dist = .1
-    n_neighbors = 50
-    metric = 'euclidean'
-
-    model_umap_loads = []
-    umap_obj = umap.UMAP(n_neighbors=n_neighbors, min_dist=min_dist, metric=metric)
-    act_umap = umap_obj.fit_transform(encoded_all.cpu())
-    act_min_umap = umap_obj.transform(encoded_min.cpu())
-    act_max_umap = umap_obj.transform(encoded_max.cpu())
-    act_rand_umap = umap_obj.transform(encoded_rand.cpu())
-
-    fig, ax = plt.subplots()
-    grays = (.8, .8, .8, .5)
-
-    data = pd.DataFrame({'X': act_umap[:, 0], 'Y': act_umap[:, 1]})
-    sns.scatterplot(data=data, x='X', y='Y', color=grays, s=5, linewidth=0, ax=ax)
-
-    data = pd.DataFrame({'X': act_min_umap[:, 0], 'Y': act_min_umap[:, 1]})
-    sns.scatterplot(data=data, x='X', y='Y', color='b', s=5, linewidth=0, ax=ax)
-
-    data = pd.DataFrame({'X': act_max_umap[:, 0], 'Y': act_max_umap[:, 1]})
-    sns.scatterplot(data=data, x='X', y='Y', color='r', s=5, linewidth=0, ax=ax)
-
-    fig.show()
+ #    wandb.init(project="xlnet_autoencoder",
+ #        config={
+ #            "epochs": 10000,
+ #            "batch_size": 256,
+ #            "lr": 0.00009,
+ #            "hidden_size":128,
+ #            "bottleneck_size":16,
+ #            "decoder_h":512,
+ #            "optimizer":"sgd",
+ #            "model_id":'xlnet-large-cased',
+ #            #'alpha_r':0.0008,
+ #            'alpha_r': 0.0000,
+ #            "loss_mode":'MSE'
+ #
+ #        })
+ #    # wandb.init(project="xlnet_autoencoder",
+ #    #     config={
+ #    #         "epochs": 300,
+ #    #         "batch_size": 256,
+ #    #         "lr": 0.27,
+ #    #         "hidden_size":256,
+ #    #         "bottleneck_size":64,
+ #    #         "decoder_h":512,
+ #    #         "optimizer":"sgd",
+ #    #         "model_id":'gpt2-xl',
+ #    #         'alpha_r':0.0021,
+ #    #
+ #    #     })
+ #
+ #    config=wandb.config
+ #    xlnet_model=train(config=config)
+ #    wandb.finish()
+ #    alpha=str(config.alpha_r).replace('.','')
+ #    # save model
+ #    model_save_path=Path(ANALYZE_DIR,f'autoencoder_{config.model_id}_{config.loss_mode}_bn_{config.bottleneck_size}_h_{config.hidden_size}_dh_{config.decoder_h}_ep_{config.epochs}_alpha_{alpha}.pt')
+ #    torch.save(xlnet_model.state_dict(),model_save_path.__str__())
+ #    #%% load model
+ #    xlnet_model=build_network(650,config.hidden_size, config.bottleneck_size,config.decoder_h)
+ #    xlnet_model.load_state_dict(torch.load(model_save_path.__str__()))
+ #    xlnet_model=xlnet_model.to(device)
+ #    #%% compute the pca
+ #    n_components=650
+ #    model_pca_path=Path(ANALYZE_DIR,f'model_pca_n_comp_{n_components}.pkl')
+ #    model_pca_loads=pd.read_pickle(model_pca_path.__str__())
+ #    input_model_id=[config.model_id in x['model_name'] for x in model_pca_loads]
+ #    output_model_id=[ not(config.model_id in  x['model_name']) for x in model_pca_loads]
+ #    input_model=model_pca_loads[int(np.argwhere(input_model_id))]
+ #
+ #    input_data_min = torch.tensor(input_model['act_min']).to(device)
+ #
+ #    input_data_max = torch.tensor(input_model['act_max']).to(device)
+ #    input_data_rand = torch.tensor(input_model['act_rand']).to(device)
+ #    input_data=torch.tensor(input_model['act']).to(device)
+ #
+ #    with torch.no_grad():
+ #        encoded_min,decoded_min = xlnet_model(input_data_min)
+ #        encoded_max,decoded_max = xlnet_model(input_data_max)
+ #        encoded_rand, decoded_rand = xlnet_model(input_data_rand)
+ #        encoded_all,decoded_all=xlnet_model(input_data)
+ #
+ #
+ #
+ #    fig, ax = plt.subplots()
+ #    grays = (.8, .8, .8, .5)
+ #    x = encoded_all.detach().cpu().numpy()
+ #    pca = PCA(n_components=10)
+ #    x_pca = pca.fit_transform(x)
+ #    k=0
+ #    p=1
+ #
+ #    data = pd.DataFrame({'X': x_pca[:, k], 'Y':x_pca[:,p]})
+ #    sns.scatterplot(data=data, x='X', y='Y', color=grays, s=5, linewidth=0,ax=ax)
+ #    # min
+ #    x_min = encoded_min.detach().cpu().numpy()
+ #    x_points = x_min#scaler.transform(x_min)
+ #    x_points = x_points - pca.mean_
+ #    x_points_pca = np.dot(x_points, pca.components_.T)
+ #    data = pd.DataFrame({'X': x_points_pca[:, k], 'Y': x_points_pca[:, p]})
+ #    sns.scatterplot(data=data, x='X', y='Y', color='b', s=5, linewidth=0,ax=ax)
+ #    # max
+ #    x_max = encoded_max.detach().cpu().numpy()
+ #    x_points = x_max  # scaler.transform(x_min)
+ #    x_points = x_points - pca.mean_
+ #    x_points_pca = np.dot(x_points, pca.components_.T)
+ #    data = pd.DataFrame({'X': x_points_pca[:, k], 'Y': x_points_pca[:, p]})
+ #    sns.scatterplot(data=data, x='X', y='Y', color='r', s=5, linewidth=0,ax=ax)
+ #
+ #    fig.show()
+ #    plt.show()
+ #
+ # #%%
+ #    min_dist = .1
+ #    n_neighbors = 50
+ #    metric = 'euclidean'
+ #
+ #    model_umap_loads = []
+ #    umap_obj = umap.UMAP(n_neighbors=n_neighbors, min_dist=min_dist, metric=metric)
+ #    act_umap = umap_obj.fit_transform(encoded_all.cpu())
+ #    act_min_umap = umap_obj.transform(encoded_min.cpu())
+ #    act_max_umap = umap_obj.transform(encoded_max.cpu())
+ #    act_rand_umap = umap_obj.transform(encoded_rand.cpu())
+ #
+ #    fig, ax = plt.subplots()
+ #    grays = (.8, .8, .8, .5)
+ #
+ #    data = pd.DataFrame({'X': act_umap[:, 0], 'Y': act_umap[:, 1]})
+ #    sns.scatterplot(data=data, x='X', y='Y', color=grays, s=5, linewidth=0, ax=ax)
+ #
+ #    data = pd.DataFrame({'X': act_min_umap[:, 0], 'Y': act_min_umap[:, 1]})
+ #    sns.scatterplot(data=data, x='X', y='Y', color='b', s=5, linewidth=0, ax=ax)
+ #
+ #    data = pd.DataFrame({'X': act_max_umap[:, 0], 'Y': act_max_umap[:, 1]})
+ #    sns.scatterplot(data=data, x='X', y='Y', color='r', s=5, linewidth=0, ax=ax)
+ #
+ #    fig.show()

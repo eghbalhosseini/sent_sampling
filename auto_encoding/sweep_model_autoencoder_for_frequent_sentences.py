@@ -101,14 +101,14 @@ def similarity_loss(X, Y):
 
 def build_dataset(model_id,extract_id,n_components,batch_size):
     #group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False_pca_n_comp_650.pkl
-    model_pca_path = Path(ANALYZE_DIR, f'model_pca_n_comp_{n_components}.pkl')
+    model_pca_path = Path(ANALYZE_DIR, f'{str(extract_id)}_pca_n_comp_{n_components}.pkl')
     model_pca_loads = pd.read_pickle(model_pca_path.__str__())
-    input_model_id = [model_id in x['model_name'] for x in model_pca_loads]
-    output_model_id = [not (model_id in x['model_name']) for x in model_pca_loads]
+    input_model_id = [model_id in x['model'] for x in model_pca_loads]
+    output_model_id = [not (model_id in x['model']) for x in model_pca_loads]
     input_model = model_pca_loads[int(np.argwhere(input_model_id))]
     output_model = [model_pca_loads[int(x)] for x in np.argwhere(output_model_id)]
-    input_data = torch.tensor(input_model['act'])
-    output_data = torch.stack([torch.tensor(x['act']) for x in output_model], dim=2)
+    input_data = (input_model['act']).clone().detach()
+    output_data = torch.stack([(x['act']).clone().detach() for x in output_model], dim=2)
     dataset = TensorDataset(input_data, output_data)
     train_ratio = 0.95
     train_size = int(train_ratio * len(dataset))
@@ -207,7 +207,9 @@ def train(config=None):
         network = build_network(650,config.hidden_size, config.bottleneck_size,config.decoder_h)
         network=network.to(device)
         optimizer = build_optimizer(network, config.optimizer, config.lr)
-
+        # save the length of dataset into wandb
+        wandb.run.summary["train_examples"] = len(train_loader.dataset)
+        wandb.run.summary["test_examples"] = len(test_loader.dataset)
         for epoch in range(config.epochs):
             avg_loss,val_loss = train_epoch(network, train_loader,test_loader, optimizer,config,epoch)
             wandb.log({"loss": avg_loss,'valid_loss':val_loss, "epoch": epoch})
@@ -247,7 +249,7 @@ if __name__ == '__main__':
         'epochs': {
             'value': 1000},
         'loss_mode': {
-            'value': 'SIM'},
+            'value': 'MSE'},
 
         'lr': {
         # a flat distribution between 0 and 0.1
@@ -265,7 +267,7 @@ if __name__ == '__main__':
     sweep_config['parameters'] = parameters_dict
     sweep_config['metric'] = metric
     pprint.pprint(sweep_config)
-    sweep_id = wandb.sweep(sweep_config, project=f"mseEncoder_sweep_SIM")
+    sweep_id = wandb.sweep(sweep_config, project=f"mseEncoder_sweep_MSE")
     wandb.agent(sweep_id, train, count=200)
     wandb.finish()
     # %% train a model on selected hyperparameters
