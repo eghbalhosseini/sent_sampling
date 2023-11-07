@@ -33,78 +33,31 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import random_split
 
 
-class MultiChannelLayer(nn.Module):
-    def __init__(self):
-        super(MultiChannelLayer, self).__init__()
-
-        # Define the channels with different sizes
-        self.channel1 = nn.Linear(256, 768)
-        self.channel2 = nn.Linear(256, 1024)
-        self.channel3 = nn.Linear(256, 1024)
-        self.channel4 = nn.Linear(256, 2048)
-        self.channel5 = nn.Linear(256, 1600)
-        self.channel6 = nn.Linear(256, 4096)
-        self.channel7 = nn.Linear(256, 1280)
-
-    def forward(self, x):
-        # Apply each channel separately
-        out1 = self.channel1(x[:, 0])
-        out2 = self.channel2(x[:, 1])
-        out3 = self.channel3(x[:, 2])
-        out4 = self.channel4(x[:, 3])
-        out5 = self.channel5(x[:, 4])
-        out6 = self.channel6(x[:, 5])
-        out7 = self.channel7(x[:, 6])
-
-        # Concatenate the outputs along the feature dimension
-        out = torch.cat((out1, out2, out3, out4, out5, out6, out7), dim=1)
-
-        return out
-
-class CustomLayer(nn.Module):
-    def __init__(self,n_channels=7,n_features=650,n_hidden=256):
-        super(CustomLayer, self).__init__()
-        self.weight = nn.Parameter(torch.randn(n_channels, n_features, n_hidden))
-        self.bias = nn.Parameter(torch.randn(n_channels, n_hidden))
-    def forward(self, input_data):
-        #output=torch.einsum('bic,cio->bco', input_data, self.weight)+self.bias
-        output = torch.einsum('bic,cio->bco', input_data, self.weight) + self.bias
-        # reshape output to be batch x features x channels
-        #output = output.permute(0, 2, 1)
-        return output
-
 class Encoder(torch.nn.Module):
     def __init__(self,n_features,n_hidden,n_bottleneck):
         super(Encoder, self).__init__()
         #self.weight_matrices = torch.stack([torch.randn(650, 256) for _ in range(7)])
-        self.fc1 = CustomLayer(n_channels=7,n_features=n_features,n_hidden=n_hidden)
-        self.fc2_shared = nn.Linear(n_hidden, n_bottleneck)
+        self.fc1_hidden = nn.linear(n_features=n_features,n_hidden=n_hidden)
+        self.fc2_botlneck = nn.Linear(n_hidden, n_bottleneck)
     def forward(self, input_data):
-        x = self.fc1(input_data)
-        encoded = (self.fc2_shared(x))
-        # reorganize the output so its batch x features x channels
-        encoded = encoded.permute(0, 2, 1)
+        x = self.fc1_hidden(input_data)
+        encoded = (self.fc2_botlneck(x))
         return encoded
 
 class Decoder(torch.nn.Module):
     def __init__(self,n_features,n_hidden):
         super(Decoder, self).__init__()
-        self.fc1 = CustomLayer(n_channels=7,n_features=n_features,n_hidden=n_hidden)
+        self.fc1 = np.linear(n_features=n_features,n_hidden=n_hidden)
         # add a dropout layer
         self.dropout = nn.Dropout(p=0.2)
-        #self.fc2 = CustomLayer(n_channels=7, n_features=256, n_hidden=650)
     def forward(self, encoded):
-
         x=self.dropout(encoded)
         x=self.fc1(x)
-        x = x.permute(0, 2, 1)
-        #x = (self.fc2(x))
-        #x = x.permute(0, 2, 1)
         return x
 
-class SimilarityAutoencoder(nn.Module):
+class JointEmbedding(nn.Module):
     def __init__(self, input_size, encoder_h, bottleneck_size):
-        super(SimilarityAutoencoder, self).__init__()
+        super(JointEmbedding, self).__init__()
         self.encoder = Encoder(input_size,encoder_h,bottleneck_size)
         self.decoder = Decoder(bottleneck_size,input_size)
 
@@ -113,34 +66,6 @@ class SimilarityAutoencoder(nn.Module):
         decoded = self.decoder(encoded)
         return encoded, decoded
 
-def corr_coeff(X):
-    X_m = (X - X.mean(dim=(0, 1), keepdim=True))
-    X_m = torch.nn.functional.normalize(X_m)
-    XX = 1 - torch.bmm(torch.permute(X_m, (2, 0, 1)), torch.permute(X_m, (2, 1, 0)))
-    return XX
-
-def normalize(X):
-    norm = torch.norm(X, p=2, dim=1)
-    X = X / norm.unsqueeze(1)
-    return X
-
-
-def similarity_loss(X, Y):
-    XX=corr_coeff(X)
-    #XX= torch.clamp(XX, 0.0, np.inf)
-    YY=corr_coeff(Y)
-    # get upper diagonal
-    n1 = XX.shape[1]
-    pairs = torch.combinations(torch.arange(n1), with_replacement=False)
-    XX_vec=XX[:,pairs[:, 0], pairs[:, 1]]
-    YY_vec=YY[:,pairs[:,0],pairs[:,1]]
-    # compute cosine similarity
-    XX_vec=normalize(XX_vec)
-    YY_vec=normalize(YY_vec)
-    #
-    similarites=1-torch.diag(XX_vec @ YY_vec.T)
-    #XY_loss=torch.sum(similarites)+torch.var(similarites)
-    return similarites
 
 if __name__ == '__main__':
 
