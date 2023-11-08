@@ -224,7 +224,7 @@ if __name__ == '__main__':
         'epochs': {
             'values': [200,500,1000,2000]},
         'loss_mode': {
-            'value': 'SIM'},
+            'value': 'MSE'},
 
         'lr': {
         # a flat distribution between 0 and 0.1
@@ -242,7 +242,7 @@ if __name__ == '__main__':
     sweep_config['parameters'] = parameters_dict
     sweep_config['metric'] = metric
     pprint.pprint(sweep_config)
-    sweep_id = wandb.sweep(sweep_config, project=f"SharedEmbedding_sweep_SIM")
+    sweep_id = wandb.sweep(sweep_config, project=f"SharedEmbedding_sweep_MSE")
     wandb.agent(sweep_id, train, count=200)
     wandb.finish()
     # %% train a model on selected hyperparameters
