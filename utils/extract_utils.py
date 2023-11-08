@@ -332,7 +332,7 @@ class model_extractor_parallel:
     def load_dataset(self,splits=20):
         self.extractor.load_dataset(splits=splits)
         self.total_runs=len(self.extractor.stimuli_set)
-    def combine_runs(self,overwrite=False):
+    def combine_runs(self,overwrite=False,by_layer=True,layer_id=2):
         if type(self.model_spec)==str:
             model_set=[self.model_spec]
         else:
@@ -341,42 +341,88 @@ class model_extractor_parallel:
             model_save_path = os.path.join(SAVE_DIR, mdl_name)
             layers= model_layers[mdl_name]
             for k, layer in enumerate(tqdm(layers, desc='layers')):
-                model_activation_name = f"{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
-                new_model_activation_name=f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
-                if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == False:
-                    print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
-                else:
-                    if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == True:
-                        print(f'{new_model_activation_name} already exists, but overwriting\n')
+                if by_layer==True:
+                    if k!=layer_id:
+
+                        continue
                     else:
-                        print(f'{new_model_activation_name} doesnt exist, creating\n')
-                    activation_files=[]
-                    for file in os.listdir(model_save_path):
-                        if fnmatch.fnmatch(file,model_activation_name):
-                            activation_files.append(os.path.join(model_save_path, file))
-                    # sort files:
-                    sorted_files=[]
-                    s = [re.findall('group_\d+', x) for x in activation_files]
-                    s = [item for sublist in s for item in sublist]
-                    file_id = [int(x.split('group_')[1]) for x in s]
-                    sorted_files = [activation_files[x] for x in np.argsort(file_id)]
-                    model_activation_set = []
-                    if len(sorted_files)==self.total_runs:
-                        for file in sorted_files:
-                            model_activations = load_obj(os.path.join(SAVE_DIR, file),silent=True)
-                            if self.average_sentence=='True':
-                                model_activations = self.extractor.get_mean_activations(model_activations)
-                            elif self.average_sentence=='False':
-                                model_activations = self.extractor.get_last_word_activations(model_activations)
-                            elif self.average_sentence=='None':
-                                model_activations = self.extractor.get_all_activations(model_activations)
-                            model_activation_set.append(model_activations)
-                        # save the dataset
-                        model_activation_flat = [item for sublist in model_activation_set for item in sublist]
-                        save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
-                        print(f'saved {new_model_activation_name}\n')
+                        print('combining runs for layer %d\n' % k)
+                        model_activation_name = f"{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
+                        new_model_activation_name = f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
+                        if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == False:
+                            print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
+                        else:
+                            if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == True:
+                                print(f'{new_model_activation_name} already exists, but overwriting\n')
+                            else:
+                                print(f'{new_model_activation_name} doesnt exist, creating\n')
+                            activation_files = []
+                            for file in os.listdir(model_save_path):
+                                if fnmatch.fnmatch(file, model_activation_name):
+                                    activation_files.append(os.path.join(model_save_path, file))
+                            # sort files:
+                            sorted_files = []
+                            s = [re.findall('group_\d+', x) for x in activation_files]
+                            s = [item for sublist in s for item in sublist]
+                            file_id = [int(x.split('group_')[1]) for x in s]
+                            sorted_files = [activation_files[x] for x in np.argsort(file_id)]
+                            model_activation_set = []
+                            if len(sorted_files) == self.total_runs:
+                                for file in tqdm(sorted_files, total=len(sorted_files)):
+                                    model_activations = load_obj(os.path.join(SAVE_DIR, file), silent=True)
+                                    if self.average_sentence == 'True':
+                                        model_activations = self.extractor.get_mean_activations(model_activations)
+                                    elif self.average_sentence == 'False':
+                                        model_activations = self.extractor.get_last_word_activations(model_activations)
+                                    elif self.average_sentence == 'None':
+                                        model_activations = self.extractor.get_all_activations(model_activations)
+                                    model_activation_set.append(model_activations)
+                                # save the dataset
+                                model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+                                save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
+                                print(f'saved {new_model_activation_name}\n')
+                            else:
+                                print(
+                                    f'{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name} is missing groups!\n')
+
+                elif by_layer==False :
+                    print('combining runs for layer %d\n' % k)
+                    model_activation_name = f"{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name}_group_*.pkl"
+                    new_model_activation_name=f"{self.dataset}_{self.stim_type}_{self.model_spec}_layer_{k}_{self.extract_name}_ave_{self.average_sentence}.pkl"
+                    if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == False:
+                        print(f'{os.path.join(SAVE_DIR, new_model_activation_name)} already exists\n')
                     else:
-                        print(f'{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name} is missing groups!\n')
+                        if os.path.exists(os.path.join(SAVE_DIR, new_model_activation_name)) and overwrite == True:
+                            print(f'{new_model_activation_name} already exists, but overwriting\n')
+                        else:
+                            print(f'{new_model_activation_name} doesnt exist, creating\n')
+                        activation_files=[]
+                        for file in os.listdir(model_save_path):
+                            if fnmatch.fnmatch(file,model_activation_name):
+                                activation_files.append(os.path.join(model_save_path, file))
+                        # sort files:
+                        sorted_files=[]
+                        s = [re.findall('group_\d+', x) for x in activation_files]
+                        s = [item for sublist in s for item in sublist]
+                        file_id = [int(x.split('group_')[1]) for x in s]
+                        sorted_files = [activation_files[x] for x in np.argsort(file_id)]
+                        model_activation_set = []
+                        if len(sorted_files)==self.total_runs:
+                            for file in tqdm(sorted_files,total=len(sorted_files)):
+                                model_activations = load_obj(os.path.join(SAVE_DIR, file),silent=True)
+                                if self.average_sentence=='True':
+                                    model_activations = self.extractor.get_mean_activations(model_activations)
+                                elif self.average_sentence=='False':
+                                    model_activations = self.extractor.get_last_word_activations(model_activations)
+                                elif self.average_sentence=='None':
+                                    model_activations = self.extractor.get_all_activations(model_activations)
+                                model_activation_set.append(model_activations)
+                            # save the dataset
+                            model_activation_flat = [item for sublist in model_activation_set for item in sublist]
+                            save_obj(model_activation_flat, os.path.join(SAVE_DIR, new_model_activation_name))
+                            print(f'saved {new_model_activation_name}\n')
+                        else:
+                            print(f'{self.dataset}_{self.stim_type}_{mdl_name}_layer_{k}_{self.extract_name} is missing groups!\n')
         pass
     def __call__(self,group_id,overwrite_layer=False,overwrite_sentence=False, *args, **kwargs):
         # get layers for model

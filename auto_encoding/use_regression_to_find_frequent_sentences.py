@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 from pathlib import Path
-from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR
+from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,ANALYZE_DIR
 from pathlib import Path
 import numpy as np
 from tqdm import tqdm
@@ -165,20 +165,24 @@ if __name__ == '__main__':
     ax[0].hist(np.asarray(all_corr_min_min).flatten(), bins=100, alpha=0.5, label='ds_min with min', density=True)
     ax[0].hist(np.asarray(all_corr_max_min).flatten(), bins=100, alpha=0.5, label='ds_max with min', density=True)
     # show the means
-    ax[0].axvline(np.asarray(all_corr_min_min).flatten().mean(), color='b', linestyle='dashed', linewidth=1)
-    ax[0].axvline(np.asarray(all_corr_max_min).flatten().mean(), color='r', linestyle='dashed', linewidth=1)
+    ax[0].axvline(np.asarray(all_corr_min_min).flatten().mean(), color='b', linestyle='solid', linewidth=1.5)
+    ax[0].axvline(np.asarray(all_corr_max_min).flatten().mean(), color='r', linestyle='solid', linewidth=1.5)
     ax[0].legend()
     ax[1].hist(np.asarray(all_corr_min_max).flatten(), bins=100, alpha=0.5, label='ds_min with max', density=True)
     ax[1].hist(np.asarray(all_corr_max_max).flatten(), bins=100, alpha=0.5, label='ds_max with max', density=True)
-    ax[1].axvline(np.asarray(all_corr_min_max).flatten().mean(), color='b', linestyle='dashed', linewidth=1)
-    ax[1].axvline(np.asarray(all_corr_max_max).flatten().mean(), color='r', linestyle='dashed', linewidth=1)
+    ax[1].axvline(np.asarray(all_corr_min_max).flatten().mean(), color='b', linestyle='solid', linewidth=1.5)
+    ax[1].axvline(np.asarray(all_corr_max_max).flatten().mean(), color='r', linestyle='solid', linewidth=1.5)
     ax[1].legend()
     ax[2].hist(np.asarray(ds_min_pred).flatten(), bins=100, alpha=0.5, label='predicted ds min', density=True)
     ax[2].hist(np.asarray(ds_max_pred).flatten(), bins=100, alpha=0.5, label='predicted ds max', density=True)
-    ax[2].axvline(np.asarray(ds_min_pred).flatten().mean(), color='b', linestyle='dashed', linewidth=1)
-    ax[2].axvline(np.asarray(ds_max_pred).flatten().mean(), color='r', linestyle='dashed', linewidth=1)
+    ax[2].axvline(np.asarray(ds_min_pred).flatten().mean(), color='b', linestyle='solid', linewidth=1.5)
+    ax[2].axvline(np.asarray(ds_max_pred).flatten().mean(), color='r', linestyle='solid', linewidth=1.5)
     ax[2].legend()
     fig.show()
+    # save figure
+    fig.savefig(os.path.join(ANALYZE_DIR, f'correlation_between_ds_parametric_and_estim_max_model_{model_id}_layer_{layer_id}_.png'), dpi=300)
+    # save eps
+    fig.savefig(os.path.join(ANALYZE_DIR, f'correlation_between_ds_parametric_and_estim_max_model_{model_id}_layer_{layer_id}_.eps'))
 
     # find repetition in the selected sentence for ds_min
     # step for removing duplicates:
