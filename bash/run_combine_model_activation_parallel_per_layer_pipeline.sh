@@ -18,10 +18,7 @@ for dataset in coca_preprocessed_all_clean_no_dup_100K_sample_1  ; do
     for stim_type in textNoPeriod ; do
       for model in  gpt2-xl ; do
          # sequence of 0 to 48 for gpt2-xl
-        for layer_id in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 \
-                        15 16 17 18 19 20 21 22 23 24 25 26 27 28 \
-                        29 30 31 32 33 34 35 36 37 38 39 40 41 42 \
-                        43 44 45 46 47 48 ; do
+        for layer_id in 29 ; do
               for average_mode in False ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
