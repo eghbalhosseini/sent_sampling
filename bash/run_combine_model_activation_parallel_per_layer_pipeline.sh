@@ -14,7 +14,7 @@ split=200
 # coca_preprocessed_all_clean_100K_sample_1
 #roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
 #        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
-for dataset in coca_preprocessed_all_clean_no_dup_100K_sample_1  ; do
+for dataset in coca_preprocessed_all_clean_no_dup_100K_sample_2  ; do
     for stim_type in textNoPeriod ; do
       for model in  gpt2-xl ; do
          # sequence of 0 to 48 for gpt2-xl
