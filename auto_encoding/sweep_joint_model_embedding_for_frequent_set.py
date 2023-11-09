@@ -25,7 +25,7 @@ import math
 import wandb
 import pprint
 from auto_encoding.encoding_utils import corr_coeff, similarity_loss, normalize, CustomLayer
-
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 class Encoder(torch.nn.Module):
     def __init__(self,n_features,n_hidden,n_bottleneck):
@@ -39,21 +39,21 @@ class Encoder(torch.nn.Module):
         return encoded
 
 class Decoder(torch.nn.Module):
-    def __init__(self,n_features,n_hidden):
+    def __init__(self,n_features,n_hidden,p_dropout=0.2):
         super(Decoder, self).__init__()
         self.fc1 = CustomLayer(n_channels=7,n_features=n_features,n_hidden=n_hidden)
         # add a dropout layer
-        self.dropout = nn.Dropout(p=0.2)
+        self.dropout = nn.Dropout(p=p_dropout)
     def forward(self, encoded):
         x=self.dropout(encoded)
         x=self.fc1(x)
         return x
 
 class JointEmbedding(nn.Module):
-    def __init__(self, input_size, encoder_h, bottleneck_size,output_size,theta_size=32):
+    def __init__(self, input_size, encoder_h, bottleneck_size,output_size,theta_size=32,p_dropout=0.2):
         super(JointEmbedding, self).__init__()
         self.encoder = Encoder(input_size,encoder_h,bottleneck_size)
-        self.decoder = Decoder(bottleneck_size,output_size)
+        self.decoder = Decoder(bottleneck_size,output_size,p_dropout=p_dropout)
         self.theta = torch.nn.Parameter(torch.zeros( 7,theta_size), requires_grad=True)
     def forward(self, inputs):
         # concatenate theta to inputs
@@ -64,12 +64,16 @@ class JointEmbedding(nn.Module):
         decoded = self.decoder(encoded)
         return encoded.permute(0,2,1), decoded
 
-def build_dataset(extract_id,n_components,batch_size):
+def build_dataset(extract_id,n_components,batch_size,normalize=True):
     #group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False_pca_n_comp_650.pkl
+    standard_scaler = StandardScaler()
     model_pca_path = Path(ANALYZE_DIR, f'{str(extract_id)}_pca_n_comp_{n_components}.pkl')
     train_pca_loads = pd.read_pickle(model_pca_path.__str__())
     input_data = [torch.tensor(x['act']) for x in train_pca_loads]
-    train_data = torch.stack(input_data, dim=1)
+    if normalize:
+        input_data = [torch.tensor(standard_scaler.fit_transform(X)) for X in input_data]
+
+    train_data = torch.stack(input_data, dim=1).to(torch.float32).to(device)
     # switch the dims to be batch x number of models
     train_size = int(0.9 * len(train_data))
     test_size = len(train_data) - train_size
@@ -80,9 +84,9 @@ def build_dataset(extract_id,n_components,batch_size):
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     return train_loader, test_loader
 
-def build_network(input_size,hidden_size,bottleneck_size,output_size,theta_size):
+def build_network(input_size,hidden_size,bottleneck_size,output_size,theta_size,p_dropout):
     #input_size, encoder_h, bottleneck_size, output_size, theta_size
-    model = JointEmbedding(input_size+theta_size, hidden_size, bottleneck_size,output_size,theta_size=theta_size).to(device)
+    model = JointEmbedding(input_size+theta_size, hidden_size, bottleneck_size,output_size,theta_size=theta_size,p_dropout=p_dropout).to(device)
     return model
 
 def build_optimizer(network, optimizer, learning_rate):
@@ -114,7 +118,11 @@ def train_epoch(network, train_loader,test_loader, optimizer,config,epoch):
         elif config.loss_mode == 'SIM':
             similarities = similarity_loss(inputs, decoded)
             loss_act = torch.sum(similarities) + torch.sqrt(torch.var(similarities))
-        activation_loss = (1/config.bottleneck_size)*config.alpha_r * torch.norm(encoded, p=2)
+        if config.activation_loss:
+            activation_loss = (1 / config.bottleneck_size) * config.alpha_r * torch.norm(encoded, p=2)
+        else:
+            activation_loss = 0
+
         loss = activation_loss + loss_act
 
         # Backward pass and optimization
@@ -146,7 +154,10 @@ def train_epoch(network, train_loader,test_loader, optimizer,config,epoch):
             elif config.loss_mode == 'SIM':
                 similarities = similarity_loss(inputs, decoded)
                 loss_act = torch.sum(similarities) + torch.sqrt(torch.var(similarities))
-            activation_loss = (1 / config.bottleneck_size) * config.alpha_r * torch.norm(encoded, p=2)
+            if config.activation_loss:
+                activation_loss = (1 / config.bottleneck_size) * config.alpha_r * torch.norm(encoded, p=2)
+            else:
+                activation_loss = 0
             loss = activation_loss + loss_act
 
             #XY_loss = torch.sum(test_similarites) + torch.sqrt(torch.var(test_similarites))
@@ -164,8 +175,8 @@ def train(config=None):
         # If called by wandb.agent, as below,
         # this config will be set by Sweep Controller
         config = wandb.config
-        train_loader,test_loader = build_dataset( config.extract_id,650,config.batch_size)
-        network = build_network(650, config.hidden_size,config.bottleneck_size,650,config.theta_size)
+        train_loader,test_loader = build_dataset( config.extract_id,650,config.batch_size,config.normalize)
+        network = build_network(650, config.hidden_size,config.bottleneck_size,650,config.theta_size,config.p_dropout)
         network=network.to(device)
         optimizer = build_optimizer(network, config.optimizer, config.lr)
         # save the length of dataset into wandb
@@ -189,6 +200,14 @@ if __name__ == '__main__':
             'values': ['adam', 'sgd']
             #'value':  'sgd'
         },
+        'activation_loss': {
+            'values': [True, False]
+            # 'value':  True
+        },
+        'normalize': {
+            'values': [True, False]
+            # 'value':  True
+        },
         'hidden_size': {
             'values': [128,256, 512]
         },
@@ -196,7 +215,10 @@ if __name__ == '__main__':
             'values': [16,32,64]
         },
         'theta_size': {
-            'values': [ 16, 32,64]
+            'values': [0, 16, 32,64]
+        },
+        'p_dropout': {
+            'values': [0.1, 0.2, 0.5]
         },
 
         'extract_id':{'value':'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'}
