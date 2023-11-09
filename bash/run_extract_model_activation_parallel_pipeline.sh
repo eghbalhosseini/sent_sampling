@@ -18,7 +18,7 @@ i=0
 
 splits=20
 
-for dataset in coca_preprocessed_all_clean_100K_sample_1_estim_ds_min ; do
+for dataset in neural_ctrl_stim ; do
   for group_ids in  `seq 0 1 19` ; do
     for stim_type in textNoPeriod ; do
       for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
