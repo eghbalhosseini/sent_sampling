@@ -5,20 +5,20 @@ LINE_COUNT=0
 GRAND_PIPE_FILE="${DATA_DIR}/Grand_extraction_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
-#models="roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl"
-#layers="13 25 25 13 49 13 49" # adding the embedding layer so its layer plus 1
-models="gpt2-xl"
-layers="49" # adding the embedding layer so its layer plus 1
+models="roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl"
+layers="13 25 25 13 49 13 49" # adding the embedding layer so its layer plus 1
+#models="gpt2-xl"
+#layers="49" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
-splits=200
+splits=20
 len=${#layer_arr[@]}
 #
 
 #coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_34_activation_group_113.pkl
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
-for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
+for dataset in  neural_ctrl_stim ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
     for stim_type in textNoPeriod ; do
       # make group_id go from 0 to splits -1
