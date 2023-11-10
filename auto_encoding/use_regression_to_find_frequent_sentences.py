@@ -53,7 +53,7 @@ if __name__ == '__main__':
     # pick a layer
     layer_id=29
     # samples from the model
-    k_sample=2000
+    k_sample=10000
     layers=extractor_obj.model_group_act[layer_id]
     sentence_from_ext = [x[1] for x in layers['activations']]
     activations_from_ext = [x[0] for x in layers['activations']]
@@ -69,10 +69,12 @@ if __name__ == '__main__':
     weights = regress_model.coef_
 
     # load the sentence from coca
-    dataset_id='coca_preprocessed_all_clean_100K_sample_1'
-    sample_extractor_id = f'group={model_id}_layers-dataset={dataset_id}_{stim_type}-activation-bench=None-ave=False'
-    sampler_obj = extract_pool[sample_extractor_id]()
-    model_activation_name = f"{sampler_obj.dataset}_{sampler_obj.stim_type}_{sampler_obj.model_spec[layer_id]}_layer_{layer_id}_{sampler_obj.extract_name}_ave_{sampler_obj.average_sentence}.pkl"
+    #dataset_id='coca_preprocessed_all_clean_100K_sample_1'
+    dataset_id_1 = 'coca_preprocessed_all_clean_no_dup_100K_sample_2'
+    #/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_29_activation_ave_False.pkl
+    sample_extractor_id = f'group={model_id}_layers-dataset={dataset_id_1}_{stim_type}-activation-bench=None-ave=False'
+    sampler_obj_1 = extract_pool[sample_extractor_id]()
+    model_activation_name = f"{sampler_obj_1.dataset}_{sampler_obj_1.stim_type}_{sampler_obj_1.model_spec[layer_id]}_layer_{layer_id}_{sampler_obj_1.extract_name}_ave_{sampler_obj_1.average_sentence}.pkl"
     sample_layer = load_obj(os.path.join(SAVE_DIR, model_activation_name))
     sample_act = [x[0] for x in sample_layer]
     sample_sent=[x[1] for x in sample_layer]
@@ -103,11 +105,11 @@ if __name__ == '__main__':
     sentence_id_max = [sample_sent_id[x] for x in index_ds_max]
 ##
     # save the sentences as text files
-    with open(os.path.join(SAVE_DIR,'analysis', f'estimated_ds_min_sentences_model_{model_id}_layer_{layer_id}.txt'), 'w') as f:
+    with open(os.path.join(SAVE_DIR,'analysis', f'{dataset_id}_estimated_ds_min_{model_id}_layer_{layer_id}.txt'), 'w') as f:
         for item in sentences_ds_min:
             f.write("%s\n" % item)
 
-    with open(os.path.join(SAVE_DIR,'analysis', f'estimated_ds_max_sentences_model_{model_id}_layer_{layer_id}.txt'), 'w') as f:
+    with open(os.path.join(SAVE_DIR,'analysis', f'{dataset_id}_estimated_ds_max_sentences_model_{model_id}_layer_{layer_id}.txt'), 'w') as f:
         for item in sentences_ds_max:
             f.write("%s\n" % item)
 
@@ -171,7 +173,7 @@ if __name__ == '__main__':
     ax[1].hist(np.asarray(all_corr_min_max).flatten(), bins=100, alpha=0.5, label='ds_min with max', density=True)
     ax[1].hist(np.asarray(all_corr_max_max).flatten(), bins=100, alpha=0.5, label='ds_max with max', density=True)
     ax[1].axvline(np.asarray(all_corr_min_max).flatten().mean(), color='b', linestyle='solid', linewidth=1.5)
-    ax[1].axvline(np.asarray(all_corr_max_max).flatten().mean(), color='r', linestyle='solid', linewidth=1.5)
+    ax[1].axvline(np.asarray(all_corr_max_max).flatten().median(), color='r', linestyle='solid', linewidth=1.5)
     ax[1].legend()
     ax[2].hist(np.asarray(ds_min_pred).flatten(), bins=100, alpha=0.5, label='predicted ds min', density=True)
     ax[2].hist(np.asarray(ds_max_pred).flatten(), bins=100, alpha=0.5, label='predicted ds max', density=True)

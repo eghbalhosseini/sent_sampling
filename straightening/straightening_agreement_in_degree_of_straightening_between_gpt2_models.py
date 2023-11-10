@@ -24,7 +24,7 @@ import xarray as xr
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
 #AutoConfig.register('gpt-neox',GPTNeoXConfig)
 #AutoModel.register(GPTNeoXConfig, GPTNeoXModel)
-from utils.curvature_utils import compute_model_activations,compute_model_curvature
+from sent_sampling.utils.curvature_utils import compute_model_activations,compute_model_curvature
 
 from transformers import PreTrainedTokenizer
 import pickle

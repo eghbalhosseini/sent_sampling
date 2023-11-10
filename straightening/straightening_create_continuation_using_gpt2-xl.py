@@ -27,7 +27,7 @@ import pickle
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from datasets import Dataset, DatasetDict
 from scipy import stats
-from utils.curvature_utils import compute_model_activations, compute_model_curvature
+from sent_sampling.utils.curvature_utils import compute_model_activations, compute_model_curvature
 # make 2 arguments for continuattion and context and get it
 import argparse
 parser = argparse.ArgumentParser(description='Process some integers.')

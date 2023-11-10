@@ -9,11 +9,11 @@ import xarray as xr
 from sklearn.decomposition import PCA
 import torch
 from tqdm import tqdm
-from utils import extract_pool
+from sent_sampling.utils import extract_pool
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
 import os
-from utils.data_utils import save_obj, SAVE_DIR,load_obj
+from sent_sampling.utils.data_utils import save_obj, SAVE_DIR,load_obj
 try :
     torch.set_deterministic(True)
 except:

@@ -16,7 +16,7 @@ from matplotlib.pyplot import GridSpec
 import pandas as pd
 from pathlib import Path
 import torch
-from utils.curvature_utils import compute_model_activations, compute_model_curvature
+from sent_sampling.utils.curvature_utils import compute_model_activations, compute_model_curvature
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer,GPTNeoXForCausalLM, AutoModelForSequenceClassification,AutoModelForCausalLM,AutoModelForTokenClassification
 from transformers import AutoTokenizer, GPTNeoXForCausalLM
 import scipy as sp

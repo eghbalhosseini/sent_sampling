@@ -25,7 +25,7 @@ from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenize
 AutoConfig.register('gpt-neox-pos-learned',GPTNeoXPosLearnedConfig)
 #AutoModel.register(GPTNeoXConfig, GPTNeoXModel)
 AutoModel.register(GPTNeoXPosLearnedConfig, GPTNeoXPosLearnedModel)
-from utils.curvature_utils import compute_model_activations,compute_model_curvature
+from sent_sampling.utils.curvature_utils import compute_model_activations,compute_model_curvature
 
 from transformers import PreTrainedTokenizer
 import pickle

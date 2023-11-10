@@ -1,24 +1,17 @@
 import os
 import numpy as np
 import sys
-from pathlib import Path
+
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from utils.data_utils import ANALYZE_DIR
 from utils import extract_pool
-from utils.optim_utils import optim_pool, low_dim_project
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import matplotlib as mpl
-import seaborn
 from tqdm import tqdm
-from matplotlib.pyplot import GridSpec
-import pandas as pd
-from pathlib import Path
 import torch
-from utils.curvature_utils import compute_model_activations, compute_model_curvature
-from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer,GPTNeoXForCausalLM, AutoModelForSequenceClassification,AutoModelForCausalLM,AutoModelForTokenClassification, OPTConfig, OPTModel
-from transformers import AutoTokenizer, GPTNeoXForCausalLM
+from sent_sampling.utils.curvature_utils import compute_model_activations, compute_model_curvature
+from transformers import AutoModelWithLMHead, AutoModelForCausalLM, OPTConfig, OPTModel
+from transformers import AutoTokenizer
 import scipy as sp
 import matplotlib
 from minicons import scorer

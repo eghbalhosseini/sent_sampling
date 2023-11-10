@@ -20,7 +20,7 @@ import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
 import xarray as xr
 from minicons import scorer
-from utils.curvature_utils import compute_model_activations,compute_model_curvature
+from sent_sampling.utils.curvature_utils import compute_model_activations,compute_model_curvature
 
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
 from transformers import PreTrainedTokenizer

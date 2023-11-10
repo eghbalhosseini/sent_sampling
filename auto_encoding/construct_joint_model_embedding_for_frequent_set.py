@@ -86,13 +86,13 @@ if __name__ == '__main__':
     # get model names from ext_obj.model_group_act
     input_size = n_components
     output_size=n_components
-    hidden_size = 128
+    hidden_size = 512
     bottleneck_size = 64
     theta_size=0
     num_epochs = 1000
-    learning_rate = 0.001733426052204667
+    learning_rate = 0.00047670875475033873
     batch_size = 128
-    alpha_activation=1e-8
+    alpha_activation=0.000909658634735287
     input_data=[torch.tensor(x['act']) for x in train_pca_loads]
     input_data = [torch.tensor(standard_scaler.fit_transform(X)) for X in input_data]
     input_data_shape=[x.shape[1] for x in input_data]
@@ -125,11 +125,11 @@ if __name__ == '__main__':
             encoded,decoded=model(inputs)
             # Zero the gradients
             similarities = similarity_loss(inputs, decoded)
-            #mse_val=mseloss(decoded,inputs)
+            mse_val=mseloss(decoded,inputs)
             XY_loss = torch.sum(similarities) + torch.var(similarities)
             activation_loss = alpha_activation * torch.norm(encoded, p=2)
             loss = activation_loss+ XY_loss            # Backward pass and optimization
-            loss= XY_loss
+            #loss= XY_loss
             #loss = mse_val
             optimizer.zero_grad()
             loss.backward()
@@ -290,8 +290,8 @@ if __name__ == '__main__':
         # ax.axhline(x_min.mean(axis=0)[1], color='b', linestyle='--', zorder=1)
         # ax.axhline(x_max.mean(axis=0)[1], color='r', linestyle='--', zorder=1)
         plt.title(f'{model_sh[i]}\n')
-        g.savefig(os.path.join(ANALYZE_DIR, f'{model_sh[i]}_ds_min_ds_max_joint_embedding.png'))
+        #g.savefig(os.path.join(ANALYZE_DIR, f'{model_sh[i]}_ds_min_ds_max_joint_embedding.png'))
         # save eps
-        g.savefig(os.path.join(ANALYZE_DIR, f'{model_sh[i]}_ds_min_ds_max_joint_embedding.eps'),
-                  format='eps')
+        #g.savefig(os.path.join(ANALYZE_DIR, f'{model_sh[i]}_ds_min_ds_max_joint_embedding.eps'),
+        #          format='eps')
         plt.show()

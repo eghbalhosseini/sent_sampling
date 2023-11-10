@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 import torch
 from tqdm import tqdm
-sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 
 def normalized(a, axis=-1, order=2):
     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
