@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="ehoseini@node094:22 agent" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="ehoseini@evnode.mit.edu:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="ehoseini@evnode_X11:22 agent">
         <serverdata>
           <mappings>
@@ -16,10 +9,10 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="ehoseini@node094:22">
+      <paths name="ehoseini@node084:22 agent">
         <serverdata>
           <mappings>
-            <mapping deploy="/om/user/ehoseini/sent_sampling/" local="$PROJECT_DIR$" />
+            <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
@@ -30,6 +23,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="ehoseini@node105:22 agent">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name=EX_PA
 #SBATCH --exclude node[017-018]
-#SBATCH --time=168:00:00
+#SBATCH --time=24:00:00
 #SBATCH --mem=16G
 #SBATCH --ntasks=1
 
@@ -18,7 +18,7 @@ fi
 echo "${GRAND_FILE}"
 echo $JID
 
-while IFS=, read -r line_count model dataset group_id ; do
+while IFS=, read -r line_count model dataset stim_type splits group_id ; do
   #echo "line_count ${model}"
   if [ $JID == $line_count ]
     then
@@ -26,6 +26,8 @@ while IFS=, read -r line_count model dataset group_id ; do
 
       run_model=$model
       run_dataset=$dataset
+      run_stim_type=$stim_type
+      run_splits=$splits
       run_group_id=$group_id
       do_run=true
       break
@@ -37,15 +39,23 @@ while IFS=, read -r line_count model dataset group_id ; do
 done <"${GRAND_FILE}"
 echo "model ${run_model}"
 echo "dataset ${run_dataset}"
+echo "stim_type ${run_stim_type}"
+echo "splits ${run_splits}"
 echo "group_id ${run_group_id}"
+
+
 module add openmind/singularity
-XDG_CACHE_HOME=/om/user/${USER}/st
-export XDG_CACHE_HOME
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
-RESULTCACHING_HOME=/om2/user/`whoami`/.result_caching
+RESULTCACHING_HOME=/om5/group/evlab/u/ehoseini/.result_caching
 export RESULTCACHING_HOME
-#
-. ~/.bash_profile
-conda activate neural_nlp_1
+XDG_CACHE_HOME=/om/user/`whoami`/st
+export XDG_CACHE_HOME
+
+. /om/weka/evlab/ehoseini/.bash_profile
+. /om/weka/evlab/ehoseini/.bashrc
+conda activate neural_nlp_2022
+
 echo $(which python)
-python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py "${run_model}" "${run_dataset}" "${run_group_id}"
+/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/weka/evlab/ehoseini/sent_sampling/extract_model_activations_parallel.py "${run_model}" "${run_dataset}" "${run_stim_type}" "${splits}" "${run_group_id}"
+
+#/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/weka/evlab/ehoseini//sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${stim_type_list[$SLURM_ARRAY_TASK_ID]} ${splits} ${group_id_list[$SLURM_ARRAY_TASK_ID]}

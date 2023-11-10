@@ -30,11 +30,7 @@ extract_name=($extract_name)
 bench_type=($bench_type)
 
 
-for set in best_performing_pereira_1 \
- best_performing_pereira_2 \
- best_performing_pereira_3 \
- best_performing_pereira_4 \
- best_performing_pereira_5 ; do
+for set in best_performing_pereira_1  ; do
   for idx in 0 ; do
     for ave in False ; do
     for dataset in ud_sentencez_token_filter_v3 ; do

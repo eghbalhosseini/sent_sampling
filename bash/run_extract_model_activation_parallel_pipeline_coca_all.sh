@@ -1,55 +1,48 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-199
-#SBATCH --time=168:00:00
+#SBATCH --array=0-399
+#SBATCH --time=24:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=32G
+#SBATCH --mem=16G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in  coca_preprocessed_all_clean_100K_sample_1 ; do
+splits=200
+for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 coca_preprocessed_all_clean_no_dup_100K_sample_2 ; do
   for group_ids in `seq 0 1 199` ; do
-      for model in gpt2-xl ; do
+      for model in gpt2-xl  ; do
+        for stim_type in textNoPeriod ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
           group_id_list[$i]=$group_ids
+          stim_type_list[$i]="$stim_type"
           i=$i+1
+      done
       done
       done
 done
 
+#  2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running model ${model_list[$SLURM_ARRAY_TASK_ID]}"
 echo "Running dataset ${dataset_list[$SLURM_ARRAY_TASK_ID]}"
+echo "Running stim type ${stim_type_list[$SLURM_ARRAY_TASK_ID]}"
 echo "Running group ${group_id_list[$SLURM_ARRAY_TASK_ID]}"
 
+module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
-RESULTCACHING_HOME=/om2/user/`whoami`/.result_caching
+RESULTCACHING_HOME=/om5/group/evlab/u/ehoseini/.result_caching
 export RESULTCACHING_HOME
+XDG_CACHE_HOME=/om/user/`whoami`/st
+export XDG_CACHE_HOME
 
-#:singularity exec -B /om:/om,/om2:/om2 /om/user/`whoami`/simg_images/neural_nlp_master.simg /usr/local/bin/python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
-. ~/.bash_profile
+. /om/weka/evlab/ehoseini/.bash_profile
+. /om/weka/evlab/ehoseini/.bashrc
+conda activate neural_nlp_2022
 
-conda activate neural_nlp
 echo $(which python)
-python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
 
-#for model in gpt2-xl gpt2-large gpt2-medium gpt2 distilgpt2 openaigpt \
-#      albert-xxlarge-v2 albert-xlarge-v2 \
-#      t5-11b t5-3b t5-large \
-#      xlnet-large-cased \
-#      ctrl \
-#      bert-large-uncased-whole-word-masking distilbert-base-uncased \
-#      xlm-mlm-en-2048 \
-#      transfo-xl-wt103 \
-#      roberta-base; do
-
-#
-#
-# coca_spok_filter_punct_10K_sample_1 \
-#                coca_spok_filter_punct_10K_sample_2 \
-#                coca_spok_filter_punct_10K_sample_3 \
-#                coca_spok_filter_punct_10K_sample_4 \
+/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/weka/evlab/ehoseini//sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${stim_type_list[$SLURM_ARRAY_TASK_ID]} ${splits} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
