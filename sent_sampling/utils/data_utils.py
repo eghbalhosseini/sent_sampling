@@ -13,6 +13,7 @@ if getpass.getuser()=='eghbalhosseini':
     COCA_CORPUS_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/parsed/'
     COCA_PREPROCESSED_DIR = '/Users/eghbalhosseini/MyData/COCA_corpus/preprocessed/'
     AUTO_ENCODER_DIR='/Users/eghbalhosseini/MyData/sent_sampling/auto_encoder/'
+    ANALYZE_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/analysis/'
     DSPARAMETRIC_DIR='/Users/eghbalhosseini/MyData//fmri_DNN/ds_parametric/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
@@ -27,6 +28,7 @@ elif getpass.getuser()=='ehoseini':
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
+
 
 UD_PATH = UD_PARENT+'/ud-treebanks-v2.6/'
 GOOGLE10L_1T = UD_PARENT+'/Google10L-1T/'
