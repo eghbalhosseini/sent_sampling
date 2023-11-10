@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import warnings
 from sent_sampling.utils import extract_pool
 from sent_sampling.utils.data_utils import COCA_PREPROCESSED_DIR
+from sent_sampling.utils.data_utils import check_pickle_file
 # import PCA
 from sklearn.decomposition import PCA
 #suppress warnings
@@ -101,6 +102,23 @@ if __name__ == '__main__':
     for file in tqdm(bad_files):
         os.remove(file)
 
+    # go into every directory in SAVE_DIR and fine files iwth textPeriod in them
+    # and delete them
+    file_to_remove=[]
+    for files in os.listdir(os.path.join(SAVE_DIR,'gpt2-xl')):
+                if fnmatch.fnmatch(files, 'coca_preprocessed_all_clean_no_dup_100K_sample_2*'):
+                    file_to_remove.append(os.path.join(SAVE_DIR,'gpt2-xl',files))
+    # remove the files in file_to_remove
+    for file in tqdm(file_to_remove):
+        os.remove(file)
+    # also find files in SAVE_DIR that have textPeriod in them
+    file_to_remove=[]
+    for files in os.listdir(SAVE_DIR):
+        if fnmatch.fnmatch(files, '*textPeriod*'):
+            file_to_remove.append(os.path.join(SAVE_DIR,files))
+    # remove the files in file_to_remove
+    for file in tqdm(file_to_remove):
+        os.remove(file)
     sample_layer = load_obj(os.path.join(SAVE_DIR, model_activation_name))
     sample_act = [x[0] for x in sample_layer]
     sample_sent=[x[1] for x in sample_layer]
