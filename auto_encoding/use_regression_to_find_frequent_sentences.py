@@ -3,7 +3,6 @@ import pandas as pd
 import getpass
 import os
 import sys
-sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 from pathlib import Path
 from sent_sampling.utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,ANALYZE_DIR
 from pathlib import Path
@@ -25,7 +24,11 @@ from sent_sampling.utils.data_utils import COCA_PREPROCESSED_DIR
 from sklearn.decomposition import PCA
 #suppress warnings
 warnings.filterwarnings('ignore')
-sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
+import fnmatch
+
+import os
+import hashlib
+import pickletools
 
 if getpass.getuser() == 'eghbalhosseini':
     data_path = '/Users/eghbalhosseini/MyData/sent_sampling/auto_encoder/'
@@ -75,6 +78,29 @@ if __name__ == '__main__':
     sample_extractor_id = f'group={model_id}_layers-dataset={dataset_id_1}_{stim_type}-activation-bench=None-ave=False'
     sampler_obj_1 = extract_pool[sample_extractor_id]()
     model_activation_name = f"{sampler_obj_1.dataset}_{sampler_obj_1.stim_type}_{sampler_obj_1.model_spec[layer_id]}_layer_{layer_id}_{sampler_obj_1.extract_name}_ave_{sampler_obj_1.average_sentence}.pkl"
+    # find files with model_activation name in the save_dir using fnmatch
+    model_activation_name = f"{sampler_obj_1.dataset}_{sampler_obj_1.stim_type}_{sampler_obj_1.model_spec[layer_id]}_layer_*_{sampler_obj_1.extract_name}_ave_{sampler_obj_1.average_sentence}.pkl"
+    matching_files= []
+    for  files in os.listdir(SAVE_DIR):
+            if fnmatch.fnmatch(files, model_activation_name):
+                # If it does, append the full path of the file to the list.
+                matching_files.append(os.path.join(SAVE_DIR, files))
+    # go to sub directory and delete the files with the following name format
+
+    model_activation_name = f"{sampler_obj_1.dataset}_{sampler_obj_1.stim_type}_{sampler_obj_1.model_spec[layer_id]}_layer_{layer_id}_{sampler_obj_1.extract_name}_group_*.pkl"
+    matching_files = []
+    for files in tqdm(os.listdir(os.path.join(SAVE_DIR,sampler_obj_1.model_spec[layer_id]))):
+        if fnmatch.fnmatch(files, model_activation_name):
+            # If it does, append the full path of the file to the list.
+            matching_files.append(os.path.join(os.path.join(SAVE_DIR,sampler_obj_1.model_spec[layer_id]), files))
+    bad_files=[]
+    for file in tqdm(matching_files):
+        if check_pickle_file(file):
+            bad_files.append(file)
+    # delete bad file
+    for file in tqdm(bad_files):
+        os.remove(file)
+
     sample_layer = load_obj(os.path.join(SAVE_DIR, model_activation_name))
     sample_act = [x[0] for x in sample_layer]
     sample_sent=[x[1] for x in sample_layer]
@@ -203,3 +229,4 @@ if __name__ == '__main__':
     # go into
     # c=sentences.groupby('sentence')
     # len(list(a.groupby('sent_id').apply(lambda x: ' '.join(x.word_form))))
+

@@ -16,10 +16,63 @@ temp_store._storage_directory
 # relative path to neural_nlp storage
 neural_nlp_stor_rel='neural_nlp.models.wrapper.core.ActivationsExtractorHelper._from_sentences_stored'
 neural_nlp_store_abs=os.path.join(temp_store._storage_directory,neural_nlp_stor_rel)
-
+import os
+import hashlib
+import pickletools
 
 import re
 
+def check_pickle_file(pickle_file_path, expected_size=None, expected_checksum=None):
+    """
+    Function to silently check if a pickle file is possibly corrupt without opening it.
+    It returns the path if the file is corrupt or None otherwise.
+
+    :param pickle_file_path: The path to the pickle file
+    :param expected_size: The expected size of the file in bytes (optional)
+    :param expected_checksum: The expected checksum of the file (optional)
+    :return: The path to the corrupt pickle file or None if the file is not corrupt
+    """
+    try:
+        # Check for file existence
+        if not os.path.exists(pickle_file_path):
+            return pickle_file_path
+
+        # Check file size if expected size is provided
+        if expected_size is not None:
+            actual_size = os.path.getsize(pickle_file_path)
+            if actual_size != expected_size:
+                return pickle_file_path
+
+        # Check file checksum if expected checksum is provided
+        if expected_checksum is not None:
+            with open(pickle_file_path, 'rb') as f:
+                file_data = f.read()
+                actual_checksum = hashlib.md5(file_data).hexdigest()
+                if actual_checksum != expected_checksum:
+                    return pickle_file_path
+
+        # Check file signature (magic number) for pickle
+        with open(pickle_file_path, 'rb') as f:
+            first_bytes = f.read(2)
+            if first_bytes not in [b'\x80\x03', b'\x80\x02', b'\x80\x04']:
+                return pickle_file_path
+
+        # Use pickletools to check for obvious signs of corruption
+        # Redirect the standard output to null to suppress messages from pickletools.dis
+        with open(pickle_file_path, 'rb') as f, open(os.devnull, 'w') as fnull:
+            old_stdout = os.dup(1)
+            os.dup2(fnull.fileno(), 1)
+            try:
+                pickletools.dis(f)
+            finally:
+                os.dup2(old_stdout, 1)  # Restore standard output
+
+    except Exception:
+        # Any exception is taken as an indication of corruption
+        return pickle_file_path
+
+    # If all checks pass, we do not have evidence of corruption
+    return None
 
 
 def read_words_eh(candidate, stimulus_set, reset_column='sentence_id', copy_columns=(), average_sentence=False,overwrite=False):
