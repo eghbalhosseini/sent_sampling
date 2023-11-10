@@ -12,10 +12,10 @@ elif getpass.getuser() == 'ehoseini':
     SAMPLING_DATA = '/om2/user/ehoseini/fmri_DNN/ds_parametric/'
 import pickle
 sys.path.extend([SAMPLING_PARENT, SAMPLING_PARENT])
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
-from utils import extract_pool
-from utils.optim_utils import optim_pool, low_dim_project
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool, low_dim_project
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib as mpl

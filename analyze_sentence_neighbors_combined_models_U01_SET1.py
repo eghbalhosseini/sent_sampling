@@ -15,14 +15,14 @@ matplotlib.rcParams['pdf.fonttype'] = 42
 matplotlib.rcParams['ps.fonttype'] = 42
 
 import re
-from utils import extract_pool , gpt2_xl_grp_config
-from utils.extract_utils import model_extractor, model_extractor_parallel, SAVE_DIR
-from utils.data_utils import SENTENCE_CONFIG,  RESULTS_DIR, save_obj, load_obj, ANALYZE_DIR
+from sent_sampling.utils import extract_pool , gpt2_xl_grp_config
+from sent_sampling.utils.extract_utils import model_extractor, model_extractor_parallel, SAVE_DIR
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG,  RESULTS_DIR, save_obj, load_obj, ANALYZE_DIR
 import utils.optim_utils
 import importlib
 importlib.reload(utils.optim_utils)
 
-from utils.optim_utils import optim, optim_pool, pt_create_corr_rdm_short, optim_group
+from sent_sampling.utils.optim_utils import optim, optim_pool, pt_create_corr_rdm_short, optim_group
 import argparse
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # rapids stuff

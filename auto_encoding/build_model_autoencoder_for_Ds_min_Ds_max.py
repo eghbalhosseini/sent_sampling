@@ -3,8 +3,8 @@ import numpy as np
 import sys
 from pathlib import Path
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
 import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path

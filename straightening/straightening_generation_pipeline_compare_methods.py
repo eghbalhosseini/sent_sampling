@@ -6,9 +6,9 @@ sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_samp
 desired_path = '/om/weka/evlab/ehoseini/JointMDS'
 sys.path.extend([desired_path,desired_path])
 sys.path.append(desired_path)
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
-from utils import extract_pool
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from sent_sampling.utils import extract_pool
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 

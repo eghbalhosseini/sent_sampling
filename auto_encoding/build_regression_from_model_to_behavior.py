@@ -19,7 +19,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import warnings
-from utils import extract_pool
+from sent_sampling.utils import extract_pool
 # import PCA
 from sklearn.decomposition import PCA
 #suppress warnings

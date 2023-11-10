@@ -12,7 +12,7 @@ from neural_nlp import FixedLayer
 
 import utils
 importlib.reload(utils)
-from utils.data_utils import SENTENCE_CONFIG, COCA_PREPROCESSED_DIR,construct_stimuli_set_from_pd
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG, COCA_PREPROCESSED_DIR,construct_stimuli_set_from_pd
 from neural_nlp.models import model_pool
 import pandas as pd
 from pathlib import Path
@@ -25,7 +25,7 @@ from neural_nlp.utils import ordered_set
 from neural_nlp.utils import ordered_set
 import utils.extract_utils
 importlib.reload(utils.extract_utils)
-from utils.extract_utils import read_words_eh
+from sent_sampling.utils.extract_utils import read_words_eh
 import glob
 import xarray as xr
 import itertools

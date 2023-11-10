@@ -15,7 +15,7 @@ if getpass.getuser() == 'eghbalhosseini':
 else:
     data_path = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/auto_encoder/'
 
-from utils.data_utils import construct_stimuli_set_from_pd
+from sent_sampling.utils.data_utils import construct_stimuli_set_from_pd
 
 
 if __name__ == '__main__':

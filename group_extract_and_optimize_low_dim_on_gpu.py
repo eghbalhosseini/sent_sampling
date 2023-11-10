@@ -1,9 +1,9 @@
 import utils
-from utils import extract_pool,model_grps_config
-from utils.optim_utils import optim_pool, optim_group
-from utils.data_utils import RESULTS_DIR, save_obj
+from sent_sampling.utils import extract_pool,model_grps_config
+from sent_sampling.utils.optim_utils import optim_pool, optim_group
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj
 import os
 import torch
 parser = argparse.ArgumentParser(description='extract activations and optimize')

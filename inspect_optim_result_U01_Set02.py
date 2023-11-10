@@ -1,11 +1,11 @@
 import importlib
 import utils
 importlib.reload(utils)
-from utils import extract_pool,model_grps_config
+from sent_sampling.utils import extract_pool,model_grps_config
 import utils.optim_utils
 importlib.reload(utils.optim_utils)
-from utils.optim_utils import optim, optim_pool, pt_create_corr_rdm_short
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj, ANALYZE_DIR
+from sent_sampling.utils.optim_utils import optim, optim_pool, pt_create_corr_rdm_short
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj, ANALYZE_DIR
 import torch
 import numpy as np
 import matplotlib.pyplot as plt

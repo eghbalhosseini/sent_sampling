@@ -8,7 +8,7 @@ import pandas as pd
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from utils.data_utils import ANALYZE_DIR
+from sent_sampling.utils.data_utils import ANALYZE_DIR
 from tqdm import tqdm
 import torch
 import itertools

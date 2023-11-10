@@ -5,7 +5,7 @@ import pandas as pd
 import pickle
 import numpy as np
 import copy
-from utils.data_utils import UD_PARENT, UD_ENGLISH_PATH_SET, UD_PATH
+from sent_sampling.utils.data_utils import UD_PARENT, UD_ENGLISH_PATH_SET, UD_PATH
 
 if __name__ == '__main__':
 

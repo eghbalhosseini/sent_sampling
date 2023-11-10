@@ -7,7 +7,7 @@ import sent_sampling.utils.data_utils as data_utils
 from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj, ANALYZE_DIR
 from sent_sampling.utils.extract_utils import extractor
 from sent_sampling.utils.optim_utils import optim
-
+from sent_sampling.utils.curvature_utils import compute_model_activations, compute_model_curvature
 from sent_sampling.utils import extract_pool
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -21,7 +21,7 @@ import scipy as sp
 import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
 import xarray as xr
-from minicons import scorer
+#from minicons import scorer
 
 from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
 

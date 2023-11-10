@@ -1,12 +1,12 @@
 import sys
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils import extract_pool
-from utils.optim_utils import optim_pool
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR, load_obj
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR, load_obj
 import os
 from pathlib import Path
-from utils import make_shorthand
+from sent_sampling.utils import make_shorthand
 parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('extractor_id', type=str,
                     default='group=set_3-dateset=ud_sentences_filter-network_act-bench=None-ave=False')

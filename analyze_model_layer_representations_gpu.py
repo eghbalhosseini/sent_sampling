@@ -1,7 +1,7 @@
-from utils import extract_pool
-from utils.optim_utils import optim_pool, pt_create_corr_rdm_short
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool, pt_create_corr_rdm_short
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj, SAVE_DIR, ANALYZE_DIR
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj, SAVE_DIR, ANALYZE_DIR
 import os
 import numpy as np
 import pandas as pd

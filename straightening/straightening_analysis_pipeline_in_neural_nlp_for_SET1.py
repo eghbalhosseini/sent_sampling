@@ -3,10 +3,10 @@ import numpy as np
 import sys
 from pathlib import Path
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
-from utils import extract_pool
-from utils.optim_utils import optim_pool, low_dim_project
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool, low_dim_project
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib as mpl
@@ -17,7 +17,7 @@ import pandas as pd
 from pathlib import Path
 import torch
 
-from utils import make_shorthand
+from sent_sampling.utils import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 import matplotlib

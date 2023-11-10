@@ -11,7 +11,7 @@ elif getpass.getuser() == 'ehoseini':
     SAMPLING_DATA = '/om2/user/ehoseini/fmri_DNN/ds_parametric/'
 import pickle
 sys.path.extend([SAMPLING_PARENT, SAMPLING_PARENT])
-from utils import extract_pool
+from sent_sampling.utils import extract_pool
 from tqdm import tqdm
 import pandas as pd
 import torch

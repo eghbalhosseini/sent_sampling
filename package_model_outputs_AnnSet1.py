@@ -1,8 +1,8 @@
 import os
 import numpy as np
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj
-from utils import extract_pool
-from utils.optim_utils import optim_pool
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib as mpl

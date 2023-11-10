@@ -1,10 +1,10 @@
 import sys
 import pandas as pd
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils import extract_pool
-from utils.optim_utils import optim_pool
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj, COCA_CORPUS_DIR
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj, COCA_CORPUS_DIR
 import torchaudio.transforms as T
 import torchaudio.functional as F
 import os

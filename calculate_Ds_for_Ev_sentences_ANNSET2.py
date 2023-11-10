@@ -1,8 +1,8 @@
-from utils import extract_pool
-from utils.extract_utils import model_extractor
-from utils.optim_utils import optim_pool
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.extract_utils import model_extractor
+from sent_sampling.utils.optim_utils import optim_pool
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj
 import os
 
 #
