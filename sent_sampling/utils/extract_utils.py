@@ -1,4 +1,4 @@
-from sent_sampling.utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd,construct_stimuli_set_no_grouping, construct_stimuli_set_from_text
+from .data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,construct_stimuli_set_from_pd,construct_stimuli_set_no_grouping, construct_stimuli_set_from_text
 from neural_nlp.benchmarks.neural import read_words, listen_to
 from neural_nlp.stimuli import load_stimuli, StimulusSet
 from neural_nlp.models import model_pool, model_layers
