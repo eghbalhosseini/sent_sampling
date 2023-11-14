@@ -10,6 +10,7 @@ layers="13 25 25 13 49 13 49" # adding the embedding layer so its layer plus 1
 #models="gpt2-xl"
 #layers="49" # adding the embedding layer so its layer plus 1
 #
+
 model_arr=($models)
 layer_arr=($layers)
 splits=20
