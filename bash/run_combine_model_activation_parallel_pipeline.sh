@@ -9,14 +9,15 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-split=200
+splits=20
 #neural_ctrl_stim
 # coca_preprocessed_all_clean_100K_sample_1
 #roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
 #        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
-for dataset in coca_preprocessed_all_clean_no_dup_100K_sample_1  ; do
+for dataset in neural_ctrl_stim  ; do
       for stim_type in textNoPeriod ; do
-      for model in  gpt2-xl ; do
+      for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
               for average_mode in False ; do
                   model_list[$i]="$model"
                   dataset_list[$i]="$dataset"
