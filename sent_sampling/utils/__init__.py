@@ -115,6 +115,27 @@ modl_name='xlnet-large-cased'
 layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
 xlnet_large_cased_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
 
+modl_name='roberta-base'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+roberta_base_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='bert-large-uncased-whole-word-masking'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+bert_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='xlm-mlm-en-2048'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+xlm_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+modl_name='ctrl'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+ctrl_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
+
+modl_name='albert-xxlarge-v2'
+layer_tuple=tuple([(modl_name,x) for x in model_layers[modl_name]])
+albert_grp_config=dict(grp_id=f"{modl_name}_layers",grp_layer_tuple=tuple([layer_tuple[id] for id in range(0,len(layer_tuple))]),layer_by_name=True)
+
 
 model_grps_config = [
     # mistral_chkpnt_0_config,
@@ -124,6 +145,12 @@ model_grps_config = [
     # mistral_chkpnt_40000_config,
     # mistral_chkpnt_400000_config,
     # distilgpt2_config,
+    roberta_base_grp_config,
+    bert_grp_config,
+    xlm_grp_config,
+    ctrl_grp_config,
+    xlm_grp_config,
+    albert_grp_config,
     gpt2_grp_config,
     gpt2_medium_config,
     gpt2_large_config,

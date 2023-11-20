@@ -32,7 +32,7 @@ else:
     data_path = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/auto_encoder/'
 
 if __name__ == '__main__':
-    model_id = 'gpt2-xl'
+    model_id = 'roberta-base'
     dataset_id='neural_ctrl_stim'
     stim_type='textNoPeriod'
     p = Path(data_path, 'beta-control-neural_stimset_D-S_light_freq.csv')
