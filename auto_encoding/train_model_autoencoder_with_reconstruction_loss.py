@@ -147,7 +147,7 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # create the first autoencoder
-    model_autoencoder = ModelAutoencoder(act.shape[1], hidden_size, bottlneck_size).to(device)
+    model_autoencoder = ModelAutoencoder(act.shape[1], hidden_size, bottleneck_size).to(device)
 
     # create the second autoencoder
     optimizer=optim.Adam(model_autoencoder.parameters(),lr=learning_rate)
