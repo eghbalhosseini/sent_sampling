@@ -105,6 +105,7 @@ class SimilarityAutoencoder(nn.Module):
         return encoded, decoded
 
 if __name__ == '__main__':
+    dataset_id='coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10K'
     config = {
                    "epochs": 200,
                    "batch_size": 128,
@@ -114,13 +115,13 @@ if __name__ == '__main__':
                    "optimizer":"adam",
                    'alpha_r': 0.00712404624193811,
                    "loss_mode":'MSE',
-                   'extract_id':'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False',
+                   'extract_id':f'group=best_performing_pereira_1-dataset={dataset_id}_textNoPeriod-activation-bench=None-ave=False',
                    'activation_loss':False,
                     'normalize':True,
                }
     #%% compute the pca
     n_components=650
-    extract_id = 'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'
+    extract_id = f'group=best_performing_pereira_1-dataset={dataset_id}_textNoPeriod-activation-bench=None-ave=False'
     train_loader, test_loader=build_dataset(extract_id=config['extract_id'],n_components=n_components,batch_size=config['batch_size'],normalize=config['normalize'])
     model=build_network(n_components,hidden_size=config['hidden_size'],bottleneck_size=config['bottleneck_size'])
     optimizer=build_optimizer(model,config['optimizer'],learning_rate=config['lr'])

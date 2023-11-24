@@ -33,7 +33,8 @@ from scipy.spatial.distance import pdist, squareform
 from sent_sampling.utils.optim_utils import low_dim_project
 
 if __name__ == '__main__':
-    extract_id = 'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'
+    dataset_id='coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10K'
+    extract_id = f'group=best_performing_pereira_1-dataset={dataset_id}_textNoPeriod-activation-bench=None-ave=False'
     optim_id = 'coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True'
     ext_obj = extract_pool[extract_id]()
     ext_obj.load_dataset(splits=20)
