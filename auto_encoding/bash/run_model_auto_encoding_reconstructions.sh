@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_eh
-#SBATCH --array=0-11
+#SBATCH --array=0-111
 #SBATCH --time=01:00:00
 #SBATCH --mem=20G
 #SBATCH --gres=gpu:1
@@ -13,10 +13,11 @@
 i=0
 #'roberta-base' 'xlnet-large-cased' 'bert-large-uncased-whole-word-masking' 'xlm-mlm-en-2048' \
 #    'gpt2-xl'  'albert-xxlarge-v2' 'ctrl'
-for model_name in 'roberta-base' ; do
+for model_name in 'roberta-base' 'xlnet-large-cased' 'bert-large-uncased-whole-word-masking' 'xlm-mlm-en-2048' \
+'gpt2-xl'  'albert-xxlarge-v2' 'ctrl' ; do
   for bottleneck_size in 16 32 ; do
     for hidden_size in  128 256 ; do
-      for alpha_r in '0' '0.000001' '0.00001'  ; do
+      for alpha_r in '0' '0.00001' '0.001'  '0.1' ; do
         model_list[$i]="$model_name"
         bottleneck_list[$i]="$bottleneck_size"
         hidden_list[$i]="$hidden_size"

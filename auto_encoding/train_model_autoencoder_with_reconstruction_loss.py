@@ -110,7 +110,7 @@ if __name__ == '__main__':
     learning_rate = 1e-4
     batch_size = 128
 
-    config = {"lr": learning_rate, "num_epochs": 50, "batch_size": batch_size, 'optimizer': 'Adam',
+    config = {"lr": learning_rate, "num_epochs": 100, "batch_size": batch_size, 'optimizer': 'Adam',
                     'alpha': 1, 'beta': 0.00,"model_name":model_name,'bottleneck_size':bottleneck_size,'hidden_size':hidden_size,
               'alpha_r':alpha_r}
 
