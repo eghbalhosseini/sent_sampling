@@ -165,7 +165,7 @@ if __name__ == '__main__':
             "entity": "evlab",
         }})
     random_idx=uuid.uuid4().hex
-    accelerate.trackers[0].run.name = f'{config["model_name"]}_{random_idx}'
+    accelerate.trackers[0].run.name = f'{config["model_name"]}_{bottleneck_size}_{hidden_size}_{alpha_r}_{random_idx[:5]}'
     model_autoencoder, optimizer, train_loader, test_loader,lr_scheduler,mseloss = accelerate.prepare(
         model_autoencoder, optimizer, train_loader, test_loader,lr_scheduler,mseloss)
     abs_step = 1
