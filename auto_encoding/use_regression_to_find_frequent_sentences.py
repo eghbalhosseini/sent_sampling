@@ -301,15 +301,22 @@ if __name__ == '__main__':
     fig.savefig(os.path.join(ANALYZE_DIR, f'correlation_between_ds_parametric_and_estim_max_model_{model_id}_layer_{layer_id}_n_{2*k_sample}.png'), dpi=300)
     # save eps
     fig.savefig(os.path.join(ANALYZE_DIR, f'correlation_between_ds_parametric_and_estim_max_model_{model_id}_layer_{layer_id}_n_{2*k_sample}.pdf'))
-
+    # save ds_min and ds_max sentences as a pickle
     unique_sent=list(set(all_sentences_ds_min_flat))
-    len(unique_sent)
-    #
     unique_sent_id=np.unique([all_sentences_id_min_flat[all_sentences_ds_min_flat.index(x)] for x in unique_sent])
-
     # filter input data  dataframe based on sampler_obj
     input_data_filter=all_input_data_flat[all_input_data_flat['sent_id'].isin(unique_sent_id)]
     # save the sentences in COCA_PREPROCESSED_DIR as a pickle
     save_file_name=os.path.join(COCA_PREPROCESSED_DIR,f'coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_{2*k_sample}.pkl')
     input_data_filter.to_pickle(save_file_name)
+
+    unique_sent=list(set(all_sentences_ds_max_flat))
+
+    unique_sent_id=np.unique([all_sentences_id_max_flat[all_sentences_ds_max_flat.index(x)] for x in unique_sent])
+    # filter input data  dataframe based on sampler_obj
+    input_data_filter=all_input_data_flat[all_input_data_flat['sent_id'].isin(unique_sent_id)]
+    # save the sentences in COCA_PREPROCESSED_DIR as a pickle
+    save_file_name=os.path.join(COCA_PREPROCESSED_DIR,f'coca_preprocessed_all_clean_100K_sample_1_2_ds_max_est_n_{2*k_sample}.pkl')
+    input_data_filter.to_pickle(save_file_name)
+
 
