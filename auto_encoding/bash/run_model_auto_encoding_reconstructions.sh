@@ -15,9 +15,9 @@ i=0
 #    'gpt2-xl'  'albert-xxlarge-v2' 'ctrl'
 for model_name in 'roberta-base' 'xlnet-large-cased' 'bert-large-uncased-whole-word-masking' 'xlm-mlm-en-2048' \
 'gpt2-xl'  'albert-xxlarge-v2' 'ctrl' ; do
-  for bottleneck_size in 16 32 ; do
-    for hidden_size in  128 256 ; do
-      for alpha_r in '0' '0.00001' '0.001'  '0.1' ; do
+  for bottleneck_size in 32 ; do
+    for hidden_size in   256 ; do
+      for alpha_r in '0' '0.00001'  ; do
         model_list[$i]="$model_name"
         bottleneck_list[$i]="$bottleneck_size"
         hidden_list[$i]="$hidden_size"
