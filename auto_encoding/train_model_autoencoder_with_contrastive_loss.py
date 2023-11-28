@@ -199,7 +199,7 @@ if __name__ == '__main__':
               'alpha_r':alpha_r,'temperature':1,"lambda_recon":.3}
 
     gradient_accumulation_steps=1
-    dataset_id = 'coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10K'
+    dataset_id = 'coca_preprocessed_all_clean_100K_sample_1_2_ds_max_est_n_10K'
     extract_id = f'group=best_performing_pereira_1-dataset={dataset_id}_textNoPeriod-activation-bench=None-ave=False'
     optim_id = 'coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True'
 
