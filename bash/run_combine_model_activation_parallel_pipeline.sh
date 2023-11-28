@@ -15,6 +15,7 @@ splits=20
 # coca_preprocessed_all_clean_100K_sample_1
 #roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
 #        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
+
 for dataset in coca_preprocessed_all_clean_100K_sample_1_2_ds_max_est_n_10K  ; do
       for stim_type in textNoPeriod ; do
       for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
