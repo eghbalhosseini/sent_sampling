@@ -29,6 +29,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import matplotlib.image as mpimg
 from torch.utils.data import Subset
 import torch.nn.functional as F
+from sklearn.decomposition import PCA
+import pandas as pd
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
 from torchvision.transforms.functional import to_pil_image as to_pil_image
 class Encoder(torch.nn.Module):
     def __init__(self,n_input,n_hidden,n_bottleneck):
@@ -185,12 +189,12 @@ if __name__ == '__main__':
                 'xlnet-large-cased':'autoencoder_recon_coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10K_model_xlnet-large-cased_b_32_h_256_alpha_r_1e-05_id_629206d7761049408a4550ce12c11496'}
     bottleneck_size=32
     hidden_size=256
-    alpha_r=1e-10
+    alpha_r=1e-5
 # set the config
-    learning_rate =  1e-5
-    batch_size = 128
+    learning_rate =  1e-4
+    batch_size = 1024
 
-    config = {"lr": learning_rate, "num_epochs": 250, "batch_size": batch_size, 'optimizer': 'Adam',
+    config = {"lr": learning_rate, "num_epochs": 1000, "batch_size": batch_size, 'optimizer': 'Adam',
                     'alpha': 1, 'beta': 0.00,"source_model":source_model,'bottleneck_size':bottleneck_size,'hidden_size':hidden_size,
               'alpha_r':alpha_r,'temperature':1,"lambda_recon":.3}
 
@@ -274,8 +278,8 @@ if __name__ == '__main__':
         source_autoencoder,target_autoencoders, optimizer_source,optimizers_targets, train_loader, test_loader,lr_scheduler_source,lr_schedulers_targets,mseloss)
     abs_step = 1
     wandb_tracker = accelerate.get_tracker("wandb")
-    target_model_idx = 4
-    target_model_idx = np.random.choice(range(len(target_model_names)))
+    target_model_idx = 0
+    #target_model_idx = np.random.choice(range(len(target_model_names)))
     optimizer_target = optimizers_targets[target_model_idx]
     target_autoencoder = target_autoencoders[target_model_idx]
     target_model_name = target_model_names[target_model_idx]
@@ -284,7 +288,10 @@ if __name__ == '__main__':
         epoch_loss = 0
         example_ct = 0
         step_ct = 0
-
+        target_model_idx = np.random.choice(range(len(target_model_names)))
+        optimizer_target = optimizers_targets[target_model_idx]
+        target_autoencoder = target_autoencoders[target_model_idx]
+        target_model_name = target_model_names[target_model_idx]
         source_autoencoder.train()
         target_autoencoder.train()
         torch.cuda.empty_cache()
@@ -416,5 +423,95 @@ if __name__ == '__main__':
     # # save the config
     # save_obj(config, Path(save_dir, 'config.pkl'))
 
+
+
+
+    #%% test how ds_min and ds_max are projected in the latent space
+    dataset_id = 'ds_parametric'
+    stim_type= 'textNoPeriod'
+    layer_id=44
+    sample_extractor_id = f'group={config["source_model"]}_layers-dataset={dataset_id}_{stim_type}-activation-bench=None-ave=False'
+    ds_param_obj = extract_pool[sample_extractor_id]()
+    ds_param_obj.load_dataset()
+
+    model_activation_name = f"{ds_param_obj.dataset}_{ds_param_obj.stim_type}_{ds_param_obj.model_spec[layer_id]}_layer_{layer_id}_{ds_param_obj.extract_name}_ave_{ds_param_obj.average_sentence}.pkl"
+    ds_parametric_layer = load_obj(os.path.join(SAVE_DIR, model_activation_name))
+    ds_stim=ds_param_obj.data_
+    # select part of the data framne that have sentence_type =='ds_min'
+    ds_min_loc = [idx for idx, x in enumerate(ds_stim['sent_type']) if x == 'ds_min']
+    ds_max_loc=[idx for idx, x in enumerate(ds_stim['sent_type']) if x == 'ds_max']
+    # get the sentence id
+    ds_min_id = np.unique([ds_stim['sent_id'][x] for x in ds_min_loc])
+    ds_max_id = np.unique([ds_stim['sent_id'][x] for x in ds_max_loc])
+
+    # go through the ds_parametric layer and select elements that have the same sentence id
+    ds_min_loc_layer = [x for idx, x in enumerate(ds_parametric_layer) if x[2] in ds_min_id]
+    ds_max_loc_layer = [x for idx, x in enumerate(ds_parametric_layer) if x[2] in ds_max_id]
+    # do the same thin
+    # get the activations
+    ds_min_act = [x[0] for x in ds_min_loc_layer]
+    ds_max_act = [x[0] for x in ds_max_loc_layer]
+
+    # get encoded activations in eval mode
+    source_autoencoder.eval()
+    torch.cuda.empty_cache()
+    with torch.no_grad():
+        ds_min_encoded = source_autoencoder.encoder(torch.tensor(ds_min_act).to(device))
+        ds_max_encoded = source_autoencoder.encoder(torch.tensor(ds_max_act).to(device))
+        #ds_max_encoded_target = target_autoencoder.encoder(torch.tensor(ds_max_act).to(device))
+        #ds_min_encoded_target = target_autoencoder.encoder(torch.tensor(ds_min_act).to(device))
+        # get encoder for act_source
+        act_source_encoded = source_autoencoder.encoder(act_source.to(device))
+        # do the same for act_target
+
+    U, S, V = torch.pca_lowrank(act_source_encoded)
+    U = U[:, :2]
+    # mutiply ds_min_encoded and ds_max_encoded by by V[:,:2]
+    ds_min_pca = torch.matmul(ds_min_encoded, V[:, :2])
+    ds_max_pca = torch.matmul(ds_max_encoded, V[:, :2])
+    # devide them by S[:2]
+    ds_min_pca = ds_min_pca / S[:2]
+    ds_max_pca = ds_max_pca / S[:2]
+    # combine ds_min_pca and ds_max_pca using torch
+    x_pca = torch.cat((ds_min_pca, ds_max_pca), dim=0)
+
+    x_pca = torch.split(x_pca, x_pca.shape[0])[0]
+    # make it a list of lists
+    x_pca = [x.tolist() for x in x_pca]
+    labels = torch.concat((torch.tensor(np.repeat(0, ds_min_pca.shape[0]))
+                           , torch.tensor(np.repeat(1, ds_max_pca.shape[0]))), axis=0).tolist()
+    x_pca = [item1 + [item2] for item1, item2 in zip(x_pca, labels)]
+
+    wandb_tracker.log({"embedding_ds": wandb.Table(columns=["pc1", "pc2","label"], data=x_pca)}, step=abs_step)
+
     accelerate.end_training()
     torch.cuda.empty_cache()
+    # do a pca on act_source_encoded
+    # pca_src = PCA(n_components=2,whiten=False)
+    # scaler = StandardScaler()
+    # source_data_standardized = scaler.fit_transform(act_source_encoded.detach().cpu().numpy())
+    # ds_min_standardized = scaler.transform(ds_min_encoded.detach().cpu().numpy())
+    # ds_max_standardized = scaler.transform(ds_max_encoded.detach().cpu().numpy())
+    # pca_src.fit(source_data_standardized)
+    # # transform ds_min_encoded and ds_max_encoded
+    # ds_min_encoded_pca = pca_src.fit_transform(ds_min_standardized)
+    # ds_max_encoded_pca = pca_src.fit_transform(ds_max_standardized)
+    # source_encoded_pca=pca_src.fit_transform(source_data_standardized)
+    #
+    #
+    # x_pca = np.concatenate((ds_min_pca.detach().cpu().numpy(), ds_max_pca.detach().cpu().numpy()), axis=0)
+    #     # create labels max and min
+    #     # create a df with x_pca and labels
+    # df = pd.DataFrame(x_pca, columns=['x', 'y'])
+    # df['labels'] = labels
+    # g = sns.jointplot(
+    #         data=df,
+    #         x="x", y="y", hue="labels",
+    #         kind="scatter",s =5 )
+    # ax = g.ax_joint
+    # # plot x_pca_source in the background as a scatter using sns
+    # df = pd.DataFrame(source_encoded_pca, columns=['x', 'y'])
+    # df['labels'] = 'source'
+    # sns.scatterplot(data=df, x="x", y="y", hue="labels", ax=ax, alpha=0.1, s=5)
+    # plt.show()
+    #
