@@ -11,7 +11,6 @@
 i=0
 splits=20
 
-#neural_ctrl_stim
 # coca_preprocessed_all_clean_100K_sample_1
 #roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
 #        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
