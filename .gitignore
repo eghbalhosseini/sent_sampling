@@ -132,3 +132,7 @@ dmypy.json
 
 # SLURM 
 *.out
+.idea/deployment.xml
+.idea/misc.xml
+.idea/sent_sampling.iml
+.DS_Store
