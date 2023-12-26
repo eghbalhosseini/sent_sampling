@@ -14,10 +14,10 @@ elif getpass.getuser() == 'ehoseini':
 
 
 sys.path.extend([SAMPLING_PARENT, SAMPLING_PARENT])
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
-from utils import extract_pool
-from utils.optim_utils import optim_pool, low_dim_project
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool, low_dim_project
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib as mpl
@@ -27,10 +27,10 @@ from matplotlib.pyplot import GridSpec
 import pandas as pd
 from pathlib import Path
 import torch
-from utils import make_shorthand
+from sent_sampling.utils import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
-from utils.optim_utils import low_dim_project
+from sent_sampling.utils.optim_utils import low_dim_project
 
 if __name__ == '__main__':
     extract_id = 'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'

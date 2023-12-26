@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
 from pathlib import Path
-from utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,ANALYZE_DIR
+from sent_sampling.utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,ANALYZE_DIR
 from pathlib import Path
 import numpy as np
 from tqdm import tqdm
@@ -19,8 +19,8 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import warnings
-from utils import extract_pool
-from utils.data_utils import COCA_PREPROCESSED_DIR
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.data_utils import COCA_PREPROCESSED_DIR
 # import PCA
 from sklearn.decomposition import PCA
 #suppress warnings

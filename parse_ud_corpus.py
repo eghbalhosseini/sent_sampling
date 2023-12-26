@@ -6,7 +6,7 @@ import xlrd
 import pickle
 import numpy as np
 import copy
-from utils.data_utils import UD_PARENT, LEX_PATH_SET, UD_ENGLISH_PATH_SET, UD_PATH, uppercount
+from sent_sampling.utils.data_utils import UD_PARENT, LEX_PATH_SET, UD_ENGLISH_PATH_SET, UD_PATH, uppercount
 # file path constructor
 
 # extract lexical features

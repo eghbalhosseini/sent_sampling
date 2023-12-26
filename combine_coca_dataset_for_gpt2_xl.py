@@ -1,9 +1,9 @@
 import sys
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils import extract_pool
-from utils.extract_utils import model_extractor
-from utils.data_utils import RESULTS_DIR, save_obj,load_obj,SAVE_DIR,COCA_CORPUS_DIR
-from utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.extract_utils import model_extractor
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj,load_obj,SAVE_DIR,COCA_CORPUS_DIR
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
 import os
 import numpy as np
 from tqdm import tqdm

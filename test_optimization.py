@@ -2,7 +2,7 @@ import importlib
 #import utils
 #importlib.reload(utils)
 
-from utils import extract_pool
+from sent_sampling.utils import extract_pool
 #name='group=test_early_layer-dateset=ud_sentences_filter-brain_resp-ave=False'
 #name= 'group=test_brain_act-dateset=ud_sentences_filter_sample-brain_resp-bench=Fedorenko2016v3-encoding-weights-ave=False'
 #name='group=set_2-dataset=ud_sentences_token_filter_v3-brain_resp-bench=Fedorenko2016v3-encoding-weights-ave=False'
@@ -17,7 +17,7 @@ name='group=best_performing_pereira_5-dataset=ud_sentencez_token_filter_v3-activ
 
 import utils.optim_utils
 importlib.reload(utils.optim_utils)
-from utils.optim_utils import optim, optim_pool
+from sent_sampling.utils.optim_utils import optim, optim_pool
 
 test=extract_pool[name]()
 

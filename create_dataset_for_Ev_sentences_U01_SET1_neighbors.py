@@ -1,11 +1,11 @@
 import numpy as np
-from utils import extract_pool
-from utils.extract_utils import model_extractor
-from utils.optim_utils import optim_pool
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.extract_utils import model_extractor
+from sent_sampling.utils.optim_utils import optim_pool
 import argparse
-from utils.extract_utils import model_extractor, model_extractor_parallel
-from utils.data_utils import SENTENCE_CONFIG
-from utils.data_utils import RESULTS_DIR, save_obj, load_obj
+from sent_sampling.utils.extract_utils import model_extractor, model_extractor_parallel
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj, load_obj
 import os
 import pandas as pd
 import numpy as np
@@ -17,7 +17,7 @@ import re
 import importlib
 import sys
 importlib.reload(sys.modules['utils.data_utils'])
-from utils.data_utils import SENTENCE_CONFIG, UD_PARENT
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG, UD_PARENT
 import matplotlib
 import ftfy
 

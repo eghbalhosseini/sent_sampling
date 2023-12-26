@@ -13,8 +13,8 @@ import pickle
 import scipy
 import seaborn as sns
 sys.path.extend([SAMPLING_PARENT, SAMPLING_PARENT])
-from utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
-from utils import extract_pool
+from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from sent_sampling.utils import extract_pool
 from tqdm import tqdm
 import pandas as pd
 import torch
@@ -24,7 +24,7 @@ from transformers import AutoConfig,AutoModelForCausalLM,AutoTokenizer,Generatio
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import minicons
 from minicons import scorer
-from utils import make_shorthand
+from sent_sampling.utils import make_shorthand
 
 
 # determine the device

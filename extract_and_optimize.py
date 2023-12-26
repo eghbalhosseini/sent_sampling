@@ -1,7 +1,7 @@
-from utils import extract_pool
-from utils.optim_utils import optim_pool
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.optim_utils import optim_pool
 import argparse
-from utils.data_utils import RESULTS_DIR, save_obj
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj
 import os
 parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('extractor_id', type=str,

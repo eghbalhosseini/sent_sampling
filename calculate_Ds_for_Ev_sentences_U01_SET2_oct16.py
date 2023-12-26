@@ -1,16 +1,16 @@
 import warnings
 
 import numpy as np
-from utils import extract_pool
-from utils.extract_utils import model_extractor
-from utils.optim_utils import optim_pool
+from sent_sampling.utils import extract_pool
+from sent_sampling.utils.extract_utils import model_extractor
+from sent_sampling.utils.optim_utils import optim_pool
 import argparse
 import utils.optim_utils
-from utils.extract_utils import model_extractor, model_extractor_parallel, SAVE_DIR
-from utils.data_utils import SENTENCE_CONFIG
+from sent_sampling.utils.extract_utils import model_extractor, model_extractor_parallel, SAVE_DIR
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG
 
-from utils.optim_utils import optim, optim_pool, pt_create_corr_rdm_short, optim_group
-from utils.data_utils import RESULTS_DIR, save_obj, load_obj, ANALYZE_DIR
+from sent_sampling.utils.optim_utils import optim, optim_pool, pt_create_corr_rdm_short, optim_group
+from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj, load_obj, ANALYZE_DIR
 import os
 import pandas as pd
 import numpy as np

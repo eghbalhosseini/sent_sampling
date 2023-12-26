@@ -5,13 +5,13 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
-from utils.data_utils import SENTENCE_CONFIG, RESULTS_DIR, UD_PARENT, SAVE_DIR,load_obj,save_obj
-from utils import extract_pool
+from sent_sampling.utils.data_utils import SENTENCE_CONFIG, RESULTS_DIR, UD_PARENT, SAVE_DIR,load_obj,save_obj
+from sent_sampling.utils import extract_pool
 import pickle
 from neural_nlp.models import model_pool, model_layers
 import fnmatch
 import re
-from utils.extract_utils import model_extractor_parallel
+from sent_sampling.utils.extract_utils import model_extractor_parallel
 import numpy as np
 if __name__ == '__main__':
     extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
