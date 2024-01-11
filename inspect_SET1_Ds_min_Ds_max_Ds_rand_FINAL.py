@@ -108,7 +108,7 @@ if __name__ == '__main__':
     #          np.divide((55, 76, 128), 256)]
     colors = [np.divide((0, 157, 255), 255), np.divide((128, 128, 128), 256),np.divide((255, 98, 0), 255)]
 
-    # get obj= from optim_id
+    # get obj= from optim
     obj_id = ['Ds_max', '2-Ds_max']
     # get n_samples from each element in optim_id
     low_resolution=False
