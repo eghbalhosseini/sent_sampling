@@ -11,6 +11,7 @@ def normalized(a, axis=-1, order=2):
     return a / np.expand_dims(l2, axis)
 
 
+# testing the curvature
 def compute_model_activations(model,indexed_tokens,device):
     # get activations
     all_layers = []
