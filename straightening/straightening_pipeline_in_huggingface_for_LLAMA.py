@@ -40,7 +40,7 @@ if __name__ == '__main__':
     indexed_tokens = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_text]
 
     # if model continuation dict doesnt exsist create it
-    all_layers=compute_model_activations(model,indexed_tokens)
+    all_layers=compute_model_activations(model,indexed_tokens,device)
     curvature_dict_true=compute_model_curvature(all_layers)
     # create a dict for saving
     save_dict={}

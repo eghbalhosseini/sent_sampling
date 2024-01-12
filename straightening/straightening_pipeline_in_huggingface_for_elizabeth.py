@@ -96,3 +96,4 @@ if __name__ == '__main__':
                     (np.nanmean(curve_, axis=1) + np.nanstd(curve_, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
                     color=(0, 0, 0), alpha=.2, zorder=1)
 
+    fig.savefig(os.path.join(ANALYZE_DIR, f'{modelname}_curvature_change_vs_voxel_activation_Pereira.pdf'), transparent=True)
