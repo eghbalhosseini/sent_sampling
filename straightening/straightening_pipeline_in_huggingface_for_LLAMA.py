@@ -14,13 +14,13 @@ from pathlib import Path
 # ad arg parser
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('--modelname', type=str, default='LLAMA/13B')
-
+parser.add_argument('--modelname', type=str, default='LLAMA_13B')
+args = parser.parse_args()
 
 if __name__ == '__main__':
     #%%
-    args = parser.parse_args()
-    modelname=args.modelname
+
+    modelname=str(args.modelname)
     weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}'
     tokenizer = LlamaTokenizer.from_pretrained(weight_path)
     model = LlamaForCausalLM.from_pretrained(weight_path)
