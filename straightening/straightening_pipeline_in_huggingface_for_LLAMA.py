@@ -5,26 +5,41 @@ import matplotlib.cm as cm
 import matplotlib
 from transformers import LlamaForCausalLM, LlamaTokenizer,LlamaConfig
 import torch
-import os
 from sent_sampling.utils.curvature_utils import compute_model_activations,compute_model_curvature
 from sent_sampling.utils.data_utils import ANALYZE_DIR
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+torch.cuda.device_count()
 from pathlib import Path
 # ad arg parser
 import argparse
-parser = argparse.ArgumentParser()
-parser.add_argument('--modelname', type=str, default='LLAMA_13B')
-args = parser.parse_args()
+from accelerate import init_empty_weights
+from accelerate import load_checkpoint_and_dispatch,infer_auto_device_map
+from accelerate.utils import get_balanced_memory
+import pickle
+#parser = argparse.ArgumentParser()
+#parser.add_argument('--modelname', type=str, default='LLAMA_13B')
+#args = parser.parse_args()
+# get the number of available gpus
+
+
 
 if __name__ == '__main__':
     #%%
-
-    modelname=str(args.modelname)
+    #modelname=str(args.modelname)
+    modelname='LLAMA_65B'
     weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}'
+    config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}/config.json'
     tokenizer = LlamaTokenizer.from_pretrained(weight_path)
-    model = LlamaForCausalLM.from_pretrained(weight_path)
-    model.to(device)
+    modelConfig=LlamaConfig.from_json_file(config_path)
+    with init_empty_weights():
+        model = LlamaForCausalLM(modelConfig)
+
+    #device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "48GiB", 1: "48GiB" })
+    device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
+    model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
+    for i in model.named_parameters():
+        print(f"{i[0]} -> {i[1].device}")
+    # test model
+    # reshape it
     masked=False
     dataset='ud_sentencez_token_filter_v3_textNoPeriod'
     extract_id = ['group=gpt2_layers-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=None']
@@ -40,16 +55,18 @@ if __name__ == '__main__':
     indexed_tokens = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_text]
 
     # if model continuation dict doesnt exsist create it
-    all_layers=compute_model_activations(model,indexed_tokens,device)
+    all_layers=compute_model_activations(model,indexed_tokens,model.device)
     curvature_dict_true=compute_model_curvature(all_layers)
-    # create a dict for saving
-    save_dict={}
-    save_dict['curvature_dict_true']=curvature_dict_true
-    save_dict['modelname']=modelname
-    activations = all_layers['activations']
-    save_dict['activations']=activations
-    # save the dict
-    save_path=Path(ANALYZE_DIR,'straightening', f'{modelname}_curvature_{dataset}.pt')
+    # save it as pickle
+    # save individual layers as pt file
+    for idk,layer_ in enumerate(all_layers):
+        layer_=torch.stack(layer_).half()
+        layer_=layer_.cpu()
+        layer_save_path=Path(ANALYZE_DIR,'straightening',f'{modelname}', f'{modelname}_activations_{dataset}_layer_{idk}.pt')
+        # make sure it paernt dir exists
+        layer_save_path.parent.mkdir(parents=True, exist_ok=True)
+        torch.save(layer_,layer_save_path.__str__())
+
     #%%
     curve_ = curvature_dict_true['curve']
     fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
@@ -96,7 +113,7 @@ if __name__ == '__main__':
                     color=(0, 0, 0), alpha=.2, zorder=1)
     ax.set_ylim([102.5, 125])
     fig.show()
-    save_path=Path(ANALYZE_DIR,'straightening', f'{modelname}_curvature_{dataset}.pdf')
+    fig_save_path=Path(ANALYZE_DIR,'straightening', f'{modelname}_curvature_{dataset}.pdf')
     # make sure it paernt dir exists
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(save_path.__str__(), transparent=True)
+    fig_save_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(fig_save_path.__str__(), transparent=True)
