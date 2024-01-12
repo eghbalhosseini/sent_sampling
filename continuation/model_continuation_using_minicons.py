@@ -23,6 +23,11 @@ from transformers import AutoConfig,AutoModelForCausalLM,AutoTokenizer,Generatio
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import minicons
 from minicons import scorer
+import matplotlib
+
+matplotlib.rcParams['font.size'] = 10
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 
 if __name__ == '__main__':
     extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False'

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
-    <option name="sdkUUID" value="ed151538-e17f-4cf9-9e40-290433297eb5" />
+    <option name="sdkName" value="neural_align" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="neural_nlp_2022" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="om_neural_nlp_2022@node094" project-jdk-type="Python SDK" />
 </project>

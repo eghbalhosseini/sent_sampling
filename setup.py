@@ -10,7 +10,7 @@ requirements = [
 "pandas",
 "numpy",
 "seaborn",
-"torch",
+#"torch",
 "transformers",
 "tqdm",
 "wandb",

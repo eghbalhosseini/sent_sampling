@@ -8,32 +8,17 @@ from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULT
 from sent_sampling.utils import extract_pool
 from sent_sampling.utils.optim_utils import optim_pool, low_dim_project
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib as mpl
-import seaborn
-from tqdm import tqdm
 import pandas as pd
-from pathlib import Path
 import torch
-from scipy.spatial.distance import pdist, squareform
-# check if gpu is available
 import seaborn as sns
 import numpy as np
 from sklearn.decomposition import PCA
-import umap
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-import matplotlib.colors as mcolors
-import torch
-import pickle
+import math
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import TensorDataset, DataLoader
-from sklearn.model_selection import train_test_split
-from torch.utils.data import random_split
 from auto_encoding.encoding_utils import corr_coeff, similarity_loss, normalize, CustomLayer
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import Normalizer
+from auto_encoding.sweep_joint_model_embedding_for_frequent_set import build_dataset,build_optimizer,build_network
 class Encoder(torch.nn.Module):
     def __init__(self,n_features,n_hidden,n_bottleneck):
         super(Encoder, self).__init__()
@@ -74,85 +59,97 @@ class JointEmbedding(nn.Module):
 
 if __name__ == '__main__':
 
+    config = {
+                   "epochs": 1000,
+                   "batch_size": 128,
+                   "lr":0.0002603876064984116,
+                   "hidden_size":512,
+                   "bottleneck_size":64,
+                   "optimizer":"adam",
+                   'alpha_r': 0.00015641566751182945,
+                   "loss_mode":'SIM',
+                    'p_dropout':0.1,
+                   'extract_id':'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False',
+                   'activation_loss':False,
+                    'normalize':True,
+                    'theta_size':0
+               }
+
     #%% compute the pca
     n_components=650
-    extract_id = 'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_100K_sample_1_estim_ds_min_textNoPeriod-activation-bench=None-ave=False'
-    model_pca_path=Path(ANALYZE_DIR,f'{extract_id}_pca_n_comp_{n_components}.pkl')
-    train_pca_loads=pd.read_pickle(model_pca_path.__str__())
-    #
-    standard_scaler = StandardScaler()
+    train_loader, test_loader = build_dataset(extract_id=config['extract_id'], n_components=n_components,
+                                              batch_size=config['batch_size'], normalize=config['normalize'])
+    model = build_network(650, config['hidden_size'], config['bottleneck_size'], 650, config['theta_size'], p_dropout=config['p_dropout'])
 
-    # create a plot with the number of models
-    # get model names from ext_obj.model_group_act
-    input_size = n_components
-    output_size=n_components
-    hidden_size = 512
-    bottleneck_size = 64
-    theta_size=0
-    num_epochs = 1000
-    learning_rate = 0.00047670875475033873
-    batch_size = 128
-    alpha_activation=0.000909658634735287
-    input_data=[torch.tensor(x['act']) for x in train_pca_loads]
-    input_data = [torch.tensor(standard_scaler.fit_transform(X)) for X in input_data]
-    input_data_shape=[x.shape[1] for x in input_data]
-    train_data = torch.stack(input_data, dim=1).to(torch.double)
-    # switch the dims to be batch x number of models
-    train_size = int(0.9 * len(train_data))
-    test_size = len(train_data) - train_size
+    optimizer = build_optimizer(model, config['optimizer'], learning_rate=config['lr'])
 
-    train_dataset, test_dataset = random_split(train_data, [train_size, test_size])
-    print("Train set size:", len(train_dataset))
-    print("Test set size:", len(test_dataset))
-
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-    model = JointEmbedding(input_size+theta_size, hidden_size, bottleneck_size,output_size,theta_size=theta_size).to(device)
-
-
-    optimizer = optim.Adam(list(model.parameters()), lr=learning_rate)
     mseloss = torch.nn.MSELoss(reduction='mean')
     # Training loop
-    for epoch in tqdm(range(num_epochs)):
-        epoch_loss = 0.0
-        # Training
+    for epoch in range(config['epochs']):
+        epoch_loss = 0
+        example_ct = 0
+        step_ct = 0
         model.train()
-        for inputs in train_loader:
-            inputs = inputs.to(device)
-            # make it double
-            # make it a float tensor
-            inputs = inputs.to(torch.float32)
-            encoded,decoded=model(inputs)
+        n_steps_per_epoch = math.ceil(len(train_loader.dataset) / config['batch_size'])
+        for step, input in enumerate(train_loader):
+            # Move data to the device (e.g., GPU) if available
+            inputs = input.to(device)
+            encoded, decoded = model(inputs)
             # Zero the gradients
-            similarities = similarity_loss(inputs, decoded)
-            mse_val=mseloss(decoded,inputs)
-            XY_loss = torch.sum(similarities) + torch.var(similarities)
-            activation_loss = alpha_activation * torch.norm(encoded, p=2)
-            loss = activation_loss+ XY_loss            # Backward pass and optimization
-            #loss= XY_loss
-            #loss = mse_val
+            if config['loss_mode'] == 'MSE':
+                loss_act = mseloss(inputs, decoded)
+            elif config['loss_mode'] == 'SIM':
+                similarities = similarity_loss(inputs, decoded)
+                loss_act = torch.mean(similarities)  # + torch.sqrt(torch.var(similarities))
+            if config['activation_loss']:
+                activation_loss = (1 / config['bottleneck_size']) * config['alpha_r'] * torch.norm(encoded, p=2)
+            else:
+                activation_loss = 0
+            loss = activation_loss + loss_act
+
+            # Backward pass and optimization
             optimizer.zero_grad()
+            max_grad_norm = 0.1  # Set your maximum threshold
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             optimizer.step()
-
             epoch_loss += loss.item()
-        # Test
-        model.eval()
-        with torch.no_grad():
-            test_loss = 0.0
-            for inputs in test_loader:
-                inputs = inputs.to(device)
-                inputs = inputs.to(torch.float32)
-                encoded, decoded = model(inputs)
-                test_similarites=similarity_loss(inputs, decoded)
-                activation_loss = alpha_activation * torch.norm(encoded, p=2)
-                XY_loss = torch.sum(test_similarites)# + torch.var(test_similarites)
-                batch_loss = XY_loss+ XY_loss
-                # Compute the loss
-                test_loss += batch_loss.item()
+            metrics = {"train/train_loss": loss,
+                       "train/epoch": (step + 1 + (n_steps_per_epoch * epoch)) / n_steps_per_epoch,
+                       "train/example_ct": example_ct}
+            step_ct += 1
+            example_ct += len(inputs)
+            # Test
+            model.eval()
+            with torch.no_grad():
+                test_loss = 0.0
+                for inputs in test_loader:
+                    inputs = inputs.to(device)
+                    #
+                    encoded, decoded = model(inputs)
+                    if config['loss_mode'] == 'MSE':
+                        loss_act = mseloss(inputs, decoded)
+                    elif config['loss_mode'] == 'SIM':
+                        similarities = similarity_loss(inputs, decoded)
+                        loss_act = torch.mean(similarities) + torch.sqrt(torch.var(similarities))
+                    if config['activation_loss']:
+                        activation_loss = (1 / config['bottleneck_size']) * config['alpha_r'] * torch.norm(encoded, p=2)
+                    else:
+                        activation_loss = 0
 
-        # Print epoch loss
-        print("Epoch [{}/{}], Loss: {:.4f}, Test Loss: {:.4f}".format(epoch + 1, num_epochs, epoch_loss, test_loss))
+                    loss = activation_loss + loss_act
+
+                    # XY_loss = torch.sum(test_similarites) + torch.sqrt(torch.var(test_similarites))
+                    batch_loss = loss
+                    # Compute the loss
+                    test_loss += batch_loss.item()
+                    # 🐝 Log train and validation metrics to wandb
+            val_metrics = {"val/val_loss": test_loss}
+            print("Epoch [{}/{}], Loss: {:.4f}, Test Loss: {:.4f}".format(epoch + 1, config['epochs'], epoch_loss,
+                                                                          test_loss))
+        # Test
+
     model_pca_loads=load_obj(os.path.join(ANALYZE_DIR,'model_pca_n_comp_650.pkl'))
     modle_names=[x['model_name'] for x in model_pca_loads]
     model_sh = ['RoBERTa', 'XLNet-L', 'BERT-L', 'XLM', 'GPT2-XL', 'ALBERT-XXL', 'CTRL']
@@ -167,7 +164,7 @@ if __name__ == '__main__':
     input_data_max = torch.stack(input_data_max).to(device).permute(1,0,2).to(torch.float32)
     input_data_rand = torch.stack(input_data_rand).to(device).permute(1,0,2).to(torch.float32)
     # reshape input_data_min to have the shape n_samples x n_features x n_models
-    #normalize the data
+
 
 
 

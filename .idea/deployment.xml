@@ -9,17 +9,24 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="ehoseini@node084:22 agent">
+      <paths name="ehoseini@node094:22 agent">
         <serverdata>
           <mappings>
             <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="ehoseini@node094:22 agent">
+      <paths name="ehoseini@node094:22 agent (2)">
         <serverdata>
           <mappings>
-            <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
+            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="ehoseini@node094:22 agent (3)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/om2/user/ehoseini/neural_nlp_2022" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

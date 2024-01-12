@@ -279,6 +279,8 @@ SENTENCE_CONFIG = [
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_4',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_4.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_5',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_5.pkl')),
     dict(name='coca_preprocessed_all_clean_100K_sample_1_estim_ds_min',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1_estim_ds_min.pkl')),
+    dict(name='coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10K',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10000.pkl')),
+    dict(name='coca_preprocessed_all_clean_100K_sample_1_2_ds_max_est_n_10K',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1_2_ds_max_est_n_10000.pkl')),
     dict(name='neural_ctrl_stim',file_loc=os.path.join(AUTO_ENCODER_DIR,'beta-control-neural_stimset_D-S_light_freq_extract.pkl')),
     dict(name='ds_parametric',file_loc=os.path.join(DSPARAMETRIC_DIR,'ds_parametric_extract.pkl')),
     dict(name='pereira2018_243sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),

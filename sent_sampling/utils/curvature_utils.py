@@ -9,11 +9,15 @@ def normalized(a, axis=-1, order=2):
     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
     l2[l2==0] = 1
     return a / np.expand_dims(l2, axis)
-def compute_model_activations(model,indexed_tokens):
+
+
+# testing the curvature
+# just testing whay its not working
+def compute_model_activations(model,indexed_tokens,device):
     # get activations
     all_layers = []
     for i in tqdm(range(len(indexed_tokens))):
-        tokens_tensor = torch.tensor([indexed_tokens[i]]).to('cuda')
+        tokens_tensor = torch.tensor([indexed_tokens[i]]).to(device)
         with torch.no_grad():
             outputs = model(tokens_tensor, output_hidden_states=True, output_attentions=False)
             hidden_states = outputs['hidden_states']
