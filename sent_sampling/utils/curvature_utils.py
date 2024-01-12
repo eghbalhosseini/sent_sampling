@@ -12,6 +12,7 @@ def normalized(a, axis=-1, order=2):
 
 
 # testing the curvature
+# just testing whay its not working
 def compute_model_activations(model,indexed_tokens,device):
     # get activations
     all_layers = []
