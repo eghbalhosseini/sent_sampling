@@ -25,7 +25,7 @@ import pickle
 if __name__ == '__main__':
     #%%
     #modelname=str(args.modelname)
-    modelname='LLAMA_30B'
+    modelname='LLAMA_65B'
     weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}'
     config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}/config.json'
     tokenizer = LlamaTokenizer.from_pretrained(weight_path)
@@ -34,7 +34,9 @@ if __name__ == '__main__':
         model = LlamaForCausalLM(modelConfig)
 
     #device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "48GiB", 1: "48GiB" })
-    device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
+    #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
+    device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],
+                                       max_memory={0: "78GiB", 1: "78GiB", 2: "78GiB", 3: "78GiB"})
     model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
     for i in model.named_parameters():
         print(f"{i[0]} -> {i[1].device}")
