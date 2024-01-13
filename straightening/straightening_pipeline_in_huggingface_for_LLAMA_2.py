@@ -35,7 +35,7 @@ if __name__ == '__main__':
     with init_empty_weights():
         model = LlamaForCausalLM(modelConfig)
 
-    device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "45GiB", 1: "45GiB" })
+    device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "40GiB", 1: "40GiB" })
     #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
     #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],
     #                                   max_memory={0: "42GiB", 1: "78GiB", 2: "78GiB", 3: "78GiB"})
