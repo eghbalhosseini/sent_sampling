@@ -36,7 +36,7 @@ if __name__ == '__main__':
     #device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "48GiB", 1: "48GiB" })
     #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
     device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],
-                                       max_memory={0: "78GiB", 1: "78GiB", 2: "78GiB", 3: "78GiB"})
+                                       max_memory={0: "72GiB", 1: "72GiB", 2: "72GiB", 3: "72GiB"})
     # print device map
     print(device_map)
     model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
