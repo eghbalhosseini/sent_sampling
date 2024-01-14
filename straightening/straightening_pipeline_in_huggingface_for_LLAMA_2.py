@@ -15,9 +15,26 @@ from accelerate import init_empty_weights
 from accelerate import load_checkpoint_and_dispatch,infer_auto_device_map
 from accelerate.utils import get_balanced_memory
 import pickle
-#parser = argparse.ArgumentParser()
-#parser.add_argument('--modelname', type=str, default='LLAMA_13B')
-#args = parser.parse_args()
+from tqdm import tqdm
+def get_gpu_memory_size(gpu_name):
+    if "A100" in gpu_name:
+        return "76GiB"
+    elif "RTX A6000" in gpu_name or "A6000" in gpu_name:
+        return "44GiB"
+    else:
+        return "Unknown Size"
+num_devices = torch.cuda.device_count()
+max_memory_declaration = {}
+
+# Iterate through each CUDA device
+for i in range(num_devices):
+    gpu_name = torch.cuda.get_device_name(i)
+    max_memory_declaration[i] = get_gpu_memory_size(gpu_name)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--modelname', type=str, default='LLAMA_13B')
+args = parser.parse_args()
 # get the number of available gpus
 device_count=torch.cuda.device_count()
 device_type=torch.cuda.get_device_name(0)
@@ -26,19 +43,17 @@ device_type=torch.cuda.get_device_name(0)
 
 if __name__ == '__main__':
     #%%
-    #modelname=str(args.modelname)
-    modelname='13B'
+    modelname=str(args.modelname)
+    #modelname='13B'
     weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA_2_hf/{modelname}'
     config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA_2_hf/{modelname}/config.json'
     tokenizer = LlamaTokenizer.from_pretrained(weight_path)
     modelConfig=LlamaConfig.from_json_file(config_path)
     with init_empty_weights():
         model = LlamaForCausalLM(modelConfig)
-
-    device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "40GiB", 1: "40GiB" })
-    #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
-    #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],
-    #                                   max_memory={0: "42GiB", 1: "78GiB", 2: "78GiB", 3: "78GiB"})
+    # print max memory
+    print(max_memory_declaration)
+    device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory=max_memory_declaration)
     # print device map
     print(device_map)
     model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
@@ -65,7 +80,7 @@ if __name__ == '__main__':
     curvature_dict_true=compute_model_curvature(all_layers)
     # save it as pickle
     # save individual layers as pt file
-    for idk,layer_ in enumerate(all_layers):
+    for idk,layer_ in tqdm(enumerate(all_layers)):
         layer_=torch.stack(layer_).half()
         layer_=layer_.cpu()
         layer_save_path=Path(ANALYZE_DIR,'straightening',f'LLAMA_2_{modelname}', f'LLAMA_2_{modelname}_activations_{dataset}_layer_{idk}.pt')
