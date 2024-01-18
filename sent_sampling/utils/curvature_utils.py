@@ -32,6 +32,7 @@ def compute_model_curvature(all_layers):
     all_layer_curve_rnd = []
     all_layer_curve_rnd_all = []
     for idk, layer_act in tqdm(enumerate(all_layers)):
+        True
         sent_act = [torch.diff(x, axis=0).cpu() for x in layer_act]
         sent_act = [normalized(x) for x in sent_act]
         curvature = []
@@ -45,3 +46,27 @@ def compute_model_curvature(all_layers):
     curve_change = (curve_[1:, :] - curve_[1, :])
     # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
     return dict(curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
+
+def compute_model_curvature_timescale(all_layers,ts):
+    all_layer_curve = []
+    all_layer_curve_all = []
+    all_layer_curve_rnd = []
+    all_layer_curve_rnd_all = []
+    for idk, layer_act in enumerate(all_layers):
+        sent_act = [torch.diff(x, axis=0).cpu() for x in layer_act]
+        sent_act = [xx[:xx.size(0) // ts * ts,:] for xx in sent_act]
+        sent_act = [xx.reshape(xx.size(0) // ts, ts, xx.size(1)) for xx in sent_act]
+        # take the sum along 2nd dim
+        sent_act = [xx.sum(axis=1) for xx in sent_act]
+        sent_act = [normalized(x) for x in sent_act]
+        curvature = []
+        for idy, vec in (enumerate(sent_act)):
+            curve = [np.dot(vec[idx, :], vec[idx + 1, :]) for idx in range(vec.shape[0] - 1)]
+            curvature.append(np.arccos(curve))
+        all_layer_curve.append([np.mean(x) for x in curvature])
+        all_layer_curve_all.append(curvature)
+
+    curve_ = np.stack(all_layer_curve).transpose()
+    curve_change = (curve_[1:, :] - curve_[1, :])
+    # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
+    return dict(timescale=ts,curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
