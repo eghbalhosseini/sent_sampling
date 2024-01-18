@@ -26,6 +26,7 @@ if __name__ == '__main__':
     #%%
     #modelname=str(args.modelname)
     modelname='LLAMA_65B'
+
     weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}'
     config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}/config.json'
     tokenizer = LlamaTokenizer.from_pretrained(weight_path)
