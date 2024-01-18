@@ -1,16 +1,17 @@
 #!/bin/bash
 
 #SBATCH --job-name=LLAMA
-#SBATCH --array=0-3
-#SBATCH --time=36:00:00
+#SBATCH --array=0
+#SBATCH --time=12:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=150G
+#SBATCH --gres=gpu:a100:4
+#SBATCH --mem=128G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for model in  LLAMA_7B LLAMA_13B LLAMA_30B LLAMA_65B ; do
+for model in LLAMA_65B ; do
             model_list[$i]="$model"
             i=$i+1
 done
