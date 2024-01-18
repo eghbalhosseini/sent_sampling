@@ -47,6 +47,7 @@ def compute_model_curvature(all_layers):
     # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
     return dict(curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
 
+# this function compute the curvature for a given timescale
 def compute_model_curvature_timescale(all_layers,ts):
     all_layer_curve = []
     all_layer_curve_all = []
