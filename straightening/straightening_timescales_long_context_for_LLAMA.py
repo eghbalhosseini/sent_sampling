@@ -17,7 +17,8 @@ import pickle
 def tokenize_function(examples):
     outputs = tokenizer(examples['text'])
     return outputs
-
+# use torch.cuda to create a device
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
     #%%
@@ -27,7 +28,7 @@ if __name__ == '__main__':
     config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}/config.json'
     modelConfig=LlamaConfig.from_json_file(config_path)
     tokenizer = LlamaTokenizer.from_pretrained(weight_path)
-    range_low=380
+    range_low=350
     range_high=400
     with init_empty_weights():
         model = LlamaForCausalLM(modelConfig)
@@ -44,7 +45,7 @@ if __name__ == '__main__':
     tokenized_datasets_long = tokenized_datasets.filter(lambda x: range_low <= len(x['input_ids']) <range_high)
     for i in model.named_parameters():
         print(f"{i[0]} -> {i[1].device}")
-    model.to('cuda')
+    model.to(device)
     # test model
     # reshape it
     masked=False
