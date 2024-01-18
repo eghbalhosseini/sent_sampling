@@ -2,11 +2,11 @@
 
 #SBATCH --job-name=LLAMA
 #SBATCH --array=0
-#SBATCH --time=12:00:00
+#SBATCH --time=3:00:00
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:a100:4
 #SBATCH --constraint=high-capacity
-#SBATCH --mem=256G
+#SBATCH --mem=128G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
