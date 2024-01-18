@@ -1,5 +1,4 @@
 import numpy as np
-from sent_sampling.utils import extract_pool
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib
@@ -7,90 +6,88 @@ from transformers import LlamaForCausalLM, LlamaTokenizer,LlamaConfig
 import torch
 from sent_sampling.utils.curvature_utils import compute_model_activations,compute_model_curvature
 from sent_sampling.utils.data_utils import ANALYZE_DIR
-torch.cuda.device_count()
 from pathlib import Path
-# ad arg parser
-import argparse
-from accelerate import init_empty_weights
-from accelerate import load_checkpoint_and_dispatch,infer_auto_device_map
-from accelerate.utils import get_balanced_memory
-import pickle
-#parser = argparse.ArgumentParser()
-#parser.add_argument('--modelname', type=str, default='LLAMA_13B')
-#args = parser.parse_args()
-# get the number of available gpus
 from tqdm import tqdm
+from datasets import load_dataset
+from torch.utils.data import DataLoader
+from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
+import pickle
+if torch.backends.mps.is_available():
+    mps_device = torch.device("mps")
 
+# Iterate through each CUDA device
 
+def tokenize_function(examples):
+    outputs = tokenizer(examples['text'])
+    return outputs
+import psutil
+
+def foo(model,batch):
+        with torch.no_grad():
+            batch=torch.stack(batch,1).to(mps_device)
+            out = model(batch)
+        return out
+ANALYZE_DIR='/Users/eghbalhosseini/MyData/sent_sampling/analysis/straightening/long_context'
 if __name__ == '__main__':
     #%%
-    #modelname=str(args.modelname)
-    modelname='LLAMA_65B'
-    weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}'
-    config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}/config.json'
-    tokenizer = LlamaTokenizer.from_pretrained(weight_path)
-    modelConfig=LlamaConfig.from_json_file(config_path)
-    with init_empty_weights():
-        model = LlamaForCausalLM(modelConfig)
+    modelname='gpt2-xl'
 
-    #device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "48GiB", 1: "48GiB" })
-    #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
-    device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],
-                                       max_memory={0: "72GiB", 1: "72GiB", 2: "72GiB", 3: "72GiB"})
-    # print device map
-    print(device_map)
-    model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
+    tokenizer = AutoTokenizer.from_pretrained(modelname)
+    model = AutoModel.from_pretrained(modelname)
+    wiki_data = load_dataset("wikitext",'wikitext-103-raw-v1')
+    # get text for train split
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenized_datasets = wiki_data.map(tokenize_function, batched=True, remove_columns=["text"])
+    # select subest that are between 2048 and 4096 tokens
+    tokenized_datasets=tokenized_datasets['train']
+    tokenized_datasets_long = tokenized_datasets.filter(lambda x: 380 <= len(x['input_ids']) <400)
     for i in model.named_parameters():
         print(f"{i[0]} -> {i[1].device}")
+    model.to(mps_device)
     # test model
     # reshape it
     masked=False
-    dataset='ud_sentencez_token_filter_v3_textNoPeriod'
-    extract_id = ['group=gpt2_layers-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=None']
-    # get data
-    ext_obj=extract_pool[extract_id[0]]()
-    ext_obj.load_dataset()
     # get sentences from ext_obj
-    sentences = [x['text'] for x in ext_obj.data_]
-    del ext_obj
-    # tokenize sentences
-    tokenized_text = [tokenizer.tokenize(x) for x in sentences]
-    # get ids
-    indexed_tokens = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_text]
 
-    # if model continuation dict doesnt exsist create it
-    # all_layers=compute_model_activations(model,indexed_tokens,model.device)
-    # curvature_dict_true=compute_model_curvature(all_layers)
-    # # save it as pickle
-    # # save individual layers as pt file
-    # for idk,layer_ in enumerate(all_layers):
-    #     layer_=torch.stack(layer_).half()
-    #     layer_=layer_.cpu()
-    #     layer_save_path=Path(ANALYZE_DIR,'straightening',f'{modelname}', f'{modelname}_activations_{dataset}_layer_{idk}.pt')
-    #     # make sure it paernt dir exists
-    #     layer_save_path.parent.mkdir(parents=True, exist_ok=True)
-    #     torch.save(layer_,layer_save_path.__str__())
-    # for bigger model a different strategy needed
-    batch_size = 16
-    num_batches = int(np.ceil(len(indexed_tokens) / batch_size))
-    curvature_dict_all = []
+    indexed_tokens = tokenized_datasets_long['input_ids']
+    # sample 2000 sentences randomly
+    np.random.seed(0)
+    random_ids=np.random.choice(len(indexed_tokens),2000,replace=False)
+    indexed_tokens=[indexed_tokens[x] for x in random_ids]
+    # pad the indexed tokens so they are all 400
+    # save the indexed tokens length
+    indexed_tokens_len=[len(x) for x in indexed_tokens]
+    #indexed_tokens=[x+[tokenizer.pad_token_id]*(400-len(x)) for x in indexed_tokens]
+
+    #token_dataloader = DataLoader(indexed_tokens, shuffle=False, batch_size=1)
+    # breakdown the index tokens into batches of 16 and do compute_model_activations
+    batch_size=16
+    num_batches=int(np.ceil(len(indexed_tokens)/batch_size))
+    curvature_dict_all=[]
     for i in tqdm(range(num_batches)):
-        batch = indexed_tokens[i * batch_size:(i + 1) * batch_size]
+        batch=indexed_tokens[i*batch_size:(i+1)*batch_size]
         all_batch = compute_model_activations(model, batch, model.device)
-        curvature_dict_batch = compute_model_curvature(all_batch)
+        curvature_dict_batch  = compute_model_curvature(all_batch)
         curvature_dict_all.append(curvature_dict_batch)
 
-    with open(Path(ANALYZE_DIR,'straightening',f'{modelname}' f'{modelname}_{dataset}_curvature_dict_.pkl'), 'wb') as f:
+    # save curvature_dict_all as pickle
+    with open(Path(ANALYZE_DIR, f'{modelname}_curvature_dict_all.pkl'), 'wb') as f:
         pickle.dump(curvature_dict_all, f)
 
     # load curvature_dict_all from pickle
-    with open(Path(ANALYZE_DIR,'straightening',f'{modelname}', f'{modelname}_{dataset}_curvature_dict.pkl'), 'rb') as f:
+    with open(Path(ANALYZE_DIR, f'{modelname}_curvature_dict_all.pkl'), 'rb') as f:
         curvature_dict_all = pickle.load(f)
-    #%%
-    curve_ = np.concatenate([x['curve'] for x in curvature_dict_all], axis=1)
-    #curve_ = curvature_dict_true['curve']
-    fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
-    pap_ratio = 5.5 / 9
+    curvature_dict_true = {}
+    for key in curvature_dict_all[0].keys():
+        combined_val=[d[key] for d in curvature_dict_all]
+        # combine the list into 1
+        combined_val = [item for sublist in combined_val for item in sublist]
+        curvature_dict_true[key] = combined_val
+
+    # turn it into a tensor
+    curve_ = np.concatenate([x['curve'] for x in curvature_dict_all],axis=1)
+    fig = plt.figure(figsize=(8, 11), dpi=200, frameon=False)
+    pap_ratio = 8/ 11
     matplotlib.rcParams['font.size'] = 6
     matplotlib.rcParams['pdf.fonttype'] = 42
     matplotlib.rcParams['ps.fonttype'] = 42
@@ -102,6 +99,8 @@ if __name__ == '__main__':
     line_cols = line_cols[2:, :]
     ax = plt.axes((.1, .55, .55, .25 * pap_ratio))
     kk = 0
+
+
     num_colors = curve_.shape[0] + 2
     color_fact = num_colors + 10
     h0 = cm.get_cmap('inferno', color_fact)
@@ -129,10 +128,11 @@ if __name__ == '__main__':
                     (np.nanmean(curve_, axis=1) - np.nanstd(curve_, axis=1)) * 180 / np.pi,
                     (np.nanmean(curve_, axis=1) + np.nanstd(curve_, axis=1)) * 180 / np.pi,
                     color=(0, 0, 0), alpha=.2, zorder=1)
-    ax.set_ylim([102.5, 125])
+    ax.set_ylim([110., 125])
+
 
     curve_change = (curve_[1:, :] - curve_[1, :])
-    ax = plt.axes((.1, .1, .55, .25 * pap_ratio))
+    ax = plt.axes((.1, .15, .55, .25 * pap_ratio))
     kk = 0
 
     num_colors = curve_change.shape[0] + 2
@@ -154,10 +154,8 @@ if __name__ == '__main__':
     # plot sem around the average as fill_between
 
     ax.fill_between(np.arange(curve_change.shape[0]),
-                    (np.nanmean(curve_change, axis=1) - np.nanstd(curve_change, axis=1) / np.sqrt(
-                        curve_change.shape[1])) * 180 / np.pi,
-                    (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1) / np.sqrt(
-                        curve_change.shape[1])) * 180 / np.pi,
+                    (np.nanmean(curve_change, axis=1) - np.nanstd(curve_change, axis=1) / np.sqrt(curve_change.shape[1])) * 180 / np.pi,
+                    (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1) / np.sqrt(curve_change.shape[1])) * 180 / np.pi,
                     color=(0, 0, 0), alpha=.2, zorder=1)
 
     ax.fill_between(np.arange(curve_change.shape[0]),
@@ -165,9 +163,10 @@ if __name__ == '__main__':
                     (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1)) * 180 / np.pi,
                     color=(0, 0, 0), alpha=.2, zorder=1)
 
-    ax.set_ylim([-15., 2])
+    fig.show()
+    ax.set_ylim([-10., 2])
 
-    fig_save_path=Path(ANALYZE_DIR,'straightening', f'{modelname}_curvature_{dataset}.pdf')
+    fig_save_path=Path(ANALYZE_DIR,'straightening','long_context', f'{modelname}_curvature_long_context.pdf')
     # make sure it paernt dir exists
     fig_save_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(fig_save_path.__str__(), transparent=True)
