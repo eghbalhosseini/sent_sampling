@@ -15,78 +15,86 @@ from accelerate import init_empty_weights
 from accelerate import load_checkpoint_and_dispatch,infer_auto_device_map
 from accelerate.utils import get_balanced_memory
 import pickle
-#parser = argparse.ArgumentParser()
-#parser.add_argument('--modelname', type=str, default='LLAMA_13B')
-#args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument('--modelname', type=str, default='LLAMA_13B')
+args = parser.parse_args()
 # get the number of available gpus
 from tqdm import tqdm
 
 
 if __name__ == '__main__':
     #%%
-    #modelname=str(args.modelname)
-    modelname='LLAMA_65B'
+    modelname=str(args.modelname)
+    #modelname='LLAMA_30B'
 
     weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}'
     config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}/config.json'
-    tokenizer = LlamaTokenizer.from_pretrained(weight_path)
-    modelConfig=LlamaConfig.from_json_file(config_path)
-    with init_empty_weights():
-        model = LlamaForCausalLM(modelConfig)
-
-    #device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "48GiB", 1: "48GiB" })
-    #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
-    device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],
-                                       max_memory={0: "72GiB", 1: "72GiB", 2: "72GiB", 3: "72GiB"})
-    # print device map
-    print(device_map)
-    model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
-    for i in model.named_parameters():
-        print(f"{i[0]} -> {i[1].device}")
-    # test model
-    # reshape it
-    masked=False
     dataset='ud_sentencez_token_filter_v3_textNoPeriod'
     extract_id = ['group=gpt2_layers-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=None']
-    # get data
-    ext_obj=extract_pool[extract_id[0]]()
-    ext_obj.load_dataset()
-    # get sentences from ext_obj
-    sentences = [x['text'] for x in ext_obj.data_]
-    del ext_obj
-    # tokenize sentences
-    tokenized_text = [tokenizer.tokenize(x) for x in sentences]
-    # get ids
-    indexed_tokens = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_text]
+    tokenizer = LlamaTokenizer.from_pretrained(weight_path)
+    modelConfig=LlamaConfig.from_json_file(config_path)
 
-    # if model continuation dict doesnt exsist create it
-    # all_layers=compute_model_activations(model,indexed_tokens,model.device)
-    # curvature_dict_true=compute_model_curvature(all_layers)
-    # # save it as pickle
-    # # save individual layers as pt file
-    # for idk,layer_ in enumerate(all_layers):
-    #     layer_=torch.stack(layer_).half()
-    #     layer_=layer_.cpu()
-    #     layer_save_path=Path(ANALYZE_DIR,'straightening',f'{modelname}', f'{modelname}_activations_{dataset}_layer_{idk}.pt')
-    #     # make sure it paernt dir exists
-    #     layer_save_path.parent.mkdir(parents=True, exist_ok=True)
-    #     torch.save(layer_,layer_save_path.__str__())
-    # for bigger model a different strategy needed
-    batch_size = 16
-    num_batches = int(np.ceil(len(indexed_tokens) / batch_size))
-    curvature_dict_all = []
-    for i in tqdm(range(num_batches)):
-        batch = indexed_tokens[i * batch_size:(i + 1) * batch_size]
-        all_batch = compute_model_activations(model, batch, model.device)
-        curvature_dict_batch = compute_model_curvature(all_batch)
-        curvature_dict_all.append(curvature_dict_batch)
+    # get the name of saved dictionary
+    curvature_dict_path=Path(ANALYZE_DIR, 'straightening', f'{modelname}', f'{modelname}_{dataset}_curvature_dict_.pkl')
+    if curvature_dict_path.exists():
+        with open(curvature_dict_path.__str__(),'rb') as f:
+            curvature_dict_all = pickle.load(f)
+    else:
 
-    with open(Path(ANALYZE_DIR,'straightening',f'{modelname}' f'{modelname}_{dataset}_curvature_dict_.pkl'), 'wb') as f:
-        pickle.dump(curvature_dict_all, f)
+        with init_empty_weights():
+            model = LlamaForCausalLM(modelConfig)
+
+        #device_map = infer_auto_device_map(model,no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "48GiB", 1: "48GiB" })
+        #device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],max_memory={0: "44GiB", 1: "44GiB",2: "44GiB",3: "44GiB" })
+        device_map = infer_auto_device_map(model, no_split_module_classes=['LlamaDecoderLayer'],
+                                           max_memory={0: "72GiB", 1: "72GiB", 2: "72GiB", 3: "72GiB"})
+        # print device map
+        print(device_map)
+        model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
+        for i in model.named_parameters():
+            print(f"{i[0]} -> {i[1].device}")
+        # test model
+        # reshape it
+        masked=False
+
+        # get data
+        ext_obj=extract_pool[extract_id[0]]()
+        ext_obj.load_dataset()
+        # get sentences from ext_obj
+        sentences = [x['text'] for x in ext_obj.data_]
+        del ext_obj
+        # tokenize sentences
+        tokenized_text = [tokenizer.tokenize(x) for x in sentences]
+        # get ids
+        indexed_tokens = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_text]
+
+        # if model continuation dict doesnt exsist create it
+        # all_layers=compute_model_activations(model,indexed_tokens,model.device)
+        # curvature_dict_true=compute_model_curvature(all_layers)
+        # # save it as pickle
+        # # save individual layers as pt file
+        # for idk,layer_ in enumerate(all_layers):
+        #     layer_=torch.stack(layer_).half()
+        #     layer_=layer_.cpu()
+        #     layer_save_path=Path(ANALYZE_DIR,'straightening',f'{modelname}', f'{modelname}_activations_{dataset}_layer_{idk}.pt')
+        #     # make sure it paernt dir exists
+        #     layer_save_path.parent.mkdir(parents=True, exist_ok=True)
+        #     torch.save(layer_,layer_save_path.__str__())
+        # for bigger model a different strategy needed
+        batch_size = 16
+        num_batches = int(np.ceil(len(indexed_tokens) / batch_size))
+        curvature_dict_all = []
+        for i in tqdm(range(num_batches)):
+            batch = indexed_tokens[i * batch_size:(i + 1) * batch_size]
+            all_batch = compute_model_activations(model, batch, model.device)
+            curvature_dict_batch = compute_model_curvature(all_batch)
+            curvature_dict_all.append(curvature_dict_batch)
+
+        with open(curvature_dict_path.__str__(), 'wb') as f:
+            pickle.dump(curvature_dict_all, f)
 
     # load curvature_dict_all from pickle
-    with open(Path(ANALYZE_DIR,'straightening',f'{modelname}', f'{modelname}_{dataset}_curvature_dict.pkl'), 'rb') as f:
-        curvature_dict_all = pickle.load(f)
+
     #%%
     curve_ = np.concatenate([x['curve'] for x in curvature_dict_all], axis=1)
     #curve_ = curvature_dict_true['curve']
