@@ -21,7 +21,6 @@ for modelname in gpt2-xl ; do
           i=$i+1
       done
     done
-done
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running model ${model_list[$SLURM_ARRAY_TASK_ID]}"
