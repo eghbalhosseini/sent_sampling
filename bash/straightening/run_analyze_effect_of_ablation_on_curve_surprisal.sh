@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH --job-name=Ablate
-#SBATCH --array=0
+#SBATCH --array=0-9
 #SBATCH --time=1:00:00
-#SBATCH --ntasks=1-9
+#SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
 #SBATCH --mem=32G
