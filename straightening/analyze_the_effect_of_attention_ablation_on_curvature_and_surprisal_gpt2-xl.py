@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # get arguments
     modelname=args.modelname
     ablation_type=args.ablation_type
-    layer_to_ablate=args.layer_to_ablate
+    layer_to_ablate=int(args.layer_to_ablate)
 
 
     #modelname= 'gpt2-xl'

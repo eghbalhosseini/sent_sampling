@@ -35,4 +35,4 @@ export XDG_CACHE_HOME
 . /om/user/ehoseini/.bash_profile
 conda activate neural_nlp_2022
 
-/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/straightening/analyze_the_effect_of_attention_ablation_on_curvature_and_surprisal_gpt2-xl.py --model ${model_list[$SLURM_ARRAY_TASK_ID]} --ablation_type ${ablation_list[$SLURM_ARRAY_TASK_ID]} --layer_to_ablate ${layer_to_ablate_list[$SLURM_ARRAY_TASK_ID]}
+/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/straightening/analyze_the_effect_of_attention_ablation_on_curvature_and_surprisal_gpt2-xl.py --modelname ${model_list[$SLURM_ARRAY_TASK_ID]} --ablation_type ${ablation_list[$SLURM_ARRAY_TASK_ID]} --layer_to_ablate ${layer_to_ablate_list[$SLURM_ARRAY_TASK_ID]}
