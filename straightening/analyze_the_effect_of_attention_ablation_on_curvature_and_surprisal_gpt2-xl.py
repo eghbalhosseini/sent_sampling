@@ -78,11 +78,8 @@ if __name__ == '__main__':
     ablated_curvatures=[]
     ablated_model_surprisal=[]
     ablated_model_cond_p=[]
-    name_ = f'h.{layer_to_ablate}.attn.c_attn'
-
     ablated_state_dict=copy.deepcopy(nonablated_model.state_dict())
     nonablated_state_dict=copy.deepcopy(nonablated_model.state_dict())
-    param_dst=nonablated_state_dict['transformer.' + name_ + '.weight']
     for name, param_src in ablated_state_dict.items():
         if f"h.{layer_to_ablate}.attn.c_attn" in name:
             # print the name of the layer
@@ -121,7 +118,8 @@ if __name__ == '__main__':
     # print that you're doing ablation on the layer
     print(f'ablation on layer {layer_to_ablate}')
     # compute the forbenous norm of weight_to_replace and Identity matrix
-    torch.norm(weight_to_replace - eye_matrix, p='fro')
+    print(torch.norm(weight_to_replace - eye_matrix, p='fro'), torch.norm(weight_to_replace, p='fro'))
+
 
     # repalce the weights in minicons_model
     mincons_model.model.load_state_dict(ablated_state_dict, strict=True)
