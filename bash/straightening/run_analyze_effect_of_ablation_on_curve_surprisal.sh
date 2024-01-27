@@ -6,7 +6,7 @@
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:a100:1
 #SBATCH --constraint=high-capacity
-#SBATCH --mem=32G
+#SBATCH --mem=80G
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
