@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=Ablate
-#SBATCH --array=0-9
+#SBATCH --array=0-4
 #SBATCH --time=1:00:00
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:a100:1
@@ -14,7 +14,7 @@
 
 i=0
 for modelname in gpt2-xl ; do
-    for ablation_type in Attn_key Attn_all ; do
+    for ablation_type in Attn_all ; do
         for layer_to_ablate in 5 15 25 35 45 ; do
           model_list[$i]="$modelname"
           ablation_list[$i]="$ablation_type"

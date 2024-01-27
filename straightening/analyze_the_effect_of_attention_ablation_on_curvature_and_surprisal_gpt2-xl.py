@@ -97,8 +97,10 @@ if __name__ == '__main__':
                 if ablation_type=='Attn_key':
                     weight_to_replace = copy.deepcopy(param_dst[:, 0: int(ablated_config.n_head * dim_2)])
                     new_weight=torch.cat([eye_matrix, param_dst[:,int(ablated_config.n_head*dim_2):]],dim=1)
+                    print(torch.norm(weight_to_replace - eye_matrix, p='fro'), torch.norm(weight_to_replace, p='fro'))
                 elif ablation_type=='Attn_all':
                 #new_weight=torch.cat([eye_matrix, param_dst[:,int(ablated_config.n_head*dim_2):]],dim=1)
+
                 # repeat eye_matrix 3 times along y axis
                     new_weight=eye_matrix.repeat(1,3).to(param_dst.device)
                 #new_weight=torch.concat([eye_matrix, param_dst[:,int(config.n_head*dim_2):]],dim=1)
@@ -118,7 +120,7 @@ if __name__ == '__main__':
     # print that you're doing ablation on the layer
     print(f'ablation on layer {layer_to_ablate}')
     # compute the forbenous norm of weight_to_replace and Identity matrix
-    print(torch.norm(weight_to_replace - eye_matrix, p='fro'), torch.norm(weight_to_replace, p='fro'))
+
 
 
     # repalce the weights in minicons_model
