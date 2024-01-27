@@ -14,11 +14,11 @@
 
 i=0
 for modelname in gpt2-xl ; do
-    for ablation_type in  Attn_key Attn_all ; do
+    for ablation_type in Attn_key Attn_all ; do
         for layer_to_ablate in 5 15 25 35 45 ; do
           model_list[$i]="$modelname"
           ablation_list[$i]="$ablation_type"
-          layer_to_ablate_list[$i]="$layer_to_ablatet"
+          layer_to_ablate_list[$i]="$layer_to_ablate"
           i=$i+1
       done
     done
