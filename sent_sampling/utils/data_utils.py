@@ -198,7 +198,7 @@ def construct_stimuli_set_from_pd(stimuli_pd, stimuli_data_name='null',drop_peri
     # make new_col have the same index as stimuli_pd
     new_col=pd.Series(new_col,index=stimuli_pd.index)
     for idx, group in tqdm(enumerate(stimuli_pd.groupby('sent_id'))):
-        new_col[group[1].index]=np.int(idx)
+        new_col[group[1].index]=int(idx)
     # combine new_col and stimuli_pd
     stimuli_pd['sentence_number']=new_col
     seq = np.floor(np.linspace(0, stimuli_pd.sentence_number.max()+1, num=splits))
