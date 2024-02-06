@@ -171,7 +171,7 @@ def construct_stimuli_set_no_grouping(stimuli_data, stimuli_data_name):
     all_sentence_set=[]
     seq = np.floor(np.linspace(0, len(stimuli_data), num=2))
     seq_pair=np.vstack((seq[0:-1], seq[1:]))
-    seq_pair=seq_pair.astype(np.int).transpose()
+    seq_pair=seq_pair.astype(int).transpose()
     num_row=seq_pair.shape[0]
     for row in range(num_row):
         sentence_words, word_nums, sentenceID = [], [], []
@@ -203,7 +203,7 @@ def construct_stimuli_set_from_pd(stimuli_pd, stimuli_data_name='null',drop_peri
     stimuli_pd['sentence_number']=new_col
     seq = np.floor(np.linspace(0, stimuli_pd.sentence_number.max()+1, num=splits))
     seq_pair=np.vstack((seq[0:-1], seq[1:]))
-    seq_pair=seq_pair.astype(np.int).transpose()
+    seq_pair=seq_pair.astype(int).transpose()
     num_row=seq_pair.shape[0]
     for row in tqdm(range(num_row)):
         sentence_words, word_nums, sentenceID = [], [], []
