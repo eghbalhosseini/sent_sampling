@@ -57,4 +57,4 @@ export XDG_CACHE_HOME
 conda activate neural_nlp_2022
 
 
-/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/user/ehoseini/sent_sampling/sampling/optimize_models_from_DeepJuice.py ${optim_pool[$SLURM_ARRAY_TASK_ID]}
+/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/sampling/optimize_models_from_DeepJuice.py ${optim_pool[$SLURM_ARRAY_TASK_ID]}
