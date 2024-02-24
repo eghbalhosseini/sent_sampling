@@ -37,20 +37,11 @@ for set in original redux ; do
           i=$i+1
 done
 
-run=0
-
-extract_name="activation"
-bench_type="None"
-extract_name=($extract_name)
-bench_type=($bench_type)
-
-
-
-
 
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running optimiation: ${optim_list[$SLURM_ARRAY_TASK_ID]}"
+echo "Running extract: ${extract_list[$SLURM_ARRAY_TASK_ID]}"
 
 module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
