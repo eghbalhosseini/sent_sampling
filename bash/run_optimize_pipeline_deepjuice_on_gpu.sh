@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=opt_juice
 #SBATCH --array=0-11
-#SBATCH --time=36:00:00
+#SBATCH --time=12:00:00
 #SBATCH --mem=120G
 #SBATCH --gres=gpu:a100:1
 #SBATCH --constraint=high-capacity
@@ -18,10 +18,12 @@ for optim_method in coordinate_ascent_eh ; do
         for low_dim in False ; do
           for pca_var in 0.9 ;do
             for pca_type in sklearn ; do
-              for init in 1 ; do
-                optim_id="${optim_method}-obj=${ds}-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-low_dim=${low_dim}-pca_var=${pca_var}-pca_type=${pca_type}-run_gpu=True"
-                optim_list[$i]="$optim_id"
-                i=$i+1
+              for set in original redux ; do
+                for init in 1 ; do
+                  optim_id="${optim_method}-obj=${ds}-n_iter=${n_iter}-n_samples=${N_s}-n_init=${init}-low_dim=${low_dim}-pca_var=${pca_var}-pca_type=${pca_type}-run_gpu=True"
+                  optim_list[$i]="$optim_id"
+                  extract_list[$i]="${set}"
+                  i=$i+1
               done
             done
           done
@@ -30,11 +32,6 @@ for optim_method in coordinate_ascent_eh ; do
     done
   done
 done
-
-i=0
-for set in original redux ; do
-          extract_list[$i]="${set}"
-          i=$i+1
 done
 
 
