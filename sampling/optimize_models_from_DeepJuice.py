@@ -15,14 +15,16 @@ from glob import glob
 import pickle
 import argparse
 parser = argparse.ArgumentParser(description='extract activations and optimize')
+parser.add_argument('extract_mode', type=str, default='original')
 parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s-n_iter=100-n_samples=100-n_init=1')
 args = parser.parse_args()
 
 if __name__ == '__main__':
     optim_id = args.optimizer_id
+    extract_mode = args.extract_mode
     extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False'
     ext_obj=extract_pool[extract_id]()
-    deepjuice_identifier='group=deepjuice_models-dataset=nsd-activation-bench=None-ave=False'
+    deepjuice_identifier=f'group=deepjuice_models-dataset=nsd-{extract_mode}-bench=None-ave=False'
     ext_obj.identifier=deepjuice_identifier
 
     selected_models=['torchvision_alexnet_imagenet1k_v1',
@@ -38,7 +40,7 @@ if __name__ == '__main__':
     layers_list=[]
     # for to deepjuice path and find model activation in the format
     for model_ in selected_models:
-        save_file = f'{deepjuice_path}/nsd/{model_}*original.pkl'
+        save_file = f'{deepjuice_path}/nsd/{model_}*{extract_mode}.pkl'
         original_files = glob(save_file)
         # open the file
         with open(original_files[0], 'rb') as f:
@@ -78,6 +80,6 @@ if __name__ == '__main__':
 
 
     (extract_short_hand, optim_short_hand) = make_shorthand(deepjuice_identifier, optim_id)
-    optim_file = Path(RESULTS_DIR, f"results_{extract_short_hand}_{optim_short_hand}.pkl")
+    optim_file = Path(RESULTS_DIR, f"results_{extract_short_hand}_{optim_short_hand}_{extract_mode}.pkl")
 
     save_obj(optim_results, optim_file.__str__())

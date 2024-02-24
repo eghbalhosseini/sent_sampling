@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_juice
-#SBATCH --array=0-1
+#SBATCH --array=0-11
 #SBATCH --time=36:00:00
 #SBATCH --mem=120G
 #SBATCH --gres=gpu:a100:1
@@ -13,7 +13,7 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 500 ; do
-    for N_s in  100 ; do
+    for N_s in  80 100 150 ; do
       for ds in D_s 2-D_s ; do
         for low_dim in False ; do
           for pca_var in 0.9 ;do
@@ -32,6 +32,13 @@ for optim_method in coordinate_ascent_eh ; do
 done
 
 i=0
+for set in original redux ; do
+          extract_list[$i]="${set}"
+          i=$i+1
+done
+
+run=0
+
 extract_name="activation"
 bench_type="None"
 extract_name=($extract_name)
@@ -57,4 +64,4 @@ export XDG_CACHE_HOME
 conda activate neural_nlp_2022
 
 
-/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/sampling/optimize_models_from_DeepJuice.py ${optim_list[$SLURM_ARRAY_TASK_ID]}
+/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/sampling/optimize_models_from_DeepJuice.py ${extract_list[$SLURM_ARRAY_TASK_ID]} ${optim_list[$SLURM_ARRAY_TASK_ID]}
