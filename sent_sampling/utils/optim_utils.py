@@ -469,7 +469,7 @@ objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distan
                     dict(name='2-D_s',fun=minus_Distance)]
 
 n_iters=[2,50,100,500]
-N_s=[10,25,50,75,100,125,150,175,200,225,250,275,300]
+N_s=[10,25,50,75,80,100,125,150,175,200,225,250,275,300]
 n_inits=[1,2]
 run_gpu=[True,False]
 low_dim=[True,False]
