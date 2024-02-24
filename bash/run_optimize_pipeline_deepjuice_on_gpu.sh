@@ -43,7 +43,7 @@ bench_type=($bench_type)
 
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
-echo "Running optimiation: ${optim_pool[$SLURM_ARRAY_TASK_ID]}"
+echo "Running optimiation: ${optim_list[$SLURM_ARRAY_TASK_ID]}"
 
 module add openmind/singularity
 export SINGULARITY_CACHEDIR=/om/user/`whoami`/st/
@@ -57,4 +57,4 @@ export XDG_CACHE_HOME
 conda activate neural_nlp_2022
 
 
-/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/sampling/optimize_models_from_DeepJuice.py ${optim_pool[$SLURM_ARRAY_TASK_ID]}
+/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/sampling/optimize_models_from_DeepJuice.py ${optim_list[$SLURM_ARRAY_TASK_ID]}
