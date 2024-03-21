@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=EX_PA
-#SBATCH --array=0-399
+#SBATCH --array=0-599%200
 #SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=16G
@@ -10,10 +10,11 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-splits=200
-for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 coca_preprocessed_all_clean_no_dup_100K_sample_2 ; do
-  for group_ids in `seq 0 1 199` ; do
-      for model in gpt2-xl  ; do
+splits=100
+for dataset in  coca_preprocessed_all_clean_no_dup_100K_sample_1 ; do
+  for group_ids in `seq 0 1 100` ; do
+      for model in roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
+        xlm-mlm-en-2048 albert-xxlarge-v2 ctrl  ; do
         for stim_type in textNoPeriod ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
