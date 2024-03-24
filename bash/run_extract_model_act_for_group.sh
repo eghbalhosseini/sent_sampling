@@ -6,7 +6,7 @@ GRAND_PIPE_FILE="${DATA_DIR}/Grand_extraction_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
 models="ctrl gpt2-xl"
-layers="13 25 25 13 13 49" # adding the embedding layer so its layer plus 1
+layers="49 49" # adding the embedding layer so its layer plus 1
 #models="gpt2-xl"
 #layers="49" # adding the embedding layer so its layer plus 1
 #
