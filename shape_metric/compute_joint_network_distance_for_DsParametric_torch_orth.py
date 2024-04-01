@@ -164,8 +164,9 @@ if __name__ == '__main__':
     method = 'streaming'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     tolerance = 1e-5
+    steps= 2000
     verbose = True
-    file_name=f'multi_shape_distance_all_DsParametric_{grp}_{adjust_mode}_{method}_pre_pca_{pre_pca}_torch_centered'
+    file_name=f'multi_shape_distance_all_DsParametric_{grp}_{adjust_mode}_{method}_pre_pca_{pre_pca}_torch_centered_steps_{steps}'
     save_path = Path(f'{act_dir}/{file_name}.pkl')
     save_path.parent.mkdir(parents=True, exist_ok=True)
     X=feature_map_min
@@ -182,7 +183,7 @@ if __name__ == '__main__':
     #X_var_max, aligned_Xs_max = pt_frechet_mean(X_pad_max, group=grp, method=method, return_aligned_Xs=True, max_iter=50,
     #                                 verbose=verbose,tol=tolerance)
 
-    X_var_all, aligned_Xs_all = pt_frechet_mean(X_pad_all, group=grp, method=method, return_aligned_Xs=True, max_iter=500,
+    X_var_all, aligned_Xs_all = pt_frechet_mean(X_pad_all, group=grp, method=method, return_aligned_Xs=True, max_iter=steps,
                                         verbose=verbose,tol=tolerance)
     # make a dictionary of aligned_Xs and x_vars
     all_X_dict={'aligned_all':aligned_Xs_all,'var_al':X_var_all}
