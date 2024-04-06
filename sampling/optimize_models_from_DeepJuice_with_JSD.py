@@ -81,7 +81,7 @@ if __name__ == '__main__':
         jsd_range.append(torch.stack(jsds).mean().cpu().numpy())
     jsd_rnd=np.mean(jsd_range)
     optim_obj.jsd_threshold=jsd_rnd
-    optim_obj.jsd_muliplier=25
+    optim_obj.jsd_muliplier=80
 
 
     S_opt_d, DS_opt_d = optim_obj()

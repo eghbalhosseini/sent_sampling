@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_juice
-#SBATCH --array=0-11
+#SBATCH --array=0-7
 #SBATCH --time=12:00:00
 #SBATCH --mem=120G
 #SBATCH --gres=gpu:a100:1
@@ -13,7 +13,7 @@
 i=0
 for optim_method in coordinate_ascent_eh ; do
   for n_iter in 500 ; do
-    for N_s in  80 100 150 ; do
+    for N_s in  80 100 ; do
       for ds in D_s_jsd 2-D_s_jsd ; do
         for low_dim in False ; do
           for pca_var in 0.9 ;do
