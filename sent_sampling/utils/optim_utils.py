@@ -77,6 +77,11 @@ def Distance_JSD(S,group_act, distance='correlation'):
     '''ds_jsd'''
     NotImplementedError
 
+def minus_Distance_JSD(S,group_act, distance='correlation'):
+    '''2-ds_jsd'''
+    NotImplementedError
+
+
 def Distance(S,group_act, distance='correlation'):
     """ds"""
     if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
@@ -335,6 +340,10 @@ class optim:
         return d_optim
 
     def gpu_object_function_ds_plus_jsd(self,S,debug=False):
+        if self.objective_function.__doc__=='ds_jsd':
+            minus=False
+        elif self.objective_function.__doc__=='2-ds_jsd':
+            minus=True
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         # use torch to select the samples
         samples_rand = torch.randperm(self.N_S )[:self.N_s]
@@ -364,7 +373,10 @@ class optim:
         # do a version with std reductions too
         mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
         d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
-        d_optim=d_val_mean #-.2*d_val_std
+        if minus:
+            d_optim = 2-d_val_mean
+        else:
+            d_optim=d_val_mean #-.2*d_val_std
 
         # compute jsd for samples
         jsd_vals=[]
@@ -439,6 +451,8 @@ class optim:
             elif self.objective_function.__doc__ == '2-ds':
                 objective = self.gpu_object_function_minus_ds
             elif self.objective_function.__doc__ == 'ds_jsd':
+                objective = self.gpu_object_function_ds_plus_jsd
+            elif self.objective_function.__doc__ == '2-ds_jsd':
                 objective = self.gpu_object_function_ds_plus_jsd
 
             if self.early_stopping:
@@ -552,7 +566,8 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_parallel_eh',fun=coordinate_ascent_parallel_eh)]
 
 objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance),
-                    dict(name='2-D_s',fun=minus_Distance),dict(name='D_s_jsd',fun=Distance_JSD)]
+                    dict(name='2-D_s',fun=minus_Distance),dict(name='D_s_jsd',fun=Distance_JSD)
+                    ,dict(name='2-D_s_jsd',fun=minus_Distance_JSD)]
 
 n_iters=[2,50,100,500]
 N_s=[10,25,50,75,80,100,125,150,175,200,225,250,275,300]
