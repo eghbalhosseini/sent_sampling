@@ -334,7 +334,7 @@ class optim:
         d_optim=d_val_mean #-.2*d_val_std
         return d_optim
 
-    def gpu_object_function_ds_plus_jsd(self,S):
+    def gpu_object_function_ds_plus_jsd(self,S,debug=False):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         # use torch to select the samples
         samples_rand = torch.randperm(self.N_S )[:self.N_s]
@@ -377,7 +377,10 @@ class optim:
         else:
             jsd_=-self.jsd_muliplier*jsd_
 
-        return d_optim+jsd_
+        if debug:
+            return d_optim,jsd_,jsd_vals
+        else:
+            return d_optim+jsd_
 
     def gpu_object_function_minus_ds(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
