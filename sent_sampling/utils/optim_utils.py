@@ -371,12 +371,13 @@ class optim:
         for x, y in zip(XY_corr_sample_tensor, XY_corr_sample_tensor_rand):
             jsd_val = js_divergence(x, y)
             jsd_vals.append(jsd_val)
-        jsd_vals = torch.stack(jsd_vals).mean().cpu().numpy().mean()
-        if jsd_vals<self.jsd_threshold:
-            jsd_val=0
-        d_optim=d_optim-self.jsd_muliplier*jsd_val
+        jsd_ = torch.stack(jsd_vals).mean().cpu().numpy().mean()
+        if jsd_<self.jsd_threshold:
+            jsd_=0.0
+        else:
+            jsd_=-self.jsd_muliplier*jsd_
 
-        return d_optim
+        return d_optim+jsd_
 
     def gpu_object_function_minus_ds(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
