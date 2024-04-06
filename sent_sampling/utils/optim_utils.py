@@ -13,7 +13,9 @@ from sent_sampling.utils import extract_pool
 device =torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 torch.backends.cudnn.deterministic = True
 import os
+import torch.nn.functional as F
 from sent_sampling.utils.data_utils import save_obj, SAVE_DIR,load_obj
+import torch.distributions as dst
 try :
     torch.set_deterministic(True)
 except:
@@ -71,6 +73,10 @@ LOGGER = tools.get_logger('OPT-EXP-DSGN')
 
 # Objective functions :
 # this works on a list,
+def Distance_JSD(S,group_act, distance='correlation'):
+    '''ds_jsd'''
+    NotImplementedError
+
 def Distance(S,group_act, distance='correlation'):
     """ds"""
     if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
@@ -154,10 +160,38 @@ def Variation(s,N_S, pZ_S):
     qZ = pZ_S.T @ qS
     return entropy(qZ)
 
+# functionality for computing jenson-shannon divergence
+def js_divergence(x_ref, x,bins=50,epsilon=1e-10):
+    """
+    Compute Jensen-Shannon Divergence (JSD) between two sets of samples.
+    """
+    # Compute histograms
+    hist_ref = torch.histc(x_ref, bins=bins, min=0, max=2)
+    hist_x = torch.histc(x, bins=bins, min=0, max=2)
+    # Compute probabilities
+    p = hist_ref / torch.sum(hist_ref)
+    q = hist_x / torch.sum(hist_x)
+    # Compute average probabilities
+    p_smooth = p + epsilon
+    q_smooth = q + epsilon
+    # Normalize probabilities
+    p_smooth /= p_smooth.sum()
+    q_smooth /= q_smooth.sum()
+    # Compute the average distribution
+    m = 0.5 * (p_smooth + q_smooth)
+    # Compute KL divergence between p and m
+    kl_div_pm = F.kl_div(p_smooth.log(), m, reduction='batchmean')
+    # Compute KL divergence between q and m
+    kl_div_qm = F.kl_div(q_smooth.log(), m, reduction='batchmean')
+    # Compute JSD
+    jsd = 0.5 * (kl_div_pm + kl_div_qm)
+    return jsd
+
+
 class optim:
     def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=None,
                  rdm_function=compute_rdm, optim_algorithm=None,low_dim=False,pca_type='pytorch',pca_var=0.9,
-                 run_gpu=False,early_stopping=True,stop_threshold=1e-4):
+                 run_gpu=False,early_stopping=True,stop_threshold=1e-4,jds_threshold=0.1,jsd_muliplier=0.5,device=None):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
@@ -171,6 +205,8 @@ class optim:
         self.pca_var=pca_var
         self.early_stopping=early_stopping
         self.stop_threshold=stop_threshold
+        self.jsd_threshold=jds_threshold
+        self.jsd_muliplier=jsd_muliplier
 
     def load_extractor(self,extractor_obj=None):
         self.extractor_obj=extractor_obj
@@ -282,7 +318,7 @@ class optim:
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         pairs = torch.combinations(samples, with_replacement=False)
         XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
-        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
             XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
@@ -296,6 +332,50 @@ class optim:
         mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
         d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
         d_optim=d_val_mean #-.2*d_val_std
+        return d_optim
+
+    def gpu_object_function_ds_plus_jsd(self,S):
+        samples=torch.tensor(S, dtype = torch.long, device = self.device)
+        # use torch to select the samples
+        samples_rand = torch.randperm(self.N_S )[:self.N_s]
+
+        pairs = torch.combinations(samples, with_replacement=False)
+        pairs_rand = torch.combinations(samples_rand, with_replacement=False)
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
+        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
+        # do the same for pairs rand
+        XY_corr_sample_rand = [XY_corr[pairs_rand[:, 0], pairs_rand[:, 1]] for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor_rand = torch.stack(XY_corr_sample_rand).to(self.device)
+        XY_corr_sample_tensor_rand = torch.transpose(XY_corr_sample_tensor_rand, 1, 0)
+        if XY_corr_sample_tensor_rand.shape[1] < XY_corr_sample_tensor_rand.shape[0]:
+            XY_corr_sample_tensor_rand = torch.transpose(XY_corr_sample_tensor_rand, 1, 0)
+        assert (XY_corr_sample_tensor_rand.shape[1] > XY_corr_sample_tensor_rand.shape[0])
+
+        # compute d_s for samples
+        d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
+        n1 = d_mat.shape[1]
+        correction = n1 * n1 / (n1 * (n1 - 1) / 2)
+        d_val = correction * d_mat.mean(dim=(0, 1))
+        d_val_mean=d_val.cpu().numpy().mean()
+        # do a version with std reductions too
+        mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
+        d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
+        d_optim=d_val_mean #-.2*d_val_std
+
+        # compute jsd for samples
+        jsd_vals=[]
+        for x, y in zip(XY_corr_sample_tensor, XY_corr_sample_tensor_rand):
+            jsd_val = js_divergence(x, y)
+            jsd_vals.append(jsd_val)
+        jsd_vals = torch.stack(jsd_vals).mean().cpu().numpy().mean()
+        if jsd_vals<self.jsd_threshold:
+            jsd_val=0
+        d_optim=d_optim-self.jsd_muliplier*jsd_val
+
         return d_optim
 
     def gpu_object_function_minus_ds(self,S):
@@ -354,6 +434,8 @@ class optim:
                 objective = self.gpu_object_function_ds
             elif self.objective_function.__doc__ == '2-ds':
                 objective = self.gpu_object_function_minus_ds
+            elif self.objective_function.__doc__ == 'ds_jsd':
+                objective = self.gpu_object_function_ds_plus_jsd
 
             if self.early_stopping:
                 S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s, objective_function=objective, n_init=self.n_init,
@@ -466,7 +548,7 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_parallel_eh',fun=coordinate_ascent_parallel_eh)]
 
 objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance),
-                    dict(name='2-D_s',fun=minus_Distance)]
+                    dict(name='2-D_s',fun=minus_Distance),dict(name='D_s_jsd',fun=Distance_JSD)]
 
 n_iters=[2,50,100,500]
 N_s=[10,25,50,75,80,100,125,150,175,200,225,250,275,300]
