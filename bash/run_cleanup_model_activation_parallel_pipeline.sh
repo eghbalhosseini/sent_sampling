@@ -59,6 +59,10 @@ done
 look_up_pattern="identifier=${model},stimuli_identifier=${dataset}${stim_type}_group_*"
 activation_store='neural_nlp.models.wrapper.core.ActivationsExtractorHelper._from_sentences_stored'
 folder_to_look=${RESULTCACHING_HOME}/${activation_store}
+# print folder to look
+echo "looking in $folder_to_look"
+# print look up pattern
+echo "looking for $look_up_pattern"
 # first fine the files and store it in a list
 # print the number of files to delete
 for file in $(find $folder_to_look -name $look_up_pattern); do
