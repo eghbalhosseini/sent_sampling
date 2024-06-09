@@ -11,7 +11,7 @@
 
 i=0
 splits=100
-for dataset in ud_sentences_U01_SET1_paraphrase ; do
+for dataset in ud_sentences_filter_v3 ; do
   for model in roberta-base ; do
       #xlnet-large-cased \
       #bert-large-uncased-whole-word-masking \
@@ -56,7 +56,7 @@ for file in $(find $folder_to_look -name $look_up_pattern); do
 done
 
 # third delete files from result caching
-look_up_pattern="identifier=${model},stimuli_identifier=${dataset}${stim_type}_group_*.pkl"
+look_up_pattern="identifier=${model},stimuli_identifier=${dataset}${stim_type}_group_*"
 activation_store='neural_nlp.models.wrapper.core.ActivationsExtractorHelper._from_sentences_stored'
 folder_to_look=${RESULTCACHING_HOME}/${activation_store}
 # first fine the files and store it in a list
