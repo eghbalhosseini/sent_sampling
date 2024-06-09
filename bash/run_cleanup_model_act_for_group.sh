@@ -15,11 +15,11 @@ model_arr=($models)
 layer_arr=($layers)
 splits=100
 len=${#layer_arr[@]}
-#
+#ud_sentences_U01_SET1_paraphrase_albert-xxlarge-v2_layer_4_activation_group_2.pkl
 
 #coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_34_activation_group_113.pkl
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
-for dataset in  ud_sentences_filter_v2 ; do
+for dataset in  ud_sentences_U01_SET1_paraphrase ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
     for stim_type in "" "_textNoPeriod" ; do
       # make group_id go from 0 to splits -1
@@ -42,7 +42,7 @@ for dataset in  ud_sentences_filter_v2 ; do
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
           echo $lines
           if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
-              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}_${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
+              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
               LINE_COUNT=$(expr ${LINE_COUNT} + 1)
               printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
 
