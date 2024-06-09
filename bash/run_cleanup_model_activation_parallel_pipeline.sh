@@ -60,12 +60,8 @@ look_up_pattern="identifier=${model},stimuli_identifier=${dataset}${stim_type}_g
 activation_store='neural_nlp.models.wrapper.core.ActivationsExtractorHelper._from_sentences_stored'
 folder_to_look=${RESULTCACHING_HOME}/${activation_store}
 # first fine the files and store it in a list
-files_to_delete=()
-files_to_delete=($(find $folder_to_look -name $look_up_pattern))
 # print the number of files to delete
-echo "Number of files to delete: ${#files_to_delete[@]}"
-# delete the files from find and print which files are deleted
-for file in ${files_to_delete[@]} ; do
+for file in $(find $folder_to_look -name $look_up_pattern); do
   echo "deleting $file"
   rm $file
 done
