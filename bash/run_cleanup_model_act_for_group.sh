@@ -35,6 +35,7 @@ for dataset in  ud_sentences_U01_SET1_paraphrase ; do
           # find pattern that has the layer number
           #look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
           look_up_pattern="${dataset}${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
+          printf "%s\n" $look_up_pattern
           #echo $look_up_pattern
           folder_to_look=${DATA_DIR}/${model}
           echo $look_up_pattern
