@@ -21,7 +21,7 @@ len=${#layer_arr[@]}
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
 for dataset in  ud_sentences_filter_v2 ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
-    for stim_type in "" "textNoPeriod" ; do
+    for stim_type in "" "_textNoPeriod" ; do
       # make group_id go from 0 to splits -1
       # print idx of model
       for (( group_ids=0; group_ids<$splits; group_ids++ )) ; do
@@ -34,7 +34,7 @@ for dataset in  ud_sentences_filter_v2 ; do
           i=$i+1
           # find pattern that has the layer number
           #look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
-          look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
+          look_up_pattern="${dataset}${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
           #echo $look_up_pattern
           folder_to_look=${DATA_DIR}/${model}
           echo $look_up_pattern
