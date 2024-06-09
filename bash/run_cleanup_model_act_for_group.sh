@@ -35,19 +35,19 @@ for dataset in  ud_sentences_U01_SET1_paraphrase ; do
           # find pattern that has the layer number
           #look_up_pattern="${dataset}_${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
           look_up_pattern="${dataset}${stim_type}_${model}_layer_*_activation_group_${group_ids}.pkl"
-          printf "%s\n" $look_up_pattern
+          #printf "%s\n" $look_up_pattern
           #echo $look_up_pattern
           folder_to_look=${DATA_DIR}/${model}
           echo $look_up_pattern
           #lines=$(find $folder_to_look -name "${dataset}_${model}_*_group_${group_ids}*.pkl" | wc -l)
           lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
           echo $lines
-          if [ "$lines" != "${layer_arr[$idx_model]}" ]; then
-              echo "${lines} vs ${layer_arr[$idx_model]}  - ${dataset}${stim_type}_${model}_group_${group_ids} dosent exists, adding it \n"
-              LINE_COUNT=$(expr ${LINE_COUNT} + 1)
-              printf "%d,%s,%s,%s,%s,%d\n" "$LINE_COUNT" "$model" "$dataset" "$stim_type" "$splits" "$group_ids" >> $GRAND_PIPE_FILE
+          # delete the files from find and print which files are deleted
+          for file in $(find $folder_to_look -name $look_up_pattern); do
+            echo "deleting $file"
+            rm $file
+          done
 
-          fi
         done
       done
     done
