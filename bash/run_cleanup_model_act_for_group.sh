@@ -45,7 +45,7 @@ for dataset in  ud_sentences_U01_SET1_paraphrase ; do
           # delete the files from find and print which files are deleted
           for file in $(find $folder_to_look -name $look_up_pattern); do
             echo "deleting $file"
-            rm $file
+            #rm $file
           done
 
           # delete the crunched files
