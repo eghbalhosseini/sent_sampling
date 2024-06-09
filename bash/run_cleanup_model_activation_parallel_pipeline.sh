@@ -44,7 +44,7 @@ look_up_pattern="${dataset}${stim_type}_${model}_layer_*_activation_group_*.pkl"
 folder_to_look=${DATA_DIR}/${model}
 for file in $(find $folder_to_look -name $look_up_pattern); do
     echo "deleting $file"
-    #rm $file
+    rm $file
 done
 # second find the crunched data
 look_up_pattern="${dataset}${stim_type}_${model}_layer_*_activation_*.pkl"
