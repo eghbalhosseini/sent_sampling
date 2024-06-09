@@ -54,11 +54,8 @@ for dataset in  ud_sentences_U01_SET1_paraphrase ; do
 
         done
         look_up_pattern="${dataset}${stim_type}_${model}_layer_*_activation_*.pkl"
-        folder_to_look=${DATA_DIR}/
+        folder_to_look=${DATA_DIR}
         echo $look_up_pattern
-
-        lines=$(find $folder_to_look -name $look_up_pattern | wc -l)
-        echo $lines
         # delete the files from find and print which files are deleted
         for file in $(find $folder_to_look -name $look_up_pattern); do
           echo "deleting $file"
