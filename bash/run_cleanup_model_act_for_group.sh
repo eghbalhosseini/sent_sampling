@@ -12,6 +12,7 @@ layers="49" # adding the embedding layer so its layer plus 1
 #layers="49" # adding the embedding layer so its layer plus 1
 #
 
+
 model_arr=($models)
 layer_arr=($layers)
 splits=100
