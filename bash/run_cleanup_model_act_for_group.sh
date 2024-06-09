@@ -6,8 +6,8 @@ LINE_COUNT=0
 GRAND_PIPE_FILE="${DATA_DIR}/Grand_cleanup_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
-models="ctrl"
-layers="49" # adding the embedding layer so its layer plus 1
+models="albert-xxlarge-v2"
+layers="12" # adding the embedding layer so its layer plus 1
 #models="gpt2-xl"
 #layers="49" # adding the embedding layer so its layer plus 1
 #
@@ -21,7 +21,7 @@ len=${#layer_arr[@]}
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
 for dataset in  ud_sentences_U01_SET1_paraphrase ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
-    for stim_type in "" "_textNoPeriod" ; do
+    for stim_type in "" ; do
       # make group_id go from 0 to splits -1
       # print idx of model
       for (( group_ids=0; group_ids<$splits; group_ids++ )) ; do
