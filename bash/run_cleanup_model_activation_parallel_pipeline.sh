@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=RM_PA
-#SBATCH --array=0-1
+#SBATCH --array=0-6
 #SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=4G
@@ -11,12 +11,12 @@
 
 i=0
 for dataset in ud_sentences_token_filter_v3 ; do
-  for model in roberta-base ; do
-      #xlnet-large-cased \
-      #bert-large-uncased-whole-word-masking \
-      #xlm-mlm-en-2048 \
-      #albert-xxlarge-v2 \
-
+  for model in roberta-base \
+      xlnet-large-cased \
+      gpt2-xl \
+      bert-large-uncased-whole-word-masking \
+      xlm-mlm-en-2048 \
+      albert-xxlarge-v2 ; do
       for stim_type in "" ; do
           model_list[$i]="$model"
           dataset_list[$i]="$dataset"
