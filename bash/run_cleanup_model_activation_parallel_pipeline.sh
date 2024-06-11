@@ -10,8 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-splits=100
-for dataset in ud_sentences_filter_v3 ; do
+for dataset in ud_sentences_token_filter_v3 ; do
   for model in roberta-base ; do
       #xlnet-large-cased \
       #bert-large-uncased-whole-word-masking \
@@ -59,14 +58,13 @@ done
 look_up_pattern="identifier=${model},stimuli_identifier=${dataset}${stim_type}_group_*"
 activation_store='neural_nlp.models.wrapper.core.ActivationsExtractorHelper._from_sentences_stored'
 folder_to_look=${RESULTCACHING_HOME}/${activation_store}
-# print folder to look
+
+# Print folder to look
 echo "looking in $folder_to_look"
-# print look up pattern
+
+# Print look up pattern
 echo "looking for $look_up_pattern"
-# first fine the files and store it in a list
-# print the number of files to delete
-for file in $(find $folder_to_look -name $look_up_pattern); do
-  echo "deleting $file"
-  rm $file
-done
+
+# Find and delete files in a single command
+find "$folder_to_look" -name "$look_up_pattern" -exec echo "deleting {}" \; -exec rm {} \;
 
