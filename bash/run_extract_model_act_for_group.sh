@@ -5,15 +5,15 @@ LINE_COUNT=0
 GRAND_PIPE_FILE="${DATA_DIR}/Grand_extraction_pipe_list.csv"
 rm -f $GRAND_PIPE_FILE
 touch $GRAND_PIPE_FILE
-models="ctrl gpt2-xl"
-layers="49 49" # adding the embedding layer so its layer plus 1
+models="gpt2-xl"
+layers="49" # adding the embedding layer so its layer plus 1
 #models="gpt2-xl"
 #layers="49" # adding the embedding layer so its layer plus 1
 #
 
 model_arr=($models)
 layer_arr=($layers)
-splits=100
+splits=200
 len=${#layer_arr[@]}
 #
 
