@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=CM_PA
-#SBATCH --array=0-7
+#SBATCH --array=0
 #SBATCH --time=24:00:00
 #SBATCH --mem=128G
 #SBATCH --mail-type=ALL
@@ -9,11 +9,17 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-models="roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 ctrl"
-layers="2 24 12 12 5 47" #
+#models="roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 ctrl"
+#layers="2 24 12 12 5 47" #
+# for gpt2 I did 200 splits
+models="gpt2-xl"
+layers="44" #
+split=200
+
 model_arr=($models)
 layer_arr=($layers)
-split=100
+#split=100
+
 len=${#layer_arr[@]}
 # coca_preprocessed_all_clean_100K_sample_1
 #roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
