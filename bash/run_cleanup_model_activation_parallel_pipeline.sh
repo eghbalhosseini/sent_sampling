@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=RM_PA
-#SBATCH --array=0-6
+#SBATCH --array=0-34
 #SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=4G
@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in ud_sentences_token_filter_v3 ; do
+for dataset in coca_spok_filter_punct_10K_sample_1 coca_spok_filter_punct_10K_sample_2 coca_spok_filter_punct_10K_sample_3 coca_spok_filter_punct_10K_sample_4 coca_spok_filter_punct_10K_sample_5 ; do
   for model in roberta-base \
       xlnet-large-cased \
       gpt2-xl \
