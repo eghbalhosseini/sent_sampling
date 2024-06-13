@@ -12,9 +12,14 @@ i=0
 #models="roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking xlm-mlm-en-2048 albert-xxlarge-v2 ctrl"
 #layers="2 24 12 12 5 47" #
 # for gpt2 I did 200 splits
-models="gpt2-xl"
-layers="44" #
-split=200
+#models="gpt2-xl"
+#layers="44" #
+
+models="ctrl"
+layers="47" #
+
+
+split=100
 
 model_arr=($models)
 layer_arr=($layers)
