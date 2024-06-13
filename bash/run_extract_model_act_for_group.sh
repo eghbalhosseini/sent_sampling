@@ -8,12 +8,12 @@ touch $GRAND_PIPE_FILE
 #models="gpt2-xl"
 #layers="49" # adding the embedding layer so its layer plus 1
 models="ctrl"
-layers="47" # adding the embedding layer so its layer plus 1
+layers="49" # adding the embedding layer so its layer plus 1
 #
 
 model_arr=($models)
 layer_arr=($layers)
-splits=200
+splits=100
 len=${#layer_arr[@]}
 #
 
