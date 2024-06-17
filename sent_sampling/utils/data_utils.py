@@ -258,9 +258,9 @@ SENTENCE_CONFIG = [
     dict(name='coca_spok_filter_punct_10K_sample_3',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_3.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_4',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_4.pkl')),
     dict(name='coca_spok_filter_punct_10K_sample_5',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_10K_sample_5.pkl')),
-    dict(name='coca_spok_filter_punct_50K',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K.pkl')),
-    dict(name='coca_spok_filter_punct_50K_sylb',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K_sylb.pkl')),
-    dict(name='coca_spok_filter_punct_50K_sylb_2to4sec',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K_sylb_2to4sec.pkl')),
+    dict(name='coca_spok_filter_punct_50K',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K.pkl')), # 50000 sentences
+    dict(name='coca_spok_filter_punct_50K_sylb',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K_sylb.pkl')), # 19852 sentences
+    dict(name='coca_spok_filter_punct_50K_sylb_2to4sec',file_loc=os.path.join(COCA_CORPUS_DIR,'coca_spok_data_filter_ngram_punct_50K_sylb_2to4sec.pkl')), # 11651 sentences
     dict(name='coca_spok_filter_punct_10K_sample_ev_editsSep12',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsSep12.pkl'),
     dict(name='coca_spok_filter_punct_10K_sample_ev_editsOct16',file_loc='/om/user/ehoseini/MyData/sent_sampling/results//coca_spok_filter_punct_10K_sample_ev_editsOct16.pkl'),
     dict(name='ud_sentences_U01_SET1_paraphrase',file_loc=os.path.join(RESULTS_DIR,'ud_sentences_U01_SET1_paraphrase.pkl')),
@@ -274,6 +274,7 @@ SENTENCE_CONFIG = [
     dict(name='coca_preprocessed_all_clean_100K_sample_4',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_4.pkl')),
     dict(name='coca_preprocessed_all_clean_100K_sample_5',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_5.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_1',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_1.pkl')),
+    dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_1_split_0',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_1_split_0.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_2',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_2.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_3',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_3.pkl')),
     dict(name='coca_preprocessed_all_clean_no_dup_100K_sample_4',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_no_dup_100K_sample_4.pkl')),
