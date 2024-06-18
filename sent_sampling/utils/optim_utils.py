@@ -327,8 +327,8 @@ class optim:
 
     def gpu_object_function_ds(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
-        pairs = torch.combinations(samples, with_replacement=False)
-        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
+        pairs = torch.combinations(samples, with_replacement=False).to('cpu')
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
         XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
@@ -354,16 +354,16 @@ class optim:
         # use torch to select the samples
         samples_rand = torch.randperm(self.N_S )[:self.N_s]
 
-        pairs = torch.combinations(samples, with_replacement=False)
-        pairs_rand = torch.combinations(samples_rand, with_replacement=False)
-        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
+        pairs = torch.combinations(samples, with_replacement=False).to('cpu')
+        pairs_rand = torch.combinations(samples_rand, with_replacement=False).to('cpu')
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
         XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
             XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
         # do the same for pairs rand
-        XY_corr_sample_rand = [XY_corr[pairs_rand[:, 0], pairs_rand[:, 1]] for XY_corr in self.XY_corr_list]
+        XY_corr_sample_rand = [XY_corr[pairs_rand[:, 0], pairs_rand[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
         XY_corr_sample_tensor_rand = torch.stack(XY_corr_sample_rand).to(self.device)
         XY_corr_sample_tensor_rand = torch.transpose(XY_corr_sample_tensor_rand, 1, 0)
         if XY_corr_sample_tensor_rand.shape[1] < XY_corr_sample_tensor_rand.shape[0]:
@@ -423,7 +423,7 @@ class optim:
     def gpu_object_function_debug(self,S):
         samples = torch.tensor(S, dtype=torch.long, device=self.device)
         pairs = torch.combinations(samples, with_replacement=False).to('cpu')
-        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
         XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
