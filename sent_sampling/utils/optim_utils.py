@@ -639,7 +639,8 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
 
 objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance),
                     dict(name='2-D_s',fun=minus_Distance),dict(name='D_s_jsd',fun=Distance_JSD)
-                    ,dict(name='2-D_s_jsd',fun=minus_Distance_JSD)]
+                    ,dict(name='2-D_s_jsd',fun=minus_Distance_JSD),
+                    dict(name='2-D_s_grp_jsd',fun=minus_Distance_grp_JSD)]
 
 n_iters=[2,50,100,500]
 N_s=[10,25,50,75,80,100,125,150,175,200,225,250,275,300]
