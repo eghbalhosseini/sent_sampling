@@ -274,6 +274,10 @@ class optim:
             target_device = self.device
         else:
             target_device = torch.device('cpu')
+        if low_resolution:
+            dtype= torch.float16
+        else:
+            dtype=torch.float32
         if preload:
 
             if os.path.exists(xy_dir):
@@ -301,11 +305,13 @@ class optim:
             else:
                 for idx, act_dict in tqdm(enumerate(self.activations)):
                     # backward compatiblity
+                    True
                     act_ = [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
-                    act = torch.tensor(act_, dtype=float, device=self.device,requires_grad=False)
+                    act = torch.tensor(np.asarray(act_), dtype=dtype, device=self.device,requires_grad=False)
                     XY_corr=corrcoef_metric(act)
                     self.XY_corr_list.append(XY_corr.to(target_device))
                     del act
+                    del act_
                     del XY_corr
                     torch.cuda.empty_cache()
 
@@ -396,9 +402,9 @@ class optim:
 
     def gpu_object_function_minus_ds(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
-        pairs = torch.combinations(samples, with_replacement=False)
-        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
-        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
+        pairs = torch.combinations(samples, with_replacement=False).to('cpu')
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
         if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
             XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
@@ -416,7 +422,7 @@ class optim:
 
     def gpu_object_function_debug(self,S):
         samples = torch.tensor(S, dtype=torch.long, device=self.device)
-        pairs = torch.combinations(samples, with_replacement=False)
+        pairs = torch.combinations(samples, with_replacement=False).to('cpu')
         XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]] for XY_corr in self.XY_corr_list]
         XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(device)
         XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
