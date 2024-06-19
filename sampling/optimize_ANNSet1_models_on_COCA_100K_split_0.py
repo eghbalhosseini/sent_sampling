@@ -1,5 +1,5 @@
 import sys
-from sent_sampling.utils import extract_pool
+from sent_sampling.utils import extract_pool, make_shorthand
 from sent_sampling.utils.optim_utils import optim_pool
 import argparse
 from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj
@@ -25,6 +25,11 @@ if __name__ == '__main__':
     #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
 
+    [ext_id,opt_id]=make_shorthand(extractor_id,optimizer_id)
+    # change activation to act
+    #ext_id=ext_id.replace('activation','act')
+    # change textNoPeriod to tNP
+    #ext_id=ext_id.replace('textNoPeriod','tNP')
     print(extractor_id+'\n')
     print(optimizer_id+'\n')
     # extract data
@@ -75,7 +80,8 @@ if __name__ == '__main__':
                          optimizatin_name=optimizer_id,
                          optimized_S=S_opt_d,
                          optimized_d=DS_opt_d)
-    optim_file=os.path.join(RESULTS_DIR,f"results_{extractor_id}_{optimizer_id}.pkl")
+    optim_file=os.path.join(RESULTS_DIR,f"results_{ext_id}_{opt_id}_jsd_{optimizer_obj.jsd_muliplier}.pkl")
+    # check of path is too long
     save_obj(optim_results, optim_file)
 
 
