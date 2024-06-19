@@ -456,7 +456,7 @@ class optim:
             jsd_vals.append(jsd_val)
         jsd_ = torch.stack(jsd_vals).cpu().numpy()
         jsd_th = jsd_* (jsd_<self.jsd_threshold).astype(float)
-        jsd_m=np.mean(-self.jsd_muliplier*jsd_th)
+        jsd_m=-self.jsd_muliplier*np.sum(jsd_th)
         if debug:
             return d_optim,jsd_m,jsd_
         else:
