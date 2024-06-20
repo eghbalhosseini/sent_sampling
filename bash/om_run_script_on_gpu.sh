@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=opt
 #SBATCH --time=24:00:00
-#SBATCH --mem=64G
-#SBATCH --gres=gpu:1
+#SBATCH --mem=180G
+#SBATCH --gres=gpu:a100:2
 #SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
