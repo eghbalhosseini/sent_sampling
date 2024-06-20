@@ -23,7 +23,7 @@ if __name__ == '__main__':
     extractor_id = f'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_no_dup_100K_sample_1_{suffix}_textNoPeriod-activation-bench=None-ave=False'
     #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
-    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=1-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
 
     [ext_id,opt_id]=make_shorthand(extractor_id,optimizer_id)
     # change activation to act
@@ -83,5 +83,14 @@ if __name__ == '__main__':
     optim_file=os.path.join(RESULTS_DIR,f"results_{ext_id}_{opt_id}_jsd_{optimizer_obj.jsd_muliplier}.pkl")
     # check of path is too long
     save_obj(optim_results, optim_file)
+
+    # load the results
+    #optim_results=load_obj(optim_file)
+
+    #S_opt_d=optim_results['optimized_S']
+    #[ds_,_,jsd_]=optimizer_obj.gpu_object_function_ds_grp_jsd(S_opt_d, debug=True)
+    optimizer_obj.gpu_object_function_ds_grp_jsd(S_opt_d)
+# 2-optimizer_obj.gpu_object_function_debug(S_opt_d)[0]
+
 
 
