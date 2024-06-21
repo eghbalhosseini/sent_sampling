@@ -26,7 +26,7 @@ if __name__ == '__main__':
     extractor_id = f'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_no_dup_100K_sample_1_{suffix}_textNoPeriod-activation-bench=None-ave=False'
     #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
-    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=50-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
 
     [ext_id,opt_id]=make_shorthand(extractor_id,optimizer_id)
     # change activation to act
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     jsd_std=np.stack(jsd_range).std(axis=0)
     jsd_threshold=jsd_ave+1*jsd_std
     optimizer_obj.jsd_threshold=jsd_threshold
-    optimizer_obj.jsd_muliplier=0
+    optimizer_obj.jsd_muliplier=10
     S_opt_d, DS_opt_d = optimizer_obj()
     #[ds_,_,jsd_]=optimizer_obj.gpu_object_function_ds_grp_jsd(S_opt_d, debug=True)
     #2-optimizer_obj.gpu_object_function_debug(S_opt_d)[0]
@@ -136,9 +136,9 @@ if __name__ == '__main__':
     ##
     X_Max = []
     S_id = S_opt_d_jsd
-    for XY_corr in optimizer_obj.XY_corr_list:
+    for XY_ in optimizer_obj.XY_corr_list:
         pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
-        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]].cpu().numpy()
+        X_sample = XY_[pairs[:, 0], pairs[:, 1]].cpu().numpy()
         # make squareform matrix
         X_sample = squareform(X_sample)
         X_Max.append(X_sample)
@@ -148,9 +148,9 @@ if __name__ == '__main__':
     for k in tqdm(enumerate(range(200))):
         sent_random = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s))
         x_rand_many = []
-        for XY_corr in optimizer_obj.XY_corr_list:
+        for XY_ in optimizer_obj.XY_corr_list:
             pairs = torch.combinations(torch.tensor(sent_random), with_replacement=False)
-            X_sample = XY_corr[pairs[:, 0], pairs[:, 1]].cpu().numpy()
+            X_sample = XY_[pairs[:, 0], pairs[:, 1]].cpu().numpy()
             # make squareform matrix
             X_sample = squareform(X_sample)
             x_rand_many.append(X_sample)
