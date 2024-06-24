@@ -205,7 +205,7 @@ def js_divergence(x_ref, x,bins=50,epsilon=1e-10):
 class optim:
     def __init__(self, n_init=3, n_iter=300,N_s=50, objective_function=None,
                  rdm_function=compute_rdm, optim_algorithm=None,low_dim=False,pca_type='pytorch',pca_var=0.9,
-                 run_gpu=False,early_stopping=True,stop_threshold=1e-4,jds_threshold=0.1,jsd_muliplier=0.5,device=None):
+                 run_gpu=False,early_stopping=True,stop_threshold=1e-4,jds_threshold=0.1,jsd_muliplier=0.5,device=None,S_init=None):
         self.n_iter=n_iter
         self.n_init=n_init
         self.N_s=N_s
@@ -221,6 +221,7 @@ class optim:
         self.stop_threshold=stop_threshold
         self.jsd_threshold=jds_threshold
         self.jsd_muliplier=jsd_muliplier
+        self.s_init=None
 
     def load_extractor(self,extractor_obj=None):
         self.extractor_obj=extractor_obj
@@ -530,10 +531,10 @@ class optim:
 
             if self.early_stopping:
                 S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s, objective_function=objective, n_init=self.n_init,
-                                                         n_iter=self.n_iter,early_stopping=self.early_stopping,stop_threshold=self.stop_threshold)
+                                                         n_iter=self.n_iter,early_stopping=self.early_stopping,stop_threshold=self.stop_threshold,S_init=self.s_init)
             else:
                 S_opt_d, DS_opt_d = self.optim_algorithm(self.N_S, self.N_s, objective, self.n_init,
-                                                     self.n_iter)
+                                                     self.n_iter,S_init=self.s_init)
         else:
             if self.early_stopping:
 
@@ -541,11 +542,11 @@ class optim:
                                                              objective_function=self.mod_objective_function,
                                                              n_init=self.n_init,
                                                              n_iter=self.n_iter, early_stopping=self.early_stopping,
-                                                             stop_threshold=self.stop_threshold)
+                                                             stop_threshold=self.stop_threshold,S_init=self.s_init)
             else:
                 S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s,
                                                          objective_function=self.mod_objective_function,
-                                                         n_init=self.n_init, n_iter=self.n_iter)
+                                                         n_init=self.n_init, n_iter=self.n_iter,S_init=self.s_init)
         self.S_opt_d=S_opt_d
         self.DS_opt_d=DS_opt_d
 
