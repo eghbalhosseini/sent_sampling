@@ -67,7 +67,7 @@ ch.setFormatter(formatter)
 
 #sys.path.insert(1,OPTIM_PARENT)
 #from opt_exp_design import coordinate_ascent, coordinate_ascent_eh,coordinate_ascent_parallel_eh
-from sent_sampling.utils.opt_exp_design import coordinate_ascent_eh, coordinate_ascent_parallel_eh, second_order_rdm, create_rdm, MI
+from sent_sampling.utils.opt_exp_design import coordinate_ascent_eh, coordinate_ascent_parallel_eh, second_order_rdm, create_rdm, MI, coordinate_ascent
 #import tools
 #from tools import second_order_rdm, create_rdm, MI
 #LOGGER = tools.get_logger('OPT-EXP-DSGN')
