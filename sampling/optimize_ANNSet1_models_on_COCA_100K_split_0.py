@@ -26,7 +26,7 @@ if __name__ == '__main__':
     extractor_id = f'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_no_dup_100K_sample_1_{suffix}_textNoPeriod-activation-bench=None-ave=False'
     #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
-    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=2-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
 
     [ext_id,opt_id]=make_shorthand(extractor_id,optimizer_id)
     # change activation to act
@@ -72,6 +72,12 @@ if __name__ == '__main__':
     jsd_threshold=jsd_ave+1*jsd_std
     optimizer_obj.jsd_threshold=jsd_threshold
     optimizer_obj.jsd_muliplier=10
+    # get the sentence form the pickle file
+    somewhat_optimized='/rdma/vast-rdma/vast/evlab/ehoseini/sent_sampling/bash/slurm-37144654_final_list.pkl'
+    somewhat_optimized=load_obj(somewhat_optimized)
+    sentence_id_initial=[int(x['number']) for x in somewhat_optimized]
+    optimizer_obj.s_init=sentence_id_initial
+
     S_opt_d, DS_opt_d = optimizer_obj()
     #[ds_,_,jsd_]=optimizer_obj.gpu_object_function_ds_grp_jsd(S_opt_d, debug=True)
     #2-optimizer_obj.gpu_object_function_debug(S_opt_d)[0]
@@ -92,6 +98,8 @@ if __name__ == '__main__':
     #optim_results=load_obj(optim_file)
 
     S_opt_d_jsd=optim_results['optimized_S']
+
+    S_opt_d_jsd=sentence_id_initial
     [ds_jsd,_,jsd_jsd]=optimizer_obj.gpu_object_function_ds_grp_jsd(S_opt_d_jsd, debug=True)
 
 
@@ -129,6 +137,7 @@ if __name__ == '__main__':
 
         # plot a vertical line at jsd_min, jsd_max and jsd_rand
     # save figure
+    fig.show()
     fig.savefig(os.path.join(RESULTS_DIR, f"jsd_rand_vs_optim_{ext_id}_{opt_id}_mult_{optimizer_obj.jsd_muliplier}.png"))
     # save as eps
     fig.savefig(os.path.join(RESULTS_DIR, f"jsd_rand_vs_optim_{ext_id}_{opt_id}_mult_{optimizer_obj.jsd_muliplier}.eps"))
