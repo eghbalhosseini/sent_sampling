@@ -87,48 +87,58 @@ def Distance_grp_JSD(S,group_act, distance='correlation'):
     '''ds_grp_jsd'''
     NotImplementedError
 
+def Distance_JSD_dst(S,group_act, distance='correlation'):
+    '''ds_jsd_dst'''
+    NotImplementedError
+
 def minus_Distance_grp_JSD(S,group_act, distance='correlation'):
     '''2-ds_grp_jsd'''
+    NotImplementedError
+
+def minus_Distance_JSD_dst(S,group_act, distance='correlation'):
+    '''2-ds_jsd_dst'''
     NotImplementedError
 
 
 def Distance(S,group_act, distance='correlation'):
     """ds"""
-    if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
-        patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
-    else:
-        # backward compatibility
-        group_act_mod=[]
-        for act_dict in group_act:
-            act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
-            group_act_mod.append(act_)
-        patterns_list=[]
-        for grp_act in group_act_mod:
-            patterns_list.append(np.stack([grp_act[i] for i in S]))
-        #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
-        #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
-    #[x.values for x in patterns if type]
-    rdm2_vec = second_order_rdm(patterns_list, True, distance)
-    return rdm2_vec.mean()
+    NotImplementedError
+    # if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
+    #     patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
+    # else:
+    #     # backward compatibility
+    #     group_act_mod=[]
+    #     for act_dict in group_act:
+    #         act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+    #         group_act_mod.append(act_)
+    #     patterns_list=[]
+    #     for grp_act in group_act_mod:
+    #         patterns_list.append(np.stack([grp_act[i] for i in S]))
+    #     #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
+    #     #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
+    # #[x.values for x in patterns if type]
+    # rdm2_vec = second_order_rdm(patterns_list, True, distance)
+    # return rdm2_vec.mean()
 
 def minus_Distance(S,group_act, distance='correlation'):
     """2-ds"""
-    if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
-        patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
-    else:
-        # backward compatibility
-        group_act_mod=[]
-        for act_dict in group_act:
-            act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
-            group_act_mod.append(act_)
-        patterns_list=[]
-        for grp_act in group_act_mod:
-            patterns_list.append(np.stack([grp_act[i] for i in S]))
-        #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
-        #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
-    #[x.values for x in patterns if type]
-    rdm2_vec = second_order_rdm(patterns_list, True, distance)
-    return 2-rdm2_vec.mean()
+    NotImplementedError
+    # if all([isinstance(x['activations'], xr.core.dataarray.DataArray) for x in group_act]):
+    #     patterns_list = [x['activations'].transpose("presentation","neuroid_id")[dict(presentation=S)].values for x in group_act]
+    # else:
+    #     # backward compatibility
+    #     group_act_mod=[]
+    #     for act_dict in group_act:
+    #         act_=[x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']]
+    #         group_act_mod.append(act_)
+    #     patterns_list=[]
+    #     for grp_act in group_act_mod:
+    #         patterns_list.append(np.stack([grp_act[i] for i in S]))
+    #     #patterns_list = [np.stack([x['activations'][i] for i in S]) for x in group_act]
+    #     #patterns_list = [np.stack([x[i] for i in S]) for x in group_act_mod]
+    # #[x.values for x in patterns if type]
+    # rdm2_vec = second_order_rdm(patterns_list, True, distance)
+    # return 2-rdm2_vec.mean()
 
 
 def compute_rdm(S,group_act,vector=True, distance='correlation'):
@@ -411,7 +421,6 @@ class optim:
         else:
             return d_optim+jsd_
 
-
     def gpu_object_function_ds_grp_jsd(self,S,debug=False):
         if self.objective_function.__doc__=='ds_grp_jsd':
             minus=False
@@ -459,6 +468,57 @@ class optim:
         jsd_ = torch.stack(jsd_vals).cpu().numpy()
         #jsd_th = jsd_* (jsd_<self.jsd_threshold).astype(float)
         jsd_th = jsd_
+        jsd_m=-self.jsd_muliplier*np.sum(jsd_th)
+        if debug:
+            return d_optim,jsd_m,jsd_
+        else:
+            return d_optim+jsd_m
+
+    def gpu_object_function_ds_jsd_dst(self,S,debug=False):
+        if self.objective_function.__doc__=='ds_jsd_dst':
+            minus=False
+        elif self.objective_function.__doc__=='2-ds_jsd_dst':
+            minus=True
+        samples=torch.tensor(S, dtype = torch.long, device = self.device)
+        # use torch to select the samples
+
+
+        pairs = torch.combinations(samples, with_replacement=False).to('cpu')
+
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
+        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
+        # do the same for pairs rand
+        # compute d_s for samples
+        d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
+        n1 = d_mat.shape[1]
+        correction = n1 * n1 / (n1 * (n1 - 1) / 2)
+        d_val = correction * d_mat.mean(dim=(0, 1))
+        d_val_mean=d_val.cpu().numpy().mean()
+        # do a version with std reductions too
+        mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
+        d_val_std=torch.std(d_mat[mdl_pairs[:,0],mdl_pairs[:,1]]).cpu().numpy()
+        if minus:
+            d_optim = 2-d_val_mean
+        else:
+            d_optim=d_val_mean #-.2*d_val_std
+
+        # compute jsd for samples
+        jsd_group = []
+        for i in range(self.XY_corr_random_sample_list.shape[-1]):
+            XY_corr_sample_tensor_rand = optimizer_obj.XY_corr_random_sample_list[:, :, i]
+            jsd_vals = []
+            for x, y in zip(XY_corr_sample_tensor, XY_corr_sample_tensor_rand):
+                jsd_val = js_divergence(x, y)
+                jsd_vals.append(jsd_val)
+            jsd_group.append(torch.tensor(jsd_vals))
+        jsd_group = torch.stack(jsd_group)
+        jsd_ = jsd_group.mean(dim=0).cpu().numpy()
+        jsd_th = jsd_* (jsd_>self.jsd_threshold).astype(float)
+        #jsd_th = jsd_
         jsd_m=-self.jsd_muliplier*np.sum(jsd_th)
         if debug:
             return d_optim,jsd_m,jsd_
@@ -643,7 +703,11 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
 objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance),
                     dict(name='2-D_s',fun=minus_Distance),dict(name='D_s_jsd',fun=Distance_JSD)
                     ,dict(name='2-D_s_jsd',fun=minus_Distance_JSD),
-                    dict(name='2-D_s_grp_jsd',fun=minus_Distance_grp_JSD)]
+                    dict(name='2-D_s_grp_jsd',fun=minus_Distance_grp_JSD),
+                    dict(name='D_s_grp_jsd',fun=Distance_grp_JSD),
+                    dict(name='D_s_jsd_dst', fun=Distance_JSD_dst),
+                    dict(name='2-D_s_jsd_dst', fun=minus_Distance_JSD_dst)
+                    ]
 
 n_iters=[1,2,50,100,500]
 N_s=[10,25,50,75,80,100,125,150,175,200,225,250,275,300]
