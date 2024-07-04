@@ -1,6 +1,6 @@
 import sys
 from sent_sampling.utils import extract_pool, make_shorthand
-from sent_sampling.utils.optim_utils import optim_pool
+from sent_sampling.utils.optim_utils import optim_pool, js_divergence
 import argparse
 from sent_sampling.utils.data_utils import RESULTS_DIR, save_obj,SAVE_DIR,load_obj
 import os
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     extractor_id = f'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_no_dup_100K_sample_1_{suffix}_textNoPeriod-activation-bench=None-ave=False'
     #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
-    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_grp_jsd-n_iter=2-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    optimizer_id = f"coordinate_ascent_eh-obj=D_s_grp_jsd-n_iter=2-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
 
     [ext_id,opt_id]=make_shorthand(extractor_id,optimizer_id)
     # change activation to act
@@ -60,12 +60,27 @@ if __name__ == '__main__':
     optimizer_obj.device=device1
     jsd_range = []
     ds_rand=[]
-    for kk in tqdm(range(1000)):
+    XY_corr_sample_list = []
+    for kk in tqdm(range(200)):
         S = np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s, replace=False)
         # compute objective function for the random sample
         ds_r, _, jsds = optimizer_obj.gpu_object_function_ds_grp_jsd(S, debug=True)
         jsd_range.append(jsds)
         ds_rand.append(ds_r)
+        # compute XY_pairs
+        samples = torch.tensor(S, dtype=torch.long, device=optimizer_obj.device)
+        pairs_rand = torch.combinations(samples, with_replacement=False).to('cpu')
+        XY_corr_sample_rand = [XY_corr[pairs_rand[:, 0], pairs_rand[:, 1]].to(optimizer_obj.device) for XY_corr in
+                               optimizer_obj.XY_corr_list]
+        XY_corr_sample_tensor_rand = torch.stack(XY_corr_sample_rand).to(optimizer_obj.device)
+        XY_corr_sample_tensor_rand = torch.transpose(XY_corr_sample_tensor_rand, 1, 0)
+        if XY_corr_sample_tensor_rand.shape[1] < XY_corr_sample_tensor_rand.shape[0]:
+            XY_corr_sample_tensor_rand = torch.transpose(XY_corr_sample_tensor_rand, 1, 0)
+        assert (XY_corr_sample_tensor_rand.shape[1] > XY_corr_sample_tensor_rand.shape[0])
+        XY_corr_sample_list.append(XY_corr_sample_tensor_rand)
+    # concatenate the list of XY_corr_sample_tensor along a new last dimension
+    optimizer_obj.XY_corr_random_sample_list = torch.stack(XY_corr_sample_list, dim=-1)
+
 
     jsd_ave=np.stack(jsd_range).mean(axis=0)
     jsd_std=np.stack(jsd_range).std(axis=0)
@@ -73,10 +88,10 @@ if __name__ == '__main__':
     optimizer_obj.jsd_threshold=jsd_threshold
     optimizer_obj.jsd_muliplier=10
     # get the sentence form the pickle file
-    somewhat_optimized='/rdma/vast-rdma/vast/evlab/ehoseini/sent_sampling/bash/slurm-37144654_final_list.pkl'
-    somewhat_optimized=load_obj(somewhat_optimized)
-    sentence_id_initial=[int(x['number']) for x in somewhat_optimized]
-    optimizer_obj.s_init=sentence_id_initial
+    #somewhat_optimized='/rdma/vast-rdma/vast/evlab/ehoseini/sent_sampling/bash/slurm-37144654_final_list.pkl'
+    #somewhat_optimized=load_obj(somewhat_optimized)
+    #sentence_id_initial=[int(x['number']) for x in somewhat_optimized]
+    #optimizer_obj.s_init=sentence_id_initial
 
     S_opt_d, DS_opt_d = optimizer_obj()
     #[ds_,_,jsd_]=optimizer_obj.gpu_object_function_ds_grp_jsd(S_opt_d, debug=True)
@@ -99,7 +114,7 @@ if __name__ == '__main__':
 
     S_opt_d_jsd=optim_results['optimized_S']
 
-    S_opt_d_jsd=sentence_id_initial
+    #S_opt_d_jsd=sentence_id_initial
     [ds_jsd,_,jsd_jsd]=optimizer_obj.gpu_object_function_ds_grp_jsd(S_opt_d_jsd, debug=True)
 
 
