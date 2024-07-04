@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     extractor_id = f'group=best_performing_pereira_1-dataset=coca_preprocessed_all_clean_no_dup_100K_sample_1_{suffix}_textNoPeriod-activation-bench=None-ave=False'
     #optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
-    #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd-n_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    #optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd-nx_iter=2-n_samples=200-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     optimizer_id = f"coordinate_ascent_eh-obj=D_s_grp_jsd-n_iter=2-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
 
     [ext_id,opt_id]=make_shorthand(extractor_id,optimizer_id)
