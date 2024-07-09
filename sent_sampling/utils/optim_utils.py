@@ -519,10 +519,12 @@ class optim:
                 jsd_vals.append(jsd_val)
             jsd_group.append(torch.tensor(jsd_vals))
         jsd_group = torch.stack(jsd_group)
+        # rescale the jsd values
+        jsd_group = (jsd_group-0)/self.jsd_max
         jsd_ = jsd_group.mean(dim=0).cpu().numpy()
-        jsd_th = jsd_* (jsd_>self.jsd_threshold).astype(float)
-        #jsd_th = jsd_
-        jsd_m=-self.jsd_muliplier*np.sum(jsd_th)
+        #jsd_th = jsd_* (jsd_>self.jsd_threshold).astype(float)
+        jsd_th = jsd_
+        jsd_m=-self.jsd_muliplier*np.mean(jsd_th)
         if debug:
             return d_optim,jsd_m,jsd_
         else:
