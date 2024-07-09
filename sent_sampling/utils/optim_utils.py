@@ -475,6 +475,7 @@ class optim:
             return d_optim+jsd_m
 
     def gpu_object_function_ds_jsd_dst(self,S,debug=False,minus=None):
+        # add a minus flag to the function
         if minus is None:
             if self.objective_function.__doc__=='ds_jsd_dst':
                 minus=False
