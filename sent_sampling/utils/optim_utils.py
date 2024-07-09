@@ -595,6 +595,12 @@ class optim:
             elif self.objective_function.__doc__ == '2-ds_grp_jsd':
                 objective = self.gpu_object_function_ds_grp_jsd
 
+            elif self.objective_function.__doc__ == 'ds_jsd_dst':
+                objective = self.gpu_object_function_ds_jsd_dst
+            elif self.objective_function.__doc__ == '2-ds_jsd_dst':
+                objective = self.gpu_object_function_ds_jsd_dst
+
+
             if self.early_stopping:
                 S_opt_d, DS_opt_d = self.optim_algorithm(N=self.N_S, n=self.N_s, objective_function=objective, n_init=self.n_init,
                                                          n_iter=self.n_iter,early_stopping=self.early_stopping,stop_threshold=self.stop_threshold,S_init=self.s_init)
