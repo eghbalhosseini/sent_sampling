@@ -512,7 +512,7 @@ class optim:
         # compute jsd for samples
         jsd_group = []
         for i in range(self.XY_corr_random_sample_list.shape[-1]):
-            XY_corr_sample_tensor_rand = optimizer_obj.XY_corr_random_sample_list[:, :, i]
+            XY_corr_sample_tensor_rand = self.XY_corr_random_sample_list[:, :, i]
             jsd_vals = []
             for x, y in zip(XY_corr_sample_tensor, XY_corr_sample_tensor_rand):
                 jsd_val = js_divergence(x, y)
