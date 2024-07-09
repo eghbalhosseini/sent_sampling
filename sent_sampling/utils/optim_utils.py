@@ -474,11 +474,12 @@ class optim:
         else:
             return d_optim+jsd_m
 
-    def gpu_object_function_ds_jsd_dst(self,S,debug=False):
-        if self.objective_function.__doc__=='ds_jsd_dst':
-            minus=False
-        elif self.objective_function.__doc__=='2-ds_jsd_dst':
-            minus=True
+    def gpu_object_function_ds_jsd_dst(self,S,debug=False,minus=None):
+        if minus is None:
+            if self.objective_function.__doc__=='ds_jsd_dst':
+                minus=False
+            elif self.objective_function.__doc__=='2-ds_jsd_dst':
+                minus=True
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         # use torch to select the samples
 
