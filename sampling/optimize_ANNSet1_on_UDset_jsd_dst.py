@@ -37,7 +37,7 @@ if __name__ == '__main__':
         ev_sent = ev_sent[:-1]
         ev_sentence_ids.append(sentences.index(ev_sent))
 
-    optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd_dst-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    optimizer_id = f"coordinate_ascent_eh-obj=D_s_jsd_dst-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     optimizer_obj = optim_pool[optimizer_id]()
     optimizer_obj.load_extractor(extractor_obj)
     low_resolution= False
