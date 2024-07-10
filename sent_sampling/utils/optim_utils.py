@@ -16,6 +16,7 @@ import os
 import torch.nn.functional as F
 from sent_sampling.utils.data_utils import save_obj, SAVE_DIR,load_obj
 import torch.distributions as dst
+import time
 try :
     torch.set_deterministic(True)
 except:
@@ -210,6 +211,57 @@ def js_divergence(x_ref, x,bins=50,epsilon=1e-10):
     kl_div_qm = F.kl_div(q_smooth.log(), m, reduction='batchmean')
     # Compute JSD
     jsd = 0.5 * (kl_div_pm + kl_div_qm)
+    return jsd
+
+
+def js_divergence_grp(x_ref, x, bins=50, epsilon=1e-10):
+    """
+    Compute Jensen-Shannon Divergence (JSD) between a set of samples (x) and multiple sets of reference samples (x_ref).
+
+    Parameters:
+    x_ref (torch.Tensor): Reference sets of samples, shape (n, p)
+    x (torch.Tensor): Set of samples to compare against the reference sets, shape (p,)
+    bins (int): Number of bins for histogram calculation
+    epsilon (float): Small value to avoid log(0)
+
+    Returns:
+    torch.Tensor: JSD values for each reference set, shape (n,)
+    """
+    # Compute histograms
+    hist_x = torch.histc(x, bins=bins, min=0, max=2).unsqueeze(0)
+    hist_ref = torch.stack([torch.histc(ref, bins=bins, min=0, max=2) for ref in x_ref])
+
+    # Compute probabilities
+    q = hist_x / torch.sum(hist_x, dim=-1, keepdim=True)
+    p = hist_ref / torch.sum(hist_ref, dim=-1, keepdim=True)
+
+    # Smooth probabilities
+    q_smooth = q + epsilon
+    p_smooth = p + epsilon
+
+    # Normalize probabilities
+    q_smooth /= q_smooth.sum(dim=-1, keepdim=True)
+    p_smooth /= p_smooth.sum(dim=-1, keepdim=True)
+
+    # Compute the average distribution
+    q_smooth = q_smooth.repeat( p_smooth.shape[0], 1)
+
+    m = 0.5 * (p_smooth + q_smooth)
+
+    # Compute KL divergence between p and m
+    #kl_div_pm = F.kl_div(p_smooth.log(), m, reduction='batchmean')
+
+    # Compute KL divergence between q and m
+    #kl_div_qm = F.kl_div(q_smooth.log(), m, reduction='batchmean')
+
+    # Compute KL divergence between p and m
+    kl_div_pm = (p_smooth * (p_smooth.log() - m.log())).mean(dim=-1)
+    # Compute KL divergence between q and m
+    kl_div_qm = (q_smooth * (q_smooth.log() - m.log())).mean(dim=-1)
+
+    # Compute JSD
+    jsd = 0.5*(kl_div_pm + kl_div_qm)
+
     return jsd
 
 
@@ -508,21 +560,28 @@ class optim:
             d_optim = 2-d_val_mean
         else:
             d_optim=d_val_mean #-.2*d_val_std
-
         # compute jsd for samples
-        jsd_group = []
-        for i in range(self.XY_corr_random_sample_list.shape[-1]):
-            XY_corr_sample_tensor_rand = self.XY_corr_random_sample_list[:, :, i]
-            jsd_vals = []
-            for x, y in zip(XY_corr_sample_tensor, XY_corr_sample_tensor_rand):
-                jsd_val = js_divergence(x, y)
-                jsd_vals.append(jsd_val)
-            jsd_group.append(torch.tensor(jsd_vals))
-        jsd_group = torch.stack(jsd_group)
+        jsd_group_1 = []
+        for i in range(self.XY_corr_random_sample_list.shape[0]):
+            XY_corr_sample_tensor_rand = self.XY_corr_random_sample_list[i, :, :]
+            jsd_v=js_divergence_grp(XY_corr_sample_tensor_rand.transpose(1,0),XY_corr_sample_tensor[i])
+            jsd_group_1.append(jsd_v)
+        jsd_group_1 = torch.stack(jsd_group_1).transpose(1,0)
+        jsd_group_1 = (jsd_group_1 - 0) / self.jsd_max
+        jsd_ = jsd_group_1.mean(dim=0).cpu().numpy()
+        # jsd_group = []
+        # for i in range(self.XY_corr_random_sample_list.shape[-1]):
+        #     XY_corr_sample_tensor_rand = self.XY_corr_random_sample_list[:, :, i]
+        #     jsd_vals = []
+        #     for x, y in zip(XY_corr_sample_tensor, XY_corr_sample_tensor_rand):
+        #         jsd_val = js_divergence(x, y)
+        #         jsd_vals.append(jsd_val)
+        #     jsd_group.append(torch.tensor(jsd_vals))
+        # jsd_group = torch.stack(jsd_group)
         # rescale the jsd values
-        jsd_group = (jsd_group-0)/self.jsd_max
-        jsd_ = jsd_group.mean(dim=0).cpu().numpy()
-        #jsd_th = jsd_* (jsd_>self.jsd_threshold).astype(float)
+        #jsd_group = (jsd_group-0)/self.jsd_max
+        #jsd_ = jsd_group.mean(dim=0).cpu().numpy()
+        jsd_th = jsd_* (jsd_>self.jsd_threshold).astype(float)
         jsd_th = jsd_
         jsd_m=-self.jsd_muliplier*np.mean(jsd_th)
         if debug:
