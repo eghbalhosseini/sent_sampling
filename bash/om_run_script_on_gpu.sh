@@ -2,7 +2,7 @@
 #SBATCH --job-name=opt
 #SBATCH --time=36:00:00
 #SBATCH --mem=180G
-#SBATCH --gres=gpu:a100:2
+#SBATCH --gres=gpu:a100:1
 #SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
@@ -14,3 +14,7 @@ echo "running :${PYTHON_SCR}"
 conda activate neural_nlp_2022
 echo $(which python)
 python $PYTHON_SCR
+
+
+
+###SBATCH --gres=gpu:a100:2
