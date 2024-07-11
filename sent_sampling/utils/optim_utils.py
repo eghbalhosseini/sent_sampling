@@ -92,6 +92,9 @@ def Distance_JSD_dst(S,group_act, distance='correlation'):
     '''ds_jsd_dst'''
     NotImplementedError
 
+def Distance_kl_div(S,group_act, distance='correlation'):
+    '''ds_kl_div'''
+    NotImplementedError
 def minus_Distance_grp_JSD(S,group_act, distance='correlation'):
     '''2-ds_grp_jsd'''
     NotImplementedError
@@ -100,6 +103,10 @@ def minus_Distance_JSD_dst(S,group_act, distance='correlation'):
     '''2-ds_jsd_dst'''
     NotImplementedError
 
+
+def minus_Distance_kl_div(S,group_act, distance='correlation'):
+    '''2-ds_kl_div'''
+    NotImplementedError
 
 def Distance(S,group_act, distance='correlation'):
     """ds"""
@@ -588,6 +595,53 @@ class optim:
             return d_optim,jsd_m,jsd_
         else:
             return d_optim+jsd_m
+
+    def gpu_object_function_ds_kl_div(self, S, debug=False, minus=None):
+        # add a minus flag to the function
+        if minus is None:
+            if self.objective_function.__doc__ == 'ds_kl_div':
+                minus = False
+            elif self.objective_function.__doc__ == '2-ds_kl_div':
+                minus = True
+        samples = torch.tensor(S, dtype=torch.long, device=self.device)
+        # use torch to select the samples
+
+        pairs = torch.combinations(samples, with_replacement=False).to('cpu')
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
+        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
+        # do the same for pairs rand
+        # compute d_s for samples
+        d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
+        n1 = d_mat.shape[1]
+        correction = n1 * n1 / (n1 * (n1 - 1) / 2)
+        d_val = correction * d_mat.mean(dim=(0, 1))
+        d_val_mean = d_val.cpu().numpy().mean()
+        # do a version with std reductions too
+        mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
+        d_val_std = torch.std(d_mat[mdl_pairs[:, 0], mdl_pairs[:, 1]]).cpu().numpy()
+        if minus:
+            d_optim = 2 - d_val_mean
+        else:
+            d_optim = d_val_mean  # -.2*d_val_std
+        # compute kl_div for samples
+        XY_corr_hist = torch.stack([torch.histc(x_ref, bins=bins, min=0, max=2) for x_ref in XY_corr_sample_tensor])
+        XY_corr_hist = XY_corr_hist/XY_corr_hist.sum(dim=-1, keepdim=True) + self.epsilon
+        XY_corr_hist = XY_corr_hist/XY_corr_hist.sum(dim=-1, keepdim=True)
+
+        kl_div_pm = (XY_corr_hist * (XY_corr_hist.log() - self.XY_corr_hist_mean.log())).mean(dim=-1)
+        kl_div_norm = (kl_div_pm - 0) / self.kl_div_rnd_max
+        kl_div_th = kl_div_norm * (kl_div_norm > self.kl_div_threshold)
+        kl_div_m = -self.kl_div_muliplier * torch.mean(kl_div_th).float().cpu().numpy()
+
+        if debug:
+            return d_optim, kl_div_m, kl_div_pm
+        else:
+            return d_optim + kl_div_m
+
     def gpu_object_function_minus_ds(self,S):
         samples=torch.tensor(S, dtype = torch.long, device = self.device)
         pairs = torch.combinations(samples, with_replacement=False).to('cpu')
@@ -658,6 +712,12 @@ class optim:
                 objective = self.gpu_object_function_ds_jsd_dst
             elif self.objective_function.__doc__ == '2-ds_jsd_dst':
                 objective = self.gpu_object_function_ds_jsd_dst
+
+            elif self.objective_function.__doc__ == 'ds_kl_div':
+                objective = self.gpu_object_function_ds_kl_div
+            elif self.objective_function.__doc__ == '2-ds_kl_div':
+                objective = self.gpu_object_function_ds_kl_div
+
 
 
             if self.early_stopping:
@@ -776,7 +836,9 @@ objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distan
                     dict(name='2-D_s_grp_jsd',fun=minus_Distance_grp_JSD),
                     dict(name='D_s_grp_jsd',fun=Distance_grp_JSD),
                     dict(name='D_s_jsd_dst', fun=Distance_JSD_dst),
-                    dict(name='2-D_s_jsd_dst', fun=minus_Distance_JSD_dst)
+                    dict(name='2-D_s_jsd_dst', fun=minus_Distance_JSD_dst),
+                    dict(name='D_s_kl_div', fun=Distance_kl_div),
+                    dict(name='2-D_s_kl_div', fun=minus_Distance_kl_div),
                     ]
 
 n_iters=[1,2,50,100,500]
