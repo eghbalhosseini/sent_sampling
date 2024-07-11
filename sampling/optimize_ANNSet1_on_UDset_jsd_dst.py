@@ -26,16 +26,7 @@ if __name__ == '__main__':
     extractor_obj.load_dataset()
     extractor_obj()
     # extract ev sentences
-    file_name = 'U01_sentselection_Dec18-2020_updDec23.xlsx'
-    df_ev_selected = pd.read_excel(os.path.join(RESULTS_DIR, f"{file_name}"))
-    ev_sentences = df_ev_selected.sentence[df_ev_selected.previously_selected_by_ev == 1]
-    sentences = [x[1] for x in extractor_obj.model_group_act[0]['activations']]
     # find location of ev sentences in sentences
-    ev_sentence_ids = []
-    for ev_sent in ev_sentences:
-        # remove the period
-        ev_sent = ev_sent[:-1]
-        ev_sentence_ids.append(sentences.index(ev_sent))
 
     optimizer_id = f"coordinate_ascent_eh-obj=2-D_s_jsd_dst-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     optimizer_obj = optim_pool[optimizer_id]()
