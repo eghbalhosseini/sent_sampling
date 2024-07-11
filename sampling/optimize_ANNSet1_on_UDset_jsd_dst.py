@@ -20,7 +20,7 @@ from scipy.spatial.distance import pdist, squareform
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=False'
+    extract_id='group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False'
 
     extractor_obj = extract_pool[extract_id]()
     extractor_obj.load_dataset()
