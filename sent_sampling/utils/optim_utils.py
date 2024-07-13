@@ -628,7 +628,7 @@ class optim:
         else:
             d_optim = d_val_mean  # -.2*d_val_std
         # compute kl_div for samples
-        XY_corr_hist = torch.stack([torch.histc(x_ref, bins=self.bins, min=0, max=2) for x_ref in XY_corr_sample_tensor])
+        XY_corr_hist = torch.stack([torch.histc(x_ref, bins=self.bins, min=self.corr_min_max[id_m][0], max=self.corr_min_max[id_m][1]) for id_m,x_ref in enumerate(XY_corr_sample_tensor)])
         XY_corr_hist = XY_corr_hist/XY_corr_hist.sum(dim=-1, keepdim=True) + self.epsilon
         XY_corr_hist = XY_corr_hist/XY_corr_hist.sum(dim=-1, keepdim=True)
 

@@ -71,3 +71,14 @@ def compute_model_curvature_timescale(all_layers,ts):
     curve_change = (curve_[1:, :] - curve_[1, :])
     # make a dictionary with fieldds 'curve','curve_change','all_layer_curve_all' and return the dictionary
     return dict(timescale=ts,curve=curve_,curve_change=curve_change,all_layer_curve_all=all_layer_curve_all)
+
+
+def compute_one_sided_statistics(data):
+    data = np.array(data)
+    # Compute mean
+    mean = np.mean(data)
+    # Compute left standard deviation (values less than the mean)
+    left_std = np.nanstd(data[data < mean]) if np.any(data < mean) else 0
+    # Compute right standard deviation (values greater than the mean)
+    right_std = np.nanstd(data[data > mean]) if np.any(data > mean) else 0
+    return mean, left_std, right_std
