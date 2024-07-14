@@ -28,7 +28,7 @@ done
 
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
-echo "Running optimiation: ${optim_pool[$SLURM_ARRAY_TASK_ID]}"
+echo "Running optimiation: ${optim_list[$SLURM_ARRAY_TASK_ID]}"
 
 
 RESULTCACHING_HOME=/om5/group/evlab/u/ehoseini/.result_caching
@@ -40,4 +40,4 @@ export RESULTCACHING_HOME
 conda activate neural_nlp_2022
 
 
-/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/sampling/optimize_ANNSet1_on_UDset_js_divergence.py ${optim_pool[$SLURM_ARRAY_TASK_ID]} ${multiply_list[$SLURM_ARRAY_TASK_ID]} ${theshold_list[$SLURM_ARRAY_TASK_ID]}
+/om/user/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/sampling/optimize_ANNSet1_on_UDset_js_divergence.py ${optim_list[$SLURM_ARRAY_TASK_ID]} ${multiply_list[$SLURM_ARRAY_TASK_ID]} ${theshold_list[$SLURM_ARRAY_TASK_ID]}
