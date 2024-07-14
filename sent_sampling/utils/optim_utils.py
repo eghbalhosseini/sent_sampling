@@ -828,8 +828,10 @@ optim_method=[dict(name='coordinate_ascent',fun=coordinate_ascent),
               dict(name='coordinate_ascent_parallel_eh',fun=coordinate_ascent_parallel_eh)]
 
 objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distance),
-                    dict(name='2-D_s',fun=minus_Distance),dict(name='D_s_jsd',fun=Distance_JSD)
-                    ,dict(name='2-D_s_jsd',fun=minus_Distance_JSD),
+                    dict(name='2-D_s',fun=minus_Distance),
+                    dict(name='D_s_var',fun=Distance),
+                    dict(name='D_s_jsd',fun=Distance_JSD),
+                    dict(name='2-D_s_jsd',fun=minus_Distance_JSD),
                     dict(name='2-D_s_grp_jsd',fun=minus_Distance_grp_JSD),
                     dict(name='D_s_grp_jsd',fun=Distance_grp_JSD),
                     dict(name='D_s_jsd_dst', fun=Distance_JSD_dst),
