@@ -425,11 +425,12 @@ class optim:
         d_optim=d_val_mean #-.2*d_val_std
         return d_optim
 
-    def gpu_object_function_ds_jsd(self,S,debug=False):
-        if self.objective_function.__doc__=='ds_jsd':
-            minus=False
-        elif self.objective_function.__doc__=='2-ds_jsd':
-            minus=True
+    def gpu_object_function_ds_jsd(self,S,debug=False,minus=None):
+        if minus is None:
+            if self.objective_function.__doc__=='ds_jsd':
+                minus=False
+            elif self.objective_function.__doc__=='2-ds_jsd':
+                minus=True
         samples = torch.tensor(S, dtype=torch.long, device=self.device)
         # use torch to select the samples
 
