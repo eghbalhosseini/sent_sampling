@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # load parser arguments
     args = parser.parse_args()
     run_id = str(args.run_id)
-    optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=75-n_samples=50-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=50-n_samples=75-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
     extract_id = "group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False"
     extractor_obj = extract_pool[extract_id]()
     extractor_obj.load_dataset()
