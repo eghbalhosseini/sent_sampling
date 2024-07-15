@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH --job-name=opt_jsd
-#SBATCH --array=0-7
+#SBATCH --job-name=opt_uniq
+#SBATCH --array=0-19
 #SBATCH --time=12:00:00
-#SBATCH --mem=64G
+#SBATCH --mem=40G
 #SBATCH --gres=gpu:1
 #SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
@@ -11,8 +11,8 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-# create a run from 0 to 7
-for run_ in 1 2 3 4 5 6 7 8 ; do
+# create a run from 0 to 20
+for run_ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; do
     for ds in D_s ; do
         optim_id="coordinate_ascent_eh-obj=${ds}-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
         optim_list[$i]="$optim_id"
