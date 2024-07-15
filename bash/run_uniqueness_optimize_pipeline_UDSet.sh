@@ -13,13 +13,12 @@
 i=0
 # create a run from 0 to 7
 for run_ in 1 2 3 4 5 6 7 8 ; do
-      for ds in D_s ; do
+    for ds in D_s ; do
         optim_id="coordinate_ascent_eh-obj=${ds}-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
         optim_list[$i]="$optim_id"
         run_list[$i]="$run_"
         i=$i+1
-      done
-  done
+    done
 done
 
 
