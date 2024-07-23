@@ -137,17 +137,21 @@ if __name__ == '__main__':
     tolerance = 1e-6
     steps= 200
     verbose = True
+    n_init=2
     prev_objective=1e10
     X_bar_model_final=None
     aligned_Xs_model_final=None
-    for k in range(5):
+    # print configuration
+    print(f'grp: {grp}, method: {method}, adjust_mode: {adjust_mode}, svd_solver: {svd_solver}, tolerance: {tolerance} \n')
+    for k in range(n_init):
+        # print the current iteration
+        print(f'iteration: {k}')
         with torch.no_grad():
             X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,
                                                       max_iter=steps,verbose=verbose, tol=tolerance,svd_solver=svd_solver)
 
         X_diff = [X - X_bar_model for X in aligned_Xs_model]
         X_diff = torch.stack(X_diff)
-        # X_diff[:,0,:].norm(dim=1)
         X_var_model = X_diff.norm(dim=-1, p='fro')
         objective=X_var_model.norm()
         print(f'objective: {objective}')
@@ -157,7 +161,8 @@ if __name__ == '__main__':
 
     # align subjects to the mean model
     # safe final x_bar_model and aligned_Xs_model
-    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_norm.pkl')
+    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_{n_init}_norm.pkl')
     results_dict=dict(X_bar_model_final=X_bar_model_final,aligned_Xs_model_final=aligned_Xs_model_final)
     with open(file.__str__(), 'wb') as f:
         pickle.dump(results_dict, f)
+
