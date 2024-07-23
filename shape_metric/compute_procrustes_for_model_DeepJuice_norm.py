@@ -12,7 +12,17 @@ from sklearn.decomposition import PCA
 import pandas as pd
 import sys
 from netrep.utils import align, pt_align
-sys.path.append('/om2/user/ehoseini/DeepJuiceDev/')
+import getpass
+if getpass.getuser() == 'ehoseini':
+    sys.path.append('/om2/user/ehoseini/DeepJuiceDev/')
+    image_paths = '/om2/user/ehoseini/MyData/DeepJuice/NSD_image_paths.pkl'
+    deepjuice_ws_path = '/om2/user/ehoseini/MyData/neural_nlp_bench/activations/DeepJuice_DsParametricfMRI/'
+    benchmark_path = '/om2/user/ehoseini/MyData/DeepJuice/nsd_data/'
+else:
+    sys.path.append('/Users/eghbalhosseini/MyCodes/DeepJuiceDev/')
+    image_paths = '/Users/eghbalhosseini/MyData/DeepJuice/NSD_image_paths.pkl'
+    deepjuice_ws_path = '/Users/eghbalhosseini/MyData/DeepJuice/workspace/nsd/'
+    benchmark_path = '/Users/eghbalhosseini/MyData/DeepJuice/nsd_data/'
 from scipy.stats import median_abs_deviation as mad
 from benchmarks import NSDBenchmark, NSDSampleBenchmark
 from deepjuice._backends.cupyfy import convert_to_tensor
@@ -21,6 +31,24 @@ import os
 print(f'num cpus: {multiprocessing.cpu_count()}')
 # set omp threads to 1 to avoid slowdowns due to parallelization
 os.environ['OMP_NUM_THREADS'] = '4'
+import matplotlib.pyplot as plt
+# Check operating system
+# Check operating system
+import platform
+if platform.system() == 'Darwin':  # Darwin is the system name for macOS
+    # Check if MPS (Metal Performance Shaders) backend is available, for Apple Silicon Macs
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")  # Use MPS on supported Macs
+    else:
+        device = torch.device("cpu")  # Fallback to CPU if MPS is not available
+    float_version=torch.float32
+else:
+    # For non-macOS, you can default to CPU or check for CUDA (NVIDIA GPU) availability
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    float_version=torch.float64
+
+
+print(f"Using device: {device}")
 import matplotlib.pyplot as plt
 # Check operating system
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -33,7 +61,6 @@ from pathlib import Path
 if __name__ == '__main__':
     # compute the simliarty vs score
     #%%
-    # load act_leftout
     selected_models = ['torchvision_alexnet_imagenet1k_v1',
                        'torchvision_regnet_x_800mf_imagenet1k_v2',
                        'openclip_vit_b_32_laion2b_e16',
@@ -43,7 +70,6 @@ if __name__ == '__main__':
                        ]
 
     models_sh = ['AlexNet', 'RegNet', 'ViT', 'Swin', 'EfficientNet',  'ConvNext']
-    image_paths = '/om2/user/ehoseini/MyData/DeepJuice/NSD_image_paths.pkl'
     # read image path
     with open(image_paths, 'rb') as f:
         image_paths = pickle.load(f)
@@ -52,7 +78,6 @@ if __name__ == '__main__':
     extract_mode = 'redux'
     activations_list = []
     layers_list = []
-    deepjuice_ws_path = '/om2/user/ehoseini/MyData/neural_nlp_bench/activations/DeepJuice_DsParametricfMRI/'
     for model_ in selected_models:
         save_file = f'{deepjuice_ws_path}/{model_}*{extract_mode}.pkl'
         original_files = glob(save_file)
@@ -68,64 +93,42 @@ if __name__ == '__main__':
     feature_map_all = [x['activations'] for x in activations_list]
 
     for idx in range(len(feature_map_all)):
-        X=feature_map_all[idx]
-        X=torch.tensor(X).to(torch.float64)
+        X = feature_map_all[idx]
+        X = torch.tensor(X).to(float_version)
         column_means = torch.mean(X, dim=0)
         centered_X = X - column_means
-        #centered_X/=centered_X.norm(p='fro')
-        feature_map_all[idx]=centered_X.to(device)
+        # centered_X/=centered_X.norm(p='fro')
+        feature_map_all[idx] = centered_X.to(device)
     # compute a forbenious norm aacross all models
     #model_norm=torch.stack(feature_map_all).norm( p='fro')
     # devide all feature_maps by the norm
     #feature_map_all=[x/model_norm for x in feature_map_all]
     #%%
-    benchmark_ = NSDBenchmark(path_dir='/om2/user/ehoseini/MyData/DeepJuice/nsd_data/')
-    x_fmri = (convert_to_tensor(benchmark_.response_data.to_numpy()).to(dtype=torch.float64, device=device)).T
+    benchmark_ = NSDBenchmark(path_dir=benchmark_path)
+    x_fmri = (convert_to_tensor(benchmark_.response_data.to_numpy()).to(dtype=float_version, device=device)).T
     roi_indices = benchmark_.get_roi_indices(row_number=True)
-    rois=roi_indices.keys()
-    roi='OTC'
+    rois = roi_indices.keys()
+    roi = 'OTC'
     fmri_roi_sub_x = [x_fmri[:, indx] for indx in roi_indices[roi].values()]
     # for each roi get the largest size and pad the rest
     max_pad = max([x.shape[1] for x in fmri_roi_sub_x])
     x_sub_fmri = [F.pad(x, pad=(0, max_pad - x.shape[-1], 0, 0), mode='constant', value=0) for x in fmri_roi_sub_x]
-    # do a version where you do a pca based on the size of the feature map
 
-    #sub_norm = torch.stack(x_sub_fmri).norm(p='fro')
-    #x_sub_fmri = [x / sub_norm for x in x_sub_fmri]
-    image_paths = '/om2/user/ehoseini/MyData/DeepJuice/NSD_image_paths.pkl'
-    # read image path
-    with open(image_paths, 'rb') as f:
-        image_paths = pickle.load(f)
     #%% do some zero-padding here
     #max_pad= 5920
-    #x/(torch.norm(x,p=fro) / torch.sqrt(torch.tensor(x.numel())
-
-    #
     x_sub_fmri = [F.pad(x, pad=(0, max_pad - x.shape[-1], 0, 0), mode='constant', value=0) for x in fmri_roi_sub_x]
     x_model = [F.pad(x, pad=(0, max_pad - x.shape[-1], 0, 0), mode='constant', value=0) for x in feature_map_all]
-    x_model_np=[x.cpu().numpy() for x in x_model]
     #%% do the norming
     # drop the required grad
     # write a lambda function for doing the norm to apply it tot he list of tensors
     # norm = lambda x: x/(torch.norm(x,p=fro) / torch.sqrt(torch.tensor(x.numel())
-    normalize = lambda x: x / (torch.norm(x, p='fro') / torch.sqrt(torch.tensor(x.numel(), dtype=torch.float64)))
+    normalize = lambda x: x / (torch.norm(x, p='fro') / torch.sqrt(torch.tensor(x.numel(), dtype=float_version)))
     x_model = [x.requires_grad_(False) for x in x_model]
     x_sub_fmri = [x.requires_grad_(False) for x in x_sub_fmri]
     # do norm
     x_model = [normalize(x) for x in x_model]
     x_sub_fmri = [normalize(x) for x in x_sub_fmri]
     # make them not require grad
-    #x_model = [x.requires_grad_(False) for x in x_model]
-    # X_bar_model_init = torch.stack(x_model).mean(dim=0)
-    # # compute the time it takes for the alignment
-    #
-    # time_start = torch.cuda.Event(enable_timing=True)
-    # time_end = torch.cuda.Event(enable_timing=True)
-    # time_start.record()
-    # pt_align(x_model[0], X_bar_model_init, group="orth",svd_solver='gesvd')
-    # time_end.record()
-    # torch.cuda.synchronize()
-    # print(time_start.elapsed_time(time_end))
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
     method = 'streaming'  # or 'streaming' , 'full_batch' is the default
