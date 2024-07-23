@@ -2,7 +2,7 @@
 #SBATCH --job-name=opt
 #SBATCH --time=32:00:00
 #SBATCH --mem=120G
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:a100:1
 #SBATCH --constraint=high-capacity
 #SBATCH --mail-type=ALL
 #SBATCH --exclude node017,node018
