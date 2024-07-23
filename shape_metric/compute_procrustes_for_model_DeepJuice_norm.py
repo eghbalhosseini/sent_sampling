@@ -135,7 +135,7 @@ if __name__ == '__main__':
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd'
     tolerance = 1e-6
-    steps= 200
+    steps= 250
     verbose = True
     n_init=2
     prev_objective=1e10
