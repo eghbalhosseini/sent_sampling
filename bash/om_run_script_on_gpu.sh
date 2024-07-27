@@ -10,6 +10,7 @@
 
 PYTHON_SCR=$1
 echo "running :${PYTHON_SCR}"
+. /om/weka/evlab/ehoseini/.bash_profile
 . /om/weka/evlab/ehoseini/.bashrc
 conda activate neural_nlp_2022
 echo $(which python)
