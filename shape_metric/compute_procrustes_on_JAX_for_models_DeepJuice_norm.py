@@ -100,7 +100,7 @@ if __name__ == '__main__':
     method = 'streaming'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     tol = 1e-10
-    max_iter= 200
+    max_iter= 300
     verbose = True
     n_init=2
     prev_objective=1e9
