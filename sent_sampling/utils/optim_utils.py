@@ -474,7 +474,7 @@ class optim:
         jsd_ = -self.jsd_muliplier * torch.mean(jsd_th).float().cpu().numpy()
 
         if debug:
-            return d_optim,jsd_,jsd_vals
+            return d_optim,jsd_,jsd
         else:
             return d_optim+jsd_
 
