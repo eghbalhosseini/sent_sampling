@@ -68,7 +68,6 @@ if __name__ == '__main__':
                         enumerate(XY_corr_sample)]
         XY_corr_hist = [(hist_ref / torch.sum(hist_ref)) + epsilon for hist_ref in XY_corr_hist]
         XY_corr_hist = [p_smooth / p_smooth.sum() for p_smooth in XY_corr_hist]
-
         XY_corr_hist_list.append(torch.stack(XY_corr_hist))
 
     XY_corr_hist_mean=torch.stack(XY_corr_hist_list,dim=-1).mean(dim=-1)
@@ -107,7 +106,7 @@ if __name__ == '__main__':
     optimizer_obj.jsd_rnd_max = jsd_muliplier * jsd_rnd_max
     optimizer_obj.epsilon = 1e-10
     optimizer_obj.jsd_threshold = jsd_threshold
-    optimizer_obj.jsd_muliplier = 1
+    optimizer_obj.jsd_muliplier = jsd_muliplier
     optimizer_obj.corr_min_max = list(zip(min_vals, max_vals))
     S_opt_d, DS_opt_d = optimizer_obj()
 
@@ -130,7 +129,7 @@ if __name__ == '__main__':
     [ext_id,opt_id]=make_shorthand(extract_id,optimizer_id)
 
     optim_file = os.path.join(RESULTS_DIR,
-                              f"results_{ext_id}_{opt_id}_jsd_thr_{optimizer_obj.jsd_threshold}_mult_max_{jsd_muliplier}_bins_{optimizer_obj.bins}_norm.pkl")
+                              f"res_{ext_id}_{opt_id}_jsd_thr_{optimizer_obj.jsd_threshold}_mult_{jsd_muliplier}_bins_{optimizer_obj.bins}_norm.pkl")
     # check of path is too long
     save_obj(optim_results, optim_file)
 

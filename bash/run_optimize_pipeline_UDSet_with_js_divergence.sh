@@ -10,7 +10,6 @@
 #SBATCH --exclude node017,node018
 #SBATCH --mail-user=ehoseini@mit.edu
 
-
 i=0
 for multply in 5 10 ; do
   for theshold in 0.1 0.2 ; do
@@ -29,6 +28,8 @@ done
 
 echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "Running optimiation: ${optim_list[$SLURM_ARRAY_TASK_ID]}"
+echo "Running multiply: ${multiply_list[$SLURM_ARRAY_TASK_ID]}"
+echo "Running theshold: ${theshold_list[$SLURM_ARRAY_TASK_ID]}"
 
 
 RESULTCACHING_HOME=/om5/group/evlab/u/ehoseini/.result_caching
