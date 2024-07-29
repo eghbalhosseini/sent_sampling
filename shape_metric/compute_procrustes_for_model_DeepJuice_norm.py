@@ -128,14 +128,16 @@ if __name__ == '__main__':
     # do norm
     x_model = [normalize(x) for x in x_model]
     x_sub_fmri = [normalize(x) for x in x_sub_fmri]
+    # create a set of random matrix with same size as the model
+    #%%
     # make them not require grad
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
     method = 'streaming'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
-    svd_solver = 'gesvd'  # 'gesvd' or 'svd'
+    svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
     tolerance = 1e-6
-    steps= 250
+    steps= 275
     verbose = True
     n_init=2
     prev_objective=1e10
