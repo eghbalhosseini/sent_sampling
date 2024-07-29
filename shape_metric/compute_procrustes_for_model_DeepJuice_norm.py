@@ -149,6 +149,7 @@ if __name__ == '__main__':
         # print the current iteration
         print(f'iteration: {k}')
         with torch.no_grad():
+
             X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,
                                                       max_iter=steps,verbose=verbose, tol=tolerance,svd_solver=svd_solver)
 
