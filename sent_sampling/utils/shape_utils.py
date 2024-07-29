@@ -81,19 +81,21 @@ def jax_orthogonal_procrustes(A, B ):
     Both A and B need to be size (M, N) and JAX arrays.
     """
     # Compute xty
-    xty = jnp.dot(B.T, A).T
+    #xty = jnp.dot(B.T, A).T
+    xty = (B.T@ A).T
     svd_solver= None
     # Choose SVD solver based on device type and solver preference
     if svd_solver is None:
-        U, w, Vt = svd(xty, full_matrices=True)
+        U, w, Vt = svd((B.T@ A).T, full_matrices=True)
     elif svd_solver == 'lowrank':
         # Placeholder for lowrank SVD; replace with actual implementation if available
-        U, w, Vt = svd(xty, full_matrices=True)
+        U, w, Vt = svd((B.T@ A).T, full_matrices=True)
     else:
-        U, w, Vt = svd(xty, full_matrices=True)
+        U, w, Vt = svd((B.T@ A).T, full_matrices=True)
 
     # Compute R and scale
-    R = jnp.dot(U, Vt)
+    R=U.dot(Vt) # this is equvalent to V @ U.T for B.T @ A becuase U is equal to V and Vt is equal to Ut, R is V @ U.T when we do svd of B.T @ A
+    #R = jnp.dot(U, Vt)
     scale = jnp.sum(w)
     return R, scale
 
