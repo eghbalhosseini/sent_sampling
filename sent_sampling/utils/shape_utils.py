@@ -6,7 +6,9 @@ from jax.scipy.linalg import svd
 from typing import Literal
 from jax.config import config
 import time
+
 from jax.numpy import pad as jax_pad
+config.update("jax_enable_x64", True)
 def bures_dist(x,y):
     xxt = torch.mm(x, x.t())
     lam, U = torch.linalg.eigh(xxt)
@@ -57,7 +59,6 @@ def procrustes_dist(x,y):
     return procrustes_
 
 
-
 # Padding function in JAX
 def pad_jax(array, max_pad):
     pad_width = ((0, 0), (0, max_pad - array.shape[-1]))
@@ -100,6 +101,7 @@ def jax_orthogonal_procrustes(A, B ):
     return R, scale
 
 
+@jit
 def jax_align(
         X: jnp.ndarray,
         Y: jnp.ndarray,
@@ -114,6 +116,7 @@ def jax_align(
     else:
         raise ValueError(f"Specified group '{group}' not recognized.")
 
+@jit
 def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmstart, verbose, svd_solver):
     if group == "identity":
         return jnp.mean(jnp.array(Xs), axis=0)
@@ -173,6 +176,7 @@ def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmst
     return Xbar
 
 
+@jit
 def jax_frechet_mean(
         Xs, group="orth",
         random_state=None, tol=1e-3, max_iter=100,
