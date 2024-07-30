@@ -84,16 +84,8 @@ def jax_orthogonal_procrustes(A, B ):
     # Compute xty
     #xty = jnp.dot(B.T, A).T
     xty = (B.T@ A).T
-    svd_solver= None
     # Choose SVD solver based on device type and solver preference
-    if svd_solver is None:
-        U, w, Vt = svd((B.T@ A).T, full_matrices=True)
-    elif svd_solver == 'lowrank':
-        # Placeholder for lowrank SVD; replace with actual implementation if available
-        U, w, Vt = svd((B.T@ A).T, full_matrices=True)
-    else:
-        U, w, Vt = svd((B.T@ A).T, full_matrices=True)
-
+    U, w, Vt = svd((B.T@ A).T, full_matrices=True)
     # Compute R and scale
     R=U.dot(Vt) # this is equvalent to V @ U.T for B.T @ A becuase U is equal to V and Vt is equal to Ut, R is V @ U.T when we do svd of B.T @ A
     #R = jnp.dot(U, Vt)
@@ -101,28 +93,25 @@ def jax_orthogonal_procrustes(A, B ):
     return R, scale
 
 
-@jit
-def jax_align(
-        X: jnp.ndarray,
-        Y: jnp.ndarray,
-        group: Literal["orth", "perm", "identity"] = "orth") -> jnp.ndarray:
 
-    if group == "orth":
+@jit
+def jax_align(X: jnp.ndarray, Y: jnp.ndarray, group: int) -> jnp.ndarray:
+    if group == 0:  # "orth"
         return jax_orthogonal_procrustes(X, Y)[0]
-    elif group == "perm":
+    elif group == 1:  # "perm"
         raise NotImplementedError("Permutation group alignment is not implemented.")
-    elif group == "identity":
+    elif group == 2:  # "identity"
         return jnp.eye(X.shape[1])
     else:
         raise ValueError(f"Specified group '{group}' not recognized.")
 
 @jit
 def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmstart, verbose, svd_solver):
-    if group == "identity":
+    if group == 2:  # "identity"
         return jnp.mean(jnp.array(Xs), axis=0)
 
     # Stack Xs
-    Xs = jnp.stack(Xs,axis=0)
+    Xs = jnp.stack(Xs, axis=0)
     if Xs.ndim != 3:
         raise ValueError(
             "Expected 3d array with shape"
@@ -134,7 +123,6 @@ def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmst
         return Xs[0]
 
     # Initialize random state and permutation indices
-    # cr
     if random_state is None:
         key = random.PRNGKey(int(time.time()))  # Create a key based on current time
     else:
@@ -176,31 +164,23 @@ def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmst
     return Xbar
 
 
-@jit
-def jax_frechet_mean(
-        Xs, group="orth",
-        random_state=None, tol=1e-3, max_iter=100,
-        warmstart=None, verbose=False, method="streaming",
-        return_aligned_Xs=False,svd_solver=None
-    ):
-    if group== "identity":
-        return torch.mean(Xs, dim=0)
+
+def jax_frechet_mean(Xs, group="orth", random_state=None, tol=1e-3, max_iter=100, warmstart=None, verbose=False, method="streaming", return_aligned_Xs=False, svd_solver=None):
+    group_dict = {"orth": 0, "perm": 1, "identity": 2}
+    group_code = group_dict.get(group, -1)
+    if group_code == -1:
+        raise ValueError(f"Specified group '{group}' not recognized.")
+
+    if group_code == 2:  # "identity"
+        return jnp.mean(jnp.array(Xs), axis=0)
 
     if method == "streaming":
-        Xbar = _jax_euc_barycenter_streaming(
-            Xs, group, random_state, tol, max_iter, warmstart,
-            verbose,svd_solver
-        )
+        Xbar = _jax_euc_barycenter_streaming(Xs, group_code, random_state, tol, max_iter, warmstart, verbose, svd_solver)
     elif method == "full_batch":
-        NotImplementedError("Full batch method is not implemented yet.")
-        # Xbar = _pt_euclidean_barycenter_full_batch(
-        #     Xs, group, random_state, tol, max_iter, warmstart,
-        #     verbose,svd_solver
-        # )
+        raise NotImplementedError("Full batch method is not implemented yet.")
+
     if return_aligned_Xs:
-        aligned_Xs = [
-            x @ jax_align(x, Xbar, group=group) for x in Xs
-        ]
+        aligned_Xs = [x @ jax_align(x, Xbar, group=group_code) for x in Xs]
 
     return (Xbar, aligned_Xs) if return_aligned_Xs else Xbar
 
