@@ -112,7 +112,6 @@ if __name__ == '__main__':
     fmri_roi_sub_x = [x_fmri[:, indx] for indx in roi_indices[roi].values()]
     # for each roi get the largest size and pad the rest
     max_pad = max([x.shape[1] for x in fmri_roi_sub_x])
-    x_sub_fmri = [F.pad(x, pad=(0, max_pad - x.shape[-1], 0, 0), mode='constant', value=0) for x in fmri_roi_sub_x]
 
     #%% do some zero-padding here
     #max_pad= 5920
@@ -122,7 +121,11 @@ if __name__ == '__main__':
     # drop the required grad
     # write a lambda function for doing the norm to apply it tot he list of tensors
     # norm = lambda x: x/(torch.norm(x,p=fro) / torch.sqrt(torch.tensor(x.numel())
-    normalize = lambda x: x / (torch.norm(x, p='fro') / torch.sqrt(torch.tensor(x.numel(), dtype=float_version)))
+    #normalize = lambda x: x / (torch.norm(x, p='fro') / torch.sqrt(torch.tensor(x.numel(), dtype=float_version)))
+    #%% do the norming
+    x=x_model[0]
+    torch.sqrt(torch.trace(torch.mm(x.T, x)))
+    normalize = lambda x: x / torch.sqrt(torch.trace(torch.mm(x.T, x)))
     x_model = [x.requires_grad_(False) for x in x_model]
     x_sub_fmri = [x.requires_grad_(False) for x in x_sub_fmri]
     # do norm
@@ -136,10 +139,10 @@ if __name__ == '__main__':
     method = 'streaming'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-6
-    steps= 275
+    tolerance = 1e-10
+    steps= 500
     verbose = True
-    n_init=2
+    n_init=1
     prev_objective=1e10
     X_bar_model_final=None
     aligned_Xs_model_final=None
@@ -164,7 +167,7 @@ if __name__ == '__main__':
 
     # align subjects to the mean model
     # safe final x_bar_model and aligned_Xs_model
-    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_{n_init}_norm.pkl')
+    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_{n_init}_{steps}_norm.pkl')
     results_dict=dict(X_bar_model_final=X_bar_model_final,aligned_Xs_model_final=aligned_Xs_model_final)
     with open(file.__str__(), 'wb') as f:
         pickle.dump(results_dict, f)
