@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_jsd
-#SBATCH --array=0-7
+#SBATCH --array=0-15
 #SBATCH --time=48:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
@@ -12,7 +12,7 @@
 
 i=0
 for multply in 5 10 ; do
-  for theshold in 0.1 0.2 ; do
+  for theshold in 0.01 0.05 0.1 0.2 ; do
       for ds in D_s_jsd 2-D_s_jsd ; do
         optim_id="coordinate_ascent_eh-obj=${ds}-n_iter=50-n_samples=225-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
         optim_list[$i]="$optim_id"
