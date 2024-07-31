@@ -108,30 +108,35 @@ if __name__ == '__main__':
     optimizer_obj.jsd_threshold = jsd_threshold
     optimizer_obj.jsd_muliplier = jsd_muliplier
     optimizer_obj.corr_min_max = list(zip(min_vals, max_vals))
-    S_opt_d, DS_opt_d = optimizer_obj()
 
-    optim_results = dict(extractor_name=extract_id,
-                         model_spec=extractor_obj.model_spec,
-                         layer_spec=extractor_obj.layer_spec,
-                         data_type=extractor_obj.extract_type,
-                         benchmark=extractor_obj.extract_benchmark,
-                         average=extractor_obj.average_sentence,
-                         optimizatin_name=optimizer_id,
-                         optimized_S=S_opt_d,
-                         optimized_d=DS_opt_d,
-                         bins=bins,
-                         epsilon=epsilon,
-                        jsd_threshold=optimizer_obj.jsd_threshold,
-                        jsd_muliplier=optimizer_obj.jsd_muliplier,
-                        corr_min_max=list(zip(min_vals, max_vals)),
-                        jsd_max_mult=jsd_muliplier)
-
-    [ext_id,opt_id]=make_shorthand(extract_id,optimizer_id)
-
+    [ext_id, opt_id] = make_shorthand(extract_id, optimizer_id)
     optim_file = os.path.join(RESULTS_DIR,
                               f"res_{ext_id}_{opt_id}_jsd_thr_{optimizer_obj.jsd_threshold}_mult_{jsd_muliplier}_bins_{optimizer_obj.bins}_norm.pkl")
-    # check of path is too long
-    save_obj(optim_results, optim_file)
+    # if the file exists, load it skip the optimization
+    if os.path.exists(optim_file):
+        print(f"file {optim_file} exists, skipping optimization")
+        optim_results = load_obj(optim_file)
+        S_opt_d = optim_results['optimized_S']
+        DS_opt_d = optim_results['optimized_d']
+    else:
+        S_opt_d, DS_opt_d = optimizer_obj()
+        optim_results = dict(extractor_name=extract_id,
+                             model_spec=extractor_obj.model_spec,
+                             layer_spec=extractor_obj.layer_spec,
+                             data_type=extractor_obj.extract_type,
+                             benchmark=extractor_obj.extract_benchmark,
+                             average=extractor_obj.average_sentence,
+                             optimizatin_name=optimizer_id,
+                             optimized_S=S_opt_d,
+                             optimized_d=DS_opt_d,
+                             bins=bins,
+                             epsilon=epsilon,
+                            jsd_threshold=optimizer_obj.jsd_threshold,
+                            jsd_muliplier=optimizer_obj.jsd_muliplier,
+                            corr_min_max=list(zip(min_vals, max_vals)),
+                            jsd_max_mult=jsd_muliplier)
+        # check of path is too long
+        save_obj(optim_results, optim_file)
 
 
 
