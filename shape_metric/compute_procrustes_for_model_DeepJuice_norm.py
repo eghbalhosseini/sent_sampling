@@ -123,7 +123,6 @@ if __name__ == '__main__':
     # norm = lambda x: x/(torch.norm(x,p=fro) / torch.sqrt(torch.tensor(x.numel())
     #normalize = lambda x: x / (torch.norm(x, p='fro') / torch.sqrt(torch.tensor(x.numel(), dtype=float_version)))
     #%% do the norming
-    x=x_model[0]
     torch.sqrt(torch.trace(torch.mm(x.T, x)))
     normalize = lambda x: x / torch.sqrt(torch.trace(torch.mm(x.T, x)))
     x_model = [x.requires_grad_(False) for x in x_model]
