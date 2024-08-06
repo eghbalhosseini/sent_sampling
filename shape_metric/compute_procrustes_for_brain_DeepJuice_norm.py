@@ -72,6 +72,7 @@ if __name__ == '__main__':
                          '1':[0,1,3],
                          '2':[1,2,3],
                          '3':[0,2,3]}
+    print(f'running configureation for subject_select_var,{subject_select_var}')
     # get the subject ids from subject_select_var
     subject_ids=subject_select_dict[subject_select_var]
 
