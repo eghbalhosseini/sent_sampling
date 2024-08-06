@@ -57,9 +57,24 @@ import pickle
 from glob import glob
 import numpy as np
 from pathlib import Path
+import argparse
+# do an argparse and get subject_select_var
+argparser = argparse.ArgumentParser()
+argparser.add_argument('subject_select_var')
+args = argparser.parse_args()
+subject_select_var = args.subject_select_var
+
 # Switch to a different linear algebra backend
 if __name__ == '__main__':
     # compute the simliarty vs score
+    # create a dictionary with each number  corresponds to subject 0, to 2 leaving out subject 3 and so on
+    subject_select_dict={'0':[0,1,2],
+                         '1':[0,1,3],
+                         '2':[1,2,3],
+                         '3':[0,2,3]}
+    # get the subject ids from subject_select_var
+    subject_ids=subject_select_dict[subject_select_var]
+
     #%%
     selected_models = ['torchvision_alexnet_imagenet1k_v1',
                        'torchvision_regnet_x_800mf_imagenet1k_v2',
@@ -130,8 +145,10 @@ if __name__ == '__main__':
     x_model = [normalize(x) for x in x_model]
     x_sub_fmri = [normalize(x) for x in x_sub_fmri]
     # create a set of random matrix with same size as the model
-    #%%
+    #%% select subject fmri based on
     # make them not require grad
+    x_sub_fmri= [x_sub_fmri[i] for i in subject_ids]
+    assert len(x_sub_fmri)==3
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
     method = 'streaming'  # or 'streaming' , 'full_batch' is the default
@@ -165,7 +182,7 @@ if __name__ == '__main__':
 
     # align subjects to the mean model
     # safe final x_bar_model and aligned_Xs_model
-    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_subjects_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_{n_init}_{steps}_norm.pkl')
+    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_subjects_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_{n_init}_{steps}_id_var_{subject_select_var}_norm.pkl')
     results_dict=dict(X_bar_model_final=X_bar_model_final,aligned_Xs_model_final=aligned_Xs_model_final)
     with open(file.__str__(), 'wb') as f:
         pickle.dump(results_dict, f)
