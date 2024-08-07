@@ -134,7 +134,7 @@ if __name__ == '__main__':
     # make them not require grad
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
-    method = 'streaming'  # or 'streaming' , 'full_batch' is the default
+    method = 'full_batch'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
     tolerance = 1e-10
