@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
 
 
-    (extract_short_hand, optim_short_hand) = make_shorthand(deepjuice_identifier, optim_id)
+    (extract_short_hand, optim_short_hand) = make_shorthand(deepjuice_identifier, optimizer_id)
     optim_file = Path(RESULTS_DIR, f"results_{extract_short_hand}_{optim_short_hand}_{extract_mode}_jsd_thr_{optimizer_obj.jsd_threshold}_mult_{jsd_muliplier}_bins_{optimizer_obj.bins}_norm.pkl")
 
     if os.path.exists(optim_file):
