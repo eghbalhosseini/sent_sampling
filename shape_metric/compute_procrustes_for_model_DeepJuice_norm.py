@@ -137,8 +137,8 @@ if __name__ == '__main__':
     method = 'full_batch'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-10
-    steps= 500
+    tolerance = 1e-14
+    steps= 100
     verbose = True
     n_init=1
     prev_objective=1e10
