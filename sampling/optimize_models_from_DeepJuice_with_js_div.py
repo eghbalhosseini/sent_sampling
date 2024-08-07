@@ -15,15 +15,12 @@ from glob import glob
 import pickle
 import argparse
 parser = argparse.ArgumentParser(description='extract activations and optimize')
-parser.add_argument('extract_mode', type=str, default='original')
 parser.add_argument('optimizer_id', type=str, default='coordinate_ascent-obj=D_s-n_iter=100-n_samples=100-n_init=1')
 parser.add_argument('multiplier', type=float, default=1)
 parser.add_argument('threshold', type=float, default=0.05)
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    optim_id = args.optimizer_id
-    #extract_mode = args.extract_mode
     optimizer_id = args.optimizer_id
     jsd_muliplier = float(args.multiplier)
     jsd_threshold = float(args.threshold)
