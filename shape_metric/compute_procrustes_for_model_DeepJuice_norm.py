@@ -137,10 +137,10 @@ if __name__ == '__main__':
     method = 'full_batch'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-14
+    tolerance = 1e-16
     steps= 100
     verbose = True
-    n_init=1
+    n_init=5
     prev_objective=1e10
     X_bar_model_final=None
     aligned_Xs_model_final=None
