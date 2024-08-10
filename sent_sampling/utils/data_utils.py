@@ -230,6 +230,29 @@ def construct_stimuli_set_from_pd(stimuli_pd, stimuli_data_name='null',drop_peri
     return all_sentence_set
 
 
+def find_best_match(target, string_list):
+    # Function to count the number of word matches
+    def word_match_count(str1, str2):
+        set1 = set(str1.split())
+        set2 = set(str2.split())
+        return len(set1.intersection(set2))
+
+    # Check if the target string is in the list
+    if target in string_list:
+        return target
+
+    # If target is not found, find the string with the most word matches
+    best_match = None
+    best_match_count = -1
+
+    for string in string_list:
+        count = word_match_count(target, string)
+        if count > best_match_count:
+            best_match_count = count
+            best_match = string
+
+    return best_match
+
 BENCHMARK_CONFIG=dict(file_loc=BENCHMARK_DIR)
 
 SENTENCE_CONFIG = [
