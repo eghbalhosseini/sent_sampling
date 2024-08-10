@@ -842,7 +842,7 @@ objective_function=[dict(name='D_s',fun=Distance),dict(name='D_s_var',fun=Distan
                     ]
 
 n_iters=[1,2,50,100,500]
-N_s=[10,25,50,75,80,100,125,150,175,190,200,210,225,250,275,300]
+N_s=[ 10,  25,  50,  75,  80, 100, 125, 150, 168, 170, 184, 186, 192, 194, 200, 210, 225, 250, 275, 300]
 n_inits=[1,2]
 run_gpu=[True,False]
 low_dim=[True,False]
