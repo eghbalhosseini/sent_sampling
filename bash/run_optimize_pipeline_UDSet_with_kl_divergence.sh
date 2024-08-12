@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=opt_kl
-#SBATCH --array=0-15
+#SBATCH --array=0-3
 #SBATCH --time=36:00:00
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
@@ -14,7 +14,7 @@ i=0
 for multply in 5 ; do
   for theshold in 0.05 0.075  ; do
       for ds in D_s_kl_div 2-D_s_kl_div ; do
-        for n_samples in 200 192 184 168 ; do
+        for n_samples in 205 ; do
         optim_id="coordinate_ascent_eh-obj=${ds}-n_iter=50-n_samples=${n_samples}-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
         optim_list[$i]="$optim_id"
         multiply_list[$i]="$multply"
