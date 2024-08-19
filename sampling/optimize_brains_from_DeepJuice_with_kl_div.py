@@ -9,8 +9,7 @@ import numpy as np
 import torch
 from tqdm import tqdm
 deepjuice_path='/nese/mit/group/evlab/u/ehoseini/MyData/DeepJuice/'
-from benchmarks import NSDBenchmark, NSDSampleBenchmark
-from deepjuice._backends.cupyfy import convert_to_tensor
+
 import getpass
 if getpass.getuser() == 'ehoseini':
     sys.path.append('/om2/user/ehoseini/DeepJuiceDev/')
@@ -23,6 +22,8 @@ else:
     deepjuice_ws_path = '/Users/eghbalhosseini/MyData/DeepJuice/workspace/nsd/'
     benchmark_path = '/Users/eghbalhosseini/MyData/DeepJuice/nsd_data/'
 
+from benchmarks import NSDBenchmark, NSDSampleBenchmark
+from deepjuice._backends.cupyfy import convert_to_tensor
 from glob import glob
 import pickle
 import argparse
