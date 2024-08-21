@@ -25,6 +25,7 @@ elif getpass.getuser()=='ehoseini':
     ANALYZE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/analysis/'
     AUTO_ENCODER_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/auto_encoder/'
     DSPARAMETRIC_DIR = '/om2/user/ehoseini/fmri_DNN/ds_parametric/'
+    DEEPJUICE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/DeepJuice/'
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
@@ -306,6 +307,7 @@ SENTENCE_CONFIG = [
     dict(name='coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10K',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1_2_ds_min_est_n_10000.pkl')),
     dict(name='coca_preprocessed_all_clean_100K_sample_1_2_ds_max_est_n_10K',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'coca_preprocessed_all_clean_100K_sample_1_2_ds_max_est_n_10000.pkl')),
     dict(name='neural_ctrl_stim',file_loc=os.path.join(AUTO_ENCODER_DIR,'beta-control-neural_stimset_D-S_light_freq_extract.pkl')),
+    dict(name='NSD_benchmark_captions',file_loc=os.path.join(DEEPJUICE_DIR, 'NSD_benchmark_captions.pkl')),
     dict(name='ds_parametric',file_loc=os.path.join(DSPARAMETRIC_DIR,'ds_parametric_extract.pkl')),
     dict(name='pereira2018_243sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),
     dict(name='pereira2018_384sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,''))]
