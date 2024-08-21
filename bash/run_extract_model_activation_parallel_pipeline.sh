@@ -10,19 +10,14 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-# create group_id that goes from 0 to 19
-# 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
-# roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
-  #          xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
-# mistral-caprica-gpt2-small-x81-ckpnt-0 mistral-caprica-gpt2-small-x81-ckpnt-40 mistral-caprica-gpt2-small-x81-ckpnt-400 mistral-caprica-gpt2-small-x81-ckpnt-4000 mistral-caprica-gpt2-small-x81-ckpnt-40000 mistral-caprica-gpt2-small-x81-ckpnt-400000
-
 splits=20
 
-for dataset in neural_ctrl_stim ; do
+for dataset in NSD_benchmark_captions ; do
   for group_ids in  `seq 0 1 19` ; do
     for stim_type in textNoPeriod ; do
-      for model in  roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
-        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
+      for model in  roberta-base \
+      xlnet-large-cased bert-large-uncased-whole-word-masking \
+      xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl ; do
             model_list[$i]="$model"
             dataset_list[$i]="$dataset"
             stim_type_list[$i]="$stim_type"
