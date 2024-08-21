@@ -50,6 +50,6 @@ export XDG_CACHE_HOME
 . /om/weka/evlab/ehoseini/.bashrc
 conda activate neural_nlp_2022
 
-/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om/weka/evlab/ehoseini//sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${stim_type_list[$SLURM_ARRAY_TASK_ID]} ${splits} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
+/om/weka/evlab/ehoseini/miniconda3/envs/neural_nlp_2022/bin/python /om2/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${stim_type_list[$SLURM_ARRAY_TASK_ID]} ${splits} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
 
 
