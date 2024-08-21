@@ -15,6 +15,7 @@ if getpass.getuser()=='eghbalhosseini':
     AUTO_ENCODER_DIR='/Users/eghbalhosseini/MyData/sent_sampling/auto_encoder/'
     ANALYZE_DIR = '/Users/eghbalhosseini/MyData/sent_sampling/analysis/'
     DSPARAMETRIC_DIR='/Users/eghbalhosseini/MyData//fmri_DNN/ds_parametric/'
+    DEEPJUICE_DIR = '/Users/eghbalhosseini/MyData//DeepJuice/'
 elif getpass.getuser()=='ehoseini':
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/COCA_corpus/parsed/'
