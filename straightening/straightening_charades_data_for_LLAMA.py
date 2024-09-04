@@ -77,11 +77,15 @@ if __name__ == '__main__':
         batch_size = 16
         num_batches = int(np.ceil(len(indexed_tokens) / batch_size))
         curvature_dict_all = []
+        all_batch=[]
         for i in tqdm(range(num_batches)):
             batch = indexed_tokens[i * batch_size:(i + 1) * batch_size]
-            all_batch = compute_model_activations(model, batch, model.device)
-            curvature_dict_batch = compute_model_curvature(all_batch)
-            curvature_dict_all.append(curvature_dict_batch)
+            batch_d = compute_model_activations(model, batch, model.device)
+            all_batch.append(batch_d)
+        # flatten the all_batch
+        all_batch = [item for sublist in all_batch for item in sublist]
+        curvature_dict_all = compute_model_curvature(all_batch)
+
         # make sure parent dir exists
         curvature_dict_path.parent.mkdir(parents=True, exist_ok=True)
         with open(curvature_dict_path.__str__(), 'wb') as f:
@@ -90,8 +94,8 @@ if __name__ == '__main__':
     # load curvature_dict_all from pickle
 
     #%%
-    curve_ = np.concatenate([x['curve'] for x in curvature_dict_all], axis=1)
-    #curve_ = curvature_dict_true['curve']
+    #curve_ = np.concatenate([x['curve'] for x in curvature_dict_all], axis=1)
+    curve_ = curvature_dict_all['curve']
     fig = plt.figure(figsize=(5.5, 9), dpi=200, frameon=False)
     pap_ratio = 5.5 / 9
     matplotlib.rcParams['font.size'] = 6
