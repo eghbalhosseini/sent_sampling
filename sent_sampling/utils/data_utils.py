@@ -310,6 +310,7 @@ SENTENCE_CONFIG = [
     dict(name='neural_ctrl_stim',file_loc=os.path.join(AUTO_ENCODER_DIR,'beta-control-neural_stimset_D-S_light_freq_extract.pkl')),
     dict(name='NSD_benchmark_captions',file_loc=os.path.join(DEEPJUICE_DIR, 'NSD_benchmark_captions.pkl')),
     dict(name='NSD_benchmark_captions_clean', file_loc=os.path.join(DEEPJUICE_DIR, 'NSD_benchmark_captions_clean.pkl')),
+    dict(name='NSD_benchmark_captions_clean_v2', file_loc=os.path.join(DEEPJUICE_DIR, 'NSD_benchmark_captions_clean.pkl')),
     dict(name='ds_parametric',file_loc=os.path.join(DSPARAMETRIC_DIR,'ds_parametric_extract.pkl')),
     dict(name='pereira2018_243sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),
     dict(name='pereira2018_384sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,''))]
