@@ -10,7 +10,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 
 i=0
-for dataset in NSD_benchmark_captions_clean_v2 ; do
+for dataset in NSD_benchmark_captions_clean ; do
   for model in roberta-base \
       xlnet-large-cased \
       gpt2-xl \

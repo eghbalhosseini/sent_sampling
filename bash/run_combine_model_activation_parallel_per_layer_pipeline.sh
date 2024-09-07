@@ -29,7 +29,7 @@ len=${#layer_arr[@]}
 # coca_preprocessed_all_clean_100K_sample_1
 #roberta-base xlnet-large-cased bert-large-uncased-whole-word-masking \
 #        xlm-mlm-en-2048 gpt2-xl albert-xxlarge-v2 ctrl
-for dataset in NSD_benchmark_captions  ; do
+for dataset in NSD_benchmark_captions_clean_v3  ; do
   for stim_type in textNoPeriod ; do
     for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
       for average_mode in False ; do
