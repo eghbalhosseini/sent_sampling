@@ -23,6 +23,13 @@ sys.path.append('/om2/user/ehoseini/DeepJuiceDev/')
 deepjuice_path='/nese/mit/group/evlab/u/ehoseini/MyData/DeepJuice/'
 from benchmarks import NSDBenchmark, NSDSampleBenchmark
 from pathlib import Path
+def check_no_space_words(sentences):
+    for sentence in sentences:
+        for word in sentence:
+            if word.strip() == "":
+                return False  # Found a word that is just spaces
+    return True  # No words with only spaces found
+
 
 if __name__ == '__main__':
     nsd_bench=NSDBenchmark()
@@ -180,6 +187,15 @@ if __name__ == '__main__':
     indx = ['a tad in front of the thunder of a car' in x for x in caption_selected].index(True)
     caption_selected[indx] = captions_ALL[indx][1]
 
+    indx= ['a manchester bus with passengers is traveling down the road. ' in x for x in caption_selected].index(True)
+    caption_selected[indx] = 'a manchester bus with passengers is traveling down the road.'
+
+    indx = ['three zebras eating hay from bales inside a barn-like structure.' in x for x in caption_selected].index(True)
+    caption_selected[indx] = 'three zebras eating hay from bales inside a barn-like structure.'
+
+    indx =['individuals taking picture and posturing before a polaroid. ' in x for x in caption_selected].index(True)
+    caption_selected[indx] = 'individuals taking picture and posturing before a polaroid.'
+
     #nsd_bench.stimulus_data.image_name[indx]
 
     with open(deepjuice_path+'caption_cleaned.txt', 'w') as f:
@@ -187,18 +203,43 @@ if __name__ == '__main__':
             f.write("%s\n" % item)
 
     caption_selected = [x.lower() for x in caption_selected]
-    words = [x.split(' ') for x in caption_selected]
-    word_form = words
-    word_id = [list(range(len(x))) for x in words]
+    # drop the additiona spaces in the end of each caption_selected word if it exists
+    caption_selected = [x[:-1] if x[-1]==' ' else x for x in caption_selected]
+    # drop the additional spaces in the beginning of each caption_selected word if it exists
+    caption_selected = [x[1:] if x[0]==' ' else x for x in caption_selected]
+    # drop any double spaces in the caption_selected
+    caption_selected = [x.replace('  ', ' ') for x in caption_selected]
+    # drop any double of more spaces in the caption_selected
+    caption_selected = [re.sub(' +', ' ', x) for x in caption_selected]
+
+    # drop period in the end of each caption_selected word if it exists
+    caption_selected = [x[:-1] if x[-1]=='.' else x for x in caption_selected]
+    # make sure the first character of each caption_selected is not a space
+    caption_selected = [x[1:] if x[0]==' ' else x for x in caption_selected]
+    # make sure the last character of each caption_selected is not a space
+    caption_selected = [x[:-1] if x[-1]==' ' else x for x in caption_selected]
+    # drop the period in the end of each caption_selected word if it exists
+    #caption_selected = [x[:-1] if x[-1]=='.' else x for x in caption_selected]
+    words_list = [x.split(' ') for x in caption_selected]
+    # assert there is no empty element in words
+    assert np.sum([len(x)==0 for x in words_list])==0
+    # make sure no words in in words is just a space or a combination of spaces
+    result = check_no_space_words(words_list)
+    assert(result)  # This will print False because
+
+    word_form = words_list
+    word_id = [list(range(len(x))) for x in words_list]
     # create a counter for sentence id based on the words in each sentence
-    sent_id = [list(idx * np.ones(len(x)).astype(int)) for idx, x in enumerate(words)]
+    sent_id = [list(idx * np.ones(len(x)).astype(int)) for idx, x in enumerate(words_list)]
 
     # flatten the list
-    words = [item for sublist in words for item in sublist]
+    words = [item for sublist in words_list for item in sublist]
+    # assert that no word is empty
+    assert np.sum([x=='' for x in words])==0
     word_form = [item for sublist in word_form for item in sublist]
     word_id = [item for sublist in word_id for item in sublist]
     sent_id = [item for sublist in sent_id for item in sublist]
 
     df_extract=pd.DataFrame({'word':words,'word_id':word_id,'sent_id':sent_id,'word_form':word_form})
-    p=Path(deepjuice_path,'NSD_benchmark_captions.pkl')
+    p=Path(deepjuice_path,'NSD_benchmark_captions_clean_v3.pkl')
     df_extract.to_pickle(p.__str__())
