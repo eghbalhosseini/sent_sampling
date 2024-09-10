@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=DJ_kl
-#SBATCH --array=0-12
+#SBATCH --array=0-3
 #SBATCH --time=16:00:00
 #SBATCH --mem=32G
 #SBATCH --gres=gpu:1
@@ -11,7 +11,7 @@
 #SBATCH --mail-user=ehoseini@mit.edu
 i=0
 for multply in 5 10 ; do
-  for theshold in 0.075 0.15 0.2 ; do
+  for theshold in 0.025 ; do
       for ds in D_s_kl_div 2-D_s_kl_div ; do
         optim_id="coordinate_ascent_eh-obj=${ds}-n_iter=50-n_samples=80-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
         optim_list[$i]="$optim_id"
