@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=DJ_kl
-#SBATCH --array=0-3
+#SBATCH --array=0-7
 #SBATCH --time=16:00:00
 #SBATCH --mem=32G
 #SBATCH --gres=gpu:1
