@@ -677,6 +677,62 @@ class optim:
 
         return d_val_mean,d_mat
 
+    def gpu_object_function_ds_plus_jsd(self, S, debug=False):
+        if self.objective_function.__doc__ == 'ds_jsd':
+            minus = False
+        elif self.objective_function.__doc__ == '2-ds_jsd':
+            minus = True
+        samples = torch.tensor(S, dtype=torch.long, device=self.device)
+        # use torch to select the samples
+        samples_rand = torch.randperm(self.N_S)[:self.N_s]
+
+        pairs = torch.combinations(samples, with_replacement=False).to('cpu')
+        pairs_rand = torch.combinations(samples_rand, with_replacement=False).to('cpu')
+        XY_corr_sample = [XY_corr[pairs[:, 0], pairs[:, 1]].to(self.device) for XY_corr in self.XY_corr_list]
+        XY_corr_sample_tensor = torch.stack(XY_corr_sample).to(self.device)
+        XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        if XY_corr_sample_tensor.shape[1] < XY_corr_sample_tensor.shape[0]:
+            XY_corr_sample_tensor = torch.transpose(XY_corr_sample_tensor, 1, 0)
+        assert (XY_corr_sample_tensor.shape[1] > XY_corr_sample_tensor.shape[0])
+        # do the same for pairs rand
+        XY_corr_sample_rand = [XY_corr[pairs_rand[:, 0], pairs_rand[:, 1]].to(self.device) for XY_corr in
+                               self.XY_corr_list]
+        XY_corr_sample_tensor_rand = torch.stack(XY_corr_sample_rand).to(self.device)
+        XY_corr_sample_tensor_rand = torch.transpose(XY_corr_sample_tensor_rand, 1, 0)
+        if XY_corr_sample_tensor_rand.shape[1] < XY_corr_sample_tensor_rand.shape[0]:
+            XY_corr_sample_tensor_rand = torch.transpose(XY_corr_sample_tensor_rand, 1, 0)
+        assert (XY_corr_sample_tensor_rand.shape[1] > XY_corr_sample_tensor_rand.shape[0])
+
+        # compute d_s for samples
+        d_mat = pt_create_corr_rdm_short(XY_corr_sample_tensor, device=self.device)
+        n1 = d_mat.shape[1]
+        correction = n1 * n1 / (n1 * (n1 - 1) / 2)
+        d_val = correction * d_mat.mean(dim=(0, 1))
+        d_val_mean = d_val.cpu().numpy().mean()
+        # do a version with std reductions too
+        mdl_pairs = torch.combinations(torch.tensor(np.arange(d_mat.shape[0])), with_replacement=False)
+        d_val_std = torch.std(d_mat[mdl_pairs[:, 0], mdl_pairs[:, 1]]).cpu().numpy()
+        if minus:
+            d_optim = 2 - d_val_mean
+        else:
+            d_optim = d_val_mean  # -.2*d_val_std
+
+        # compute jsd for samples
+        jsd_vals = []
+        for x, y in zip(XY_corr_sample_tensor, XY_corr_sample_tensor_rand):
+            jsd_val = js_divergence(x, y)
+            jsd_vals.append(jsd_val)
+        jsd_ = torch.stack(jsd_vals).mean().cpu().numpy().mean()
+        if jsd_ < self.jsd_threshold:
+            jsd_ = 0.0
+        else:
+            jsd_ = -self.jsd_muliplier * jsd_
+
+        if debug:
+            return d_optim, jsd_, jsd_vals
+        else:
+            return d_optim + jsd_
+
     def mod_objective_function(self,S):
         if self.extract_type=='activation':
             return self.objective_function(S,self.activations)
