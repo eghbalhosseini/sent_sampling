@@ -27,6 +27,7 @@ elif getpass.getuser()=='ehoseini':
     AUTO_ENCODER_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/sent_sampling/auto_encoder/'
     DSPARAMETRIC_DIR = '/om2/user/ehoseini/fmri_DNN/ds_parametric/'
     DEEPJUICE_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/DeepJuice/'
+    TIMIT_DIR = '/nese/mit/group/evlab/u/ehoseini/MyData/TIMIT/'
 else:
     UD_PARENT = '/om/user/ehoseini/MyData/Universal Dependencies 2.6/'
     COCA_CORPUS_DIR = '/om/user/ehoseini/MyData/COCA_corpus/parsed/'
@@ -314,5 +315,6 @@ SENTENCE_CONFIG = [
     dict(name='NSD_benchmark_captions_clean_v3',file_loc=os.path.join(DEEPJUICE_DIR, 'NSD_benchmark_captions_clean_v3.pkl')),
     dict(name='ds_parametric',file_loc=os.path.join(DSPARAMETRIC_DIR,'ds_parametric_extract.pkl')),
     dict(name='pereira2018_243sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),
-    dict(name='pereira2018_384sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,''))]
+    dict(name='pereira2018_384sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),
+    dict(name='timit_sentences',file_loc=os.path.join(TIMIT_DIR, 'TIMIT_clean_v1.pkl')),]
 

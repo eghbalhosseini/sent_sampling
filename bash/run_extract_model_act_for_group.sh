@@ -19,7 +19,7 @@ len=${#layer_arr[@]}
 
 #coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_34_activation_group_113.pkl
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
-for dataset in  NSD_benchmark_captions_clean_v3 ; do
+for dataset in  timit_sentences ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
     for stim_type in textNoPeriod ; do
       # make group_id go from 0 to splits -1
