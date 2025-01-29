@@ -12,6 +12,7 @@ import argparse
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 parser = argparse.ArgumentParser(description='extract activations and optimize')
 parser.add_argument('run_id', type=str, default='0')
+import torch
 
 
 

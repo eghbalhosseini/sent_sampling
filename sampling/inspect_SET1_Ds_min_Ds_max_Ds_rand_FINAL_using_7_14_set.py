@@ -27,20 +27,15 @@ from tqdm import tqdm
 from matplotlib.pyplot import GridSpec
 import pandas as pd
 from pathlib import Path
-from sklearn.preprocessing import StandardScaler
-import scipy.stats as stats
-
 import torch
 from sent_sampling.utils import make_shorthand
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
-from scipy.stats import mannwhitneyu, ks_2samp
-from scipy.stats import shapiro, anderson, kstest, norm, probplot
 import pickle
 colors = [np.divide((51, 153, 255), 255), np.divide((160, 160, 160), 256), np.divide((255, 153, 51), 255),
               np.divide((55, 76, 128), 256)]
 if __name__ == '__main__':
-    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False'
+    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_len_7_14_textNoPeriod-activation-bench=None-ave=False'
     optim_id='coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True'
     # read the excel that contains the selected sentences
     # %%  RUN SANITY CHECKS
@@ -88,6 +83,8 @@ if __name__ == '__main__':
         ds_min_list.append(ds_min_loc)
         ds_max_list.append(ds_max_loc)
         ds_rand_list.append(ds_rand_loc)
+
+
     ds_min_list = np.asarray(ds_min_list).transpose()
     ds_max_list = np.asarray(ds_max_list).transpose()
     ds_rand_list = np.asarray(ds_rand_list).transpose()
@@ -117,7 +114,7 @@ if __name__ == '__main__':
     sent_rand_data = [sentence_data[x] for x in ds_rand_loc_in_dat]
     # create a dictionary of sentence data for each ds_min, ds_max and ds_rand
     sent_data_dict = {'sent_max': sent_max_data, 'sent_min': sent_min_data, 'sent_rand': sent_rand_data}
-    save_path = Path(ANALYZE_DIR, 'DsParametric', f'sentence_data_dsparametric.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', f'sentence_data_dsparametric_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(sent_data_dict, f)
 
@@ -135,7 +132,7 @@ if __name__ == '__main__':
         # make dictionary of act_min, act_max and act_rand
         act_dict={'act_min':act_min,'act_max':act_max,'act_rand':act_rand,'model_name':model_names[idx],'sent_min':ds_min_sent,'sent_max':ds_max_sent,'sent_rand':ds_rand_sent}
         # save the act_dict in ANALYZE_DIR/DsParametric
-        save_path = Path(ANALYZE_DIR, 'DsParametric', f'act_dict_dsparametric_{model_names[idx]}.pkl')
+        save_path = Path(ANALYZE_DIR, 'DsParametric', f'act_dict_dsparametric_{model_names[idx]}_7_14_dec2024.pkl')
         with open(save_path.__str__(), 'wb') as f:
             pickle.dump(act_dict, f)
         # create a lefout set of act_min, act_max and act_rand
@@ -144,12 +141,12 @@ if __name__ == '__main__':
             set(index_all) - set(ds_min_loc) - set(ds_max_loc) - set(ds_rand_loc))
         #sent_leftout=[sentences for x in d_id_leftout]
         act_leftout=act_[d_id_leftout,:]
-        save_path = Path(ANALYZE_DIR, 'DsParametric', f'act_leftout_dsparametric_{model_names[idx]}.pkl')
+        save_path = Path(ANALYZE_DIR, 'DsParametric', f'act_leftout_dsparametric_{model_names[idx]}_7_14_dec2024.pkl')
         with open(save_path.__str__(), 'wb') as f:
             pickle.dump(act_leftout, f)
         # save all act_all
         act_all_dict={'act_all':act_,'model_name':model_names[idx],'min_loc':ds_min_loc,'max_loc':ds_max_loc,'rand_loc':ds_rand_loc,'sentences':sentences}
-        save_path = Path(ANALYZE_DIR, 'DsParametric', f'act_all_dsparametric_{model_names[idx]}.pkl')
+        save_path = Path(ANALYZE_DIR, 'DsParametric', f'act_all_dsparametric_{model_names[idx]}_7_14_dec2024.pkl')
         with open(save_path.__str__(), 'wb') as f:
             pickle.dump(act_all_dict, f)
 
@@ -227,17 +224,17 @@ if __name__ == '__main__':
         # get the model id from the model names
         model_id = model_names.index(model_name)
         RDM_rand_dict[model_name] = X_Max_min_rand[2][model_id]
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'ds_data_Parametric.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'ds_data_Parametric_7_14_dec2024.pkl')
     save_path.parent.mkdir(parents=True, exist_ok=True)
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(figure_3_data, f)
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'RDM_max_dict_parametric.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'RDM_max_dict_parametric_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(RDM_max_dict, f)
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'RDM_min_dict_parametric.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'RDM_min_dict_parametric_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(RDM_min_dict, f)
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'RDM_rand_dict_parametric.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'RDM_rand_dict_parametric_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(RDM_rand_dict, f)
     grays = (.8, .8, .8, .5)
@@ -253,7 +250,59 @@ if __name__ == '__main__':
 
     ds_all= []
     RDM_all = []
-#%%
+
+
+    ds_rand_set = []
+    RDM_rand_set= []
+    sent_rand_ids_set = []
+    for k in tqdm(enumerate(range(200))):
+        sent_random = list(np.random.choice(optim_obj.N_S, 80))
+        sent_rand_ids_set.append(sent_random)
+        d_s_r, RDM_r = optim_obj.gpu_object_function_debug(sent_random)
+        ds_rand_set.append(d_s_r)
+        RDM_rand_set.append(RDM_r)
+    RDM_rand_set = [2 - x for x in RDM_rand_set]
+    RDM_rand_set = [torch.triu(x,diagonal=1).T + torch.triu(x, diagonal=1) for x in RDM_rand_set]
+    RDM_rand_set = [x.cpu().numpy() for x in RDM_rand_set]
+
+
+    RDM_rand_dict = {model_name: [] for model_name in optim_obj.extractor_obj.model_spec}
+    for idx, XY_corr in enumerate(optim_obj.XY_corr_list):
+        X_samples = []
+        model_name = optim_obj.extractor_obj.model_spec[idx]
+        for S_id in sent_rand_ids_set:
+            pairs = torch.combinations(torch.tensor(S_id), with_replacement=False)
+            X_sample = XY_corr[pairs[:, 0], pairs[:, 1]].cpu().numpy()
+            # make squareform matrix
+            X_sample = squareform(X_sample)
+            X_samples.append(X_sample)
+        RDM_rand_dict[model_name] = X_samples
+    # add ds_rand_set to the RDM_rand_dict
+    RDM_rand_dict['ds_rand_set'] = ds_rand_set
+    RDM_rand_dict['sent_rand_ids_set'] = sent_rand_ids_set
+    RDM_rand_dict['RDM_rand_set'] = RDM_rand_set
+    save_path=Path(ANALYZE_DIR,'DsParametric', f'RDM_rand_set_dict_parametric_7_14_dec2024.pkl')
+    with open(save_path.__str__(), 'wb') as f:
+          pickle.dump(RDM_rand_dict, f)
+
+    RDM_full_dict = {model_name: [] for model_name in optim_obj.extractor_obj.model_spec}
+    for idx, XY_corr in enumerate(optim_obj.XY_corr_list):
+        # get the upper diagonal of XY_corr by using torch.combinations
+        model_name=optim_obj.extractor_obj.model_spec[idx]
+        pairs = torch.combinations(torch.tensor(range(optim_obj.N_S)), with_replacement=False)
+        # sort pairs
+        pairs = pairs[pairs[:, 0] < pairs[:, 1]]
+        X_sample = XY_corr[pairs[:, 0], pairs[:, 1]].cpu().numpy()
+        # make squareform matrix
+        #X_sample = squareform(X_sample)
+        RDM_full_dict[model_name] = X_sample
+
+    save_path=Path(ANALYZE_DIR,'DsParametric', f'RDM_full_set_dict_parametric_7_14_dec2024.pkl')
+    with open(save_path.__str__(), 'wb') as f:
+          pickle.dump(RDM_full_dict, f)
+
+
+    #%%
     optim_id_jsd='coordinate_ascent_eh-obj=D_s_jsd-n_iter=500-n_samples=100-n_init=1-low_dim=False-pca_var=0.9-pca_type=sklearn-run_gpu=True'
     optim_obj_jsd=optim_pool[optim_id_jsd]()
     optim_obj_jsd.load_extractor(ext_obj)
@@ -261,6 +310,8 @@ if __name__ == '__main__':
                                                 save_results=False)
 
     _, _,jsd_min = optim_obj_jsd.gpu_object_function_ds_plus_jsd(ds_min_loc,debug=True)
+
+
 
     jsd_range=[]
     js_min_range=[]
@@ -361,7 +412,7 @@ if __name__ == '__main__':
     ax.set_xticklabels(model_names, fontsize=6, rotation=90)
 
     ax.set_title('RDM_max')
-    np.fill_diagonal(RDM_min.numpy(),np.nan)
+    np.fill_diagonal(RDM_min,np.nan)
     ax = plt.axes((.6, .05, .25, .25*pap_ratio))
     im = ax.imshow(RDM_min, cmap='viridis',vmax=RDM_max.max())
     # add values to image plot
@@ -409,11 +460,11 @@ if __name__ == '__main__':
 
     save_path = Path(ANALYZE_DIR)
     (ext_sh,optim_sh)=make_shorthand(extract_id, optim_id)
-    save_loc = Path(save_path.__str__(), f'ds_{ext_sh}_{optim_sh}_FINAL.png')
+    save_loc = Path(save_path.__str__(), f'ds_{ext_sh}_{optim_sh}_FINAL_7_14_dec2024.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
-    save_loc = Path(save_path.__str__(), f'ds_{ext_sh}_{optim_sh}_FINAL.eps')
+    save_loc = Path(save_path.__str__(), f'ds_{ext_sh}_{optim_sh}_FINAL_7_14_dec2024.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1,
                 facecolor='auto',
                 edgecolor='auto', backend=None)
@@ -430,7 +481,7 @@ if __name__ == '__main__':
 
     # save random set
     RDM_rand_dict={'RDM_rand':RDM_rand,'ds_rand':ds_rand,'sent_rand_ids':sent_rand_ids,'model_names':model_names}
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'ds_set_rand_parametric_oct2024.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'ds_set_rand_parametric_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(RDM_rand_dict, f)
 
@@ -484,21 +535,21 @@ if __name__ == '__main__':
             lex_values.append(lex_value)
         sent_lex_rand_set[lex_name] = lex_values
 
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_max_parametric_lex_oct2024.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_max_parametric_lex_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(sent_max_lex, f)
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_min_parametric_lex_oct2024.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_min_parametric_lex_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(sent_min_lex, f)
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_rand_parametric_lex_oct2024.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_rand_parametric_lex_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(sent_rand_lex, f)
 
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_set_rand_parametric_lex_oct2024.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_set_rand_parametric_lex_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(sent_lex_rand_set, f)
 
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_all_parametric_lex_oct2024.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_all_parametric_lex_7_14_dec2024.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(sent_all_lex, f)
 
@@ -545,13 +596,13 @@ if __name__ == '__main__':
     # add a new field for number of words
     ds_rand_lex['num_words'] = sent_rand_num_words
 
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_max_parametric_lex.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_max_parametric_lex_7_14_dec2024_num_words.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(ds_max_lex, f)
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_min_parametric_lex.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_min_parametric_lex_7_14_dec2024_num_words.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(ds_min_lex, f)
-    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_rand_parametric_lex.pkl')
+    save_path = Path(ANALYZE_DIR, 'DsParametric', 'Ds_rand_parametric_lex_7_14_dec2024_num_words.pkl')
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(ds_rand_lex, f)
 
@@ -584,10 +635,10 @@ if __name__ == '__main__':
     # add a suptitle to the figure
     fig.suptitle(ax_title, fontsize=10,y=.99)
     save_path = Path(ANALYZE_DIR)
-    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.png')
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL_7_14_dec2024.png')
     # save figure as pdf and png
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350)
-    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.eps')
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL_7_14_dec2024.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1)
     fig.show()
 
@@ -656,9 +707,9 @@ if __name__ == '__main__':
     ax_title = f'sent_rdms,{ext_sh},{optim_sh}'
     # save the figure
     save_path = Path(ANALYZE_DIR)
-    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.png')
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL_7_14_dec2024.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350)
-    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.eps')
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL_7_14_dec2024.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1)
     #%%
     # plot average distances between setnences for each model
@@ -683,7 +734,7 @@ if __name__ == '__main__':
     # save a dictionary of x_min, x_rand and x_max
     model_names = [x['model_name'] for x in ext_obj.model_group_act]
     similirity_dict={'x_min':x_min_,'x_rand':x_rand_,'x_max':x_max_}
-    similiary_path=Path(ANALYZE_DIR,'similarity_dict_DsParametric.pkl')
+    similiary_path=Path(ANALYZE_DIR,'similarity_dict_DsParametric_7_14_dec2024.pkl')
     save_obj(similirity_dict,similiary_path.__str__())
     fig = plt.figure(figsize=(11, 8))
     for i in tqdm(range(len(X_Max))):
@@ -714,58 +765,183 @@ if __name__ == '__main__':
     ax_title = f'sent_alignment,{ext_sh},{optim_sh}'
     # save the figure
     save_path = Path(ANALYZE_DIR)
-    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.png')
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL_7_14_dec2024.png')
     fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350)
-    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL.eps')
+    save_loc = Path(save_path.__str__(), f'{ax_title}_FINAL_7_14_dec2024.eps')
     fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1)
-    #%%
-    X_rands_many = []
-    for k in tqdm(enumerate(range(500))):
-        sent_random = list(np.random.choice(optim_obj.N_S, optim_obj.N_s))
-        x_rand_many = []
-        for XY_ in optim_obj.XY_corr_list:
-            pairs = torch.combinations(torch.tensor(sent_random), with_replacement=False)
-            X_sample = XY_[pairs[:, 0], pairs[:, 1]].cpu().numpy()
-            # make squareform matrix
-            X_sample = squareform(X_sample)
-            x_rand_many.append(X_sample)
-        X_rands_many.append(x_rand_many)
+    #%% perform PCA on sets
 
-    X_rands_many_vec = []
-    for X_rand in X_rands_many:
-        X_rands_many_vec.append([X[np.tril_indices(X.shape[0], k=-1)] for X in X_rand])
-    #%
-    scaler = StandardScaler()
-    for idx in range(len(x_min_)):
-        x_max_mdl = np.asarray(x_max_[idx])
-        x_min_mdl = np.asarray(x_min_[idx])
-        x_ran_mdl = np.asarray(x_rand_[idx])
-        x_rand_vec = np.stack([X_rand[idx] for X_rand in X_rands_many_vec])
-        # compute the correlation between x_max and each row of x_rand_vec
-        max_to_rand_sim = []
-        min_to_rand_sim = []
-        rand_to_rand_sim = []
-        data_standardized = scaler.fit_transform(x_max_mdl.reshape(-1, 1)).flatten()
-        stat, p = kstest(data_standardized, 'norm')
-        print(f" MAX Kolmogorov-Smirnov Test Statistic: {stat}, p-value: {p}")
-        data_standardized = scaler.fit_transform(x_min_mdl.reshape(-1, 1)).flatten()
-        stat, p = kstest(data_standardized, 'norm')
-        print(f" MIN Kolmogorov-Smirnov Test Statistic: {stat}, p-value: {p}")
+    # %% compute the pca
+    pca = PCA(n_components=0.95)
+    model_pca_loads = []
+    for idx, act_dict in tqdm(enumerate(ext_obj.model_group_act)):
+        # backward compatibility
+        act_ = np.asarray(
+            [x[0] if isinstance(act_dict['activations'][0], list) else x for x in act_dict['activations']])
 
-        for x in tqdm(x_rand_vec):
-            mw_stat, mw_p = mannwhitneyu(x_max_mdl, x)
-            max_to_rand_sim.append([mw_stat, mw_p])
-            mw_stat, mw_p = mannwhitneyu(x_ran_mdl, x)
-            rand_to_rand_sim.append([mw_stat, mw_p])
-            mw_stat, mw_p = mannwhitneyu(x_min_mdl, x)
-            min_to_rand_sim.append([mw_stat, mw_p])
-        # print the rario
+        # find rows corresponds to ds_min_loc and put the in act_min
+        act_min = act_[ds_min_loc, :]
+        act_max = act_[ds_max_loc, :]
+        act_rand = act_[ds_rand_loc, :]
+        # remove act_min, act_max, act_rand from act_
+        act_ = np.delete(act_, [ds_min_loc, ds_max_loc, ds_rand_loc], axis=0)
+        pca.fit(act_)
+        act_pca = pca.transform(act_)
+        act_min_pca = pca.transform(act_min)
+        act_max_pca = pca.transform(act_max)
+        act_rand_pca = pca.transform(act_rand)
+        model_pca_loads.append(
+            {'act': act_pca, 'act_min': act_min_pca, 'act_max': act_max_pca, 'act_rand': act_rand_pca,
+             'exp_variance': pca.explained_variance_ratio_})
 
-        r_rand_to_rand = sum([x[1] > 0.05 for x in rand_to_rand_sim]) / len(rand_to_rand_sim)
-        print(f"{model_names[idx]} Rand to Rand ratio: {r_rand_to_rand}")
-        r_min_to_rand = sum([x[1] > 0.05 for x in min_to_rand_sim]) / len(min_to_rand_sim)
-        print(f"{model_names[idx]} Min to Rand ratio: {r_min_to_rand}")
-        r_max_to_rand = sum([x[1] > 0.05 for x in max_to_rand_sim]) / len(max_to_rand_sim)
-        print(f"{model_names[idx]} Max to Rand ratio: {r_max_to_rand}")
+    # create a plot with the number of models
+    # get model names from ext_obj.model_group_act
+
+    fig = plt.figure(figsize=(11, 8))
+    grays = (.8, .8, .8, .5)
+    # colors = [np.divide((188, 80, 144), 255), np.divide((55, 76, 128), 256), np.divide((255, 128, 0), 255),
+    #          np.divide((55, 76, 128), 256)]
+    model_names = ['Roberta', 'xlnet', 'bert', 'xlm', 'gpt2', 'albert', 'ctrl']
+
+    for idx, model_loads in tqdm(enumerate(model_pca_loads)):
+        True
+        ax = plt.subplot(2, 4, idx + 1)
+        ax.set_box_aspect(1)
+        ax.set_title(ext_obj.model_spec[idx])
+        l_all = model_loads['act'][:, :2]
+        # ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=line_cols)
+        ax.scatter(l_all[:, 0], l_all[:, 1], s=.5, c=grays)
+        # ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
+        l_min = model_loads['act_min'][:, :2]
+        ax.scatter(l_min[:, 0], l_min[:, 1], s=2, c=colors[2],edgecolor='k')
+
+        l_rand = model_loads['act_rand'][:, :2]
+        ax.scatter(l_rand[:, 0], l_rand[:, 1], s=2, c=colors[1], edgecolor='k')
+
+        l_max = model_loads['act_max'][:, :2]
+        ax.scatter(l_max[:, 0], l_max[:, 1], s=2, c=colors[0],edgecolor='k')
+        right_side = ax.spines["right"]
+        right_side.set_visible(False)
+        right_side = ax.spines["top"]
+        right_side.set_visible(False)
+        right_side = ax.spines["left"]
+        right_side.set_visible(False)
+        right_side = ax.spines["bottom"]
+        right_side.set_visible(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.plot(ax.get_xlim(), [0, 0], '-', zorder=2, linewidth=1, color=(.5, .5, .5))
+        ax.plot([0, 0], ax.get_ylim(), '-', zorder=2, linewidth=1, color=(.5, .5, .5))
+        exp_varaince = 100 * sum(model_loads['exp_variance'][:2])
+        ax.set_title(f"{ext_obj.model_spec[idx]}\n{exp_varaince:.2f}%", rotation=0,
+                     fontsize=8)
+    fig.show()
 
 
+    save_loc = Path(ANALYZE_DIR, f'pca_loadings_Ds_min_rand_max_final_{extract_id}.png')
+    fig.savefig(save_loc.__str__(), format='png', metadata=None, bbox_inches=None, pad_inches=0.1, dpi=350,
+                facecolor='auto',
+                edgecolor='auto', backend=None)
+    save_loc = Path(ANALYZE_DIR, f'pca_loadings_Ds_min_rand_max_final_{extract_id}.eps')
+    fig.savefig(save_loc.__str__(), format='eps', metadata=None, bbox_inches=None, pad_inches=0.1, facecolor='auto',
+                edgecolor='auto', backend=None)
+    #%% isomap
+    from sklearn.manifold import Isomap
+    X=np.asarray([x[0] for x in ext_obj.model_group_act[4]['activations']])
+    embedding = Isomap(n_components=2,n_neighbors=10)
+    X_transformed = embedding.fit_transform(X)
+
+    reconstruction_error=embedding.reconstruction_error()
+    x_min=X_transformed[ds_min_loc]
+    x_max=X_transformed[ds_max_loc]
+    x_rand=X_transformed[ds_rand_loc]
+    fig = plt.figure(figsize=(11, 8))
+    grays = (.8, .8, .8, .5)
+ # create an exais from .1,.1,.8,.8
+    ax = plt.axes((.1, .1, .8, .8*8/11))
+    ax.set_box_aspect(1)
+    ax.set_title(ext_obj.model_spec[4])
+
+    # ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=line_cols)
+    ax.scatter(X_transformed[:, 0], X_transformed[:, 1], s=.5, c=grays)
+    # ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
+    ax.scatter(x_min[:, 0], x_min[:, 1], s=10, c=colors[3], edgecolor='k')
+    ax.scatter(x_rand[:, 0], x_rand[:, 1], s=10, c=colors[2], edgecolor='k')
+    ax.scatter(x_max[:, 0], x_max[:, 1], s=10, c=colors[1], edgecolor='k')
+    right_side = ax.spines["right"]
+    right_side.set_visible(False)
+    right_side = ax.spines["top"]
+    right_side.set_visible(False)
+    right_side = ax.spines["left"]
+    right_side.set_visible(False)
+    right_side = ax.spines["bottom"]
+    right_side.set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.plot(ax.get_xlim(), [0, 0], '-', zorder=2, linewidth=1, color=(.5, .5, .5))
+    ax.plot([0, 0], ax.get_ylim(), '-', zorder=2, linewidth=1, color=(.5, .5, .5))
+    fig.show()
+
+    embedding.dist_matrix_
+    # get the dist_matrix for x_min, x_rand, and x_max and plot them
+    dist_min=embedding.dist_matrix_[ds_min_loc,:][:,ds_min_loc]
+    dist_rand=embedding.dist_matrix_[ds_rand_loc,:][:,ds_rand_loc]
+    dist_max=embedding.dist_matrix_[ds_max_loc,:][:,ds_max_loc]
+    # plot the dist_min, dist_rand, and dist_max but make the range the same
+    dis_min_condition=np.concatenate([dist_min.flatten(),dist_rand.flatten(),dist_max.flatten()])
+    min_val=np.min(dis_min_condition)
+    max_val=np.max(dis_min_condition)
+    fig = plt.figure(figsize=(11, 8))
+    ax = plt.subplot(1, 3, 1)
+    im=ax.imshow(dist_min,cmap='viridis', vmax=max_val,vmin=min_val)
+    ax.set_title('dist_min')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax = plt.subplot(1, 3, 2)
+    im=ax.imshow(dist_rand,cmap='viridis', vmax=max_val,vmin=min_val)
+    ax.set_title('dist_rand')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax = plt.subplot(1, 3, 3)
+    im=ax.imshow(dist_max,cmap='viridis', vmax=max_val,vmin=min_val)
+    ax.set_title('dist_max')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    fig.show()
+    #%% import numpy as np
+    from sklearn.neighbors import NearestNeighbors
+    from sklearn.manifold import LocallyLinearEmbedding
+
+    X = np.asarray([x[0] for x in ext_obj.model_group_act[4]['activations']])
+    embedding = LocallyLinearEmbedding(n_components=2)
+    X_transformed = embedding.fit_transform(X)
+
+    x_min=X_transformed[ds_min_loc]
+    x_max=X_transformed[ds_max_loc]
+    x_rand=X_transformed[ds_rand_loc]
+    fig = plt.figure(figsize=(11, 8))
+    grays = (.8, .8, .8, .5)
+ # create an exais from .1,.1,.8,.8
+    ax = plt.axes((.1, .1, .8, .8*8/11))
+    ax.set_box_aspect(1)
+    ax.set_title(ext_obj.model_spec[4])
+
+    # ax.scatter(l_v[rot, 0].cpu(), l_v[rot, 1].cpu(), s=.5, c=line_cols)
+    ax.scatter(X_transformed[:, 0], X_transformed[:, 1], s=.5, c=grays)
+    # ax.scatter(l_v[optim_set, 0].cpu(), l_v[optim_set, 1].cpu(), s=.7, c='k')
+    ax.scatter(x_min[:, 0], x_min[:, 1], s=10, c=colors[3], edgecolor='k')
+    ax.scatter(x_rand[:, 0], x_rand[:, 1], s=10, c=colors[2], edgecolor='k')
+    ax.scatter(x_max[:, 0], x_max[:, 1], s=10, c=colors[1], edgecolor='k')
+    right_side = ax.spines["right"]
+    right_side.set_visible(False)
+    right_side = ax.spines["top"]
+    right_side.set_visible(False)
+    right_side = ax.spines["left"]
+    right_side.set_visible(False)
+    right_side = ax.spines["bottom"]
+    right_side.set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.plot(ax.get_xlim(), [0, 0], '-', zorder=2, linewidth=1, color=(.5, .5, .5))
+    ax.plot([0, 0], ax.get_ylim(), '-', zorder=2, linewidth=1, color=(.5, .5, .5))
+    fig.show()

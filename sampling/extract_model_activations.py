@@ -17,10 +17,10 @@ def get_args():
 
 def mock_get_args():
     mock_args = namedtuple('debug', ['model_name', 'dataset'])
-    new_args = mock_args('gpt2-xl', 'ud_sentencez_token_filter_v3_sample')
+    new_args = mock_args('gpt2-xl', 'NSD_benchmark_captions')
     return new_args
 
-debug=False
+debug=True
 
 if __name__ == '__main__':
     if debug:

@@ -95,6 +95,15 @@ def jax_orthogonal_procrustes(A, B ):
 
 
 @jit
+def jax_align_orth(X: jnp.ndarray, Y: jnp.ndarray) -> jnp.ndarray:
+    return jax_orthogonal_procrustes(X, Y)[0]
+
+@jit
+def jax_align_identity(X: jnp.ndarray, Y: jnp.ndarray) -> jnp.ndarray:
+    return jnp.eye(X.shape[1])
+
+
+@jit
 def jax_align(X: jnp.ndarray, Y: jnp.ndarray, group: int) -> jnp.ndarray:
     if group == 0:  # "orth"
         return jax_orthogonal_procrustes(X, Y)[0]
@@ -105,11 +114,8 @@ def jax_align(X: jnp.ndarray, Y: jnp.ndarray, group: int) -> jnp.ndarray:
     else:
         raise ValueError(f"Specified group '{group}' not recognized.")
 
-@jit
-def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmstart, verbose, svd_solver):
-    if group == 2:  # "identity"
-        return jnp.mean(jnp.array(Xs), axis=0)
 
+def _jax_euc_barycenter_streaming_orth(Xs, random_state, tol, max_iter, warmstart, verbose):
     # Stack Xs
     Xs = jnp.stack(Xs, axis=0)
     if Xs.ndim != 3:
@@ -143,7 +149,7 @@ def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmst
         # Iterate over datasets.
         for i in indices:
             # Align i-th dataset to barycenter.
-            XQ = jnp.dot(Xs[i], jax_align(Xs[i], X0, group=group))
+            XQ = jnp.dot(Xs[i], jax_align_orth(Xs[i], X0))
 
             # Take a small step towards aligned representation.
             Xbar = update_barycenter(Xbar, XQ, n)
@@ -163,24 +169,27 @@ def _jax_euc_barycenter_streaming(Xs, group, random_state, tol, max_iter, warmst
 
     return Xbar
 
+@jit
+def _jax_euc_barycenter_streaming_identity(Xs):
+    return jnp.mean(jnp.array(Xs), axis=0)
 
-
-def jax_frechet_mean(Xs, group="orth", random_state=None, tol=1e-3, max_iter=100, warmstart=None, verbose=False, method="streaming", return_aligned_Xs=False, svd_solver=None):
-    group_dict = {"orth": 0, "perm": 1, "identity": 2}
-    group_code = group_dict.get(group, -1)
-    if group_code == -1:
-        raise ValueError(f"Specified group '{group}' not recognized.")
-
-    if group_code == 2:  # "identity"
-        return jnp.mean(jnp.array(Xs), axis=0)
+def jax_frechet_mean(Xs, group="orth", random_state=None, tol=1e-3, max_iter=100, warmstart=None, verbose=False, method="streaming", return_aligned_Xs=False):
+    if group == "identity":
+        return _jax_euc_barycenter_streaming_identity(Xs)
 
     if method == "streaming":
-        Xbar = _jax_euc_barycenter_streaming(Xs, group_code, random_state, tol, max_iter, warmstart, verbose, svd_solver)
+        if group == "orth":
+            Xbar = _jax_euc_barycenter_streaming_orth(Xs, random_state, tol, max_iter, warmstart, verbose)
+        else:
+            raise NotImplementedError(f"Group '{group}' is not implemented for streaming method.")
     elif method == "full_batch":
         raise NotImplementedError("Full batch method is not implemented yet.")
 
     if return_aligned_Xs:
-        aligned_Xs = [x @ jax_align(x, Xbar, group=group_code) for x in Xs]
+        if group == "orth":
+            aligned_Xs = [x @ jax_align_orth(x, Xbar) for x in Xs]
+        else:
+            raise NotImplementedError(f"Group '{group}' is not implemented for return_aligned_Xs.")
 
     return (Xbar, aligned_Xs) if return_aligned_Xs else Xbar
 
