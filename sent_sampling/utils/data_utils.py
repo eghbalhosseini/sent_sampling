@@ -317,5 +317,8 @@ SENTENCE_CONFIG = [
     dict(name='ds_parametric',file_loc=os.path.join(DSPARAMETRIC_DIR,'ds_parametric_extract.pkl')),
     dict(name='pereira2018_243sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),
     dict(name='pereira2018_384sentences',file_loc=os.path.join(COCA_PREPROCESSED_DIR,'')),
-    dict(name='timit_sentences',file_loc=os.path.join(TIMIT_DIR, 'TIMIT_clean_v1.pkl')),]
+    dict(name='timit_sentences',file_loc=os.path.join(TIMIT_DIR, 'TIMIT_clean_v1.pkl')),
+    dict(name='ANNSet1_with_context',file_loc=os.path.join(TIMIT_DIR, 'ANNSet1_with_context.pkl')),
+    dict(name='ANNSet1_with_random_context', file_loc=os.path.join(TIMIT_DIR, 'ANNSet1_with_random_context.pkl'))]
+
 
