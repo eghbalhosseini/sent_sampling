@@ -13,13 +13,13 @@ layers="12" # adding the embedding layer so its layer plus 1
 #
 model_arr=($models)
 layer_arr=($layers)
-splits=100
+splits=20
 len=${#layer_arr[@]}
 #ud_sentences_U01_SET1_paraphrase_albert-xxlarge-v2_layer_4_activation_group_2.pkl
 
 #coca_preprocessed_all_clean_no_dup_100K_sample_1_textNoPeriod_gpt2-xl_layer_34_activation_group_113.pkl
 printf "%s,%s,%s,%s,%s,%s\n" "row" "model" "dataset" "stim_type" "splits" "group_id"  >> $GRAND_PIPE_FILE
-for dataset in  ud_sentences_U01_SET1_paraphrase ; do
+for dataset in  ANNSet1_with_context ; do
   for (( idx_model=0; idx_model<$len; idx_model++ )) ; do
     for stim_type in "" ; do
       # make group_id go from 0 to splits -1
@@ -47,11 +47,8 @@ for dataset in  ud_sentences_U01_SET1_paraphrase ; do
             echo "deleting $file"
             #rm $file
           done
-
           # delete the crunched files
           #ud_sentences_U01_SET1_paraphrase_albert-xxlarge-v2_layer_2_activation_ave_False.pkl
-
-
         done
         look_up_pattern="${dataset}${stim_type}_${model}_layer_*_activation_*.pkl"
         folder_to_look=${DATA_DIR}
