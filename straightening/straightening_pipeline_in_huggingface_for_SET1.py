@@ -2,10 +2,10 @@ import os
 import numpy as np
 import sys
 from pathlib import Path
-from sent_sampling.utils import SENTENCE_CONFIG
-from sent_sampling.utils.data_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
-from sent_sampling.utils import extract_pool
-from sent_sampling.utils.curvature_utils import compute_model_activations,compute_model_curvature
+sys.path.extend(['/om/user/ehoseini/sent_sampling', '/om/user/ehoseini/sent_sampling'])
+from sent_sampling.utils.curvature_utils import SENTENCE_CONFIG
+from sent_sampling.utils.curvature_utils import load_obj, SAVE_DIR, UD_PARENT, RESULTS_DIR, LEX_PATH_SET, save_obj,ANALYZE_DIR
+from sent_sampling.utils.curvature_utils import extract_pool
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
@@ -18,7 +18,15 @@ import scipy as sp
 import transformers
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel,AutoModelForCausalLM, AutoTokenizer,AutoModel,AutoModelForMaskedLM, AutoConfig
 import xarray as xr
+from minicons import scorer
 
+from transformers import AutoConfig, AutoModel, AutoModelWithLMHead,AutoTokenizer
+
+
+
+from transformers import PreTrainedTokenizer
+import pickle
+from transformers import AutoModel
 if __name__ == '__main__':
     #%%
     #modelnames='facebook/opt-125m'
@@ -53,7 +61,7 @@ if __name__ == '__main__':
                 # get activations
                 # print that we are getting activations
     print('getting activations for model: {}'.format(modelname))
-    all_layers=compute_model_activations(model,indexed_tokens,device=model.device)
+    all_layers=compute_model_activations(model,indexed_tokens)
     # printe that we are getting curvature
     print('getting curvature for model: {}'.format(modelname))
     curvature_dict=compute_model_curvature(all_layers)
@@ -61,16 +69,16 @@ if __name__ == '__main__':
     torch.cuda.empty_cache()
                 # delete model
     del model
-            #     # add curvature_dict to model_curvature_dict
-            #  #   model_curvature_dict[modelname]=curvature_dict
-            #     # save curvature dict
-            #     # replace / with _
-            #
-            #     with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'),'wb') as f:
-            #         pickle.dump(curvature_dict,f)
-            # else:
-            #     with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'),'rb') as f:
-            #         model_curvature_dict[modelname]=pickle.load(f)
+                # add curvature_dict to model_curvature_dict
+             #   model_curvature_dict[modelname]=curvature_dict
+                # save curvature dict
+                # replace / with _
+
+                with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'),'wb') as f:
+                    pickle.dump(curvature_dict,f)
+            else:
+                with open(os.path.join(ANALYZE_DIR,f'model_curvature_dict_{modelname_}.pkl'),'rb') as f:
+                    model_curvature_dict[modelname]=pickle.load(f)
 
 
     # save model_curvature_dict

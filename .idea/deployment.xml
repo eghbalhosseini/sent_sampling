@@ -30,73 +30,10 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="ehoseini@node094:22 agent (4)">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node094:22 agent (5)">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node098:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node103:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="ehoseini@node105:22 agent">
         <serverdata>
           <mappings>
             <mapping deploy="/om/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node107:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node109:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node112:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node113:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="ehoseini@node116:22 agent">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/om2/user/ehoseini/sent_sampling" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

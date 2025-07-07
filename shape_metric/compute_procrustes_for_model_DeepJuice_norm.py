@@ -137,7 +137,7 @@ if __name__ == '__main__':
     method = 'full_batch'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-12
+    tolerance = 1e-16
     steps= 100
     verbose = True
     n_init=5
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         print(f'iteration: {k}')
         with torch.no_grad():
 
-            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,warmstart=X_init,
+            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,
                                                       max_iter=steps,verbose=verbose, tol=tolerance,svd_solver=svd_solver)
 
         X_diff = [X - X_bar_model for X in aligned_Xs_model]

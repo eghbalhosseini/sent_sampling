@@ -22,7 +22,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
     #%%
-# testing the pipeline
+
     modelname='LLAMA_7B'
     weight_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}'
     config_path=f'/nese/mit/group/evlab/u/ehoseini/MyData/LLAMA/{modelname}/config.json'
@@ -43,8 +43,6 @@ if __name__ == '__main__':
     # select subest that are between 2048 and 4096 tokens
     tokenized_datasets=tokenized_datasets['train']
     tokenized_datasets_long = tokenized_datasets.filter(lambda x: range_low <= len(x['input_ids']) <range_high)
-
-    model = load_checkpoint_and_dispatch(model, checkpoint=weight_path, device_map=device_map)
     for i in model.named_parameters():
         print(f"{i[0]} -> {i[1].device}")
     model.to(device)
@@ -82,9 +80,6 @@ if __name__ == '__main__':
     # save curvature_dict_all as pickle
     with open(Path(ANALYZE_DIR, f'{modelname}_curvature_dict_timescales_all_range_{range_low}_{range_high}.pkl'), 'wb') as f:
         pickle.dump(curvature_dict_all, f)
-
-    with open(Path(ANALYZE_DIR, f'{modelname}_curvature_dict_timescales_all_range_{range_low}_{range_high}.pkl'), 'rb') as f:
-        curvature_dict_all = pickle.load(f)
     curvature_dict_all=[[x[k] for x in curvature_dict_all] for k in range(len(time_scales))]
     # # turn it into a tensor
     for tt in range(len(time_scales)):
@@ -127,12 +122,12 @@ if __name__ == '__main__':
                         (np.nanmean(curve_, axis=1) + np.nanstd(curve_, axis=1)/np.sqrt(curve_.shape[1])) * 180 / np.pi,
                         color=(0, 0, 0), alpha=.2, zorder=1)
 
-#         ax.fill_between(np.arange(curve_.shape[0]),
-#                         (np.nanmean(curve_, axis=1) - np.nanstd(curve_, axis=1)) * 180 / np.pi,
-#                         (np.nanmean(curve_, axis=1) + np.nanstd(curve_, axis=1)) * 180 / np.pi,
-#                         color=(0, 0, 0), alpha=.2, zorder=1)
-# #        ax.set_ylim([110., 125])
-        ax.set_ylim([102.5, 125])
+        ax.fill_between(np.arange(curve_.shape[0]),
+                        (np.nanmean(curve_, axis=1) - np.nanstd(curve_, axis=1)) * 180 / np.pi,
+                        (np.nanmean(curve_, axis=1) + np.nanstd(curve_, axis=1)) * 180 / np.pi,
+                        color=(0, 0, 0), alpha=.2, zorder=1)
+#        ax.set_ylim([110., 125])
+
 
         curve_change = (curve_[1:, :] - curve_[1, :])
         ax = plt.axes((.1, .15, .55, .25 * pap_ratio))
@@ -161,14 +156,14 @@ if __name__ == '__main__':
                         (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1) / np.sqrt(curve_change.shape[1])) * 180 / np.pi,
                         color=(0, 0, 0), alpha=.2, zorder=1)
 
-        # ax.fill_between(np.arange(curve_change.shape[0]),
-        #                 (np.nanmean(curve_change, axis=1) - np.nanstd(curve_change, axis=1)) * 180 / np.pi,
-        #                 (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1)) * 180 / np.pi,
-        #                 color=(0, 0, 0), alpha=.2, zorder=1)
+        ax.fill_between(np.arange(curve_change.shape[0]),
+                        (np.nanmean(curve_change, axis=1) - np.nanstd(curve_change, axis=1)) * 180 / np.pi,
+                        (np.nanmean(curve_change, axis=1) + np.nanstd(curve_change, axis=1)) * 180 / np.pi,
+                        color=(0, 0, 0), alpha=.2, zorder=1)
 
 #        ax.set_ylim([-10., 2])
-        ax.set_ylim([-15., 2])
-        fig_save_path=Path(ANALYZE_DIR,'straightening','time_scales', f'{modelname}_curvature_long_context_timescale_{time_scales[tt]}_range_{range_low}_{range_high}.pdf')
+
+        fig_save_path=Path(ANALYZE_DIR,'traightening','time_scales', f'{modelname}_curvature_long_context_timescale_{time_scales[tt]}_range_{range_low}_{range_high}.pdf')
         # make sure the parent of fig_save_path exists
         fig_save_path.parent.mkdir(parents=True, exist_ok=True)
         # make sure it paernt dir exists

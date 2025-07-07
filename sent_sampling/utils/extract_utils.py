@@ -22,33 +22,6 @@ import pickletools
 
 import re
 
-from rapidfuzz import process
-
-
-def best_match(strings_list, target_string):
-    """
-    Finds the most similar string in the list to the target string.
-
-    Parameters:
-        strings_list (list of str): List of strings to search in.
-        target_string (str): The target string to compare against.
-
-    Returns:
-        tuple: (best_match_index, match_score)
-               - best_match_index (int): Index of the most similar string in strings_list.
-               - match_score (float): Similarity score (0-100).
-    """
-    if not strings_list:
-        return None, 0  # Handle empty list case
-
-    # Use rapidfuzz process.extractOne to get the best match
-    best_match, match_score, best_match_index = process.extractOne(target_string, strings_list, score_cutoff=0)
-
-    return best_match_index, match_score
-
-
-
-
 def check_pickle_file(pickle_file_path, expected_size=None, expected_checksum=None):
     """
     Function to silently check if a pickle file is possibly corrupt without opening it.

@@ -7,8 +7,6 @@ import itertools
 import numpy as np
 from tqdm import tqdm
 import matplotlib
-from sent_sampling.utils import extract_pool
-from sent_sampling.utils.optim_utils import optim_pool
 from netrep.utils import align, pt_align
 
 from scipy.spatial.distance import pdist
@@ -46,7 +44,6 @@ if platform.system() == 'Darwin':  # Darwin is the system name for macOS
     # Check if MPS (Metal Performance Shaders) backend is available, for Apple Silicon Macs
     if torch.backends.mps.is_available():
         device = torch.device("mps")  # Use MPS on supported Macs
-        device = torch.device("cpu")  # Fallback to CPU if MPS is not available
     else:
         device = torch.device("cpu")  # Fallback to CPU if MPS is not available
 else:
@@ -65,7 +62,6 @@ if __name__ == '__main__':
     #act_dir='/Users/eghbalhosseini/MyData/neural_nlp_bench/activations/DsParametricfMRI/'
 
     act_dir = '/om2/user/ehoseini/MyData/neural_nlp_bench/activations/DsParametricfMRI/'
-    #act_dir = '/Users/eghbalhosseini/MyData/neural_nlp_bench/activations/DsParametricfMRI/'
     model_resp_leftout=[]
     model_resp_dsparametric=[]
     model_resp_all=[]
@@ -167,335 +163,32 @@ if __name__ == '__main__':
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
     method = 'streaming'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
-    tolerance = 1e-6
+    tolerance = 1e-5
     steps= 2000
     verbose = True
     file_name=f'multi_shape_distance_all_DsParametric_{grp}_{adjust_mode}_{method}_pre_pca_{pre_pca}_torch_centered_steps_{steps}'
     save_path = Path(f'{act_dir}/{file_name}.pkl')
     save_path.parent.mkdir(parents=True, exist_ok=True)
-    if save_path.exists():
-        with open(save_path, 'rb') as f:
-            all_X_dict = pkl.load(f)
-        aligned_Xs_all=all_X_dict['aligned_all']
-        X_var_all=all_X_dict['var_al']
-    else:
-        X=feature_map_min
-        if adjust_mode == 'zero_pad':
-            X_shape = [x.shape[-1] for x in feature_map_min]
-            max_shape = max(X_shape)
-            # pad each X with zeros to make it max_shape
-            X_pad = [F.pad(x, pad=(0, max_shape - x.shape[-1], 0, 0), mode='constant', value=0) for x in X]
-            X_pad_max = [F.pad(x, pad=(0, max_shape - x.shape[-1], 0, 0), mode='constant', value=0) for x in feature_map_max]
-            X_pad_all = [F.pad(x, pad=(0, max_shape - x.shape[-1], 0, 0), mode='constant', value=0) for x in feature_map_all]
+    X=feature_map_min
+    if adjust_mode == 'zero_pad':
+        X_shape = [x.shape[-1] for x in feature_map_min]
+        max_shape = max(X_shape)
+        # pad each X with zeros to make it max_shape
+        X_pad = [F.pad(x, pad=(0, max_shape - x.shape[-1], 0, 0), mode='constant', value=0) for x in X]
+        X_pad_max = [F.pad(x, pad=(0, max_shape - x.shape[-1], 0, 0), mode='constant', value=0) for x in feature_map_max]
+        X_pad_all = [F.pad(x, pad=(0, max_shape - x.shape[-1], 0, 0), mode='constant', value=0) for x in feature_map_all]
 
-        X_var_min, aligned_Xs_min = pt_frechet_mean(X_pad, group=grp, method=method, return_aligned_Xs=True,max_iter=steps,
-                                                 verbose=verbose,tol=tolerance)
-        X_var_max, aligned_Xs_max = pt_frechet_mean(X_pad_max, group=grp, method=method, return_aligned_Xs=True, max_iter=steps,
-                                         verbose=verbose,tol=tolerance)
+    #X_var_min, aligned_Xs_min = pt_frechet_mean(X_pad, group=grp, method=method, return_aligned_Xs=True,max_iter=50,
+    #                                         verbose=verbose,tol=tolerance)
+    #X_var_max, aligned_Xs_max = pt_frechet_mean(X_pad_max, group=grp, method=method, return_aligned_Xs=True, max_iter=50,
+    #                                 verbose=verbose,tol=tolerance)
 
-        X_var_all, aligned_Xs_all = pt_frechet_mean(X_pad_all, group=grp, method=method, return_aligned_Xs=True, max_iter=steps,
-                                            verbose=verbose,tol=tolerance)
-        # make a dictionary of aligned_Xs and x_vars
-        all_X_dict={'aligned_all':aligned_Xs_all,'var_al':X_var_all}
-        with open(save_path, 'wb') as f:
-            pkl.dump(all_X_dict, f)
-
-    ## do a final pca
-    pca = PCA(n_components=2)
-    # do a pca on x_align_min and then transform x_align_max
-    #X = pca.fit_transform(X_var_all)
-    X = pca.fit_transform(aligned_Xs_all[6])
-
-    # get the variance explained
-    print(pca.explained_variance_ratio_)
-    #%% plot the results
-    X_min=X[ds_min_ids,:]
-    sent_min=[all_sentences[x] for x in ds_min_ids]
-    X_max=X[ds_max_ids,:]
-    sent_max=[all_sentences[x] for x in ds_max_ids]
-    X_rand=X[ds_rand_ids,:]
-    x_pca = np.concatenate((X_min, X_max), axis=0)
-    # create labels max and min
-    labels = np.concatenate((np.repeat('min', X_min.shape[0]), np.repeat('max', X_max.shape[0])), axis=0)
-    # create a df with x_pca and labels
-    df = pd.DataFrame(x_pca, columns=['x', 'y'])
-    df_all=pd.DataFrame(X, columns=['x', 'y'])
-    df['labels'] = labels
-
-    #df['sent'] = sent_
-    color_palette = {'max': np.divide((0, 157, 255, 255), 255), 'min': np.divide((255, 98, 0, 255), 255)}
-    g = sns.JointGrid(data=df, x="x", y="y")
-    # Plot each group on the same JointGrid
-    sns.scatterplot(data=df_all, x="x", y="y", color='gray', ax=g.ax_joint, size=0.1)
-    for group, color in color_palette.items():
-        sns.scatterplot(data=df[df['labels'] == group], x="x", y="y", color=color, ax=g.ax_joint)
-    # plot all points in gray
-
-    # plot a horizontal line at origin
-    g.ax_joint.axhline(y=0, color='gray', linestyle='--')
-    g.ax_joint.axvline(x=0, color='gray', linestyle='--')
-    # add the image_id as a text next to the point
-    # Plot the marginals
-    sns.histplot(data=df, x="x", hue="labels", palette=color_palette, ax=g.ax_marg_x, legend=False, binwidth=20,
-                 element="step", fill=False)
-    sns.histplot(data=df, y="y", hue="labels", palette=color_palette, ax=g.ax_marg_y, legend=False, binwidth=20,
-                 element="step", fill=False)
-    g.fig.show()
-
-    #%%
-    x_align_min_min = []
-    x_align_max_min = []
-    for idx, X_p in enumerate(X_pad):
-        # first compute the alginment matrix
-        T = pt_align(X_var_min, X_pad[idx], group=grp)
-        x_align_min_min.append(torch.matmul(X_pad[idx], T))
-        x_align_max_min.append(torch.matmul(X_pad_max[idx], T))
-
-    x_align_min_max = []
-    x_align_max_max = []
-    for idx, X_p in enumerate(X_pad_max):
-        # first compute the alginment matrix
-        T = pt_align(X_var_max, X_pad_max[idx], group=grp)
-        x_align_min_max.append(torch.matmul(X_pad[idx], T))
-        x_align_max_max.append(torch.matmul(X_pad_max[idx], T))
-
-    x_align_max_min = np.stack([x.cpu().numpy() for x in x_align_max_min])
-    x_align_max_min = np.mean(x_align_max_min, axis=0)
-    x_align_min_min = np.stack([x.cpu().numpy() for x in x_align_min_min])
-    x_align_min_min = np.mean(x_align_min_min, axis=0)
-
-    x_align_min_max = np.stack([x.cpu().numpy() for x in x_align_min_max])
-    x_align_min_max = np.mean(x_align_min_max, axis=0)
-    x_align_max_max = np.stack([x.cpu().numpy() for x in x_align_max_max])
-    x_align_max_max = np.mean(x_align_max_max, axis=0)
-    # average over dimension 0
-    pca = PCA(n_components=2)
-    # do a pca on x_align_min and then transform x_align_max
-    # X = np.stack([X_var_min.cpu().numpy(), x_align_max_min])
-    X = np.stack([x_align_min_min, x_align_max_min])
-    X = np.concatenate(X, axis=0)
-    X = pca.fit_transform(X)
-    X_align_pca_min_min = X[:X_var_min.shape[0], :]
-    X_align_pca_max_min = X[X_var_min.shape[0]:, :]
-    print(pca.explained_variance_ratio_)
-    #
-    # X = np.stack([x_align_min_max, X_var_max.cpu().numpy()])
-    X = np.stack([x_align_min_max, x_align_max_max])
-    X = np.concatenate(X, axis=0)
-    X = pca.fit_transform(X)
-    X_align_pca_min_max = X[:x_align_min_max.shape[0], :]
-    X_align_pca_max_max = X[x_align_min_max.shape[0]:, :]
-    # print the variance explained
-    print(pca.explained_variance_ratio_)
-
-    #%%
-    sorted_image_ids = np.stack([np.arange(model_resp_dsparametric[0]['sent_min'].shape[0]),
-                                 np.arange(model_resp_dsparametric[0]['sent_max'].shape[0])]).flatten()
-    sent_min = list(model_resp_dsparametric[0]['sent_min'])
-    sent_max = list(model_resp_dsparametric[0]['sent_max'])
-    sent_ = np.stack([sent_min, sent_max]).flatten()
-
-    x_pca = np.concatenate((X_align_pca_min_min[:,:2],X_align_pca_max_min[:,:2] ), axis=0)
-    # create labels max and min
-    labels = np.concatenate((np.repeat('min', X_align_pca_min_min.shape[0]), np.repeat('max', X_align_pca_min_min.shape[0])), axis=0)
-    # create a df with x_pca and labels
-    df = pd.DataFrame(x_pca, columns=['x', 'y'])
-    df['labels'] = labels
-    df['image_id'] = sorted_image_ids
-    df['sent'] = sent_
-    # Define your color palette for groups
-    color_palette = {'max': np.divide((0, 157, 255, 255), 255), 'min': np.divide((255, 98, 0, 255), 255)}
-    # Initialize a JointGrid
-    g = sns.JointGrid(data=df, x="x", y="y")
-    # Plot each group on the same JointGrid
-    for group, color in color_palette.items():
-        sns.scatterplot(data=df[df['labels'] == group], x="x", y="y", color=color, ax=g.ax_joint)
-    # plot a horizontal line at origin
-    g.ax_joint.axhline(y=0, color='gray', linestyle='--')
-    g.ax_joint.axvline(x=0, color='gray', linestyle='--')
-    # add the image_id as a text next to the point
-    # Plot the marginals
-    sns.histplot(data=df, x="x", hue="labels", palette=color_palette, ax=g.ax_marg_x, legend=False, binwidth=20,
-                 element="step", fill=False)
-    sns.histplot(data=df, y="y", hue="labels", palette=color_palette, ax=g.ax_marg_y, legend=False, binwidth=20,
-                 element="step", fill=False)
-    g.fig.show()
-    g.savefig(os.path.join(act_dir, f'DsParamfMRI_Align_max_to_min_{file_name}.png'))
-    # save eps
-
-    save_path = Path(f'{act_dir}/multi_shape_distance_DeepJuice_DsParametric_max_to_min_{grp}_{adjust_mode}_{method}.mat')
-    # # make sure parent exist
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    # # save as a mat file
-    savemat(save_path, {'x': x_pca, 'labels': labels, 'image_id': sorted_image_ids, 'sent': sent_})
-
-    #%%
-    x_pca = np.concatenate((X_align_pca_min_max[:, :2], X_align_pca_max_max[:, :2]), axis=0)
-    # create labels max and min
-    labels = np.concatenate(
-        (np.repeat('min', X_align_pca_min_max.shape[0]), np.repeat('max', X_align_pca_max_max.shape[0])), axis=0)
-    # create a df with x_pca and labels
-    df = pd.DataFrame(x_pca, columns=['x', 'y'])
-    df['labels'] = labels
-    df['image_id'] = sorted_image_ids
-    df['sent'] = sent_
-
-    # Define your color palette for groups
-    color_palette = {'max': np.divide((0, 157, 255, 255), 255), 'min': np.divide((255, 98, 0, 255), 255)}
-    # Initialize a JointGrid
-    g = sns.JointGrid(data=df, x="x", y="y")
-    # Plot each group on the same JointGrid
-    for group, color in color_palette.items():
-        sns.scatterplot(data=df[df['labels'] == group], x="x", y="y", color=color, ax=g.ax_joint)
-    # plot a horizontal line at origin
-    g.ax_joint.axhline(y=0, color='gray', linestyle='--')
-    g.ax_joint.axvline(x=0, color='gray', linestyle='--')
-    # add the image_id as a text next to the point
-    # Plot the marginals
-    sns.histplot(data=df, x="x", hue="labels", palette=color_palette, ax=g.ax_marg_x, legend=False, binwidth=20,
-                 element="step", fill=False)
-    sns.histplot(data=df, y="y", hue="labels", palette=color_palette, ax=g.ax_marg_y, legend=False, binwidth=20,
-                 element="step", fill=False)
-    g.fig.show()
-    g.savefig(os.path.join(act_dir, f'DsParamefMRI_Align_min_to_max_{file_name}.png'))
-
-    save_path = Path(
-        f'{act_dir}/multi_shape_distance_individual_DsParametric_min_to_max_{grp}_{adjust_mode}_{method}.mat')
-    # # make sure parent exist
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    # # save as a mat file
-    savemat(save_path, {'x': x_pca, 'labels': labels, 'image_id': sorted_image_ids, 'sent': sent_})
-
-    #%%
-    column_means = np.mean(X_var_min.cpu().numpy(), axis=0)
-    centered_X_var_min = X_var_min.cpu().numpy() - column_means
-    column_means = np.mean(X_var_max.cpu().numpy(), axis=0)
-    centered_X_var_max = X_var_max.cpu().numpy() - column_means
-
-    X_pca = pca.fit_transform(centered_X_var_min)
-    X_max = pca.transform(centered_X_var_max)
-    X_align_pca_min = X_pca
-    X_align_pca_max = X_max
-
-    x_pca = np.concatenate((X_align_pca_min[:, :2], X_align_pca_max[:, :2]), axis=0)
-    # create labels max and min
-    labels = np.concatenate(
-        (np.repeat('min', X_align_pca_max.shape[0]), np.repeat('max', X_align_pca_max.shape[0])), axis=0)
-    # create a df with x_pca and labels
-    df = pd.DataFrame(x_pca, columns=['x', 'y'])
-    df['labels'] = labels
-    df['image_id'] = sorted_image_ids
-    # Define your color palette for groups
-    color_palette = {'max': np.divide((0, 157, 255, 255), 255), 'min': np.divide((255, 98, 0, 255), 255)}
-    # Initialize a JointGrid
-    g = sns.JointGrid(data=df, x="x", y="y")
-    # Plot each group on the same JointGrid
-    for group, color in color_palette.items():
-        sns.scatterplot(data=df[df['labels'] == group], x="x", y="y", color=color, ax=g.ax_joint)
-    # plot a horizontal line at origin
-    g.ax_joint.axhline(y=0, color='gray', linestyle='--')
-    g.ax_joint.axvline(x=0, color='gray', linestyle='--')
-    g.ax_joint.set_xlim(-400, +400)
-    g.ax_joint.set_ylim(-400, +400)
-    # add the image_id as a text next to the point
-    # Plot the marginals
-    sns.histplot(data=df, x="x", hue="labels", palette=color_palette, ax=g.ax_marg_x, legend=False, binwidth=20,
-                 element="step", fill=False)
-    g.ax_marg_x.set_xlim(-400, +400)
-
-    sns.histplot(data=df, y="y", hue="labels", palette=color_palette, ax=g.ax_marg_y, legend=False, binwidth=20,
-                 element="step", fill=False)
-
-    g.ax_marg_y.set_ylim(-400, +400)
-    g.figure.show()
-    g.savefig(os.path.join(act_dir, f'DsParamfMRI_project_max_to_min_X_var_{file_name}.png'))
-    # save eps
-    save_path = Path(f'{act_dir}/MSD_DsParamfMRI_project_max_to_min_X_var_{file_name}.mat')
-    # # make sure parent exist
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    # # save as a mat file
-    savemat(save_path, {'x': x_pca, 'labels': labels, 'image_id': sorted_image_ids, 'sent': sent_})
-
-    #%%
-    X_align_pca_max = pca.fit_transform(centered_X_var_max)
-    X_align_pca_min = pca.transform(centered_X_var_min)
-
-    x_pca = np.concatenate((X_align_pca_min[:, :2], X_align_pca_max[:, :2]), axis=0)
-    # create labels max and min
-    labels = np.concatenate(
-        (np.repeat('min', X_align_pca_max.shape[0]), np.repeat('max', X_align_pca_max.shape[0])), axis=0)
-    # create a df with x_pca and labels
-    df = pd.DataFrame(x_pca, columns=['x', 'y'])
-    df['labels'] = labels
-    df['image_id'] = sorted_image_ids
-    # Define your color palette for groups
-    color_palette = {'max': np.divide((0, 157, 255, 255), 255), 'min': np.divide((255, 98, 0, 255), 255)}
-    # Initialize a JointGrid
-    g = sns.JointGrid(data=df, x="x", y="y")
-    # Plot each group on the same JointGrid
-    for group, color in color_palette.items():
-        sns.scatterplot(data=df[df['labels'] == group], x="x", y="y", color=color, ax=g.ax_joint)
-    # plot a horizontal line at origin
-    g.ax_joint.axhline(y=0, color='gray', linestyle='--')
-    g.ax_joint.axvline(x=0, color='gray', linestyle='--')
-    # add the image_id as a text next to the point
-    # Plot the marginals
-    g.ax_joint.set_xlim(-400, +400)
-    g.ax_joint.set_ylim(-400, +400)
-
-    sns.histplot(data=df, x="x", hue="labels", palette=color_palette, ax=g.ax_marg_x, legend=False, binwidth=20,
-                 element="step", fill=False)
-    g.ax_marg_x.set_xlim(-400, +400)
-
-    sns.histplot(data=df, y="y", hue="labels", palette=color_palette, ax=g.ax_marg_y, legend=False, binwidth=20,
-                 element="step", fill=False)
-    g.ax_marg_y.set_ylim(-400, +400)
-    g.figure.show()
-    g.savefig(os.path.join(act_dir, f'DsParamfMRI_project_min_to_max_X_var_{file_name}.png'))
-    # save eps
-    save_path = Path(f'{act_dir}/MSD_DsParamfMRI_project_min_to_max_X_var_{file_name}.mat')
-    # # make sure parent exist
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    # # save as a mat file
-    savemat(save_path, {'x': x_pca, 'labels': labels, 'image_id': sorted_image_ids, 'sent': sent_})
-
-    #%%
-    X=aligned_Xs_all[0]
-    X_diff=[torch.norm(torch.tensor(X)-torch.tensor(X_var_all),p=1,dim=1) for X in aligned_Xs_all]
-    X_diff=torch.stack(X_diff)
-
-
-    #row_means = X_diff.mean(dim=1, keepdim=True)
-    # Compute the standard deviation of each row
-    #row_stds = X_diff.std(dim=1, keepdim=True)
-    # Compute the z-scores for each row
-    #z_scores = (X_diff - row_means) / row_stds
-    # compute the variance along the rows
-    var_alginment = X_diff.var(dim=0)
-    # rank order the variance and get the index of high and low variance
-    variance_idx = torch.argsort(var_alginment)
-
-    #%%
-    optimizer_id = f"coordinate_ascent_eh-obj=D_s-n_iter=50-n_samples=75-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
-    extract_id = "group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False"
-    extractor_obj = extract_pool[extract_id]()
-    extractor_obj.load_dataset()
-    extractor_obj()
-    # extract ev sentences
-    # find location of ev sentences in sentences
-
-    optimizer_obj = optim_pool[optimizer_id]()
-    optimizer_obj.load_extractor(extractor_obj)
-    low_resolution = False
-    optimizer_obj.precompute_corr_rdm_on_gpu(low_resolution=low_resolution, cpu_dump=False, preload=False,
-                                             save_results=False)
-    S = list(np.random.choice(optimizer_obj.N_S, optimizer_obj.N_s, replace=False))
-    optimizer_obj.s_init = S
-    variance_idx[:75]
-    optimizer_obj.gpu_object_function_debug(list(variance_idx[75:]))
-    optimizer_obj.gpu_object_function_debug(S)
-
-
+    X_var_all, aligned_Xs_all = pt_frechet_mean(X_pad_all, group=grp, method=method, return_aligned_Xs=True, max_iter=steps,
+                                        verbose=verbose,tol=tolerance)
+    # make a dictionary of aligned_Xs and x_vars
+    all_X_dict={'aligned_all':aligned_Xs_all,'var_al':X_var_all}
+    with open(save_path, 'wb') as f:
+        pkl.dump(all_X_dict, f)
 
 
 

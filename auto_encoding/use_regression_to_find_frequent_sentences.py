@@ -1,21 +1,39 @@
-
+import numpy as np
 import pandas as pd
 import getpass
+import os
+import sys
+from pathlib import Path
 from sent_sampling.utils.data_utils import load_obj, construct_stimuli_set, BENCHMARK_CONFIG, save_obj, SAVE_DIR,ANALYZE_DIR
 from pathlib import Path
 import numpy as np
 from tqdm import tqdm
+from sklearn.model_selection import KFold
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 import warnings
 from sent_sampling.utils import extract_pool
 from sent_sampling.utils.data_utils import COCA_PREPROCESSED_DIR
+# import PCA
 from sklearn.decomposition import PCA
 #suppress warnings
 warnings.filterwarnings('ignore')
+import fnmatch
 from scipy.stats import ttest_ind
+
 import os
+import hashlib
+import pickletools
 import matplotlib
+
+#matplotlib.rcParams['font.size'] = 10
+#matplotlib.rcParams['pdf.fonttype'] = 4
 matplotlib.rcParams.update({'font.family': 'Arial', 'font.size': 10,'font.weight':'bold'})
 matplotlib.rcParams['ps.useafm'] = True
 matplotlib.rcParams['pdf.use14corefonts'] = True

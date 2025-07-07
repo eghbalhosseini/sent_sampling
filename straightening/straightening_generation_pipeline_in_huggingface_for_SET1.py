@@ -24,7 +24,7 @@ from torch.utils.data import TensorDataset, DataLoader, RandomSampler, Sequentia
 from datasets import Dataset, DatasetDict
 from scipy import stats
 from sent_sampling.utils.curvature_utils import compute_model_activations,compute_model_curvature,normalized
-ANALYZE_DIR='/rdma/vast-rdma/vast/evlab/ehoseini/MyData/sent_sampling/analysis/'
+
 
 if __name__ == '__main__':
     #%%
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     #modelnames='microsoft/DialoGPT-medium'
     #modelnames='funnel-transformer/small'
     #modelnames='facebook/opt-125m'
-    basemodel = 'gpt2-xl'
+    basemodel = 'gpt2'
     masked=False
     dataset='ud_sentencez_token_filter_v3_textNoPeriod'
     extract_id = ['group=gpt2_layers-dataset=ud_sentencez_token_filter_v3_textNoPeriod-activation-bench=None-ave=None']
@@ -63,11 +63,6 @@ if __name__ == '__main__':
     # filter sentence on long_sent_id
     sentences_=[sentences_[i] for i in long_sent_id]
     sent_token_=[sent_token_all[i] for i in long_sent_id]
-    # save sentence
-    save_sentence_path=Path(ANALYZE_DIR,f'sentences_{basemodel}_{dataset}_cntx_{context_k}_cont_{continuation_k}.pkl')
-    if not save_sentence_path.exists():
-        with open(save_sentence_path.__str__(),'wb') as f:
-            pickle.dump(sentences_,f)
 
     # make a true continuation based on continuation_k+context_k
     true_continuation=[x[:context_k+continuation_k] for x in sentence_tokens]

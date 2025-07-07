@@ -89,8 +89,7 @@ if __name__ == '__main__':
             all_batch = compute_model_activations(model, batch, model.device)
             curvature_dict_batch = compute_model_curvature(all_batch)
             curvature_dict_all.append(curvature_dict_batch)
-        # make sure parent dir exists
-        curvature_dict_path.parent.mkdir(parents=True, exist_ok=True)
+
         with open(curvature_dict_path.__str__(), 'wb') as f:
             pickle.dump(curvature_dict_all, f)
 

@@ -34,7 +34,7 @@ export RESULTCACHING_HOME
 
 conda activate neural_nlp
 echo $(which python)
-python /om2/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
+python /om/user/ehoseini/sent_sampling/extract_model_activations_parallel.py ${model_list[$SLURM_ARRAY_TASK_ID]} ${dataset_list[$SLURM_ARRAY_TASK_ID]} ${group_id_list[$SLURM_ARRAY_TASK_ID]}
 
 
 #for model in gpt2-xl gpt2-large gpt2-medium gpt2 distilgpt2 openaigpt \

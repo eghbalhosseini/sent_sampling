@@ -75,8 +75,6 @@ if __name__ == '__main__':
                     eye_matrix=torch.eye(param_dst.shape[0],int(config.n_head*dim_2),device=param_dst.device)
                     # repeat eye_matrix 3 times
                     # replace the beging part of param_dst with eye_matrix
-                    # get the first part of the matrix
-                    weight_to_replace=param_dst[:,0: int(config.n_head*dim_2)]
                     # take the middle part of param_dst and repalce it with eye_matrix
                     new_weight = torch.concat([ param_dst[:,0: int(config.n_head*dim_2)],eye_matrix,param_dst[:,2*int(config.n_head*dim_2):]], dim=1)
                     #new_weight=torch.concat([eye_matrix, param_dst[:,int(config.n_head*dim_2):]],dim=1)
