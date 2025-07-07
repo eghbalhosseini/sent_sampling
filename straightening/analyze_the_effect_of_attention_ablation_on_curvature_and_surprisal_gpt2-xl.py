@@ -51,6 +51,7 @@ if __name__ == '__main__':
     masked = False
     #dataset = 'ud_sentencez_token_filter_v3_textNoPeriod'
     #ablation_type='Attn_key'
+    # layer_to_ablate = 15
     # emcpty cuda cache
     torch.cuda.empty_cache()
     # get data
@@ -106,9 +107,16 @@ if __name__ == '__main__':
                 #new_weight=torch.concat([eye_matrix, param_dst[:,int(config.n_head*dim_2):]],dim=1)
                 # make sure new_weight has the same shape as param_dst
                 assert new_weight.shape==param_dst.shape
-            else:
+            elif 'bias' in name:
                 #create an identity matrix with shape of param_dst
-                new_weight=torch.ones_like(param_dst,device=param_dst.device)
+                dim_2 = ablated_config.n_embd / ablated_config.n_head
+                ones_matrix = torch.ones( int(ablated_config.n_head * dim_2), device=param_dst.device)
+
+                if ablation_type=='Attn_key':
+                    #weight_to_replace = copy.deepcopy(param_dst[:, 0: int(ablated_config.n_head * dim_2)])
+                    #new_weight = torch.cat([ones_matrix, param_dst[ int(ablated_config.n_head * dim_2):]], dim=0)
+                    #new_weight=torch.zeros_like(param_dst)
+                    new_weight=torch.ones_like(param_dst,device=param_dst.device)
             # repalce the param_dst with random matrix
             param_dst.copy_(new_weight)
             # save the ablated state dict
@@ -204,7 +212,7 @@ if __name__ == '__main__':
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
 
-
+    fig.show()
     fig.savefig(os.path.join(ANALYZE_DIR, f'surprisal_{modelname}_layer_{layer_to_ablate}_{ablation_type}_ablated_long_sent_k_{k_size}.pdf'), transparent=True)
     fig.savefig(os.path.join(ANALYZE_DIR, f'surprisal_{modelname}_layer_{layer_to_ablate}_{ablation_type}_ablated_long_sent_k_{k_size}.png'), transparent=True)
 
