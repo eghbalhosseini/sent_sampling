@@ -57,6 +57,38 @@ import pickle
 from glob import glob
 import numpy as np
 from pathlib import Path
+def pca_torch(X, n_components):
+    # Center the data
+    X_centered = X - X.mean(dim=0)
+
+    # Compute the covariance matrix
+    covariance_matrix = torch.mm(X_centered.T, X_centered) / (X_centered.size(0) - 1)
+
+    # Eigen decomposition
+    eigenvalues, eigenvectors = torch.linalg.eig(covariance_matrix)
+
+    # Extract real parts of eigenvalues
+    eigenvalues = eigenvalues[:, 0]
+
+    # Sort the eigenvectors by descending eigenvalues
+    sorted_indices = torch.argsort(eigenvalues, descending=True)
+    sorted_eigenvalues = eigenvalues[sorted_indices]
+    sorted_eigenvectors = eigenvectors[:, sorted_indices]
+
+    # Calculate explained variance
+    total_variance = torch.sum(sorted_eigenvalues)
+    explained_variance = sorted_eigenvalues[:n_components]
+    explained_variance_ratio = explained_variance / total_variance
+
+    # Select the top n_components
+    principal_components = sorted_eigenvectors[:, :n_components]
+
+    # Project the data onto the principal components
+    X_pca = torch.mm(X_centered, principal_components)
+
+    return X_pca, principal_components, explained_variance, explained_variance_ratio
+
+
 # Switch to a different linear algebra backend
 if __name__ == '__main__':
     # compute the simliarty vs score
@@ -130,17 +162,22 @@ if __name__ == '__main__':
     x_model = [normalize(x) for x in x_model]
     x_sub_fmri = [normalize(x) for x in x_sub_fmri]
     # create a set of random matrix with same size as the model
-    #%%
+    #%% do a pca on each model
+    n_components = 500
+    for X in x_model:
+        True
+        X_pca, principal_components, explained_variance, explained_variance_ratio = pca_torch(X, n_components)
+
     # make them not require grad
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
-    method = 'full_batch'  # or 'streaming' , 'full_batch' is the default
+    method = 'streaming'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-12
-    steps= 100
+    tolerance = 1e-10
+    steps= 500
     verbose = True
-    n_init=5
+    n_init=1
     prev_objective=1e10
     X_bar_model_final=None
     aligned_Xs_model_final=None
@@ -151,7 +188,7 @@ if __name__ == '__main__':
         print(f'iteration: {k}')
         with torch.no_grad():
 
-            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,warmstart=X_init,
+            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,
                                                       max_iter=steps,verbose=verbose, tol=tolerance,svd_solver=svd_solver)
 
         X_diff = [X - X_bar_model for X in aligned_Xs_model]

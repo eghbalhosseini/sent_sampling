@@ -60,3 +60,5 @@ if __name__ == '__main__':
     # save the pca_dict in Analyze dir
         pathname=Path(ANALYZE_DIR,f'{extract_id}_pca_n_comp_{n_comp}.pkl')
         save_obj(pca_dict,pathname)
+
+    #%% plot them

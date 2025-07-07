@@ -134,13 +134,13 @@ if __name__ == '__main__':
     # make them not require grad
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
-    method = 'full_batch'  # or 'streaming' , 'full_batch' is the default
+    method = 'streaming'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-12
-    steps= 100
+    tolerance = 1e-10
+    steps= 500
     verbose = True
-    n_init=5
+    n_init=1
     prev_objective=1e10
     X_bar_model_final=None
     aligned_Xs_model_final=None
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         print(f'iteration: {k}')
         with torch.no_grad():
 
-            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,warmstart=X_init,
+            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,
                                                       max_iter=steps,verbose=verbose, tol=tolerance,svd_solver=svd_solver)
 
         X_diff = [X - X_bar_model for X in aligned_Xs_model]

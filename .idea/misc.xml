@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="neural_align" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="om_neural_nlp_2022@node094" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="neural_align" project-jdk-type="Python SDK" />
 </project>
