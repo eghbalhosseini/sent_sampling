@@ -49,7 +49,6 @@ if __name__ == '__main__':
     curve_drop=curvature_drop_dict['curve']
     # find the nan values
     good_sent_ids=np.where(~np.isnan(curve_drop).any(axis=0))[0]
-    good_sent_ids
     # drop nan values
     curve_drop=curve_drop[:,good_sent_ids]
     good_sentences=[sentences[x] for x in good_sent_ids]

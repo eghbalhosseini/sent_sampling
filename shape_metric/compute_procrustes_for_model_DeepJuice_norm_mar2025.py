@@ -24,8 +24,9 @@ else:
     deepjuice_ws_path = '/Users/eghbalhosseini/MyData/DeepJuice/workspace/nsd/'
     benchmark_path = '/Users/eghbalhosseini/MyData/DeepJuice/nsd_data/'
 from scipy.stats import median_abs_deviation as mad
-from benchmarks import NSDBenchmark, NSDSampleBenchmark
-from deepjuice._backends.cupyfy import convert_to_tensor
+from juicyfruits.nsd_parse import NSDBenchmark, NSDSampleBenchmark
+from deepjuice import * # imports all deepjuice modules
+from deepjuice.first_steps import * # tutorial helpers
 import multiprocessing
 import os
 print(f'num cpus: {multiprocessing.cpu_count()}')
@@ -104,7 +105,7 @@ if __name__ == '__main__':
     # devide all feature_maps by the norm
     #feature_map_all=[x/model_norm for x in feature_map_all]
     #%%
-    benchmark_ = NSDBenchmark(path_dir=benchmark_path)
+    benchmark_ = NSDBenchmark(path_dir=benchmark_path,demo=False)
     x_fmri = (convert_to_tensor(benchmark_.response_data.to_numpy()).to(dtype=float_version, device=device)).T
     roi_indices = benchmark_.get_roi_indices(row_number=True)
     rois = roi_indices.keys()
@@ -151,7 +152,7 @@ if __name__ == '__main__':
         print(f'iteration: {k}')
         with torch.no_grad():
 
-            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,warmstart=X_init,
+            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,#warmstart=X_init,
                                                       max_iter=steps,verbose=verbose, tol=tolerance,svd_solver=svd_solver)
 
         X_diff = [X - X_bar_model for X in aligned_Xs_model]

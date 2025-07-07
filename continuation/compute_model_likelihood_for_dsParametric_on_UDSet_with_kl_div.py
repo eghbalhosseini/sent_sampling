@@ -51,41 +51,55 @@ def add_significance_info(ax, x1, x2, y, height, p_value,added_text=None):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
-    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False'
-    optim_id = ['coordinate_ascent_eh-obj=D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True',
-                'coordinate_ascent_eh-obj=2-D_s-n_iter=500-n_samples=100-n_init=1-low_dim=False-run_gpu=True']
+
     #
     # read the excel that contains the selected sentences
     # %%  RUN SANITY CHECKS
-    ds_csv = pd.read_csv('/om2/user/ehoseini/fmri_DNN/ds_parametric/ANNSET_DS_MIN_MAX_from_100ev_eh_FINAL.csv')
-    # read also the actuall experiment stimuli
-    stim_csv = pd.read_csv('/om2/user/ehoseini/fmri_DNN//ds_parametric/fMRI_final/stimuli_order_ds_parametric.csv',
-                           delimiter='\t')
-    # find unique conditions
-    unique_cond = np.unique(stim_csv.Condition)
-    # for each unique_cond find sentence transcript
-    unique_cond_transcript = [stim_csv.Stim_transcript[stim_csv.Condition == x].values for x in unique_cond]
-    # remove duplicate sentences in unique_cond_transcript
-    unique_cond_transcript = [list(np.unique(x)) for x in unique_cond_transcript]
-    ds_min_list = unique_cond_transcript[1]
-    ds_max_list = unique_cond_transcript[0]
-    ds_rand_list = unique_cond_transcript[2]
-    # extract the ds_min sentence that are in min_included column
-    ds_min_ = ds_csv.DS_MIN_edited[(ds_csv['min_include'] == 1)]
-    ds_max_ = ds_csv.DS_MAX_edited[(ds_csv['max_include'] == 1)]
-    ds_rand_ = ds_csv.DS_RAND_edited[(ds_csv['rand_include'] == 1)]
-    # check if ds_min_ and ds_min_list have the same set of sentences regardless of the order
-    assert len([ds_min_list.index(x) for x in ds_min_]) == len(ds_min_)
-    assert len([ds_max_list.index(x) for x in ds_max_]) == len(ds_max_)
-    assert len([ds_rand_list.index(x) for x in ds_rand_]) == len(ds_rand_)
+    n_samples = 200
+    n_selected = 196
+    kl_muliplier = 5.0
+    kl_threshold = 0.05
+    bins = 200
+    epsilon = 1e-10
+    extract_id = 'group=best_performing_pereira_1-dataset=ud_sentencez_token_filter_v3_minus_ev_sentences_textNoPeriod-activation-bench=None-ave=False'
+    optimizer_id = f"coordinate_ascent_eh-obj=D_s_kl_div-n_iter=50-n_samples={n_samples}-n_init=1-low_dim=False-pca_var=0.9-pca_type=pytorch-run_gpu=True"
+    (ext_sh, optim_sh) = make_shorthand(extract_id, optimizer_id)
+    save_path = Path(ANALYZE_DIR)
+    ax_title = f'sentences,{ext_sh}_Ns={n_samples}_kl_div_thr_{kl_threshold}_mult_{kl_muliplier}_bins_{bins}'
+    df_incl = pd.read_excel(save_path / f'{ax_title}_included.xlsx')
+
+    # chose df_max as from columns ds_max_sent, ds_max_loc, ds_max_include
+    df_max = df_incl[['ds_max_sent', 'ds_max_loc', 'ds_max_include']]
+    # select rows with ds_max_include == 1
+    df_max = df_max[df_max['ds_max_include'] == 1]
+    ds_max_loc_incl = df_max['ds_max_loc'].tolist()
+    ds_max_sent_incl = df_max['ds_max_sent'].tolist()
+    # make it int
+    ds_max_loc_incl = [int(x) for x in ds_max_loc_incl]
+    # do the same for min
+    df_min = df_incl[['ds_min_sent', 'ds_min_loc', 'ds_min_include']]
+    df_min = df_min[df_min['ds_min_include'] == 1]
+    ds_min_loc_incl = df_min['ds_min_loc'].tolist()
+    ds_min_loc_incl = [int(x) for x in ds_min_loc_incl]
+    ds_min_sent_incl = df_min['ds_min_sent'].tolist()
+    # do the same for rand
+    df_rand = df_incl[['ds_rand_sent', 'ds_rand_loc', 'ds_rand_include']]
+    df_rand = df_rand[df_rand['ds_rand_include'] == 1]
+    ds_rand_loc_incl = df_rand['ds_rand_loc'].tolist()
+    ds_rand_loc_incl = [int(x) for x in ds_rand_loc_incl]
+    ds_rand_sent_incl = df_rand['ds_rand_sent'].tolist()
+    # assert len of ds_min_loc_incl and ds_max_loc_incl is 200
+    assert len(ds_min_loc_incl) == n_selected
+    assert len(ds_max_loc_incl) == n_selected
+    assert len(ds_rand_loc_incl) == n_selected
     # %% MORE SANITY CHECKS FOR THE ACTIVATIONS
     # get the
-    ds_min_sent = ds_csv.DS_MIN[(ds_csv['min_include'] == 1)]
-    ds_max_sent = ds_csv.DS_MAX[(ds_csv['max_include'] == 1)]
-    ds_rand_sent = ds_csv.DS_RAND[(ds_csv['rand_include'] == 1)]
+    ds_min_sent = ds_max_loc_incl
+    ds_max_sent = ds_min_sent_incl
+    ds_rand_sent = ds_rand_sent_incl
     # laod the extractor
     ext_obj = extract_pool[extract_id]()
-    ext_obj.load_dataset()
+
     #ext_obj()
     model_names = ext_obj.model_spec
 
@@ -111,7 +125,9 @@ if __name__ == '__main__':
             # ilm_model.compute_stats(ilm_model.prepare_text(stimuli))
             ds_scores = []
             for stim in tqdm(stimuli):
-                ds_score = mlm_model.sequence_score(stim, reduction= lambda x: -x.sum(0).item(),
+                #ds_score = mlm_model.sequence_score(stim, reduction= lambda x: -x.sum(0).item(),
+               #                                     PLL_metric='within_word_l2r')
+                ds_score = mlm_model.sequence_score(stim, reduction= lambda x: -x.mean(0).item(),
                                                     PLL_metric='within_word_l2r')
                 ds_scores.append(ds_score[0])
             ds_scores_parametric.append(ds_scores)
@@ -129,7 +145,9 @@ if __name__ == '__main__':
             #ilm_model.compute_stats(ilm_model.prepare_text(stimuli))
             ds_scores=[]
             for stim in tqdm(stimuli):
-                ds_score=ilm_model.sequence_score(stim, reduction=lambda x: -x.sum(0).item())
+                #ds_score=ilm_model.sequence_score(stim, reduction=lambda x: -x.sum(0).item())
+                ds_score = ilm_model.sequence_score(stim, reduction=lambda x: -x.mean(0).item())
+
                 ds_scores.append(ds_score[0])
             ds_scores_parametric.append(ds_scores)
             # plot the distirbution of the scores
@@ -137,14 +155,14 @@ if __name__ == '__main__':
 
     ## save model results as
     # save the ANNSet1_ds, ANNSet1_lex, ANNSet1_lex_rand, RDM_max_dict, RDM_rand_dict
-    save_path=Path(ANALYZE_DIR,'DsParametric', 'ds_parameteric_model_sum_likelihoods.pkl')
+    f'model_sum_likelihood,{ext_sh}_Ns={n_samples}_kl_div_thr_{kl_threshold}_mult_{kl_muliplier}_bins_{bins}_included.pkl'
+    save_path=Path(ANALYZE_DIR,f'model_sum_likelihood,{ext_sh}_Ns={n_samples}_kl_div_thr_{kl_threshold}_mult_{kl_muliplier}_bins_{bins}_included.pkl')
     # make sure it exists
-    save_path.parent.mkdir(parents=True, exist_ok=True)
     with open(save_path.__str__(), 'wb') as f:
         pickle.dump(all_models_scores, f)
 
     # use scipy.io to save it as a mat file
-    save_path=Path(ANALYZE_DIR,'DsParametric', 'ds_parameteric_model_sum_likelihoods.mat')
+    save_path=Path(ANALYZE_DIR,f'model_sum_likelihood,{ext_sh}_Ns={n_samples}_kl_div_thr_{kl_threshold}_mult_{kl_muliplier}_bins_{bins}_included.mat')
     scipy.io.savemat(save_path.__str__(), all_models_scores)
 
     model_names_new_order=[0,2,5,3,1,6,4]
@@ -211,7 +229,7 @@ if __name__ == '__main__':
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
 
-
+    fig.show()
     save_path = Path(ANALYZE_DIR)
 
     save_loc = Path(save_path.__str__(), f'ds_parametric_model_logLiklhood_sum.png')

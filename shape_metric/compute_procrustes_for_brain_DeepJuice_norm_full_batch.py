@@ -57,9 +57,14 @@ import pickle
 from glob import glob
 import numpy as np
 from pathlib import Path
+import argparse
+# do an argparse and get subject_select_var
+
 # Switch to a different linear algebra backend
 if __name__ == '__main__':
     # compute the simliarty vs score
+    # create a dictionary with each number  corresponds to subject 0, to 2 leaving out subject 3 and so on
+
     #%%
     selected_models = ['torchvision_alexnet_imagenet1k_v1',
                        'torchvision_regnet_x_800mf_imagenet1k_v2',
@@ -130,17 +135,17 @@ if __name__ == '__main__':
     x_model = [normalize(x) for x in x_model]
     x_sub_fmri = [normalize(x) for x in x_sub_fmri]
     # create a set of random matrix with same size as the model
-    #%%
+    #%% select subject fmri based on
     # make them not require grad
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
     method = 'full_batch'  # or 'streaming' , 'full_batch' is the default
     adjust_mode = 'zero_pad'  # 'pca' or 'none' or 'zero_pad'
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-12
-    steps= 100
+    tolerance = 1e-16
+    steps = 100
     verbose = True
-    n_init=5
+    n_init=1
     prev_objective=1e10
     X_bar_model_final=None
     aligned_Xs_model_final=None
@@ -151,7 +156,7 @@ if __name__ == '__main__':
         print(f'iteration: {k}')
         with torch.no_grad():
 
-            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_model, group=grp, method=method, return_aligned_Xs=True,warmstart=X_init,
+            X_bar_model, aligned_Xs_model = pt_frechet_mean(x_sub_fmri, group=grp, method=method, return_aligned_Xs=True,
                                                       max_iter=steps,verbose=verbose, tol=tolerance,svd_solver=svd_solver)
 
         X_diff = [X - X_bar_model for X in aligned_Xs_model]
@@ -165,7 +170,7 @@ if __name__ == '__main__':
 
     # align subjects to the mean model
     # safe final x_bar_model and aligned_Xs_model
-    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_{n_init}_{steps}_norm.pkl')
+    file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/DeepJuice/shape_metric_highres_vision_subjects_{grp}_{method}_{svd_solver}_{adjust_mode}_{tolerance}_{n_init}_{steps}_id_var_{subject_select_var}_norm.pkl')
     results_dict=dict(X_bar_model_final=X_bar_model_final,aligned_Xs_model_final=aligned_Xs_model_final)
     with open(file.__str__(), 'wb') as f:
         pickle.dump(results_dict, f)
