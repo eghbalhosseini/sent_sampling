@@ -1,7 +1,6 @@
 from datasets import load_dataset
 #from platonic.
 from collections import namedtuple
-datas=load_dataset('minhuh/prh',revision='wit_1024', split='train')
 import sys
 import os
 # Add the root directory of the repo to sys.path
@@ -16,7 +15,7 @@ from torchvision.models.feature_extraction import create_feature_extractor
 
 
 revision_d='wit_2048'
-datas=load_dataset('minhuh/prh',revision='wit_4096', split='train')
+datas=load_dataset('minhuh/prh',revision=revision_d, split='train')
 
 
 def mock_get_lvm_args():
