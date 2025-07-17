@@ -14,7 +14,7 @@ from timm.data.transforms_factory import create_transform
 from torchvision.models.feature_extraction import create_feature_extractor
 
 
-revision_d='wit_2048'
+revision_d='wit_1024'
 datas=load_dataset('minhuh/prh',revision=revision_d, split='train')
 
 
@@ -26,7 +26,7 @@ def mock_get_lvm_args():
 def mock_get_llm_args():
     mock_args = namedtuple('debug', ['output_dir', 'pool','dataset','subset','force_remake','batch_size','qlora','caption_idx','prompt',
                                      'force_download'])
-    new_args = mock_args('/rdma/vast-rdma/vast/evlab/ehoseini/MyData/shape_metric', 'last', revision_d, 'train', False, 4,True,0,True,True)
+    new_args = mock_args('/rdma/vast-rdma/vast/evlab/ehoseini/MyData/shape_metric', 'avg', revision_d, 'train', False, 4,True,0,False,True)
     return new_args
 
 
@@ -60,6 +60,21 @@ llm_models = [
 
 ]
 
+llm_models = [
+    "bigscience/bloomz-560m",
+    "bigscience/bloomz-1b1",
+    "bigscience/bloomz-1b7",
+    "bigscience/bloomz-3b",
+    "bigscience/bloomz-7b1",
+    "openlm-research/open_llama_3b",
+    "openlm-research/open_llama_7b",
+    "openlm-research/open_llama_13b",
+    "huggyllama/llama-7b",
+    "huggyllama/llama-13b",
+    "huggyllama/llama-30b",
+    "huggyllama/llama-65b",
+]
+
 
 for model_name in lvm_models:
     new_args = mock_get_lvm_args()
@@ -69,10 +84,8 @@ for model_name in lvm_models:
 
 for model_name in llm_models:
     new_args = mock_get_llm_args()
+
     model_names=[model_name,]
     extract_llm_features(model_names, datas, new_args)
-
-
-
 
 
