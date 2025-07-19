@@ -270,7 +270,7 @@ def mock_get_args():
     new_args = mock_args('clip', 'prh')
     return new_args
 
-debug=True
+debug=False
 if __name__ == '__main__':
     # compute the simliarty vs score
     #%%
@@ -680,7 +680,9 @@ if __name__ == '__main__':
 
 
         #%% compute the alignment in PRH
-
+        alignment_scores_min=[]
+        alignment_scores_rand=[]
+        alignment_scores_max=[]
 
         alignment_scores_rand, alignment_indices_rand = compute_alignment(vlm_model_paths_random, llm_model_paths_random,
                                                                           SUPPORTED_METRICS[method_k], topk=topk,
