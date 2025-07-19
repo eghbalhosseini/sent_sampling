@@ -91,12 +91,23 @@ if __name__ == '__main__':
             "vit_large_patch14_clip_224.laion2b",
             "vit_huge_patch14_clip_224.laion2b",]
 
-    models_sh = ['vit_tiny', 'vit_small', 'vit_base', 'vit_large']
+    selected_models = ["vit_small_patch14_dinov2.lvd142m",
+                       "vit_base_patch14_dinov2.lvd142m",
+                       "vit_large_patch14_dinov2.lvd142m",
+                       "vit_giant_patch14_dinov2.lvd142m", ]
+
+    selected_models = [            "vit_base_patch16_clip_224.laion2b",
+            "vit_large_patch14_clip_224.laion2b",
+            "vit_huge_patch14_clip_224.laion2b",
+            "vit_base_patch16_clip_224.laion2b_ft_in12k",
+            "vit_large_patch14_clip_224.laion2b_ft_in12k",
+            "vit_huge_patch14_clip_224.laion2b_ft_in12k"]
+
+
     # read image path
     dataset='wit_1024'
     subset='train'
 
-    #%%
     extract_mode = 'redux'
     activations_list = []
     layers_list = []
@@ -108,11 +119,19 @@ if __name__ == '__main__':
         )
         vlm_model_paths.append(save_path)
 
+    #%%
     llm_models = [
         "huggyllama/llama-7b",
         "huggyllama/llama-13b",
 
     ]
+
+    llm_models = [
+    "openlm-research/open_llama_3b",
+    "openlm-research/open_llama_7b",
+    "openlm-research/open_llama_13b",
+    ]
+
     llm_model_path=[]
     for model_ in llm_models:
         save_path = to_feature_filename(
@@ -120,13 +139,15 @@ if __name__ == '__main__':
         # assert path exist
         llm_model_path.append(save_path)
 
+    #%%
 
-
-    topk=10
+    topk=50
     precise=True
+    method_k = 5
+    SUPPORTED_METRICS[method_k]
 
     args=mock_get_args()
-    alignment_scores, alignment_indices = compute_alignment(vlm_model_paths,llm_model_path, args.metric,args.topk,args.precise)
+    alignment_scores, alignment_indices = compute_alignment(vlm_model_paths,llm_model_path, SUPPORTED_METRICS[method_k],args.topk,args.precise)
 
 
 
@@ -166,8 +187,6 @@ if __name__ == '__main__':
         llm_model_paths_max.append(max_path)
 
 
-    method_k=5
-    SUPPORTED_METRICS[method_k]
     alignment_scores_rand, alignment_indices_rand = compute_alignment(vlm_model_paths_random,llm_model_paths_random, SUPPORTED_METRICS[method_k],args.topk,args.precise)
 
     alignment_scores_min, alignment_indices_min = compute_alignment(vlm_model_paths_min, llm_model_paths_min,
