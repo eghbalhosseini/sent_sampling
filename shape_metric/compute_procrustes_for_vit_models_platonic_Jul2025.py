@@ -1,6 +1,6 @@
 
 import pickle as pkl
-from netrep.multiset import pairwise_distances, frechet_mean, pt_frechet_mean
+from netrep.multiset import  pt_frechet_mean
 from tqdm import tqdm
 import matplotlib
 import torch
@@ -10,9 +10,9 @@ matplotlib.rcParams['ps.useafm'] = True
 matplotlib.rcParams['pdf.use14corefonts'] = True
 matplotlib.rcParams['text.usetex'] = False
 from sklearn.decomposition import PCA
-import pandas as pd
+
 import sys
-from netrep.utils import align, pt_align
+from netrep.utils import pt_align
 from datasets import load_dataset
 import getpass
 if getpass.getuser() == 'ehoseini':
@@ -32,16 +32,12 @@ import os
 # Add the root directory of the repo to sys.path
 sys.path.append(os.path.abspath('/om2/user/ehoseini/platonic-rep'))
 from utils import to_feature_filename
-from extract_features import extract_llm_features, extract_lvm_features
 from sklearn.preprocessing import StandardScaler
 import multiprocessing
 import os
 print(f'num cpus: {multiprocessing.cpu_count()}')
 # set omp threads to 1 to avoid slowdowns due to parallelization
 os.environ['OMP_NUM_THREADS'] = '4'
-import matplotlib.pyplot as plt
-# Check operating system
-# Check operating system
 import platform
 if platform.system() == 'Darwin':  # Darwin is the system name for macOS
     # Check if MPS (Metal Performance Shaders) backend is available, for Apple Silicon Macs
@@ -61,12 +57,10 @@ import matplotlib.pyplot as plt
 # Check operating system
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
-import pickle
-from glob import glob
 import numpy as np
 from pathlib import Path
 # Switch to a different linear algebra backend
-from measure_alignment import prepare_features,compute_score, compute_alignment
+from measure_alignment import compute_alignment
 lvm_models = [
     {
         "model_name": "vit_tiny_patch16_224.augreg_in21k",
@@ -262,12 +256,13 @@ def get_args():
     parser.add_argument('vision_type', type=str,
                         default='clip')
     parser.add_argument('layer_method', type=str, default='prh')
+    parser.add_argument('layer_method_k', type=int, default=3,)
     args = parser.parse_args()
     return args
 
 def mock_get_args():
-    mock_args = namedtuple('debug', ['vision_type', 'layer_method'])
-    new_args = mock_args('clip', 'prh')
+    mock_args = namedtuple('debug', ['vision_type', 'layer_method','layer_method_k'])
+    new_args = mock_args('in21k', 'prh', 3)
     return new_args
 
 debug=False
@@ -280,7 +275,8 @@ if __name__ == '__main__':
         args = get_args()
     vision_type = args.vision_type
     layer_method = args.layer_method
-
+    layer_method_k = int(args.layer_method_k)
+    #layer_method_k = 3 # cka, or 5 : cknna
     dataset = 'wit_1024'
     subset = 'train'
     topk = 10
@@ -316,17 +312,25 @@ if __name__ == '__main__':
             vision_model_list.append(save_path)
         alignment_scores_full, alignment_indices_full = compute_alignment(vision_model_list,
                                                                           vision_model_list,
-                                                                          SUPPORTED_METRICS[method_k], topk=topk,
+                                                                          SUPPORTED_METRICS[layer_method_k], topk=topk,
                                                                           precise=precise)
+
         # select unique values in column of alignment_indices_full[:,;,0], that are not 0
-        layers=[list(set(x)-set([0])) for x in alignment_indices_full[:,:,0].T]
+        layer_alignments=[np.delete(row,i) for i, row in enumerate(alignment_indices_full[:, :, 0].T) ]
+        unique_layers= [np.unique(layer) for layer in layer_alignments]
         # asssert that the size of each element in best_layer is 1
-        if all(len(x) == 1 for x in best_layer):
-            best_layer=np.asarray(layers).squeeze()
+        if all(len(x) == 1 for x in unique_layers):
+            best_layer= np.asarray([x[0] for x in unique_layers]).squeeze().astype(int)
+            best_layer=np.asarray(layer_alignments).squeeze()
         else:
             print("Not all elements in best_layer are of size 1")
-            best_layer=[]
-            layer_method='last'
+            if all(np.array([max(np.abs(np.diff(x))) for x in layer_alignments])<=2):
+                # take the average of the columns and do a ceiling
+                best_layer = np.asarray([np.ceil(np.mean(x)) for x in layer_alignments]).squeeze().astype(int)
+
+            else:
+                best_layer=[]
+                layer_method='last'
 
 
 
@@ -386,7 +390,8 @@ if __name__ == '__main__':
     n_init=4
     X_bar_model_final=None
     aligned_Xs_model_final=None
-    proc_file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/shape_metric/procrustes/proc_{vision_type}_{dataset}_{grp}_{method}_{svd_solver}_{adjust_mode}_tol_{tolerance}_layer_{layer_method}_norm.pkl')
+    proc_alignment_method= SUPPORTED_METRICS[layer_method_k]
+    proc_file=Path(f'/rdma/vast-rdma/vast/evlab/ehoseini/MyData/shape_metric/procrustes/proc_{vision_type}_{dataset}_{grp}_{method}_{svd_solver}_{adjust_mode}_tol_{tolerance}_layer_{layer_method}_{proc_alignment_method}_norm.pkl')
     if proc_file.exists():
         print(f'File {proc_file} exists. Loading from it.')
         with open(proc_file.__str__(), 'rb') as f:
@@ -424,6 +429,20 @@ if __name__ == '__main__':
                 prev_objective=objective
         # save the result dict
         results_dict = dict(X_bar_model_final=X_bar_model_final, aligned_Xs_model_final=aligned_Xs_model_final)
+        # also add the details about layer ids, models, specs of procrustes
+        results_dict['layer_method'] = layer_method
+        results_dict['layer_method_metric'] = SUPPORTED_METRICS[layer_method_k]
+        results_dict['topk'] = topk
+        results_dict['vision_type'] = vision_type
+        results_dict['grp'] = grp
+        results_dict['method'] = method
+        results_dict['adjust_mode'] = adjust_mode
+        results_dict['svd_solver'] = svd_solver
+        results_dict['tolerance'] = tolerance
+        results_dict['n_init'] = n_init
+        results_dict['selected_models'] = selected_models
+        results_dict['selected_layers'] = layers_list
+        results_dict['layer_alignments']= layer_alignments
         with open(proc_file.__str__(), 'wb') as f:
             pkl.dump(results_dict, f)
 
@@ -532,7 +551,7 @@ if __name__ == '__main__':
             # Display the plot
             fig.show()
             anylsis_path = Path(
-                platonic_path) / 'analysis' / 'procrustes' / f'pca_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}.pdf'
+                platonic_path) / 'analysis' / 'procrustes' / f'pca_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}_{proc_alignment_method}.pdf'
             if not os.path.exists(os.path.dirname(anylsis_path)):
                 os.makedirs(os.path.dirname(anylsis_path))
             fig.savefig(anylsis_path.__str__(), bbox_inches='tight', dpi=300)
@@ -572,7 +591,7 @@ if __name__ == '__main__':
             # add the origin lines
             fig.show()
             anylsis_path = Path(
-                platonic_path) / 'analysis' / 'procrustes' / f'ranking_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}.pdf'
+                platonic_path) / 'analysis' / 'procrustes' / f'ranking_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}_{proc_alignment_method}.pdf'
             if not os.path.exists(os.path.dirname(anylsis_path)):
                 os.makedirs(os.path.dirname(anylsis_path))
             fig.savefig(anylsis_path.__str__(), bbox_inches='tight', dpi=300)
@@ -779,7 +798,7 @@ if __name__ == '__main__':
 
         # Display the plot
         fig.show()
-        anylsis_path= Path(platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_sample_{selection_method}_layer_{layer_method}.pdf'
+        anylsis_path= Path(platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_sample_{selection_method}_layer_{layer_method}_{proc_alignment_method}.pdf'
         if not os.path.exists(os.path.dirname(anylsis_path)):
             os.makedirs(os.path.dirname(anylsis_path))
         fig.savefig(anylsis_path.__str__(), bbox_inches='tight', dpi=300)
