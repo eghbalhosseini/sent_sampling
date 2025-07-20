@@ -12,13 +12,14 @@
 
 i=0
 for vision_type in  in21k mae dinov2 clip clip_ft_in12k ; do
-      for layer_method in prh last ; do
-        for layer_method_k in 3 5 ; do
-          vision_list[$i]="$vision_type"
-          layer_list[$i]="$layer_method"
-          layer_k_list[$i]="$layer_method_k"
-          i=$i+1
+    for layer_method in prh last ; do
+      for layer_method_k in 3 5 ; do
+        vision_list[$i]="$vision_type"
+        layer_list[$i]="$layer_method"
+        layer_k_list[$i]="$layer_method_k"
+        i=$i+1
       done
+    done
 done
 
 #  2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
