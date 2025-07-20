@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=prh_proc
-#SBATCH --array=0-9%5
+#SBATCH --array=0-19
 #SBATCH --time=5:00:00
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:a100:1
