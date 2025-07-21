@@ -71,6 +71,7 @@ lvm_models = [
         "pretraining_dataset": "in21k",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 192,
     },
     {
         "model_name": "vit_small_patch16_224.augreg_in21k",
@@ -81,6 +82,7 @@ lvm_models = [
         "pretraining_dataset": "in21k",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 384,
     },
     {
         "model_name": "vit_base_patch16_224.augreg_in21k",
@@ -91,6 +93,7 @@ lvm_models = [
         "pretraining_dataset": "in21k",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 768,
     },
     {
         "model_name": "vit_large_patch16_224.augreg_in21k",
@@ -101,6 +104,7 @@ lvm_models = [
         "pretraining_dataset": "in21k",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 1024,
     },
     {
         "model_name": "vit_base_patch16_224.mae",
@@ -111,6 +115,7 @@ lvm_models = [
         "pretraining_dataset": "N/A (Self-Supervised)",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 768,
     },
     {
         "model_name": "vit_large_patch16_224.mae",
@@ -121,6 +126,7 @@ lvm_models = [
         "pretraining_dataset": "N/A (Self-Supervised)",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 1024,
     },
     {
         "model_name": "vit_huge_patch14_224.mae",
@@ -131,6 +137,7 @@ lvm_models = [
         "pretraining_dataset": "N/A (Self-Supervised)",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 1280,
     },
     {
         "model_name": "vit_small_patch14_dinov2.lvd142m",
@@ -141,6 +148,7 @@ lvm_models = [
         "pretraining_dataset": "lvd142m",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 384,
     },
     {
         "model_name": "vit_base_patch14_dinov2.lvd142m",
@@ -151,6 +159,7 @@ lvm_models = [
         "pretraining_dataset": "lvd142m",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 768,
     },
     {
         "model_name": "vit_large_patch14_dinov2.lvd142m",
@@ -161,6 +170,7 @@ lvm_models = [
         "pretraining_dataset": "lvd142m",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 1024,
     },
     {
         "model_name": "vit_giant_patch14_dinov2.lvd142m",
@@ -171,6 +181,7 @@ lvm_models = [
         "pretraining_dataset": "lvd142m",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 1536,
     },
     {
         "model_name": "vit_base_patch16_clip_224.laion2b",
@@ -181,6 +192,7 @@ lvm_models = [
         "pretraining_dataset": "laion2b",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 768,
     },
     {
         "model_name": "vit_large_patch14_clip_224.laion2b",
@@ -191,6 +203,7 @@ lvm_models = [
         "pretraining_dataset": "laion2b",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 1024,
     },
     {
         "model_name": "vit_huge_patch14_clip_224.laion2b",
@@ -201,6 +214,7 @@ lvm_models = [
         "pretraining_dataset": "laion2b",
         "fine_tuned": False,
         "fine_tuning_dataset": None,
+        "dims": 1280,
     },
     {
         "model_name": "vit_base_patch16_clip_224.laion2b_ft_in12k",
@@ -211,6 +225,7 @@ lvm_models = [
         "pretraining_dataset": "laion2b",
         "fine_tuned": True,
         "fine_tuning_dataset": "in12k",
+        "dims": 768,
     },
     {
         "model_name": "vit_large_patch14_clip_224.laion2b_ft_in12k",
@@ -221,6 +236,7 @@ lvm_models = [
         "pretraining_dataset": "laion2b",
         "fine_tuned": True,
         "fine_tuning_dataset": "in12k",
+        "dims": 1024,
     },
     {
         "model_name": "vit_huge_patch14_clip_224.laion2b_ft_in12k",
@@ -231,6 +247,7 @@ lvm_models = [
         "pretraining_dataset": "laion2b",
         "fine_tuned": True,
         "fine_tuning_dataset": "in12k",
+        "dims": 1280,
     },
 ]
 
@@ -312,14 +329,12 @@ if __name__ == '__main__':
         select_indices = [11, 12, 13]  # clip
     elif vision_type=='clip_ft_in12k':
         select_indices = [14,15, 16]  #   clip ft in12k
-    elif vision_type=='vit_tiny':
-        select_indices = [0, 4, 7,11, 14]
     elif vision_type=='vit_small':
-        select_indices = [1,5,8,12,15]
+        select_indices = [ 4, 8,11, 14] # dims : [768, 768, 768, 768]
+    elif vision_type=='vit_medium':
+        select_indices = [5,9,12,15] # dims : [1024, 1024, 1024, 1024]
     elif vision_type=='vit_large':
-        select_indices = [3, 6,10, 13, 16]
-
-
+        select_indices = [ 6,10, 13, 16] # dims : [1280, 1536, 1280, 1280]
 
 
     selected_models = [lvm_models[i]['model_name'] for i in select_indices]
@@ -356,9 +371,6 @@ if __name__ == '__main__':
             else:
                 best_layer=[]
                 layer_method='last'
-
-
-
     #%%
     activations_list = []
     layers_list = []
@@ -380,7 +392,6 @@ if __name__ == '__main__':
         layers_list.append(layer_id)
 
     feature_map_all = [x['activations'] for x in activations_list]
-
     for idx in range(len(feature_map_all)):
         X = feature_map_all[idx]
         X = torch.tensor(X).to(float_version)
