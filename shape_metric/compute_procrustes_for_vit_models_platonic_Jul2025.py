@@ -639,6 +639,8 @@ if __name__ == '__main__':
 
             act_=torch.load(save_path, map_location=device)
             new_path=save_path.replace('/train','/procrustes')
+
+            new_path=new_path.replace('.pt',f'_proc_{grp}_{method}_{adjust_mode}_tol_{tolerance}_layer_{layer_method}_{proc_alignment_method}.pt')
             if not os.path.exists(os.path.dirname(new_path)):
                 os.makedirs(os.path.dirname(new_path))
             act_random={ 'feats': act_['feats'][rand_var_idx,:],'num_params': act_['num_params']}
@@ -666,6 +668,8 @@ if __name__ == '__main__':
             # assert path exist
             act_=torch.load(save_path, map_location=device)
             new_path=save_path.replace('/train','/procrustes')
+            new_path = new_path.replace('.pt',
+                                        f'_proc_{grp}_{method}_{adjust_mode}_tol_{tolerance}_layer_{layer_method}_{proc_alignment_method}.pt')
             # create a dictionary with the same variables as act_
             act_random={}
             act_random['feats'] = act_['feats'][rand_var_idx,:, :]
