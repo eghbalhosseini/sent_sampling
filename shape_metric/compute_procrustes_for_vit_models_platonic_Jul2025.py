@@ -298,6 +298,7 @@ if __name__ == '__main__':
     precise = True
     method_k = 5  # cknna
 
+    #[(i, x['model_name']) for i, x in enumerate(lvm_models)]
     # vision_type='clip'  # in21k, mae, dinov2, clip, clip_ft_in12k
     #layer_method='prh' # 'prh' or 'last'
     # make below a if else statement with comments as the key
@@ -311,6 +312,15 @@ if __name__ == '__main__':
         select_indices = [11, 12, 13]  # clip
     elif vision_type=='clip_ft_in12k':
         select_indices = [14,15, 16]  #   clip ft in12k
+    elif vision_type=='vit_tiny':
+        select_indices = [0, 4, 7,11, 14]
+    elif vision_type=='vit_small':
+        select_indices = [1,5,8,12,15]
+    elif vision_type=='vit_large':
+        select_indices = [3, 6,10, 13, 16]
+
+
+
 
     selected_models = [lvm_models[i]['model_name'] for i in select_indices]
     selected_attributes = [lvm_models[i] for i in select_indices]
