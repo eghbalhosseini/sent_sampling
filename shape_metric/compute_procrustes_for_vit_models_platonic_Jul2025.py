@@ -280,7 +280,7 @@ def mock_get_args():
     new_args = mock_args('dinov2', 'prh', 5)
     return new_args
 
-debug=True
+debug=False
 if __name__ == '__main__':
     # compute the simliarty vs score
     #%%
