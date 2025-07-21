@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=prh_proc
-#SBATCH --array=0-19
+#SBATCH --array=0-9
 #SBATCH --time=5:00:00
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:a100:1
@@ -12,7 +12,7 @@
 
 i=0
 for vision_type in  in21k mae dinov2 clip clip_ft_in12k ; do
-    for layer_method in prh last ; do
+    for layer_method in prh ; do
       for layer_method_k in 3 5 ; do
         vision_list[$i]="$vision_type"
         layer_list[$i]="$layer_method"
