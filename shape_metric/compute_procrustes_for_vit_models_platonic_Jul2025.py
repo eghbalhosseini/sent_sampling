@@ -235,6 +235,20 @@ lvm_models = [
 ]
 
 
+llm_models = [
+    "bigscience/bloomz-560m",
+    "bigscience/bloomz-1b1",
+    "bigscience/bloomz-1b7",
+    "bigscience/bloomz-3b",
+    "bigscience/bloomz-7b1",
+    "openlm-research/open_llama_3b",
+    "openlm-research/open_llama_7b",
+    "openlm-research/open_llama_13b",
+    "huggyllama/llama-7b",
+    "huggyllama/llama-13b",
+    "huggyllama/llama-30b",
+    "huggyllama/llama-65b",
+]
 colors_min_rand_max = [np.divide((255, 153, 51), 255), np.divide((160, 160, 160), 256),
               np.divide((51, 153, 255), 255)]
 
@@ -248,6 +262,7 @@ SUPPORTED_METRICS = [
     "svcca",
     "edit_distance_knn",
 ]
+
 
 import argparse
 from collections import namedtuple
@@ -335,7 +350,6 @@ if __name__ == '__main__':
 
 
     #%%
-    extract_mode = 'redux'
     activations_list = []
     layers_list = []
     for model_ in selected_models:
@@ -383,7 +397,7 @@ if __name__ == '__main__':
 
     adjust_mode = 'zp'  # 'pca' or 'none' or 'zero_pad',
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
-    tolerance = 1e-12
+    tolerance = 5e-16
     steps= 500
     verbose = True
     prev_objective=10e10
@@ -552,7 +566,7 @@ if __name__ == '__main__':
             # Display the plot
             #fig.show()
             anylsis_path = Path(
-                platonic_path) / 'analysis' / 'procrustes' / f'pca_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}_{proc_alignment_method}.pdf'
+                platonic_path) / 'analysis' / 'procrustes' / f'pca_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_tol_{tolerance}_layer_{layer_method}_{proc_alignment_method}.pdf'
             if not os.path.exists(os.path.dirname(anylsis_path)):
                 os.makedirs(os.path.dirname(anylsis_path))
             fig.savefig(anylsis_path.__str__(), bbox_inches='tight', dpi=300)
@@ -592,7 +606,7 @@ if __name__ == '__main__':
             # add the origin lines
             #fig.show()
             anylsis_path = Path(
-                platonic_path) / 'analysis' / 'procrustes' / f'ranking_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}_{proc_alignment_method}.pdf'
+                platonic_path) / 'analysis' / 'procrustes' / f'ranking_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_tol_{tolerance}_layer_{layer_method}_{proc_alignment_method}.pdf'
             if not os.path.exists(os.path.dirname(anylsis_path)):
                 os.makedirs(os.path.dirname(anylsis_path))
             fig.savefig(anylsis_path.__str__(), bbox_inches='tight', dpi=300)
@@ -642,24 +656,6 @@ if __name__ == '__main__':
 
 
         # given that you are comparing vision models to langauge model, you need to save the same thing for langauge models
-
-
-
-        llm_models = [
-            "bigscience/bloomz-560m",
-            "bigscience/bloomz-1b1",
-            "bigscience/bloomz-1b7",
-            "bigscience/bloomz-3b",
-            "bigscience/bloomz-7b1",
-            "openlm-research/open_llama_3b",
-            "openlm-research/open_llama_7b",
-            "openlm-research/open_llama_13b",
-            "huggyllama/llama-7b",
-            "huggyllama/llama-13b",
-            "huggyllama/llama-30b",
-            "huggyllama/llama-65b",
-        ]
-
         llm_model_path = []
         llm_model_paths_random=[]
         llm_model_paths_min=[]
@@ -697,9 +693,7 @@ if __name__ == '__main__':
                 torch.save(act_max, f)
             llm_model_paths_max.append(new_path.replace('.pt', f'_max_{selection_method}.pt'))
 
-
-
-        #%% compute the alignment in PRH
+        #% compute the alignment in PRH
         alignment_scores_min=[]
         alignment_scores_rand=[]
         alignment_scores_max=[]
@@ -716,10 +710,7 @@ if __name__ == '__main__':
                                                                         SUPPORTED_METRICS[method_k], topk=topk,
                                                                         precise=precise)
 
-
-
-
-        #%% plot the results
+        #% plot the results
         llm_models_short = [m.split('/')[-1] for m in llm_models]
         # get the following from selected models, "vit_base_patch16_clip_224.laion2b_ft_in12k" --> base, clip, liaon2b, in12k, and put it in a list of list
 
@@ -799,32 +790,7 @@ if __name__ == '__main__':
 
         # Display the plot
         #fig.show()
-        anylsis_path= Path(platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_sample_{selection_method}_layer_{layer_method}_{proc_alignment_method}.pdf'
+        anylsis_path= Path(platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_tol_{tolerance}_sample_{selection_method}_layer_{layer_method}_{proc_alignment_method}.pdf'
         if not os.path.exists(os.path.dirname(anylsis_path)):
             os.makedirs(os.path.dirname(anylsis_path))
         fig.savefig(anylsis_path.__str__(), bbox_inches='tight', dpi=300)
-
-
-
-
-    #%% save images
-    # analysis_path=Path(platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_sample_{selection_method}'
-    # if not os.path.exists(analysis_path):
-    #     os.makedirs(analysis_path)
-    # for i in range(5):  # Save the first 5 images
-    #     image = datas[i]['image']
-    #     text = datas[i]['text']  # Assuming there's a 'text' column as well
-    #
-    #     # You can use information from the dataset (like text) to name your images
-    #     # Be careful with special characters in filenames.
-    #     filename_base = f"image_{i}"
-    #
-    #     # Clean up text for filename if needed (e.g., remove problematic characters)
-    #     # A simple approach:
-    #     # cleaned_text = "".join(c for c in text if c.isalnum() or c in (' ', '_')).replace(' ', '_')
-    #     # filename_base = f"image_{i}_{cleaned_text[:20]}" # Take first 20 chars of cleaned text
-    #
-    #     image_path = os.path.join(analysis_path, f"{filename_base}.png")  # Save as PNG
-    #
-    #     image.save(image_path)
-    #     print(f"Image {i + 1} saved to {image_path}")
