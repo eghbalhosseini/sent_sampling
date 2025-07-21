@@ -492,9 +492,23 @@ if __name__ == '__main__':
     # key_samples_indices = np.argsort(np.abs(pc1_scores))[::-1]
     key_samples_indices_pca = np.argsort(pc1_scores)
     #%%
+    # if the following exist, exit instead
+
     datas = load_dataset('minhuh/prh', revision=dataset, split='train')
     n_samples = 100
     min_rand_max_var_list = {}
+
+    anylsis_path_pca = Path(
+        platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_tol_{tolerance}_sample_pca_layer_{layer_method}_{proc_alignment_method}.pdf'
+
+    anylsis_path_rank = Path(
+        platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_tol_{tolerance}_sample_rank_layer_{layer_method}_{proc_alignment_method}.pdf'
+
+    if anylsis_path_pca.exists() or anylsis_path_rank.exists():
+        print(f'Analysis files already exist: {anylsis_path_pca} or {anylsis_path_rank}. Exiting.')
+        sys.exit(0)
+
+
     for selection_method in ['pca', 'rank']:
         if selection_method == 'pca':
             pc1_scores_sorted = pc1_scores[key_samples_indices_pca]
