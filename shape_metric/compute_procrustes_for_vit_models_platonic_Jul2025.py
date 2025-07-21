@@ -262,10 +262,10 @@ def get_args():
 
 def mock_get_args():
     mock_args = namedtuple('debug', ['vision_type', 'layer_method','layer_method_k'])
-    new_args = mock_args('in21k', 'prh', 3)
+    new_args = mock_args('dinov2', 'prh', 5)
     return new_args
 
-debug=False
+debug=True
 if __name__ == '__main__':
     # compute the simliarty vs score
     #%%
@@ -379,7 +379,7 @@ if __name__ == '__main__':
 
     #%% compute the model procrustes first and then do model to brain alginment
     grp = 'orth'  # or 'perm' or 'identity' , 'orth' is the default
-    method = 'fb'  # or 'streaming' , 'full_batch' is the default
+    method = 'fb'  # or 'strm' , 'full_batch' is the default
 
     adjust_mode = 'zp'  # 'pca' or 'none' or 'zero_pad',
     svd_solver = 'gesvd'  # 'gesvd' or 'svd', or 'lowrank'
@@ -407,10 +407,11 @@ if __name__ == '__main__':
             # print the current iteration
             print(f'iteration: {k}')
             with torch.no_grad():
-                if method == 'full_batch':
+                if method == 'fb':
                     method_key='full_batch'
-                else:
+                elif method == 'strm':
                     method_key='streaming'
+
                 if adjust_mode=='zp':
                     adjust_mode_key='zero_pad'
                 else:
@@ -530,8 +531,8 @@ if __name__ == '__main__':
             # ax.axvline(0, color='black', linewidth=1)
             min_val = min(np.concatenate([x, y], axis=0))
             max_val = max(np.concatenate([x, y], axis=0))
-            min_val = min_val - 0.05 * min_val
-            max_val = max_val + 0.05 * max_val
+            min_val = min_val + 0.15 * min_val
+            max_val = max_val + 0.15 * max_val
             ax.set_xlim([min_val, max_val])
             ax.set_ylim([min_val, max_val])
             # set fond size for the axis labels
