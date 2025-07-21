@@ -550,7 +550,7 @@ if __name__ == '__main__':
             # set all fonts in ax1 to be 7
 
             # Display the plot
-            fig.show()
+            #fig.show()
             anylsis_path = Path(
                 platonic_path) / 'analysis' / 'procrustes' / f'pca_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}_{proc_alignment_method}.pdf'
             if not os.path.exists(os.path.dirname(anylsis_path)):
@@ -590,7 +590,7 @@ if __name__ == '__main__':
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
             # add the origin lines
-            fig.show()
+            #fig.show()
             anylsis_path = Path(
                 platonic_path) / 'analysis' / 'procrustes' / f'ranking_procrustes_{vision_type}_{grp}_{method}_{adjust_mode}_layer_{layer_method}_{proc_alignment_method}.pdf'
             if not os.path.exists(os.path.dirname(anylsis_path)):
@@ -798,7 +798,7 @@ if __name__ == '__main__':
         fig.suptitle('ViT Model Alignment with LLMs across Stimulus Sets', fontsize=16)
 
         # Display the plot
-        fig.show()
+        #fig.show()
         anylsis_path= Path(platonic_path) / 'analysis' / 'procrustes' / f'alignment_to_{vision_type}_{dataset}_samples_{n_samples}_{SUPPORTED_METRICS[method_k]}_topk_{topk}_proc_{grp}_{method}_{adjust_mode}_sample_{selection_method}_layer_{layer_method}_{proc_alignment_method}.pdf'
         if not os.path.exists(os.path.dirname(anylsis_path)):
             os.makedirs(os.path.dirname(anylsis_path))
